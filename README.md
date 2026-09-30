@@ -34,7 +34,7 @@ Skill bisa dipakai oleh **akun individual masing-masing, termasuk Free, Pro, dan
 
 ## 1. Untuk pengguna: memasang skill (sekali saja)
 
-1. Minta **AIGeothermal-PLN.zip** dari admin. Admin mengunduhnya dari release `skills-latest` di repo privat.
+1. Unduh **[AIGeothermal-PLN.zip](https://github.com/hammamrz/AI-geothermal/releases/download/skills-latest/AIGeothermal-PLN.zip)**. Link ini selalu mengarah ke versi terbaru dan bisa dibuka tanpa akun GitHub.
 2. Di claude.ai (web atau desktop): **Settings → Capabilities**, lalu pastikan **Code execution and file creation** aktif. Pada pengaturan akses jaringan, cukup yang default (*package managers*, sudah mencakup GitHub), atau izinkan `github.com`, `api.github.com`, dan `raw.githubusercontent.com`.
 3. Buka **Customize → Skills → + → Upload a skill**, lalu pilih `AIGeothermal-PLN.zip`.
 4. Pastikan skill **aigeothermal-pln** dalam keadaan aktif.
@@ -75,26 +75,10 @@ Batas ukuran: 25 MB per upload web ke `kb-inbox/`, 2 GB per aset release, dan ±
 
 - **Settings → Actions → General → Workflow permissions**: pilih *Read and write permissions*.
 - Batasi akses tulis repo hanya untuk admin. Pengguna skill tidak butuh akun GitHub.
-- Mode privat: lihat bagian berikut.
 
-### Mode privat (repo privat + token baca di ZIP)
+### Repo publik
 
-Skill di akun individual mengambil update dari GitHub. Untuk repo privat, skill membawa **token baca** di `config.json` di dalam ZIP. Token ini disimpan sebagai GitHub Secret, dan ZIP-nya dibangun oleh GitHub Actions, sehingga token tidak pernah perlu ditempel di chat.
-
-1. **Buat token**: GitHub → *Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token*.
-   - *Repository access*: **Only select repositories** → `AI-geothermal`.
-   - *Permissions → Repository permissions → Contents*: **Read-only**. Permission lain tidak perlu diubah.
-   - *Expiration*: pilih sesuai kebutuhan dan catat tanggalnya.
-2. **Simpan sebagai secret**: repo → *Settings → Secrets and variables → Actions → New repository secret*. Isi Name `AIGEO_READ_TOKEN` dan Value dengan token tadi.
-3. **Jadikan repo privat**: repo → *Settings → General → Danger Zone → Change visibility → Make private*.
-4. **Bangun ZIP**: tab *Actions* → workflow **Skill ZIP** → **Run workflow**. Setelah selesai, unduh `AIGeothermal-PLN.zip` dari release `skills-latest`; release di repo privat hanya terlihat oleh Anda.
-5. **Bagikan ZIP langsung ke anggota tim** (WhatsApp/email/Drive internal). Mereka upload sekali di claude.ai.
-
-Workflow menolak membangun ZIP bertoken selama repo masih publik, agar token tidak ikut terpublikasi.
-
-Hal yang perlu diperhatikan:
-- Siapa pun yang memegang ZIP dapat membaca isi repo, karena tokennya read-only ke repo ini. Bagikan hanya ke tim.
-- Bila token kedaluwarsa atau bocor: cabut token, buat yang baru, perbarui secret, jalankan ulang workflow **Skill ZIP**, lalu bagikan ZIP baru. Selama itu, skill tetap berjalan dengan salinan bawaan dan memberi tahu bahwa KB mungkin bukan versi terbaru.
+Repo ini publik, sehingga skill di akun mana pun bisa mengambil update tanpa login dan tanpa token. Konsekuensinya, semua isi repo (file KB, template KKP, dan master PPT PLN IP) bisa diunduh siapa saja yang tahu alamatnya. **Unggah ke KB hanya dokumen yang boleh bersifat publik.**
 
 ---
 
