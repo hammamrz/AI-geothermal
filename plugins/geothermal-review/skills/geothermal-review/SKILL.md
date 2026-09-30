@@ -49,7 +49,7 @@ Dokumen target boleh dibaca lebih luas karena memang objek review. Untuk dokumen
 
 Nyatakan bahwa evidence relevan tidak ditemukan pada cakupan embedded KB yang diperiksa. Jika pengguna mengizinkan sumber eksternal, pisahkan sumber eksternal dari KB. Jangan otomatis memasukkan jawaban AI atau sumber eksternal ke embedded KB.
 
-Sebutkan `KB revision` dari `KB_INDEX.md` sebagai batas cakupan. Jika pengguna memiliki dokumen sumber yang seharusnya ada di KB, tawarkan pengajuan lewat alur "Menambah sumber KB dari chat" pada skill `geothermal-knowledge` (PR ke repo GitHub KB). Dokumen yang baru diajukan boleh dipakai sebagai pendukung sementara dengan label "belum masuk KB".
+Sebutkan `KB revision` dari `KB_INDEX.md` sebagai batas cakupan. Jika pengguna memiliki dokumen sumber yang seharusnya ada di KB, sampaikan bahwa penambahan KB dilakukan oleh admin KB lewat repo GitHub. Dokumen dari percakapan boleh dipakai sebagai pendukung dengan label "bukan sumber KB".
 
 ## Output PowerPoint
 

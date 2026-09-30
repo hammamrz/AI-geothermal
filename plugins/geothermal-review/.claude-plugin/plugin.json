@@ -1,7 +1,7 @@
 {
   "name": "geothermal-review",
   "displayName": "Geothermal Review",
-  "description": "Review subsurface, drilling, dan well geothermal dengan knowledge base (KB) bersama yang tersinkron dari GitHub, retrieval selektif, PowerPoint technical review PLN IP, dan DOCX comment sheet report dengan shell KKP PLN IP. Pengguna dapat mengusulkan sumber KB baru langsung dari chat.",
+  "description": "Review subsurface, drilling, dan well geothermal dengan knowledge base (KB) bersama yang dikelola admin di GitHub, retrieval selektif, PowerPoint technical review PLN IP, dan DOCX comment sheet report dengan shell KKP PLN IP.",
   "author": {
     "name": "Generation Business Development"
   },

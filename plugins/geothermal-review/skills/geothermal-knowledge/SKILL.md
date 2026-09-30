@@ -1,11 +1,11 @@
 ---
 name: geothermal-knowledge
-description: Telusuri knowledge base (KB) geothermal bersama yang tersinkron dari repo GitHub plugin, dan kelola penambahan sumber KB dari chat. Gunakan untuk mencari referensi subsurface, reservoir, drilling, completion, well testing, standards, case studies, tabel, formula, dan visual dari file KB tanpa memuat seluruh KB ke context. Gunakan juga ketika pengguna ingin menambahkan/meng-upload/merevisi dokumen ke KB ("tambahkan ke KB", "masukkan ke knowledge base", "ini revisi dari GEO-xxxx"), menanyakan isi/daftar KB, atau apakah KB sudah versi terbaru.
+description: Telusuri knowledge base (KB) geothermal bersama yang dikelola admin di repo GitHub plugin. Gunakan untuk mencari referensi subsurface, reservoir, drilling, completion, well testing, standards, case studies, tabel, formula, dan visual dari file KB tanpa memuat seluruh KB ke context. Gunakan juga ketika pengguna menanyakan isi/daftar/revisi KB atau ingin menambahkan dokumen ke KB.
 ---
 
 # Geothermal Knowledge
 
-Gunakan bahasa Indonesia, pertahankan istilah teknis sumber bila lebih tepat. Knowledge base bersifat **embedded, bersama, dan tersinkron dari GitHub**: seluruh file sumber berada di `references/KB/files/` dan router tunggal berada di `references/KB/KB_INDEX.md`.
+Gunakan bahasa Indonesia, pertahankan istilah teknis sumber bila lebih tepat. Knowledge base bersifat **embedded, bersama, dan dikelola admin melalui GitHub**: seluruh file sumber berada di `references/KB/files/` dan router tunggal berada di `references/KB/KB_INDEX.md`.
 
 ## Arsitektur wajib
 
@@ -41,48 +41,15 @@ Saat visual diperlukan:
 
 `KB_INDEX.md` dapat hanya memiliki metadata ringan. Jika query cocok dengan file tetapi locator rinci belum ada, buka file kandidat secara terarah menggunakan judul, TOC, heading, keyword, atau pencarian internal. Jangan deep-ingest seluruh dokumen hanya untuk memperkaya index.
 
-## Update KB (KB bersama, tersinkron dari GitHub)
+## Update KB (hanya admin, lewat GitHub)
 
-KB bukan milik satu akun. Sumber kebenaran KB adalah repo GitHub `hammamrz/AI-geothermal` (branch `main`), folder `plugins/geothermal-review/skills/geothermal-knowledge/references/KB/`. Setiap perubahan yang di-merge ke `main` disebarkan otomatis ke semua akun yang memasang plugin ini (sinkronisasi organisasi claude.ai atau auto-update marketplace Claude Code).
+KB bukan milik satu akun. Sumber kebenaran KB adalah repo GitHub `hammamrz/AI-geothermal` (branch `main`), folder `plugins/geothermal-review/skills/geothermal-knowledge/references/KB/`. Setiap perubahan yang di-merge ke `main` disebarkan otomatis ke semua akun yang memasang plugin ini. `KB revision` di `KB_INDEX.md` menunjukkan versi KB yang sedang terpasang.
 
-Konsekuensinya:
-- Salinan skill yang sedang berjalan bersifat **read-only / cache**. Jangan menulis file langsung ke `references/KB/` pada skill terinstal; perubahan itu hilang dan tidak sampai ke pengguna lain.
-- File yang di-upload ke percakapan **tidak otomatis menjadi KB permanen**. File baru masuk KB hanya lewat pengajuan ke `kb-inbox/` di GitHub (alur di bawah).
-
-### Cek apakah KB lokal sudah terbaru
-
-```bash
-python scripts/kb_github.py status      # bandingkan KB lokal vs GitHub main
-python scripts/kb_github.py fetch --id GEO-0007 --out /tmp/kb   # ambil satu file terbaru bila belum ada di lokal
-```
-
-Butuh akses jaringan ke `api.github.com` dan token (`GH_TOKEN`/`GITHUB_TOKEN`/`gh auth`) bila repo privat. Jika tidak bisa diakses, lanjutkan dengan KB lokal dan sebutkan `KB revision` dari `KB_INDEX.md` sebagai batas cakupan.
-
-### Menambah sumber KB dari chat (semua pengguna)
-
-Jalankan alur ini ketika pengguna meminta file yang di-upload dimasukkan ke KB:
-
-1. **Pastikan file-nya jelas**: file yang dimaksud, dan apakah file baru atau revisi dari entri ACTIVE (cari dengan `python scripts/kb_manager.py search <kata kunci>`; jika revisi, catat ID-nya untuk `--supersedes`).
-2. **Susun metadata ringan**: `title`, `discipline`, `document_type`, `revision`, `topics`, `keywords`, opsional `useful_locators`, `visual_content`, `notes`, `contributor` (nama pengguna). Boleh melihat sekilas judul/cover/daftar isi untuk mengusulkan metadata, tetapi **jangan deep-read seluruh dokumen** dan jangan mengarang revisi/locator. Tampilkan usulan metadata dan minta konfirmasi pengguna sebelum mengajukan.
-3. **Ajukan**:
-   ```bash
-   python scripts/kb_github.py submit "/path/ke/file.pdf" \
-     --title "Judul dokumen" --discipline drilling --document-type training \
-     --revision "Rev 1" --topics casing cementing --keywords "thermal load" collapse \
-     --contributor "Nama Pengguna"            # tambah --supersedes GEO-0003 bila revisi
-   ```
-   `--mode auto` mencoba berurutan: GitHub API (butuh token) → `git push` + PR (butuh kredensial git dengan akses tulis) → paket ZIP.
-4. **Laporkan hasil** apa adanya dari output JSON:
-   - `submitted`: berikan link PR. Jelaskan bahwa sumber menjadi KB resmi setelah PR di-merge admin dan workflow ingest selesai; sebelum itu jangan menyebutnya sebagai bagian KB.
-   - `packaged`: berikan file ZIP kepada pengguna (salin ke folder output yang bisa diunduh) dan jelaskan langkah `next_step`: upload isi `kb-inbox/` ke GitHub atau kirim ke admin KB.
-   - `rejected`: biasanya duplikat identik (sebutkan ID yang sudah ada) atau ukuran file melebihi batas.
-5. Boleh memakai file yang baru di-upload sebagai **dokumen pendukung sementara** di percakapan ini, tetapi beri label "belum masuk KB" pada setiap sitasi.
-
-Beberapa file sekaligus boleh diajukan dalam satu perintah bila metadata-nya sama; bila berbeda, ajukan terpisah. `--supersedes` hanya untuk satu file.
-
-### Upload langsung oleh admin (tanpa chat)
-
-Admin cukup meng-upload file (dan opsional sidecar `<nama-file>.meta.json`) ke folder `kb-inbox/` di GitHub. Workflow **KB ingest** menghitung SHA-256, menolak duplikat, memberi ID `GEO-xxxx`, memindahkan file ke `references/KB/files/`, membangun ulang `KB_MANIFEST.json` + `KB_INDEX.md` + `CHANGELOG.md`, lalu me-merge PR `kb-ingest/auto` sehingga sinkronisasi berjalan. Format sidecar: lihat `kb-inbox/README.md` di repo.
+Aturan:
+- Penambahan/revisi KB **hanya dilakukan admin KB** dengan meng-upload file ke folder `kb-inbox/` di repo GitHub. Workflow **KB ingest** memberi ID `GEO-xxxx`, menolak duplikat (SHA-256), membangun ulang index/manifest/CHANGELOG, lalu menyinkronkannya ke semua pengguna.
+- Salinan skill yang sedang berjalan bersifat **read-only / cache**. Jangan menulis file ke `references/KB/` pada skill terinstal dan jangan menjanjikan bahwa file akan tersimpan permanen.
+- File yang di-upload pengguna ke percakapan **tidak menjadi bagian KB**. Boleh dipakai sebagai dokumen pendukung di percakapan itu saja, dengan label "bukan sumber KB" pada setiap sitasi.
+- Bila pengguna ingin dokumennya masuk KB, sampaikan bahwa penambahan KB dilakukan oleh admin KB, dan bantu menyiapkan usulan metadata (judul, disiplin, tipe dokumen, revisi, topik, keyword; revisi dari `GEO-xxxx` bila ada) agar mudah diteruskan ke admin. Isi sidecar mengikuti format `kb-inbox/README.md` di repo. Jangan deep-read seluruh dokumen untuk itu dan jangan mengarang revisi/locator.
 
 ### KB Management Mode (clone repo, admin/CI)
 
@@ -100,9 +67,9 @@ python scripts/kb_manager.py check
 - Hash yang sudah terdaftar dianggap duplikat identik dan tidak membuat entri baru.
 - `update`/`supersedes` tidak pernah menimpa file lama. Revisi baru mendapat ID baru, mewarisi metadata routing yang tidak diisi ulang; entri lama menjadi `SUPERSEDED` dan menunjuk ke penggantinya.
 - Setiap perubahan menaikkan `kb_revision` dan menambah catatan di `CHANGELOG.md` plugin.
-- Metadata hanya dari operator/kontributor. Index tetap ringan; retrieval isi sumber dilakukan saat review berlangsung.
+- Metadata hanya dari admin. Index tetap ringan; retrieval isi sumber dilakukan saat review berlangsung.
 
-Saat diminta menilai apakah suatu sumber ada di KB, hanya nyatakan ada jika file tercantum di index atau benar-benar terlihat di embedded KB. Pengajuan yang PR-nya belum di-merge **belum** termasuk KB.
+Saat diminta menilai apakah suatu sumber ada di KB, hanya nyatakan ada jika file tercantum di index atau benar-benar terlihat di embedded KB.
 
 ## Citation/traceability dalam jawaban
 

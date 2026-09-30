@@ -23,7 +23,7 @@ jobs:
       - run: python3 scripts/build_skill_zips.py --out dist
       - uses: actions/upload-artifact@v4
         with:
-          name: geothermal-skills
+          name: geothermal-review-zips
           path: dist/*.zip
       - name: Update skills-latest release
         env:
@@ -35,5 +35,5 @@ jobs:
             gh release edit skills-latest --notes "$notes" --target "$GITHUB_SHA"
             gh release upload skills-latest dist/*.zip --clobber
           else
-            gh release create skills-latest dist/*.zip --title "Geothermal skills (latest)" --notes "$notes" --target "$GITHUB_SHA" --prerelease
+            gh release create skills-latest dist/*.zip --title "Geothermal Review plugin (latest)" --notes "$notes" --target "$GITHUB_SHA" --prerelease
           fi

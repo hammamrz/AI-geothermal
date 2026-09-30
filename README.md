@@ -1,31 +1,40 @@
-# Geothermal Review — plugin & skills Claude
+# Geothermal Review — plugin Claude
 
-Marketplace privat berisi plugin **`geothermal-review`** untuk Claude. Plugin ini memuat empat skill:
+Marketplace privat berisi **satu plugin Claude, `geothermal-review`**. Pengguna cukup memasang satu plugin ini untuk mendapatkan empat kemampuan sekaligus. Claude memilih skill yang relevan secara otomatis sesuai permintaan:
 
 | Skill | Fungsi |
 |---|---|
-| `geothermal-knowledge` | Retrieval selektif dari knowledge base (KB) bersama + pengajuan sumber KB baru dari chat |
+| `geothermal-knowledge` | Retrieval selektif dari knowledge base (KB) bersama yang dikelola admin |
 | `geothermal-review` | Review subsurface/drilling/well berbasis bukti KB |
 | `geothermal-comment-sheet-report` | DOCX comment sheet / technical review report (shell KKP PLN IP) |
 | `geothermal-review-presentation` | PPTX technical review (3-layout master PLN IP) |
 
-Repo ini adalah **satu-satunya sumber kebenaran**. Setiap perubahan yang masuk ke `main`, baik skill maupun file KB, otomatis sampai ke semua akun yang memasang plugin.
+Repo ini adalah **satu-satunya sumber kebenaran**. Setiap perubahan yang masuk ke `main`, baik skill maupun file KB, otomatis sampai ke semua akun yang memasang plugin. **Hanya admin** yang menambah atau merevisi KB. Pengguna lain hanya memakai KB.
 
 ```
- Pengguna (chat)          Admin (GitHub web)
-   │ "tambahkan ke KB"        │ upload file ke kb-inbox/
-   ▼                          ▼
- kb_github.py submit ──► PR ke kb-inbox/ ──► merge ──► main
-                                                 │
-                              workflow "KB ingest" (SHA-256, ID GEO-xxxx,
-                              KB_INDEX, CHANGELOG) ──► PR kb-ingest/auto ──► auto-merge
-                                                 │
-            ┌────────────────────────────────────┴───────────────────────────┐
-   claude.ai org sync (dipicu merge PR)                  Claude Code marketplace auto-update
-   → semua anggota organisasi                              → semua pengguna yang memasang plugin
+ Admin (GitHub web)
+   │ upload file (+ .meta.json) ke kb-inbox/
+   ▼
+ main ──► workflow "KB ingest" (SHA-256, ID GEO-xxxx, KB_INDEX, CHANGELOG)
+                  │
+                  ▼
+          PR kb-ingest/auto ──► auto-merge
+                  │
+   ┌──────────────┴──────────────────────────────┐
+ claude.ai org sync (dipicu merge PR)     Claude Code marketplace auto-update
+ → semua anggota organisasi                → semua pengguna yang memasang plugin
 ```
 
 ---
+
+## 0. Langkah selanjutnya (checklist admin)
+
+1. Merge PR ke `main`.
+2. **Settings → Actions → General**: pilih *Read and write permissions* dan centang *Allow GitHub Actions to create and approve pull requests*.
+3. Pastikan repo tetap **private**, dan batasi akses tulis hanya untuk admin KB.
+4. claude.ai: **Organization settings → Plugins & skills → Marketplaces → Add plugins → Sync from GitHub** → `hammamrz/AI-geothermal`, lalu aktifkan plugin `geothermal-review` untuk organisasi/grup.
+5. Upload KB pertama ke `kb-inbox/`, lalu cek tab **Actions** (workflow *KB ingest* hijau) dan PR `kb-ingest/auto` sudah ter-merge.
+6. Uji dari akun lain: tanya "Apa saja isi KB geothermal?" dan pastikan `KB revision` sesuai.
 
 ## 1. Memasang plugin untuk akun lain
 
@@ -69,30 +78,15 @@ Setelah itu buka `/plugin` → **Marketplaces** → `geothermal-review-marketpla
 
 ### C. Upload ZIP manual (akun individual Pro/Max), cadangan
 
-Unduh ZIP per-skill dari release **`skills-latest`** (dibangun otomatis oleh workflow *Skill ZIPs*), lalu upload di **Settings → Capabilities → Skills**. Jalur ini **tidak ter-update otomatis**: ZIP harus di-upload ulang setelah ada perubahan. Build lokal: `python scripts/build_skill_zips.py`.
+Unduh ZIP dari release **`skills-latest`** (dibangun otomatis oleh workflow *Skill ZIPs*): `geothermal-review-plugin.zip` untuk upload plugin utuh di admin organisasi, atau ZIP per-skill untuk **Settings → Capabilities → Skills**. Jalur ini **tidak ter-update otomatis**: ZIP harus di-upload ulang setelah ada perubahan. Build lokal: `python scripts/build_skill_zips.py`.
 
 ---
 
-## 2. Menambah knowledge base
+## 2. Menambah knowledge base (hanya admin)
 
-### Dari chat (semua pengguna)
+Hanya admin yang menambah atau merevisi KB. File yang di-upload pengguna di chat **tidak** masuk KB; Claude hanya memakainya di percakapan itu dengan label "bukan sumber KB".
 
-Upload dokumen di chat lalu minta, misalnya: *"Tambahkan file ini ke KB geothermal, disiplin drilling, materi training Rev 1."*
-Skill `geothermal-knowledge` akan:
-
-1. mengecek duplikat (SHA-256) dan menawarkan `--supersedes` bila file itu revisi entri lama;
-2. mengusulkan metadata (judul, disiplin, tipe, revisi, topik, keyword) lalu meminta konfirmasi;
-3. menjalankan `kb_github.py submit`, yang otomatis memilih jalur yang tersedia:
-
-| Jalur | Kapan dipakai | Hasil |
-|---|---|---|
-| GitHub API | ada token `GH_TOKEN`/`GITHUB_TOKEN`/`gh auth` dengan akses tulis | branch `kb-submit/...` + PR |
-| git push | kredensial git dengan akses tulis (umumnya Claude Code) | branch + PR (atau link compare) |
-| Paket ZIP | tidak ada akses tulis (umumnya chat claude.ai) | ZIP berisi `kb-inbox/<file>` + `.meta.json` untuk di-upload ke GitHub atau dikirim ke admin |
-
-Sumber baru resmi menjadi bagian KB setelah PR di-merge dan workflow ingest selesai. Admin tetap memegang kendali review.
-
-### Upload langsung oleh admin di GitHub
+### Upload lewat GitHub web
 
 1. Buka folder [`kb-inbox/`](kb-inbox/) → **Add file → Upload files**.
 2. Upload file sumber, dan bila ada, sidecar `<nama-file>.meta.json` (format di [`kb-inbox/README.md`](kb-inbox/README.md)).
@@ -114,7 +108,7 @@ python plugins/geothermal-review/skills/geothermal-knowledge/scripts/kb_manager.
 
 - **Settings → Actions → General → Workflow permissions**: pilih *Read and write permissions* dan centang *Allow GitHub Actions to create and approve pull requests*.
 - Opsional: variable repo `KB_AUTO_MERGE=false` bila PR `kb-ingest/auto` harus di-merge manual oleh admin (misalnya karena branch protection mewajibkan review).
-- Kontributor yang mengajukan KB dari Claude Code/API butuh akses tulis (collaborator). Pengguna tanpa akses memakai jalur paket ZIP.
+- Hanya admin yang diberi akses tulis ke repo. Pengguna plugin di claude.ai tidak butuh akun GitHub sama sekali, karena sinkronisasi memakai koneksi GitHub organisasi.
 
 ## 4. Struktur repo
 
@@ -126,11 +120,10 @@ plugins/geothermal-review/
   skills/geothermal-knowledge/
     references/KB/                       KB_INDEX.md, KB_MANIFEST.json, files/
     scripts/kb_manager.py                ingest/add/update/search/check (admin & CI)
-    scripts/kb_github.py                 submit/status/fetch (dari chat)
   skills/geothermal-review/ …            skill review
   skills/geothermal-comment-sheet-report/ …
   skills/geothermal-review-presentation/ …
 kb-inbox/                                pintu masuk file KB baru
-scripts/build_skill_zips.py              ZIP per-skill (fallback upload manual)
+scripts/build_skill_zips.py              ZIP plugin utuh + per-skill (fallback upload manual)
 .github/workflows/                       kb-ingest, kb-validate, skill-zips
 ```
