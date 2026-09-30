@@ -4,7 +4,8 @@
 Subcommand:
   add      tambah satu file sumber ke KB (dipakai admin/CI di clone repo)
   update   simpan revisi baru; entri lama menjadi SUPERSEDED (tidak ditimpa)
-  ingest   proses semua file di folder inbox (default: <repo>/kb-inbox) + sidecar .meta.json
+  ingest   proses folder inbox (default: <repo>/kb-inbox): file lepas, ZIP batch,
+           metadata.csv, dan sidecar .meta.json
   search   cari entri berdasarkan kata kunci pada metadata (routing ringan)
   list     tampilkan katalog + validasi
   check    validasi file, ukuran, hash, dan duplikasi
@@ -15,11 +16,14 @@ Metadata berasal dari operator/kontributor, bukan dikarang.
 from __future__ import annotations
 
 import argparse
+import csv
 import hashlib
 import json
 import re
 import shutil
 import sys
+import tempfile
+import zipfile
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -36,7 +40,10 @@ DEFAULT_INBOX = REPO_ROOT / "kb-inbox"
 # GitHub menolak file >100 MB; beri margin.
 MAX_FILE_BYTES = 95 * 1024 * 1024
 META_SUFFIX = ".meta.json"
-INBOX_IGNORE = {"README.md", ".gitkeep", ".DS_Store", "Thumbs.db"}
+INBOX_IGNORE = {"README.md", ".gitkeep", ".DS_Store", "Thumbs.db", "desktop.ini"}
+CSV_META = "metadata.csv"
+KNOWN_DISCIPLINES = {"subsurface", "geology", "geochemistry", "geophysics", "reservoir", "drilling", "well-design",
+                     "completion", "well-testing", "hse", "standard", "other"}
 META_FIELDS = ("title", "discipline", "document_type", "revision", "topics", "keywords",
                "useful_locators", "visual_content", "notes", "contributor", "source_channel",
                "submitted_at", "original_filename")
@@ -215,44 +222,130 @@ def log_line(entry: dict) -> str:
     return f"- {verb} {entry['id']} — {entry.get('title', '')} (`{entry['file']}`, {entry['size_bytes']} bytes, SHA-256 `{entry['sha256'][:12]}…`){who}."
 
 
-def ingest(inbox: Path, data: dict, dry_run: bool = False) -> dict:
-    """Proses semua file di inbox. File sukses/duplikat dihapus dari inbox."""
-    result = {"added": [], "duplicates": [], "errors": []}
-    if not inbox.is_dir():
-        raise ValueError(f"Folder inbox tidak ditemukan: {inbox}")
-    sources = sorted(p for p in inbox.rglob("*") if p.is_file() and p.name not in INBOX_IGNORE
-                     and not p.name.endswith(META_SUFFIX) and not p.name.startswith("."))
-    log_lines = []
-    for src in sources:
+def load_csv_meta(path: Path) -> dict[str, dict]:
+    """metadata.csv: satu baris per file; kolom `file` = nama file atau path relatif."""
+    text = path.read_text(encoding="utf-8-sig")
+    try:
+        dialect = csv.Sniffer().sniff(text.splitlines()[0] if text else ",", delimiters=",;\t")
+    except csv.Error:
+        dialect = csv.excel
+    rows = {}
+    for row in csv.DictReader(text.splitlines(), dialect=dialect):
+        row = {(k or "").strip().lower(): (v or "").strip() for k, v in row.items()}
+        key = row.pop("file", "")
+        if key:
+            rows[key.replace("\\", "/").strip("/")] = {k: v for k, v in row.items() if v}
+    return rows
+
+
+def is_source(p: Path, root: Path) -> bool:
+    rel = p.relative_to(root)
+    return (p.is_file() and p.name not in INBOX_IGNORE and not p.name.endswith(META_SUFFIX)
+            and p.name.lower() != CSV_META and p.suffix.lower() != ".zip"
+            and not any(part.startswith(".") or part == "__MACOSX" for part in rel.parts))
+
+
+def ingest_dir(root: Path, data: dict, dry_run: bool, label: str, consume: bool) -> tuple[dict, list[str]]:
+    result = {"added": [], "duplicates": [], "errors": [], "warnings": []}
+    log_lines: list[str] = []
+    csv_path = root / CSV_META
+    try:
+        csv_meta = load_csv_meta(csv_path) if csv_path.exists() else {}
+    except (OSError, csv.Error, UnicodeDecodeError) as exc:
+        result["errors"].append({"file": f"{label}{CSV_META}", "error": f"metadata.csv tidak terbaca: {exc}"})
+        return result, log_lines
+    used_rows = set()
+    for src in sorted(p for p in root.rglob("*") if is_source(p, root)):
+        rel = src.relative_to(root).as_posix()
+        shown = f"{label}{rel}"
         meta_path = src.with_name(src.name + META_SUFFIX)
         try:
-            meta = json.loads(meta_path.read_text(encoding="utf-8")) if meta_path.exists() else {}
-            if not isinstance(meta, dict):
-                raise ValueError("sidecar .meta.json harus berupa objek JSON")
-            meta.setdefault("source_channel", "github-inbox")
-            supersedes = meta.get("supersedes")
+            row_key = rel if rel in csv_meta else (src.name if src.name in csv_meta else None)
+            meta = dict(csv_meta.get(row_key, {}))
+            if row_key:
+                used_rows.add(row_key)
+            if meta_path.exists():
+                side = json.loads(meta_path.read_text(encoding="utf-8"))
+                if not isinstance(side, dict):
+                    raise ValueError("sidecar .meta.json harus berupa objek JSON")
+                meta.update(side)
+            top = src.relative_to(root).parts[0].lower().replace(" ", "-") if len(src.relative_to(root).parts) > 1 else ""
+            if "discipline" not in meta and top in KNOWN_DISCIPLINES:
+                meta["discipline"] = top
+            meta.setdefault("source_channel", "github-inbox" if not label else f"zip:{label.rstrip(':/ ')}")
             if meta.get("sha256") and meta["sha256"] != sha256(src):
-                raise ValueError("SHA-256 di sidecar tidak cocok dengan file (file berubah/korup saat upload)")
+                raise ValueError("SHA-256 di metadata tidak cocok dengan file (file berubah/korup saat upload)")
             if dry_run:
-                result["added"].append({"file": src.name, "dry_run": True})
+                result["added"].append({"file": shown, "dry_run": True})
                 continue
-            entry, status = add_source(src, data, meta, supersedes)
+            entry, status = add_source(src, data, meta, meta.get("supersedes") or None)
         except (OSError, ValueError, json.JSONDecodeError) as exc:
-            result["errors"].append({"file": str(src.relative_to(inbox)), "error": str(exc)})
+            result["errors"].append({"file": shown, "error": str(exc)})
             continue
         if status == "duplicate":
-            result["duplicates"].append({"file": str(src.relative_to(inbox)), "existing_id": entry["id"]})
+            result["duplicates"].append({"file": shown, "existing_id": entry["id"]})
         else:
-            result["added"].append({"file": str(src.relative_to(inbox)), "id": entry["id"],
-                                    "title": entry["title"], "supersedes": entry.get("supersedes")})
+            result["added"].append({"file": shown, "id": entry["id"], "title": entry["title"],
+                                    "supersedes": entry.get("supersedes")})
             log_lines.append(log_line(entry))
-        src.unlink()
-        if meta_path.exists():
-            meta_path.unlink()
+        if consume:
+            src.unlink()
+            if meta_path.exists():
+                meta_path.unlink()
+    for key in sorted(set(csv_meta) - used_rows):
+        result["warnings"].append({"file": f"{label}{CSV_META}", "warning": f"baris untuk '{key}' tidak menemukan file (diabaikan)"})
     # Sidecar yatim (tanpa file sumber) dilaporkan agar tidak diam-diam tertinggal.
-    for orphan in sorted(inbox.rglob("*" + META_SUFFIX)):
+    for orphan in sorted(root.rglob("*" + META_SUFFIX)):
         if not orphan.with_name(orphan.name[: -len(META_SUFFIX)]).exists():
-            result["errors"].append({"file": str(orphan.relative_to(inbox)), "error": "sidecar tanpa file sumber"})
+            result["errors"].append({"file": f"{label}{orphan.relative_to(root).as_posix()}", "error": "sidecar tanpa file sumber"})
+    if consume and csv_path.exists() and not result["errors"] and not dry_run:
+        csv_path.unlink()
+    return result, log_lines
+
+
+def extract_zip(zpath: Path, dest: Path) -> None:
+    with zipfile.ZipFile(zpath) as z:
+        for info in z.infolist():
+            name = info.filename.replace("\\", "/")
+            if info.is_dir():
+                continue
+            target = (dest / name).resolve()
+            if name.startswith("/") or ".." in Path(name).parts or dest.resolve() not in target.parents:
+                raise ValueError(f"path tidak aman di dalam ZIP: {info.filename}")
+            target.parent.mkdir(parents=True, exist_ok=True)
+            with z.open(info) as fsrc, target.open("wb") as fdst:
+                shutil.copyfileobj(fsrc, fdst)
+
+
+def ingest(inbox: Path, data: dict, dry_run: bool = False) -> dict:
+    """Proses inbox: file lepas, ZIP batch (diekstrak otomatis), metadata.csv dan sidecar.
+
+    File/ZIP yang sukses atau duplikat dihapus dari inbox. ZIP yang sebagian isinya gagal
+    tetap disimpan; menjalankan ulang aman karena file yang sudah masuk terdeteksi duplikat.
+    """
+    result = {"added": [], "duplicates": [], "errors": [], "warnings": []}
+    if not inbox.is_dir():
+        raise ValueError(f"Folder inbox tidak ditemukan: {inbox}")
+    log_lines: list[str] = []
+
+    def merge(sub: dict, lines: list[str]) -> None:
+        for k in result:
+            result[k] += sub[k]
+        log_lines.extend(lines)
+
+    for zpath in sorted(p for p in inbox.rglob("*.zip") if p.is_file()):
+        label = f"{zpath.relative_to(inbox).as_posix()}: "
+        with tempfile.TemporaryDirectory(prefix="kb-zip-") as tmp:
+            try:
+                extract_zip(zpath, Path(tmp))
+            except (zipfile.BadZipFile, ValueError, OSError) as exc:
+                result["errors"].append({"file": label.rstrip(": "), "error": f"ZIP tidak dapat dibuka: {exc}"})
+                continue
+            sub, lines = ingest_dir(Path(tmp), data, dry_run, label, consume=False)
+        merge(sub, lines)
+        if not sub["errors"] and not dry_run:
+            zpath.unlink()
+    merge(*ingest_dir(inbox, data, dry_run, "", consume=True))
     if log_lines and not dry_run:
         commit_changes(data, log_lines)
     return result
@@ -359,11 +452,14 @@ def main() -> int:
                     print(f"Duplikat (dibuang dari inbox): {d['file']} = {d['existing_id']}")
                 for er in res["errors"]:
                     print(f"GAGAL: {er['file']}: {er['error']}")
+                for w in res["warnings"]:
+                    print(f"PERINGATAN: {w['file']}: {w['warning']}")
             if args.summary:
                 md = [f"KB revision: **{data.get('kb_revision', 0)}**", ""]
                 md += [f"- ✅ `{a.get('id')}` {a.get('title', '')} ← `{a['file']}`" + (f" (menggantikan `{a['supersedes']}`)" if a.get("supersedes") else "") for a in res["added"]]
                 md += [f"- ♻️ Duplikat `{d['file']}` sudah ada sebagai `{d['existing_id']}` — tidak ditambahkan" for d in res["duplicates"]]
                 md += [f"- ❌ `{er['file']}`: {er['error']}" for er in res["errors"]]
+                md += [f"- ⚠️ `{w['file']}`: {w['warning']}" for w in res["warnings"]]
                 args.summary.write_text("\n".join(md) + "\n", encoding="utf-8")
             if res["errors"]:
                 show_report(data)

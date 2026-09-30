@@ -16,6 +16,8 @@
 - KB bersama berbasis GitHub: folder `kb-inbox/` + workflow **KB ingest & sync manifest** (ingest dan `sync-manifest.json`, commit langsung ke `main`) dan **KB validate** (pratinjau di PR).
 - `kb_manager.py`: subcommand `ingest` (sidecar `.meta.json`, verifikasi SHA-256), `search`, `kb_revision` pengganti version bump, pewarisan metadata pada revisi, batas ukuran file GitHub.
 - KB hanya dikelola admin lewat `kb-inbox/` di GitHub; file yang di-upload pengguna di chat tidak masuk KB.
+- Upload KB massal: satu ZIP (diekstrak otomatis, `metadata.csv`, subfolder disiplin) lewat `kb-inbox/` (≤25 MB) atau GitHub Release bertag `kb-*` (hingga 2 GB).
+- Mode privat: ZIP skill dibangun GitHub Actions dengan token baca dari secret `AIGEO_READ_TOKEN`; build ditolak bila repo masih publik.
 - `scripts/build_skill_zips.py` + workflow **Skill ZIP** (release `skills-latest`): `AIGeothermal-PLN.zip` untuk upload di claude.ai.
 - Skill review/report/presentation tidak diubah kecuali rujukan lintas-skill dan aturan KB.
 

@@ -41,8 +41,8 @@
     },
     {
       "path": "geothermal-knowledge/scripts/kb_manager.py",
-      "sha256": "d9f2b256ccc09eacc21ad869093e0990dd68693c77fcf2bf695ac66372b5a744",
-      "size": 18465
+      "sha256": "c69e229d536e827a6370dc51df764cdff595530fd04ec0df651b32982d79b9dd",
+      "size": 23016
     },
     {
       "path": "geothermal-review/SKILL.md",

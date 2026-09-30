@@ -21,16 +21,29 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: python3 scripts/build_skill_zips.py --out dist
+      - name: Build AIGeothermal-PLN.zip
+        env:
+          AIGEO_READ_TOKEN: ${{ secrets.AIGEO_READ_TOKEN }}
+          REPO_PRIVATE: ${{ github.event.repository.private }}
+        run: |
+          if [ -n "$AIGEO_READ_TOKEN" ] && [ "$REPO_PRIVATE" != "true" ]; then
+            echo "::error::Secret AIGEO_READ_TOKEN diisi tetapi repo PUBLIK. ZIP bertoken tidak boleh dipublikasikan. Jadikan repo privat dulu, atau hapus secret."
+            exit 1
+          fi
+          if [ "$REPO_PRIVATE" = "true" ] && [ -z "$AIGEO_READ_TOKEN" ]; then
+            echo "::warning::Repo privat tanpa secret AIGEO_READ_TOKEN: skill di akun pengguna tidak bisa mengambil update dari GitHub (hanya salinan bawaan)."
+          fi
+          python3 scripts/build_skill_zips.py --out dist
       - uses: actions/upload-artifact@v4
         with:
           name: AIGeothermal-PLN
           path: dist/*.zip
+          retention-days: 30
       - name: Update skills-latest release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          notes="Build otomatis dari ${GITHUB_SHA::7}. Upload AIGeothermal-PLN.zip di claude.ai → Customize → Skills → + → Upload a skill. Cukup sekali; modul dan KB selanjutnya diperbarui otomatis dari GitHub."
+          notes="Build otomatis dari ${GITHUB_SHA::7}. Upload AIGeothermal-PLN.zip di claude.ai → Customize → Skills → + → Upload a skill. Cukup sekali; modul dan KB selanjutnya diperbarui otomatis dari GitHub. ZIP ini dapat berisi token baca repo: bagikan hanya ke anggota tim."
           if gh release view skills-latest >/dev/null 2>&1; then
             gh release edit skills-latest --notes "$notes" --target "$GITHUB_SHA"
             gh release upload skills-latest dist/AIGeothermal-PLN.zip --clobber

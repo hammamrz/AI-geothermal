@@ -34,7 +34,7 @@ Skill bisa dipakai oleh **akun individual masing-masing, termasuk Free, Pro, dan
 
 ## 1. Untuk pengguna: memasang skill (sekali saja)
 
-1. Unduh **AIGeothermal-PLN.zip** dari release [`skills-latest`](https://github.com/hammamrz/AI-geothermal/releases/tag/skills-latest).
+1. Minta **AIGeothermal-PLN.zip** dari admin. Admin mengunduhnya dari release `skills-latest` di repo privat.
 2. Di claude.ai (web atau desktop): **Settings → Capabilities**, lalu pastikan **Code execution and file creation** aktif. Pada pengaturan akses jaringan, cukup yang default (*package managers*, sudah mencakup GitHub), atau izinkan `github.com`, `api.github.com`, dan `raw.githubusercontent.com`.
 3. Buka **Customize → Skills → + → Upload a skill**, lalu pilih `AIGeothermal-PLN.zip`.
 4. Pastikan skill **aigeothermal-pln** dalam keadaan aktif.
@@ -56,30 +56,45 @@ Setelah itu buka `/plugin` → **Marketplaces** → `aigeothermal-pln-marketplac
 
 Hanya admin yang menambah atau merevisi KB. File yang di-upload pengguna di chat **tidak** masuk KB; Claude memakainya hanya di percakapan itu dengan label "bukan sumber KB".
 
-1. Buka folder [`kb-inbox/`](kb-inbox/) → **Add file → Upload files**.
-2. Upload file sumber (PDF, PPTX, DOCX, XLSX, CSV, TXT, MD, atau gambar). Bila ada, sertakan juga sidecar `<nama-file>.meta.json` berisi judul, disiplin, tipe, revisi, topik, dan keyword; formatnya ada di [`kb-inbox/README.md`](kb-inbox/README.md). Untuk revisi dokumen lama, isi `"supersedes": "GEO-xxxx"`.
-3. Pilih **Commit directly to the main branch**.
-4. Buka tab **Actions** dan tunggu workflow **KB ingest & sync manifest** hijau (±1 menit). Setelah itu, percakapan baru di semua akun memakai KB terbaru.
+**Cara tercepat: satu ZIP berisi banyak file.**
+
+1. Kumpulkan file dalam satu folder. Subfolder bernama disiplin (`drilling/`, `geology/`, …) otomatis menjadi disiplin. Opsional, sertakan `metadata.csv` berisi judul/tipe/revisi/keyword per file ([template](docs/kb-metadata-template.csv)).
+2. Kompres folder menjadi ZIP.
+3. Upload sesuai ukuran:
+   - **≤ 25 MB**: upload ZIP ke [`kb-inbox/`](kb-inbox/) → **Commit directly to the main branch**.
+   - **> 25 MB (hingga 2 GB)**: **Releases → Draft a new release**, tag berawalan `kb-` (mis. `kb-2026-10-01`), lampirkan ZIP, lalu **Publish release**.
+4. Buka tab **Actions** dan tunggu workflow **KB ingest & sync manifest** hijau. Untuk jalur release, hasilnya juga ditulis di catatan release.
+
+File satuan tetap bisa di-upload langsung ke `kb-inbox/`, beserta sidecar `<nama-file>.meta.json` bila perlu. Detail format ada di [`kb-inbox/README.md`](kb-inbox/README.md). Untuk revisi dokumen lama, isi `supersedes` dengan ID lama (`GEO-xxxx`).
 
 Workflow tersebut menghitung SHA-256 (duplikat identik ditolak), memberi ID `GEO-xxxx`, memindahkan file ke `plugins/aigeothermal-pln/skills/geothermal-knowledge/references/KB/files/`, lalu membangun ulang `KB_MANIFEST.json`, `KB_INDEX.md`, `CHANGELOG.md`, dan `sync-manifest.json`. Entri lama yang direvisi tidak dihapus, hanya ditandai `SUPERSEDED`.
 
-Batas ukuran: 25 MB per file lewat upload web GitHub (±95 MB lewat git). **Jangan pakai Git LFS.**
+Batas ukuran: 25 MB per upload web ke `kb-inbox/`, 2 GB per aset release, dan ±95 MB per file KB setelah diekstrak (batas GitHub). **Jangan pakai Git LFS.**
 
 ### Pengaturan repo (sekali saja)
 
 - **Settings → Actions → General → Workflow permissions**: pilih *Read and write permissions*.
 - Batasi akses tulis repo hanya untuk admin. Pengguna skill tidak butuh akun GitHub.
+- Mode privat: lihat bagian berikut.
 
-### Publik atau privat?
+### Mode privat (repo privat + token baca di ZIP)
 
-Skill di akun individual mengambil update dari GitHub tanpa login, jadi repo harus **publik**. Konsekuensinya, isi repo (file KB, template KKP, dan master PPT PLN IP) dapat diunduh siapa pun yang tahu alamatnya. Unggah ke KB hanya dokumen yang boleh bersifat publik.
+Skill di akun individual mengambil update dari GitHub. Untuk repo privat, skill membawa **token baca** di `config.json` di dalam ZIP. Token ini disimpan sebagai GitHub Secret, dan ZIP-nya dibangun oleh GitHub Actions, sehingga token tidak pernah perlu ditempel di chat.
 
-Bila KB harus rahasia:
-1. Jadikan repo privat.
-2. Buat *fine-grained personal access token* dengan akses **read-only (Contents)** hanya ke repo ini.
-3. Bangun ZIP secara lokal dengan `AIGEO_READ_TOKEN=<token> python scripts/build_skill_zips.py`, lalu bagikan ZIP itu hanya ke tim.
+1. **Buat token**: GitHub → *Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token*.
+   - *Repository access*: **Only select repositories** → `AI-geothermal`.
+   - *Permissions → Repository permissions → Contents*: **Read-only**. Permission lain tidak perlu diubah.
+   - *Expiration*: pilih sesuai kebutuhan dan catat tanggalnya.
+2. **Simpan sebagai secret**: repo → *Settings → Secrets and variables → Actions → New repository secret*. Isi Name `AIGEO_READ_TOKEN` dan Value dengan token tadi.
+3. **Jadikan repo privat**: repo → *Settings → General → Danger Zone → Change visibility → Make private*.
+4. **Bangun ZIP**: tab *Actions* → workflow **Skill ZIP** → **Run workflow**. Setelah selesai, unduh `AIGeothermal-PLN.zip` dari release `skills-latest`; release di repo privat hanya terlihat oleh Anda.
+5. **Bagikan ZIP langsung ke anggota tim** (WhatsApp/email/Drive internal). Mereka upload sekali di claude.ai.
 
-Token tersebut ikut terbawa di ZIP, sehingga siapa pun yang memegang ZIP bisa membaca repo. Jangan menaruh ZIP bertoken di release publik, dan ganti token bila ZIP bocor.
+Workflow menolak membangun ZIP bertoken selama repo masih publik, agar token tidak ikut terpublikasi.
+
+Hal yang perlu diperhatikan:
+- Siapa pun yang memegang ZIP dapat membaca isi repo, karena tokennya read-only ke repo ini. Bagikan hanya ke tim.
+- Bila token kedaluwarsa atau bocor: cabut token, buat yang baru, perbarui secret, jalankan ulang workflow **Skill ZIP**, lalu bagikan ZIP baru. Selama itu, skill tetap berjalan dengan salinan bawaan dan memberi tahu bahwa KB mungkin bukan versi terbaru.
 
 ---
 
@@ -98,7 +113,8 @@ plugins/aigeothermal-pln/           plugin Claude Code + sumber 4 modul
   skills/geothermal-comment-sheet-report/ …
   skills/geothermal-review-presentation/ …
   CHANGELOG.md                      riwayat plugin + setiap revisi KB
-kb-inbox/                           pintu masuk file KB baru (admin)
+kb-inbox/                           pintu masuk file/ZIP KB baru (admin)
+docs/kb-metadata-template.csv       template metadata.csv untuk upload ZIP
 sync-manifest.json                  daftar file modul + hash (dibuat otomatis)
 scripts/build_skill_zips.py         bangun AIGeothermal-PLN.zip
 scripts/build_sync_manifest.py      bangun sync-manifest.json

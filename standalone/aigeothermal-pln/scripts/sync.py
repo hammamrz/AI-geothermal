@@ -95,6 +95,17 @@ def kb_manifest() -> dict:
     return json.loads(p.read_text(encoding="utf-8")) if p.exists() else {"entries": []}
 
 
+def explain(exc: Exception) -> str:
+    code = getattr(exc, "code", None)
+    if code in (401, 403) and TOKEN:
+        return f"token GitHub di config.json ditolak (HTTP {code}); kemungkinan kedaluwarsa/dicabut, minta ZIP terbaru ke admin"
+    if code == 404 and not TOKEN:
+        return "repo tidak ditemukan tanpa token (HTTP 404); kemungkinan repo privat, minta ZIP bertoken ke admin"
+    if code == 404:
+        return "file tidak ditemukan atau token tidak punya akses ke repo (HTTP 404)"
+    return str(exc)
+
+
 def use_bundled(reason: str) -> dict:
     MODULES.mkdir(parents=True, exist_ok=True)
     for f in BUNDLED.rglob("*"):
@@ -149,7 +160,7 @@ def cmd_update(args: argparse.Namespace) -> int:
                      "kb_revision": manifest.get("kb_revision", 0)}
             save_state(state)
         except (urllib.error.URLError, OSError, ValueError, KeyError) as exc:
-            state = use_bundled(f"Gagal mengambil versi terbaru dari GitHub: {exc}")
+            state = use_bundled(f"Gagal mengambil versi terbaru dari GitHub: {explain(exc)}")
     kb = kb_manifest()
     active = [e for e in kb.get("entries", []) if e.get("status") == "ACTIVE"]
     print(json.dumps({
@@ -186,7 +197,7 @@ def cmd_kb_get(args: argparse.Namespace) -> int:
             try:
                 data = http_get(raw_url(ref, f"{base}/{e['file']}"))
             except (urllib.error.URLError, OSError) as exc:
-                results.append({"id": e["id"], "error": f"gagal mengunduh dari GitHub: {exc}"})
+                results.append({"id": e["id"], "error": f"gagal mengunduh dari GitHub: {explain(exc)}"})
                 code = 2
                 continue
             if sha256_bytes(data) != e["sha256"]:

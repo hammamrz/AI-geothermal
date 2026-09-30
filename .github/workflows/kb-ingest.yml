@@ -1,8 +1,10 @@
 name: KB ingest & sync manifest
 
-# Dijalankan setiap ada perubahan di main pada kb-inbox/ (upload KB oleh admin)
-# atau pada plugin. Workflow ini:
-#   1. memproses file di kb-inbox/ ke KB (ID GEO-xxxx, KB_INDEX, CHANGELOG);
+# Dijalankan setiap ada perubahan di main pada kb-inbox/ (upload KB oleh admin),
+# pada plugin, atau saat admin mem-publish GitHub Release berisi ZIP/file KB
+# (jalur untuk batch besar: aset release bisa sampai 2 GB). Workflow ini:
+#   0. (release) mengunduh aset release ke kb-inbox/;
+#   1. memproses file/ZIP di kb-inbox/ ke KB (ID GEO-xxxx, KB_INDEX, CHANGELOG);
 #   2. membangun ulang sync-manifest.json yang dibaca skill claude.ai (sync.py);
 #   3. meng-commit hasilnya langsung ke main.
 # Setelah commit ini, semua akun yang memakai skill mendapat versi terbaru
@@ -11,7 +13,14 @@ on:
   push:
     branches: [main]
     paths: ["kb-inbox/**", "plugins/**"]
+  release:
+    types: [published]
   workflow_dispatch:
+    inputs:
+      release_tag:
+        description: "Tag release berisi ZIP KB untuk diproses ulang (kosongkan bila tidak ada)"
+        required: false
+        default: ""
 
 permissions:
   contents: write
@@ -25,18 +34,38 @@ env:
 
 jobs:
   ingest:
+    # Hanya release KB (tag diawali "kb-") yang diproses; release skills-latest diabaikan.
+    if: github.event_name != 'release' || startsWith(github.event.release.tag_name, 'kb-')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           ref: main
 
-      - name: Ingest kb-inbox
+      - name: Download KB files from release
+        if: github.event_name == 'release' || inputs.release_tag != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event.release.tag_name || inputs.release_tag }}
+        run: |
+          # Unduh ke luar repo agar aset besar yang gagal diproses tidak ikut ter-commit.
+          mkdir -p "$RUNNER_TEMP/release-inbox"
+          gh release download "$TAG" --dir "$RUNNER_TEMP/release-inbox" --clobber
+          ls -la "$RUNNER_TEMP/release-inbox"
+
+      - name: Ingest release files and kb-inbox
         id: ingest
         run: |
           set +e
-          python3 "$KB_MANAGER" ingest kb-inbox --summary "$RUNNER_TEMP/kb-summary.md"
-          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+          code=0
+          : > "$RUNNER_TEMP/kb-summary.md"
+          if [ -d "$RUNNER_TEMP/release-inbox" ]; then
+            python3 "$KB_MANAGER" ingest "$RUNNER_TEMP/release-inbox" --summary "$RUNNER_TEMP/s1.md" || code=1
+            { echo "### Aset release"; cat "$RUNNER_TEMP/s1.md"; echo; } >> "$RUNNER_TEMP/kb-summary.md"
+          fi
+          python3 "$KB_MANAGER" ingest kb-inbox --summary "$RUNNER_TEMP/s2.md" || code=1
+          { echo "### kb-inbox"; cat "$RUNNER_TEMP/s2.md"; } >> "$RUNNER_TEMP/kb-summary.md"
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
           cat "$RUNNER_TEMP/kb-summary.md" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Validate KB
@@ -54,6 +83,15 @@ jobs:
           rev=$(python3 -c "import json;print(json.load(open('sync-manifest.json'))['kb_revision'])")
           git commit -m "KB: ingest & sync manifest (KB revision ${rev})"
           git push origin HEAD:main
+
+      - name: Report result on release
+        if: always() && (github.event_name == 'release' || inputs.release_tag != '')
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event.release.tag_name || inputs.release_tag }}
+        run: |
+          { echo "## Hasil ingest KB"; echo; cat "$RUNNER_TEMP/kb-summary.md" 2>/dev/null || echo "Ingest tidak berjalan; lihat log workflow."; } > "$RUNNER_TEMP/notes.md"
+          gh release edit "$TAG" --notes-file "$RUNNER_TEMP/notes.md"
 
       - name: Fail if some inbox files were rejected
         if: steps.ingest.outputs.exit_code != '0'
