@@ -43,7 +43,7 @@ Saat visual diperlukan:
 
 ## Update KB (hanya admin, lewat GitHub)
 
-KB bukan milik satu akun. Sumber kebenaran KB adalah repo GitHub `hammamrz/AI-geothermal` (branch `main`), folder `plugins/geothermal-review/skills/geothermal-knowledge/references/KB/`. Setiap perubahan yang di-merge ke `main` disebarkan otomatis ke semua akun yang memasang plugin ini. `KB revision` di `KB_INDEX.md` menunjukkan versi KB yang sedang terpasang.
+KB bukan milik satu akun. Sumber kebenaran KB adalah repo GitHub `hammamrz/AI-geothermal` (branch `main`), folder `plugins/aigeothermal-pln/skills/geothermal-knowledge/references/KB/`. Setiap perubahan yang di-merge ke `main` disebarkan otomatis ke semua akun yang memasang plugin ini. `KB revision` di `KB_INDEX.md` menunjukkan versi KB yang sedang terpasang.
 
 Aturan:
 - Penambahan/revisi KB **hanya dilakukan admin KB** dengan meng-upload file ke folder `kb-inbox/` di repo GitHub. Workflow **KB ingest** memberi ID `GEO-xxxx`, menolak duplikat (SHA-256), membangun ulang index/manifest/CHANGELOG, lalu menyinkronkannya ke semua pengguna.

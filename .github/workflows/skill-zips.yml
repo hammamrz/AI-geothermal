@@ -23,17 +23,17 @@ jobs:
       - run: python3 scripts/build_skill_zips.py --out dist
       - uses: actions/upload-artifact@v4
         with:
-          name: geothermal-review-zips
+          name: aigeothermal-pln-zips
           path: dist/*.zip
       - name: Update skills-latest release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          kb_rev=$(python3 -c "import json;print(json.load(open('plugins/geothermal-review/skills/geothermal-knowledge/references/KB/KB_MANIFEST.json')).get('kb_revision',0))")
+          kb_rev=$(python3 -c "import json;print(json.load(open('plugins/aigeothermal-pln/skills/geothermal-knowledge/references/KB/KB_MANIFEST.json')).get('kb_revision',0))")
           notes="Build otomatis dari ${GITHUB_SHA::7} (KB revision ${kb_rev}). Upload ZIP ini hanya bila akun Anda tidak memakai sinkronisasi plugin dari GitHub."
           if gh release view skills-latest >/dev/null 2>&1; then
             gh release edit skills-latest --notes "$notes" --target "$GITHUB_SHA"
             gh release upload skills-latest dist/*.zip --clobber
           else
-            gh release create skills-latest dist/*.zip --title "Geothermal Review plugin (latest)" --notes "$notes" --target "$GITHUB_SHA" --prerelease
+            gh release create skills-latest dist/*.zip --title "AIGeothermal-PLN plugin (latest)" --notes "$notes" --target "$GITHUB_SHA" --prerelease
           fi

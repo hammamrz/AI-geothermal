@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 env:
-  KB_MANAGER: plugins/geothermal-review/skills/geothermal-knowledge/scripts/kb_manager.py
+  KB_MANAGER: plugins/aigeothermal-pln/skills/geothermal-knowledge/scripts/kb_manager.py
 
 jobs:
   validate:
@@ -21,8 +21,8 @@ jobs:
       - name: Validate manifests JSON
         run: |
           python3 -m json.tool .claude-plugin/marketplace.json > /dev/null
-          python3 -m json.tool plugins/geothermal-review/.claude-plugin/plugin.json > /dev/null
-          python3 -m json.tool plugins/geothermal-review/skills/geothermal-knowledge/references/KB/KB_MANIFEST.json > /dev/null
+          python3 -m json.tool plugins/aigeothermal-pln/.claude-plugin/plugin.json > /dev/null
+          python3 -m json.tool plugins/aigeothermal-pln/skills/geothermal-knowledge/references/KB/KB_MANIFEST.json > /dev/null
 
       - name: Check existing KB
         run: python3 "$KB_MANAGER" check

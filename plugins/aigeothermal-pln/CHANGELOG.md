@@ -10,7 +10,8 @@
 
 ## 1.0.0 — 2026-09-30 (konversi ke Claude)
 
-- Konversi dari plugin Codex/ChatGPT ke **plugin Claude** dalam marketplace privat (`.claude-plugin/marketplace.json`, `plugins/geothermal-review/.claude-plugin/plugin.json`). Manifest Codex (`.agents/`, `.codex-plugin/`, `plugin.json` Agent Plugins) dihapus.
+- Plugin bernama **AIGeothermal-PLN** (ID `aigeothermal-pln`, marketplace `aigeothermal-pln-marketplace`).
+- Konversi dari plugin Codex/ChatGPT ke **plugin Claude** dalam marketplace privat (`.claude-plugin/marketplace.json`, `plugins/aigeothermal-pln/.claude-plugin/plugin.json`). Manifest Codex (`.agents/`, `.codex-plugin/`, `plugin.json` Agent Plugins) dihapus.
 - Plugin tidak mencantumkan `version`, sehingga setiap commit di `main` langsung menjadi versi terbaru bagi pengguna Claude Code (auto-update) dan sinkronisasi organisasi claude.ai.
 - KB bersama berbasis GitHub: folder `kb-inbox/` + workflow **KB ingest** (ingest otomatis lalu merge PR `kb-ingest/auto`) dan **KB validate** (pratinjau di PR).
 - `kb_manager.py`: subcommand `ingest` (sidecar `.meta.json`, verifikasi SHA-256), `search`, `kb_revision` pengganti version bump, pewarisan metadata pada revisi, batas ukuran file GitHub.

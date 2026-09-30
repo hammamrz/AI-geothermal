@@ -4,7 +4,7 @@ Taruh file sumber KB (PDF, PPTX, DOCX, XLSX, CSV, TXT, MD, gambar) di folder ini
 Setelah file masuk ke branch `main`, workflow **KB ingest** otomatis:
 
 1. menghitung SHA-256 dan menolak duplikat identik;
-2. memindahkan file ke `plugins/geothermal-review/skills/geothermal-knowledge/references/KB/files/` dengan ID `GEO-xxxx`;
+2. memindahkan file ke `plugins/aigeothermal-pln/skills/geothermal-knowledge/references/KB/files/` dengan ID `GEO-xxxx`;
 3. membangun ulang `KB_MANIFEST.json`, `KB_INDEX.md`, dan `CHANGELOG.md`;
 4. membuka PR `kb-ingest/auto` dan me-merge-nya, sehingga semua akun yang memakai plugin menerima KB terbaru.
 

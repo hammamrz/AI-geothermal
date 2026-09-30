@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Bangun ZIP untuk upload manual ke Claude:
 
-- geothermal-review-plugin.zip : plugin utuh (4 skill) untuk Organization settings →
+- aigeothermal-pln-plugin.zip : plugin utuh (4 skill) untuk Organization settings →
   Plugins & skills → upload plugin.
 - <skill>.zip                  : per-skill untuk Settings → Capabilities → Skills.
 
@@ -17,7 +17,7 @@ import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-PLUGIN = ROOT / "plugins" / "geothermal-review"
+PLUGIN = ROOT / "plugins" / "aigeothermal-pln"
 SKILLS = PLUGIN / "skills"
 # File lintas-skill yang dirujuk dengan path relatif ../ dan harus ikut dibundel
 # bila skill diinstal sendiri-sendiri.
@@ -39,11 +39,11 @@ def report(zpath: Path) -> None:
 
 def build(out: Path) -> list[Path]:
     out.mkdir(parents=True, exist_ok=True)
-    plugin_zip = out / "geothermal-review-plugin.zip"
+    plugin_zip = out / "aigeothermal-pln-plugin.zip"
     with zipfile.ZipFile(plugin_zip, "w", zipfile.ZIP_DEFLATED) as z:
         for f in sorted(PLUGIN.rglob("*")):
             if f.is_file() and not skip(f.relative_to(PLUGIN)):
-                z.write(f, f"geothermal-review/{f.relative_to(PLUGIN).as_posix()}")
+                z.write(f, f"aigeothermal-pln/{f.relative_to(PLUGIN).as_posix()}")
     report(plugin_zip)
     built = [plugin_zip]
     for skill in sorted(p for p in SKILLS.iterdir() if (p / "SKILL.md").is_file()):

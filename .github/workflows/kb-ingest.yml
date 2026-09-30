@@ -19,7 +19,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  KB_MANAGER: plugins/geothermal-review/skills/geothermal-knowledge/scripts/kb_manager.py
+  KB_MANAGER: plugins/aigeothermal-pln/skills/geothermal-knowledge/scripts/kb_manager.py
   INGEST_BRANCH: kb-ingest/auto
 
 jobs:
@@ -53,7 +53,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -B "$INGEST_BRANCH"
-          git add -A kb-inbox plugins/geothermal-review
+          git add -A kb-inbox plugins/aigeothermal-pln
           git commit -m "KB: ingest kb-inbox ($(date -u +%Y-%m-%d))"
           git push --force origin "$INGEST_BRANCH"
           pr=$(gh pr list --head "$INGEST_BRANCH" --base main --state open --json number --jq '.[0].number')
