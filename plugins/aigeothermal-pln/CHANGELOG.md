@@ -10,12 +10,15 @@
 
 ## 1.0.0 — 2026-09-30 (konversi ke Claude)
 
-- Konversi dari plugin Codex/ChatGPT ke **plugin Claude** dalam marketplace privat (`.claude-plugin/marketplace.json`, `plugins/geothermal-review/.claude-plugin/plugin.json`). Manifest Codex (`.agents/`, `.codex-plugin/`, `plugin.json` Agent Plugins) dihapus.
-- Plugin tidak mencantumkan `version`, sehingga setiap commit di `main` langsung menjadi versi terbaru bagi pengguna Claude Code (auto-update) dan sinkronisasi organisasi claude.ai.
-- KB bersama berbasis GitHub: folder `kb-inbox/` + workflow **KB ingest** (ingest otomatis lalu merge PR `kb-ingest/auto`) dan **KB validate** (pratinjau di PR).
+- Nama **AIGeothermal-PLN**. Untuk akun claude.ai individual (Free/Pro/Max) tersedia satu skill `aigeothermal-pln` (`standalone/`, `AIGeothermal-PLN.zip`) yang saat dipakai mengambil modul + index KB terbaru dari GitHub lewat `scripts/sync.py`; file KB diunduh per ID sesuai kebutuhan. Untuk Claude Code tersedia plugin `aigeothermal-pln` di marketplace `aigeothermal-pln-marketplace`.
+- Konversi dari plugin Codex/ChatGPT ke **plugin Claude** dalam marketplace privat (`.claude-plugin/marketplace.json`, `plugins/aigeothermal-pln/.claude-plugin/plugin.json`). Manifest Codex (`.agents/`, `.codex-plugin/`, `plugin.json` Agent Plugins) dihapus.
+- Plugin tidak mencantumkan `version`, sehingga setiap commit di `main` langsung menjadi versi terbaru bagi pengguna Claude Code (auto-update).
+- KB bersama berbasis GitHub: folder `kb-inbox/` + workflow **KB ingest & sync manifest** (ingest dan `sync-manifest.json`, commit langsung ke `main`) dan **KB validate** (pratinjau di PR).
 - `kb_manager.py`: subcommand `ingest` (sidecar `.meta.json`, verifikasi SHA-256), `search`, `kb_revision` pengganti version bump, pewarisan metadata pada revisi, batas ukuran file GitHub.
 - KB hanya dikelola admin lewat `kb-inbox/` di GitHub; file yang di-upload pengguna di chat tidak masuk KB.
-- `scripts/build_skill_zips.py` + workflow **Skill ZIPs** (release `skills-latest`): ZIP plugin utuh dan ZIP per-skill untuk upload manual.
+- Upload KB massal: satu ZIP (diekstrak otomatis, `metadata.csv`, subfolder disiplin) lewat `kb-inbox/` (≤25 MB) atau GitHub Release bertag `kb-*` (hingga 2 GB).
+- Mode privat: ZIP skill dibangun GitHub Actions dengan token baca dari secret `AIGEO_READ_TOKEN`; build ditolak bila repo masih publik.
+- `scripts/build_skill_zips.py` + workflow **Skill ZIP** (release `skills-latest`): `AIGeothermal-PLN.zip` untuk upload di claude.ai.
 - Skill review/report/presentation tidak diubah kecuali rujukan lintas-skill dan aturan KB.
 
 ## 0.6.0 — 2026-10-01

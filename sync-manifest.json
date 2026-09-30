@@ -1,0 +1,103 @@
+{
+  "schema": 1,
+  "base_path": "plugins/aigeothermal-pln/skills",
+  "kb_revision": 1,
+  "kb_updated_at": "2026-09-30T22:33:11+00:00",
+  "files": [
+    {
+      "path": "geothermal-comment-sheet-report/SKILL.md",
+      "sha256": "166b6a3297222756666e438dfaa672ed4c531809a5b23004d8599cc05f463bdd",
+      "size": 7621
+    },
+    {
+      "path": "geothermal-comment-sheet-report/references/PLN_IP_COMMENT_SHEET_REPORT_TEMPLATE.docx",
+      "sha256": "1d75eb582699fff4dbbf107c24503d685e3d3ffad5774b1914ab4e991f5ed2c8",
+      "size": 1702766
+    },
+    {
+      "path": "geothermal-comment-sheet-report/references/REPORT_STRUCTURE.md",
+      "sha256": "b8f4667026795035b583c1beebac653281002346ad74b0fc9e4d642519d92ee4",
+      "size": 5763
+    },
+    {
+      "path": "geothermal-comment-sheet-report/scripts/build_comment_sheet.py",
+      "sha256": "91896bc39406b859f57b97cd01cb2ff0f945815e28c8ede361365a4790f0c2cc",
+      "size": 26639
+    },
+    {
+      "path": "geothermal-knowledge/SKILL.md",
+      "sha256": "0667cd9dc053bde6ff49fe151f3e229d140ee5bfc641dd1ce20aefc87daa6e29",
+      "size": 6197
+    },
+    {
+      "path": "geothermal-knowledge/references/KB/KB_INDEX.md",
+      "sha256": "c77323182f68a841f8de25bee06d5faeedf0756b8fef9c1deab2de744a2b5ac7",
+      "size": 1758
+    },
+    {
+      "path": "geothermal-knowledge/references/KB/KB_MANIFEST.json",
+      "sha256": "0cb5b930249a5c1c70aedf4e0731a485644af84b181ae1817a40e4ee99c7345c",
+      "size": 2554
+    },
+    {
+      "path": "geothermal-knowledge/scripts/kb_manager.py",
+      "sha256": "c69e229d536e827a6370dc51df764cdff595530fd04ec0df651b32982d79b9dd",
+      "size": 23016
+    },
+    {
+      "path": "geothermal-review/SKILL.md",
+      "sha256": "f19e23429ec7f0862e68e6305e174a3eed3b35a704904d64bee1a2e7682fda0a",
+      "size": 4421
+    },
+    {
+      "path": "geothermal-review/references/review-checklist.md",
+      "sha256": "1504ee6e2d585e163ff8ec3ca1f3adf471faf0f7672df840d8fc3929139d508e",
+      "size": 2587
+    },
+    {
+      "path": "geothermal-review-presentation/SKILL.md",
+      "sha256": "9447de9619bd3ababa00a5be1cea457574a60983c0bd782e08613de9535e899d",
+      "size": 9712
+    },
+    {
+      "path": "geothermal-review-presentation/references/MASTER_ASSET_PROVENANCE.md",
+      "sha256": "8835dc377479a30c09fac6716093894bd30ea57529626630cc5bd196a26315ce",
+      "size": 760
+    },
+    {
+      "path": "geothermal-review-presentation/references/PLN_IP_GEOTHERMAL_3_SLIDE_MASTER_REFERENCE.pptx",
+      "sha256": "da0eaad4dabd7af8caf982958585f09b38d0408277a94c7f11a64c2e7b4445fa",
+      "size": 834577
+    },
+    {
+      "path": "geothermal-review-presentation/references/PLN_IP_LITE_STYLE.md",
+      "sha256": "f6fa29c71a387c94197e78a530f4b51db8ae151440a382af71745d86a0c2b4e7",
+      "size": 4011
+    },
+    {
+      "path": "geothermal-review-presentation/references/TECHNICAL_REVIEW_PPT_STRUCTURE.md",
+      "sha256": "308d64ce120c8483ef711744a988bd5afecdde9c3e41e835fafec8d9e7e76bc3",
+      "size": 3476
+    },
+    {
+      "path": "geothermal-review-presentation/references/master_assets/MASTER_CLOSING.jpg",
+      "sha256": "44d31c9749af9b222be22e3853cce8396888a1965ff9b62b50c0705667fde5ee",
+      "size": 483992
+    },
+    {
+      "path": "geothermal-review-presentation/references/master_assets/MASTER_CONTENT.jpg",
+      "sha256": "4e1a89066d12dfea6b0a2e0f63708fadadeea3dc1a24dcded5991750a2ee21cb",
+      "size": 75382
+    },
+    {
+      "path": "geothermal-review-presentation/references/master_assets/MASTER_COVER.jpg",
+      "sha256": "2d9f99c17e6de9ec68984c495cc03e6e22be2ec75b0bf9bac07a08a8d2ea5bcf",
+      "size": 284692
+    },
+    {
+      "path": "geothermal-review-presentation/scripts/build_review_ppt.py",
+      "sha256": "7e60a1a888c2ba9941f2dff69db0e106f4bd6dd96b27d152628107443699b3a2",
+      "size": 31423
+    }
+  ]
+}

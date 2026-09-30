@@ -1,11 +1,12 @@
-name: Skill ZIPs
+name: Skill ZIP
 
-# Membangun ZIP per-skill setiap ada perubahan plugin di main dan memperbarui
-# release "skills-latest" (fallback untuk akun yang meng-upload skill secara manual).
+# Membangun AIGeothermal-PLN.zip (skill untuk di-upload di claude.ai) dan
+# memperbarui release "skills-latest". Pengguna hanya perlu upload ulang bila
+# isi folder standalone/ berubah; modul dan KB diperbarui otomatis oleh sync.py.
 on:
   push:
     branches: [main]
-    paths: ["plugins/**"]
+    paths: ["standalone/**", "plugins/**", "scripts/build_skill_zips.py"]
   workflow_dispatch:
 
 permissions:
@@ -20,20 +21,32 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: python3 scripts/build_skill_zips.py --out dist
+      - name: Build AIGeothermal-PLN.zip
+        env:
+          AIGEO_READ_TOKEN: ${{ secrets.AIGEO_READ_TOKEN }}
+          REPO_PRIVATE: ${{ github.event.repository.private }}
+        run: |
+          if [ -n "$AIGEO_READ_TOKEN" ] && [ "$REPO_PRIVATE" != "true" ]; then
+            echo "::error::Secret AIGEO_READ_TOKEN diisi tetapi repo PUBLIK. ZIP bertoken tidak boleh dipublikasikan. Jadikan repo privat dulu, atau hapus secret."
+            exit 1
+          fi
+          if [ "$REPO_PRIVATE" = "true" ] && [ -z "$AIGEO_READ_TOKEN" ]; then
+            echo "::warning::Repo privat tanpa secret AIGEO_READ_TOKEN: skill di akun pengguna tidak bisa mengambil update dari GitHub (hanya salinan bawaan)."
+          fi
+          python3 scripts/build_skill_zips.py --out dist
       - uses: actions/upload-artifact@v4
         with:
-          name: geothermal-review-zips
+          name: AIGeothermal-PLN
           path: dist/*.zip
+          retention-days: 30
       - name: Update skills-latest release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          kb_rev=$(python3 -c "import json;print(json.load(open('plugins/geothermal-review/skills/geothermal-knowledge/references/KB/KB_MANIFEST.json')).get('kb_revision',0))")
-          notes="Build otomatis dari ${GITHUB_SHA::7} (KB revision ${kb_rev}). Upload ZIP ini hanya bila akun Anda tidak memakai sinkronisasi plugin dari GitHub."
+          notes="Build otomatis dari ${GITHUB_SHA::7}. Upload AIGeothermal-PLN.zip di claude.ai → Customize → Skills → + → Upload a skill. Cukup sekali; modul dan KB selanjutnya diperbarui otomatis dari GitHub. ZIP ini dapat berisi token baca repo: bagikan hanya ke anggota tim."
           if gh release view skills-latest >/dev/null 2>&1; then
             gh release edit skills-latest --notes "$notes" --target "$GITHUB_SHA"
-            gh release upload skills-latest dist/*.zip --clobber
+            gh release upload skills-latest dist/AIGeothermal-PLN.zip --clobber
           else
-            gh release create skills-latest dist/*.zip --title "Geothermal Review plugin (latest)" --notes "$notes" --target "$GITHUB_SHA" --prerelease
+            gh release create skills-latest dist/AIGeothermal-PLN.zip --title "AIGeothermal-PLN (latest)" --notes "$notes" --target "$GITHUB_SHA"
           fi

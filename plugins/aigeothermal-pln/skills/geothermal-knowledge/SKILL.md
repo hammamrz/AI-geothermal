@@ -20,7 +20,7 @@ Gunakan bahasa Indonesia, pertahankan istilah teknis sumber bila lebih tepat. Kn
 1. Baca `references/KB/KB_INDEX.md` terlebih dahulu (atau `python scripts/kb_manager.py search <istilah>` untuk menyaring metadata tanpa membaca seluruh index bila KB sudah besar). Gunakan hanya entri `ACTIVE` sebagai evidence final.
 2. Cocokkan pertanyaan dengan `topic`, `keywords`, `document_type`, `discipline`, dan locator yang tersedia.
 3. Pilih maksimal 5 sumber kandidat pada pass pertama.
-4. Buka hanya file kandidat yang relevan. Jangan membuka semua file dalam `files/`.
+4. Buka hanya file kandidat yang relevan. Jangan membuka semua file dalam `files/`. Bila file kandidat belum ada secara lokal (skill claude.ai `aigeothermal-pln` hanya membawa index), unduh per ID dengan `sync.py kb-get <ID>` milik skill induk.
 5. Ambil maksimal 8 bagian/range relevan total pada pass pertama.
 6. Buka konteks sekitar hanya bila diperlukan. Default sekitar 12 halaman/slide total per pass.
 7. Periksa visual hanya jika diperlukan untuk menjawab atau menjadi dasar technical finding. Default maksimum 4 visual per pass.
@@ -43,7 +43,7 @@ Saat visual diperlukan:
 
 ## Update KB (hanya admin, lewat GitHub)
 
-KB bukan milik satu akun. Sumber kebenaran KB adalah repo GitHub `hammamrz/AI-geothermal` (branch `main`), folder `plugins/geothermal-review/skills/geothermal-knowledge/references/KB/`. Setiap perubahan yang di-merge ke `main` disebarkan otomatis ke semua akun yang memasang plugin ini. `KB revision` di `KB_INDEX.md` menunjukkan versi KB yang sedang terpasang.
+KB bukan milik satu akun. Sumber kebenaran KB adalah repo GitHub `hammamrz/AI-geothermal` (branch `main`), folder `plugins/aigeothermal-pln/skills/geothermal-knowledge/references/KB/`. Setiap perubahan yang di-merge ke `main` disebarkan otomatis ke semua akun yang memasang plugin ini. `KB revision` di `KB_INDEX.md` menunjukkan versi KB yang sedang terpasang.
 
 Aturan:
 - Penambahan/revisi KB **hanya dilakukan admin KB** dengan meng-upload file ke folder `kb-inbox/` di repo GitHub. Workflow **KB ingest** memberi ID `GEO-xxxx`, menolak duplikat (SHA-256), membangun ulang index/manifest/CHANGELOG, lalu menyinkronkannya ke semua pengguna.
