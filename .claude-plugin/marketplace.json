@@ -1,0 +1,17 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "geothermal-review-marketplace",
+  "description": "Marketplace privat Generation Business Development: skill review geothermal (subsurface, drilling, well) dengan knowledge base yang tersinkron dari repo GitHub ini.",
+  "owner": {
+    "name": "Generation Business Development"
+  },
+  "plugins": [
+    {
+      "name": "geothermal-review",
+      "source": "./plugins/geothermal-review",
+      "description": "Review subsurface, drilling, dan well geothermal berbasis embedded KB, plus output PPTX dan DOCX technical review PLN IP.",
+      "category": "productivity",
+      "tags": ["geothermal", "drilling", "subsurface", "technical-review", "pln-ip"]
+    }
+  ]
+}

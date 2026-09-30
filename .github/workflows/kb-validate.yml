@@ -1,0 +1,44 @@
+name: KB validate
+
+# Pratinjau untuk PR yang menambah file ke kb-inbox/ atau mengubah plugin:
+# menjalankan ingest pada salinan workspace (tidak di-commit) dan validasi KB.
+on:
+  pull_request:
+    paths: ["kb-inbox/**", "plugins/**", ".claude-plugin/**"]
+
+permissions:
+  contents: read
+
+env:
+  KB_MANAGER: plugins/geothermal-review/skills/geothermal-knowledge/scripts/kb_manager.py
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate manifests JSON
+        run: |
+          python3 -m json.tool .claude-plugin/marketplace.json > /dev/null
+          python3 -m json.tool plugins/geothermal-review/.claude-plugin/plugin.json > /dev/null
+          python3 -m json.tool plugins/geothermal-review/skills/geothermal-knowledge/references/KB/KB_MANIFEST.json > /dev/null
+
+      - name: Check existing KB
+        run: python3 "$KB_MANAGER" check
+
+      - name: Preview ingest (not committed)
+        run: |
+          {
+            echo "## Pratinjau ingest kb-inbox"
+            echo
+            echo "ID final ditetapkan saat ingest di main dan dapat berbeda bila ada pengajuan lain yang masuk lebih dulu."
+            echo
+          } >> "$GITHUB_STEP_SUMMARY"
+          python3 "$KB_MANAGER" ingest kb-inbox --summary "$RUNNER_TEMP/kb-summary.md"
+          status=$?
+          cat "$RUNNER_TEMP/kb-summary.md" >> "$GITHUB_STEP_SUMMARY"
+          exit $status
+
+      - name: Check KB after preview ingest
+        run: python3 "$KB_MANAGER" check

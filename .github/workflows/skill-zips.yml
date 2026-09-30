@@ -1,0 +1,39 @@
+name: Skill ZIPs
+
+# Membangun ZIP per-skill setiap ada perubahan plugin di main dan memperbarui
+# release "skills-latest" (fallback untuk akun yang meng-upload skill secara manual).
+on:
+  push:
+    branches: [main]
+    paths: ["plugins/**"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: skill-zips
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 scripts/build_skill_zips.py --out dist
+      - uses: actions/upload-artifact@v4
+        with:
+          name: geothermal-review-zips
+          path: dist/*.zip
+      - name: Update skills-latest release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          kb_rev=$(python3 -c "import json;print(json.load(open('plugins/geothermal-review/skills/geothermal-knowledge/references/KB/KB_MANIFEST.json')).get('kb_revision',0))")
+          notes="Build otomatis dari ${GITHUB_SHA::7} (KB revision ${kb_rev}). Upload ZIP ini hanya bila akun Anda tidak memakai sinkronisasi plugin dari GitHub."
+          if gh release view skills-latest >/dev/null 2>&1; then
+            gh release edit skills-latest --notes "$notes" --target "$GITHUB_SHA"
+            gh release upload skills-latest dist/*.zip --clobber
+          else
+            gh release create skills-latest dist/*.zip --title "Geothermal Review plugin (latest)" --notes "$notes" --target "$GITHUB_SHA" --prerelease
+          fi

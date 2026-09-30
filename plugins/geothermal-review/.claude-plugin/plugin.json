@@ -1,0 +1,10 @@
+{
+  "name": "geothermal-review",
+  "displayName": "Geothermal Review",
+  "description": "Review subsurface, drilling, dan well geothermal dengan knowledge base (KB) bersama yang dikelola admin di GitHub, retrieval selektif, PowerPoint technical review PLN IP, dan DOCX comment sheet report dengan shell KKP PLN IP.",
+  "author": {
+    "name": "Generation Business Development"
+  },
+  "repository": "https://github.com/hammamrz/AI-geothermal",
+  "keywords": ["geothermal", "subsurface", "drilling", "well", "technical-review", "knowledge-base", "pln-ip"]
+}
