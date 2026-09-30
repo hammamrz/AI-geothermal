@@ -3,14 +3,14 @@
 Status: ACTIVE
 Index mode: LIGHT / ROUTING ONLY
 Knowledge base root: `references/KB/files/`
-KB revision: 2 (updated 2026-09-30T23:37:07+00:00)
+KB revision: 3 (updated 2026-09-30T23:42:09+00:00)
 
 Metadata router only; original source files are the source of truth. Files are added and indexed without deep-reading their contents.
 Index ini dibangun ulang otomatis oleh `scripts/kb_manager.py`; jangan edit manual.
 
 ## Source register
 
-Aktif: 41 · Superseded: 0
+Aktif: 49 · Superseded: 0
 
 | ID | Status | Judul | File | Disiplin | Tipe | Revisi | Topik / keyword | Locator | SHA-256 (prefix) |
 |---|---|---|---|---|---|---|---|---|---|
@@ -55,6 +55,14 @@ Aktif: 41 · Superseded: 0
 | GEO-0039 | ACTIVE | SIL HEAT & MASS EDWARD | files/GEO-0039__SIL HEAT _ MASS EDWARD.xls | other | other | unknown |  |  | 8d4ff0cf5f15 |
 | GEO-0040 | ACTIVE | Steamprog | files/GEO-0040__Steamprog.xlsm | other | other | unknown |  |  | 6e51d8f3a052 |
 | GEO-0041 | ACTIVE | XSteam_Excel_v2.6 | files/GEO-0041__XSteam_Excel_v2.6.xls | other | other | unknown |  |  | 097cba16370d |
+| GEO-0042 | ACTIVE | 20250828 MCG_Project Overview_R1 - shared | files/GEO-0042__20250828 MCG_Project Overview_R1 - shared.pdf | other | other | unknown |  |  | acce4d5a9bf7 |
+| GEO-0043 | ACTIVE | Geothermal surface solutions March 2024 rev2 | files/GEO-0043__Geothermal surface solutions March 2024 rev2.pdf | other | other | unknown |  |  | 8dae65e2eae3 |
+| GEO-0044 | ACTIVE | Introduction to Geothermal Project Feasibility for Indonesia Power | files/GEO-0044__Introduction to Geothermal Project Feasibility for Indonesia Power.pdf | other | other | unknown |  |  | f9b23734669a |
+| GEO-0045 | ACTIVE | Level 1 - Geothermal - Introduction to Reservoir and Drilling_9226_20250228_114359_38582 | files/GEO-0045__Level 1 - Geothermal - Introduction to Reservoir and Drilling_9226_20250228_114359_38582.pdf | other | other | unknown |  |  | 84693a968139 |
+| GEO-0046 | ACTIVE | PLTP | files/GEO-0046__PLTP.docx | other | other | unknown |  |  | 26bb1647cfeb |
+| GEO-0047 | ACTIVE | Proposal RKAB MCG - Blawan Ijen Tahun 2023 rev 3_1 (1) | files/GEO-0047__Proposal RKAB MCG - Blawan Ijen Tahun 2023 rev 3_1 (1).pdf | other | other | unknown |  |  | 393d70438f05 |
+| GEO-0048 | ACTIVE | Site Visit PLTP Ijen - Combined Cycle Power Plant Study | files/GEO-0048__Site Visit PLTP Ijen - Combined Cycle Power Plant Study.pdf | other | other | unknown |  |  | 728b9a0844dd |
+| GEO-0049 | ACTIVE | ucp5-grem-progress-factsheet | files/GEO-0049__ucp5-grem-progress-factsheet.pdf | other | other | unknown |  |  | de9b8e376bb0 |
 
 ## Retrieval defaults
 

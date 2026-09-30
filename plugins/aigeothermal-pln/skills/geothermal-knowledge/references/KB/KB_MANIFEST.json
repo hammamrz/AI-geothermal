@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "kb_revision": 2,
+  "kb_revision": 3,
   "entries": [
     {
       "id": "GEO-0001",
@@ -534,7 +534,111 @@
       "sha256": "097cba16370df0f4e4f3efdbb04262f4331019b68df3a90b86bd2c2a31d9ebcb",
       "added_at": "2026-09-30T23:37:07+00:00",
       "source_channel": "zip:Training.Geothermal.Nov-Des.2024.zip"
+    },
+    {
+      "id": "GEO-0042",
+      "file": "files/GEO-0042__20250828 MCG_Project Overview_R1 - shared.pdf",
+      "title": "20250828 MCG_Project Overview_R1 - shared",
+      "discipline": "other",
+      "document_type": "other",
+      "revision": "unknown",
+      "status": "ACTIVE",
+      "size_bytes": 4770370,
+      "sha256": "acce4d5a9bf75693dc632dfcbefa3bf980ee1436ab3ee762174d78f232a470dd",
+      "added_at": "2026-09-30T23:42:09+00:00",
+      "source_channel": "zip:Geothermal.zip"
+    },
+    {
+      "id": "GEO-0043",
+      "file": "files/GEO-0043__Geothermal surface solutions March 2024 rev2.pdf",
+      "title": "Geothermal surface solutions March 2024 rev2",
+      "discipline": "other",
+      "document_type": "other",
+      "revision": "unknown",
+      "status": "ACTIVE",
+      "size_bytes": 1297330,
+      "sha256": "8dae65e2eae3e858b2b68c2a856e08bd74605c2f246295601b7013f5cc873a71",
+      "added_at": "2026-09-30T23:42:09+00:00",
+      "source_channel": "zip:Geothermal.zip"
+    },
+    {
+      "id": "GEO-0044",
+      "file": "files/GEO-0044__Introduction to Geothermal Project Feasibility for Indonesia Power.pdf",
+      "title": "Introduction to Geothermal Project Feasibility for Indonesia Power",
+      "discipline": "other",
+      "document_type": "other",
+      "revision": "unknown",
+      "status": "ACTIVE",
+      "size_bytes": 2422514,
+      "sha256": "f9b23734669aba5e32c401ef9ce86277c484f8c377bf32a4e4a6f173a7edd9a6",
+      "added_at": "2026-09-30T23:42:09+00:00",
+      "source_channel": "zip:Geothermal.zip"
+    },
+    {
+      "id": "GEO-0045",
+      "file": "files/GEO-0045__Level 1 - Geothermal - Introduction to Reservoir and Drilling_9226_20250228_114359_38582.pdf",
+      "title": "Level 1 - Geothermal - Introduction to Reservoir and Drilling_9226_20250228_114359_38582",
+      "discipline": "other",
+      "document_type": "other",
+      "revision": "unknown",
+      "status": "ACTIVE",
+      "size_bytes": 3730795,
+      "sha256": "84693a968139c07c04dd49fcf4ba67505ed340cc4c5049069a1ad7b63b90dc3e",
+      "added_at": "2026-09-30T23:42:09+00:00",
+      "source_channel": "zip:Geothermal.zip"
+    },
+    {
+      "id": "GEO-0046",
+      "file": "files/GEO-0046__PLTP.docx",
+      "title": "PLTP",
+      "discipline": "other",
+      "document_type": "other",
+      "revision": "unknown",
+      "status": "ACTIVE",
+      "size_bytes": 10426580,
+      "sha256": "26bb1647cfeb89b714c2c4a3932dee1ed06c532674520ef27befe159289e51df",
+      "added_at": "2026-09-30T23:42:09+00:00",
+      "source_channel": "zip:Geothermal.zip"
+    },
+    {
+      "id": "GEO-0047",
+      "file": "files/GEO-0047__Proposal RKAB MCG - Blawan Ijen Tahun 2023 rev 3_1 (1).pdf",
+      "title": "Proposal RKAB MCG - Blawan Ijen Tahun 2023 rev 3_1 (1)",
+      "discipline": "other",
+      "document_type": "other",
+      "revision": "unknown",
+      "status": "ACTIVE",
+      "size_bytes": 5872283,
+      "sha256": "393d70438f05a755e30bc3ee9423a37fb2cbfcef88254aa11cbcee673783a492",
+      "added_at": "2026-09-30T23:42:09+00:00",
+      "source_channel": "zip:Geothermal.zip"
+    },
+    {
+      "id": "GEO-0048",
+      "file": "files/GEO-0048__Site Visit PLTP Ijen - Combined Cycle Power Plant Study.pdf",
+      "title": "Site Visit PLTP Ijen - Combined Cycle Power Plant Study",
+      "discipline": "other",
+      "document_type": "other",
+      "revision": "unknown",
+      "status": "ACTIVE",
+      "size_bytes": 4074012,
+      "sha256": "728b9a0844dd17457b9ccf1550d7338dc2c62a181874551c3d27b145473f4009",
+      "added_at": "2026-09-30T23:42:09+00:00",
+      "source_channel": "zip:Geothermal.zip"
+    },
+    {
+      "id": "GEO-0049",
+      "file": "files/GEO-0049__ucp5-grem-progress-factsheet.pdf",
+      "title": "ucp5-grem-progress-factsheet",
+      "discipline": "other",
+      "document_type": "other",
+      "revision": "unknown",
+      "status": "ACTIVE",
+      "size_bytes": 321470,
+      "sha256": "de9b8e376bb012a7df5a769d22ba97c1088dba506d081863003c4cfc1a230d62",
+      "added_at": "2026-09-30T23:42:09+00:00",
+      "source_channel": "zip:Geothermal.zip"
     }
   ],
-  "updated_at": "2026-09-30T23:37:07+00:00"
+  "updated_at": "2026-09-30T23:42:09+00:00"
 }

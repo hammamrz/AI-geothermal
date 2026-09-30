@@ -1,5 +1,16 @@
 # Changelog
 
+## KB rev 3 — 2026-09-30
+
+- Tambah GEO-0042 — 20250828 MCG_Project Overview_R1 - shared (`files/GEO-0042__20250828 MCG_Project Overview_R1 - shared.pdf`, 4770370 bytes, SHA-256 `acce4d5a9bf7…`).
+- Tambah GEO-0043 — Geothermal surface solutions March 2024 rev2 (`files/GEO-0043__Geothermal surface solutions March 2024 rev2.pdf`, 1297330 bytes, SHA-256 `8dae65e2eae3…`).
+- Tambah GEO-0044 — Introduction to Geothermal Project Feasibility for Indonesia Power (`files/GEO-0044__Introduction to Geothermal Project Feasibility for Indonesia Power.pdf`, 2422514 bytes, SHA-256 `f9b23734669a…`).
+- Tambah GEO-0045 — Level 1 - Geothermal - Introduction to Reservoir and Drilling_9226_20250228_114359_38582 (`files/GEO-0045__Level 1 - Geothermal - Introduction to Reservoir and Drilling_9226_20250228_114359_38582.pdf`, 3730795 bytes, SHA-256 `84693a968139…`).
+- Tambah GEO-0046 — PLTP (`files/GEO-0046__PLTP.docx`, 10426580 bytes, SHA-256 `26bb1647cfeb…`).
+- Tambah GEO-0047 — Proposal RKAB MCG - Blawan Ijen Tahun 2023 rev 3_1 (1) (`files/GEO-0047__Proposal RKAB MCG - Blawan Ijen Tahun 2023 rev 3_1 (1).pdf`, 5872283 bytes, SHA-256 `393d70438f05…`).
+- Tambah GEO-0048 — Site Visit PLTP Ijen - Combined Cycle Power Plant Study (`files/GEO-0048__Site Visit PLTP Ijen - Combined Cycle Power Plant Study.pdf`, 4074012 bytes, SHA-256 `728b9a0844dd…`).
+- Tambah GEO-0049 — ucp5-grem-progress-factsheet (`files/GEO-0049__ucp5-grem-progress-factsheet.pdf`, 321470 bytes, SHA-256 `de9b8e376bb0…`).
+
 ## KB rev 2 — 2026-09-30
 
 - Tambah GEO-0006 — 01 Geologi (`files/GEO-0006__01 Geologi.pdf`, 19789944 bytes, SHA-256 `82a0734d4fe3…`).

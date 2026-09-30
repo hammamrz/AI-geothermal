@@ -1,8 +1,8 @@
 {
   "schema": 1,
   "base_path": "plugins/aigeothermal-pln/skills",
-  "kb_revision": 2,
-  "kb_updated_at": "2026-09-30T23:37:07+00:00",
+  "kb_revision": 3,
+  "kb_updated_at": "2026-09-30T23:42:09+00:00",
   "files": [
     {
       "path": "geothermal-comment-sheet-report/SKILL.md",
@@ -31,13 +31,13 @@
     },
     {
       "path": "geothermal-knowledge/references/KB/KB_INDEX.md",
-      "sha256": "8b5cced54fd1734c39ce1f886e8640e45e3d0d0e68128de86e4c802e05d12279",
-      "size": 7141
+      "sha256": "c1fb8cf3232a5a44a2f1faf1d1c7892d86429752ee2a5f321f079d6990272d55",
+      "size": 8662
     },
     {
       "path": "geothermal-knowledge/references/KB/KB_MANIFEST.json",
-      "sha256": "3f8249c9086961214a7bfdcf63bada838b3f6b092d66d2120ec3c4c0c4890f5e",
-      "size": 20223
+      "sha256": "9d65103dc0ecb9a9475dc0e42f0d3a71fed2af079cccebc9a319a0ce324f2d56",
+      "size": 24304
     },
     {
       "path": "geothermal-knowledge/scripts/kb_manager.py",
