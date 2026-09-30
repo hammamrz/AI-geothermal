@@ -1,143 +1,107 @@
-# AIGeothermal-PLN — plugin Claude
+# AIGeothermal-PLN — skill Claude
 
-Marketplace privat berisi **satu plugin Claude, `AIGeothermal-PLN`** (ID teknis `aigeothermal-pln`). Pengguna cukup memasang satu plugin ini untuk mendapatkan empat kemampuan sekaligus. Claude memilih skill yang relevan secara otomatis sesuai permintaan:
+**AIGeothermal-PLN** adalah satu skill Claude untuk technical review geothermal PLN Indonesia Power. Skill ini berisi empat modul, dan Claude memilih modul yang relevan secara otomatis:
 
-| Skill | Fungsi |
+| Modul | Fungsi |
 |---|---|
 | `geothermal-knowledge` | Retrieval selektif dari knowledge base (KB) bersama yang dikelola admin |
 | `geothermal-review` | Review subsurface/drilling/well berbasis bukti KB |
 | `geothermal-comment-sheet-report` | DOCX comment sheet / technical review report (shell KKP PLN IP) |
 | `geothermal-review-presentation` | PPTX technical review (3-layout master PLN IP) |
 
-Repo ini adalah **satu-satunya sumber kebenaran**. Setiap perubahan yang masuk ke `main`, baik skill maupun file KB, otomatis sampai ke semua akun yang memasang plugin. **Hanya admin** yang menambah atau merevisi KB. Pengguna lain hanya memakai KB.
+Skill bisa dipakai oleh **akun individual masing-masing, termasuk Free, Pro, dan Max**, tanpa perlu organisasi Claude.
+
+## Cara kerja update otomatis
 
 ```
- Admin (GitHub web)
-   │ upload file (+ .meta.json) ke kb-inbox/
-   ▼
- main ──► workflow "KB ingest" (SHA-256, ID GEO-xxxx, KB_INDEX, CHANGELOG)
-                  │
-                  ▼
-          PR kb-ingest/auto ──► auto-merge
-                  │
-   ┌──────────────┴──────────────────────────────┐
- claude.ai org sync (dipicu merge PR)     Claude Code marketplace auto-update
- → semua anggota organisasi                → semua pengguna yang memasang plugin
+ Admin ── upload file ke kb-inbox/ (GitHub web) ──► main
+                                                     │
+                     workflow "KB ingest & sync manifest"
+                     (ID GEO-xxxx, KB_INDEX, CHANGELOG, sync-manifest.json)
+                                                     │
+                                                     ▼
+ Akun pengguna (skill AIGeothermal-PLN, di-upload sekali)
+   └─ setiap percakapan: sync.py update ──► ambil modul + index KB terbaru dari GitHub
+   └─ saat butuh sumber:  sync.py kb-get GEO-xxxx ──► unduh file KB itu saja
 ```
+
+- ZIP skill cukup di-upload **sekali** per akun.
+- Instruksi modul dan KB diambil versi terbarunya dari repo ini di awal setiap percakapan. Perubahan dari admin sampai ke semua akun tanpa upload ulang.
+- Bila GitHub tidak terjangkau, skill memakai salinan bawaan dan memberi tahu pengguna.
+- Upload ulang ZIP hanya perlu bila folder `standalone/` (SKILL.md induk atau `sync.py`) berubah. Hal ini jarang terjadi dan akan dicatat di `CHANGELOG`.
 
 ---
 
-## 0. Langkah selanjutnya (checklist admin)
+## 1. Untuk pengguna: memasang skill (sekali saja)
 
-1. Merge PR ke `main`.
-2. **Settings → Actions → General**: pilih *Read and write permissions* dan centang *Allow GitHub Actions to create and approve pull requests*.
-3. Pastikan repo tetap **private**, dan batasi akses tulis hanya untuk admin KB.
-4. claude.ai: **Organization settings → Plugins & skills → Marketplaces → Add plugins → Sync from GitHub** → `hammamrz/AI-geothermal`, lalu aktifkan plugin **AIGeothermal-PLN** untuk organisasi/grup.
-5. Upload KB pertama ke `kb-inbox/`, lalu cek tab **Actions** (workflow *KB ingest* hijau) dan PR `kb-ingest/auto` sudah ter-merge.
-6. Uji dari akun lain: tanya "Apa saja isi KB geothermal?" dan pastikan `KB revision` sesuai.
+1. Unduh **AIGeothermal-PLN.zip** dari release [`skills-latest`](https://github.com/hammamrz/AI-geothermal/releases/tag/skills-latest).
+2. Di claude.ai (web atau desktop): **Settings → Capabilities**, lalu pastikan **Code execution and file creation** aktif. Pada pengaturan akses jaringan, cukup yang default (*package managers*, sudah mencakup GitHub), atau izinkan `github.com`, `api.github.com`, dan `raw.githubusercontent.com`.
+3. Buka **Customize → Skills → + → Upload a skill**, lalu pilih `AIGeothermal-PLN.zip`.
+4. Pastikan skill **aigeothermal-pln** dalam keadaan aktif.
+5. Uji dengan pertanyaan: *"Apa saja isi KB geothermal AIGeothermal-PLN?"* Claude seharusnya menjalankan sinkronisasi dan menyebut `KB revision`.
 
-## 1. Memasang plugin untuk akun lain
+Catatan untuk akun Free: skill dapat dipakai, tetapi batas penggunaan Free kecil. Membaca PDF besar atau membuat DOCX/PPTX lebih cepat menghabiskan kuota.
 
-### A. claude.ai / Claude Desktop / Cowork (paket Team atau Enterprise), disarankan
-
-Owner organisasi cukup melakukannya sekali, lalu skill muncul untuk semua anggota dan ikut ter-update otomatis.
-
-1. Pastikan repo ini **private** (syarat sinkronisasi organisasi) dan **Claude GitHub App** terpasang di repo.
-2. Buka **Organization settings → Plugins & skills → Marketplaces → Add plugins → Sync from GitHub**.
-3. Isi `hammamrz/AI-geothermal`, branch `main`, lalu aktifkan sinkronisasi otomatis.
-4. Aktifkan plugin **AIGeothermal-PLN** untuk seluruh organisasi atau grup tertentu.
-
-Sinkronisasi berjalan **setiap ada PR yang di-merge ke `main`**. Push langsung ke `main` tidak memicu sinkronisasi di GitHub, jadi workflow KB sengaja selalu lewat PR. Sinkronisasi bisa butuh sampai ±30 menit, dan dari halaman yang sama admin juga bisa menekan **Sync** manual.
-
-Syarat organisasi: *Code execution and file creation* serta *Skills* aktif. Ukuran repo harus di bawah 200 MB.
-
-### B. Claude Code (CLI, desktop, IDE)
+### Pengguna Claude Code (opsional)
 
 ```bash
-/plugin marketplace add hammamrz/AI-geothermal
-/plugin install aigeothermal-pln@aigeothermal-pln-marketplace
+/plugin install aigeothermal-pln --marketplace hammamrz/AI-geothermal
 ```
 
-Atau cukup satu perintah (Claude Code v2.1.275+): `/plugin install aigeothermal-pln --marketplace hammamrz/AI-geothermal`.
-
-Setelah itu buka `/plugin` → **Marketplaces** → `aigeothermal-pln-marketplace` → **Enable auto-update**. Setelah marketplace ditambahkan, plugin **AIGeothermal-PLN** juga bisa dicari di tab *Discover* pada `/plugin`.
-
-- Karena repo privat, setiap pengguna butuh akses baca ke repo dan kredensial git yang tersimpan (`gh auth login && gh auth setup-git`, atau SSH key di `ssh-agent`).
-- Plugin sengaja tidak mencantumkan `version`, sehingga setiap commit baru di `main` dianggap versi baru.
-- Admin dapat mewajibkan plugin untuk semua mesin melalui managed settings:
-
-```json
-{
-  "extraKnownMarketplaces": {
-    "aigeothermal-pln-marketplace": {
-      "source": { "source": "github", "repo": "hammamrz/AI-geothermal" },
-      "autoUpdate": true
-    }
-  },
-  "enabledPlugins": { "aigeothermal-pln@aigeothermal-pln-marketplace": true }
-}
-```
-
-### C. Upload ZIP manual (akun individual Pro/Max), cadangan
-
-Unduh ZIP dari release **`skills-latest`** (dibangun otomatis oleh workflow *Skill ZIPs*): `aigeothermal-pln-plugin.zip` untuk upload plugin utuh di admin organisasi, atau ZIP per-skill untuk **Settings → Capabilities → Skills**. Jalur ini **tidak ter-update otomatis**: ZIP harus di-upload ulang setelah ada perubahan. Build lokal: `python scripts/build_skill_zips.py`.
+Setelah itu buka `/plugin` → **Marketplaces** → `aigeothermal-pln-marketplace` → **Enable auto-update**. Di Claude Code, keempat modul tampil sebagai skill terpisah di bawah plugin **AIGeothermal-PLN**, dan file KB ikut terunduh bersama plugin.
 
 ---
 
-### Repo publik atau privat?
+## 2. Untuk admin: menambah atau merevisi KB
 
-Membuat repo publik **tidak** membuat plugin bisa ditemukan hanya dengan mencari nama. Pencarian di `/plugin` hanya mencakup marketplace yang sudah ditambahkan pengguna, plus katalog resmi Anthropic.
-
-| | Privat (disarankan) | Publik |
-|---|---|---|
-| Sinkronisasi organisasi claude.ai (jalur A) | ✅ | ❌ ditolak, karena wajib repo privat/internal |
-| Claude Code: `marketplace add` sekali | perlu akses repo + kredensial git | tanpa akun GitHub (`CLAUDE_CODE_PLUGIN_PREFER_HTTPS=1` bila tanpa SSH key) |
-| File KB, template, dan logo PLN IP | hanya bisa dibaca yang diberi akses | **terbuka untuk siapa pun di internet** |
-
-Agar benar-benar bisa dicari dengan nama oleh semua orang, plugin harus diajukan ke direktori Anthropic (claude.ai/directory/manage). Jalur itu melewati review Anthropic dan membuat plugin terbuka untuk umum, sehingga tidak cocok untuk materi internal.
-
-## 2. Menambah knowledge base (hanya admin)
-
-Hanya admin yang menambah atau merevisi KB. File yang di-upload pengguna di chat **tidak** masuk KB; Claude hanya memakainya di percakapan itu dengan label "bukan sumber KB".
-
-### Upload lewat GitHub web
+Hanya admin yang menambah atau merevisi KB. File yang di-upload pengguna di chat **tidak** masuk KB; Claude memakainya hanya di percakapan itu dengan label "bukan sumber KB".
 
 1. Buka folder [`kb-inbox/`](kb-inbox/) → **Add file → Upload files**.
-2. Upload file sumber, dan bila ada, sidecar `<nama-file>.meta.json` (format di [`kb-inbox/README.md`](kb-inbox/README.md)).
-3. Commit ke `main`, atau pilih *create a new branch and start a pull request* lalu merge.
+2. Upload file sumber (PDF, PPTX, DOCX, XLSX, CSV, TXT, MD, atau gambar). Bila ada, sertakan juga sidecar `<nama-file>.meta.json` berisi judul, disiplin, tipe, revisi, topik, dan keyword; formatnya ada di [`kb-inbox/README.md`](kb-inbox/README.md). Untuk revisi dokumen lama, isi `"supersedes": "GEO-xxxx"`.
+3. Pilih **Commit directly to the main branch**.
+4. Buka tab **Actions** dan tunggu workflow **KB ingest & sync manifest** hijau (±1 menit). Setelah itu, percakapan baru di semua akun memakai KB terbaru.
 
-Workflow **KB ingest** kemudian memindahkan file ke `plugins/aigeothermal-pln/skills/geothermal-knowledge/references/KB/files/`, memberi ID `GEO-xxxx`, membangun ulang `KB_MANIFEST.json`, `KB_INDEX.md`, dan `CHANGELOG.md`, lalu membuka dan me-merge PR `kb-ingest/auto`, yang memicu sinkronisasi ke semua akun.
+Workflow tersebut menghitung SHA-256 (duplikat identik ditolak), memberi ID `GEO-xxxx`, memindahkan file ke `plugins/aigeothermal-pln/skills/geothermal-knowledge/references/KB/files/`, lalu membangun ulang `KB_MANIFEST.json`, `KB_INDEX.md`, `CHANGELOG.md`, dan `sync-manifest.json`. Entri lama yang direvisi tidak dihapus, hanya ditandai `SUPERSEDED`.
 
-Batas ukuran: 25 MB per file lewat upload web GitHub, ±95 MB per file lewat git. **Jangan pakai Git LFS**, karena file LFS tidak ikut tersinkron.
+Batas ukuran: 25 MB per file lewat upload web GitHub (±95 MB lewat git). **Jangan pakai Git LFS.**
 
-### Lewat terminal (clone repo)
+### Pengaturan repo (sekali saja)
 
-```bash
-python plugins/aigeothermal-pln/skills/geothermal-knowledge/scripts/kb_manager.py --help
-```
+- **Settings → Actions → General → Workflow permissions**: pilih *Read and write permissions*.
+- Batasi akses tulis repo hanya untuk admin. Pengguna skill tidak butuh akun GitHub.
+
+### Publik atau privat?
+
+Skill di akun individual mengambil update dari GitHub tanpa login, jadi repo harus **publik**. Konsekuensinya, isi repo (file KB, template KKP, dan master PPT PLN IP) dapat diunduh siapa pun yang tahu alamatnya. Unggah ke KB hanya dokumen yang boleh bersifat publik.
+
+Bila KB harus rahasia:
+1. Jadikan repo privat.
+2. Buat *fine-grained personal access token* dengan akses **read-only (Contents)** hanya ke repo ini.
+3. Bangun ZIP secara lokal dengan `AIGEO_READ_TOKEN=<token> python scripts/build_skill_zips.py`, lalu bagikan ZIP itu hanya ke tim.
+
+Token tersebut ikut terbawa di ZIP, sehingga siapa pun yang memegang ZIP bisa membaca repo. Jangan menaruh ZIP bertoken di release publik, dan ganti token bila ZIP bocor.
 
 ---
 
-## 3. Pengaturan repo yang diperlukan (sekali saja)
-
-- **Settings → Actions → General → Workflow permissions**: pilih *Read and write permissions* dan centang *Allow GitHub Actions to create and approve pull requests*.
-- Opsional: variable repo `KB_AUTO_MERGE=false` bila PR `kb-ingest/auto` harus di-merge manual oleh admin (misalnya karena branch protection mewajibkan review).
-- Hanya admin yang diberi akses tulis ke repo. Pengguna plugin di claude.ai tidak butuh akun GitHub sama sekali, karena sinkronisasi memakai koneksi GitHub organisasi.
-
-## 4. Struktur repo
+## 3. Struktur repo
 
 ```
-.claude-plugin/marketplace.json          katalog marketplace Claude
-plugins/aigeothermal-pln/
-  .claude-plugin/plugin.json             manifest plugin (tanpa version → ikut commit)
-  CHANGELOG.md                           riwayat plugin + setiap revisi KB
+standalone/aigeothermal-pln/        skill induk yang di-upload ke claude.ai
+  SKILL.md                          router + langkah sinkronisasi
+  scripts/sync.py                   update / kb-get / kb-search dari GitHub
+  config.json                       repo & branch sumber
+plugins/aigeothermal-pln/           plugin Claude Code + sumber 4 modul
   skills/geothermal-knowledge/
-    references/KB/                       KB_INDEX.md, KB_MANIFEST.json, files/
-    scripts/kb_manager.py                ingest/add/update/search/check (admin & CI)
-  skills/geothermal-review/ …            skill review
+    references/KB/                  KB_INDEX.md, KB_MANIFEST.json, files/
+    scripts/kb_manager.py           ingest/add/update/search/check
+  skills/geothermal-review/ …
   skills/geothermal-comment-sheet-report/ …
   skills/geothermal-review-presentation/ …
-kb-inbox/                                pintu masuk file KB baru
-scripts/build_skill_zips.py              ZIP plugin utuh + per-skill (fallback upload manual)
-.github/workflows/                       kb-ingest, kb-validate, skill-zips
+  CHANGELOG.md                      riwayat plugin + setiap revisi KB
+kb-inbox/                           pintu masuk file KB baru (admin)
+sync-manifest.json                  daftar file modul + hash (dibuat otomatis)
+scripts/build_skill_zips.py         bangun AIGeothermal-PLN.zip
+scripts/build_sync_manifest.py      bangun sync-manifest.json
+.claude-plugin/marketplace.json     marketplace untuk Claude Code
+.github/workflows/                  kb-ingest, kb-validate, skill-zips
 ```

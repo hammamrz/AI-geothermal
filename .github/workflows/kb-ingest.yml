@@ -1,18 +1,20 @@
-name: KB ingest
+name: KB ingest & sync manifest
 
-# Memproses file di kb-inbox/ setelah masuk ke main (upload admin via GitHub web,
-# atau PR admin yang sudah di-merge). Hasil ingest dikirim sebagai
-# PR dari branch tetap `kb-ingest/auto` lalu di-merge otomatis, karena sinkronisasi
-# plugin organisasi claude.ai dipicu oleh merge PR (bukan push langsung ke main).
+# Dijalankan setiap ada perubahan di main pada kb-inbox/ (upload KB oleh admin)
+# atau pada plugin. Workflow ini:
+#   1. memproses file di kb-inbox/ ke KB (ID GEO-xxxx, KB_INDEX, CHANGELOG);
+#   2. membangun ulang sync-manifest.json yang dibaca skill claude.ai (sync.py);
+#   3. meng-commit hasilnya langsung ke main.
+# Setelah commit ini, semua akun yang memakai skill mendapat versi terbaru
+# pada percakapan berikutnya (sync.py update), tanpa upload ulang ZIP.
 on:
   push:
     branches: [main]
-    paths: ["kb-inbox/**"]
+    paths: ["kb-inbox/**", "plugins/**"]
   workflow_dispatch:
 
 permissions:
   contents: write
-  pull-requests: write
 
 concurrency:
   group: kb-ingest
@@ -20,7 +22,6 @@ concurrency:
 
 env:
   KB_MANAGER: plugins/aigeothermal-pln/skills/geothermal-knowledge/scripts/kb_manager.py
-  INGEST_BRANCH: kb-ingest/auto
 
 jobs:
   ingest:
@@ -29,7 +30,6 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: main
-          fetch-depth: 0
 
       - name: Ingest kb-inbox
         id: ingest
@@ -38,39 +38,22 @@ jobs:
           python3 "$KB_MANAGER" ingest kb-inbox --summary "$RUNNER_TEMP/kb-summary.md"
           echo "exit_code=$?" >> "$GITHUB_OUTPUT"
           cat "$RUNNER_TEMP/kb-summary.md" >> "$GITHUB_STEP_SUMMARY"
-          if git status --porcelain | grep -q .; then echo "changed=true" >> "$GITHUB_OUTPUT"; else echo "changed=false" >> "$GITHUB_OUTPUT"; fi
 
-      - name: Validate KB after ingest
-        if: steps.ingest.outputs.changed == 'true'
+      - name: Validate KB
         run: python3 "$KB_MANAGER" check
 
-      - name: Open and merge ingest PR
-        if: steps.ingest.outputs.changed == 'true'
-        env:
-          GH_TOKEN: ${{ github.token }}
-          AUTO_MERGE: ${{ vars.KB_AUTO_MERGE || 'true' }}
+      - name: Rebuild sync manifest
+        run: python3 scripts/build_sync_manifest.py
+
+      - name: Commit to main
         run: |
+          if [ -z "$(git status --porcelain)" ]; then echo "Tidak ada perubahan."; exit 0; fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git checkout -B "$INGEST_BRANCH"
-          git add -A kb-inbox plugins/aigeothermal-pln
-          git commit -m "KB: ingest kb-inbox ($(date -u +%Y-%m-%d))"
-          git push --force origin "$INGEST_BRANCH"
-          pr=$(gh pr list --head "$INGEST_BRANCH" --base main --state open --json number --jq '.[0].number')
-          if [ -z "$pr" ]; then
-            gh pr create --base main --head "$INGEST_BRANCH" \
-              --title "KB: ingest kb-inbox ($(date -u +%Y-%m-%d))" \
-              --body-file "$RUNNER_TEMP/kb-summary.md"
-            pr=$(gh pr list --head "$INGEST_BRANCH" --base main --state open --json number --jq '.[0].number')
-          else
-            gh pr edit "$pr" --body-file "$RUNNER_TEMP/kb-summary.md"
-          fi
-          if [ "$AUTO_MERGE" = "true" ]; then
-            gh pr merge "$pr" --merge --delete-branch \
-              || echo "::warning::Auto-merge gagal (branch protection?). Merge PR #$pr secara manual agar KB tersinkron."
-          else
-            echo "KB_AUTO_MERGE=false — PR #$pr menunggu merge admin."
-          fi
+          git add -A kb-inbox plugins/aigeothermal-pln sync-manifest.json
+          rev=$(python3 -c "import json;print(json.load(open('sync-manifest.json'))['kb_revision'])")
+          git commit -m "KB: ingest & sync manifest (KB revision ${rev})"
+          git push origin HEAD:main
 
       - name: Fail if some inbox files were rejected
         if: steps.ingest.outputs.exit_code != '0'

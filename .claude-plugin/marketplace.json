@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "aigeothermal-pln-marketplace",
-  "description": "Marketplace privat Generation Business Development: skill review geothermal (subsurface, drilling, well) dengan knowledge base yang tersinkron dari repo GitHub ini.",
+  "description": "AIGeothermal-PLN (Generation Business Development): skill review geothermal (subsurface, drilling, well) dengan knowledge base yang tersinkron dari repo GitHub ini.",
   "owner": {
     "name": "Generation Business Development"
   },

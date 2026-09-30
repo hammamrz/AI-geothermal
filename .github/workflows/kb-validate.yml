@@ -4,7 +4,7 @@ name: KB validate
 # menjalankan ingest pada salinan workspace (tidak di-commit) dan validasi KB.
 on:
   pull_request:
-    paths: ["kb-inbox/**", "plugins/**", ".claude-plugin/**"]
+    paths: ["kb-inbox/**", "plugins/**", ".claude-plugin/**", "standalone/**", "scripts/**"]
 
 permissions:
   contents: read
@@ -42,3 +42,9 @@ jobs:
 
       - name: Check KB after preview ingest
         run: python3 "$KB_MANAGER" check
+
+      - name: Build skill ZIP and sync manifest (smoke test)
+        run: |
+          python3 scripts/build_sync_manifest.py
+          python3 scripts/build_skill_zips.py --out "$RUNNER_TEMP/dist"
+          python3 -m py_compile standalone/aigeothermal-pln/scripts/sync.py

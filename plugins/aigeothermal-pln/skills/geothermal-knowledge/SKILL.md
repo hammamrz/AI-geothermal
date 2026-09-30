@@ -20,7 +20,7 @@ Gunakan bahasa Indonesia, pertahankan istilah teknis sumber bila lebih tepat. Kn
 1. Baca `references/KB/KB_INDEX.md` terlebih dahulu (atau `python scripts/kb_manager.py search <istilah>` untuk menyaring metadata tanpa membaca seluruh index bila KB sudah besar). Gunakan hanya entri `ACTIVE` sebagai evidence final.
 2. Cocokkan pertanyaan dengan `topic`, `keywords`, `document_type`, `discipline`, dan locator yang tersedia.
 3. Pilih maksimal 5 sumber kandidat pada pass pertama.
-4. Buka hanya file kandidat yang relevan. Jangan membuka semua file dalam `files/`.
+4. Buka hanya file kandidat yang relevan. Jangan membuka semua file dalam `files/`. Bila file kandidat belum ada secara lokal (skill claude.ai `aigeothermal-pln` hanya membawa index), unduh per ID dengan `sync.py kb-get <ID>` milik skill induk.
 5. Ambil maksimal 8 bagian/range relevan total pada pass pertama.
 6. Buka konteks sekitar hanya bila diperlukan. Default sekitar 12 halaman/slide total per pass.
 7. Periksa visual hanya jika diperlukan untuk menjawab atau menjadi dasar technical finding. Default maksimum 4 visual per pass.

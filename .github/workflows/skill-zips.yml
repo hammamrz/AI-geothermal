@@ -1,11 +1,12 @@
-name: Skill ZIPs
+name: Skill ZIP
 
-# Membangun ZIP per-skill setiap ada perubahan plugin di main dan memperbarui
-# release "skills-latest" (fallback untuk akun yang meng-upload skill secara manual).
+# Membangun AIGeothermal-PLN.zip (skill untuk di-upload di claude.ai) dan
+# memperbarui release "skills-latest". Pengguna hanya perlu upload ulang bila
+# isi folder standalone/ berubah; modul dan KB diperbarui otomatis oleh sync.py.
 on:
   push:
     branches: [main]
-    paths: ["plugins/**"]
+    paths: ["standalone/**", "plugins/**", "scripts/build_skill_zips.py"]
   workflow_dispatch:
 
 permissions:
@@ -23,17 +24,16 @@ jobs:
       - run: python3 scripts/build_skill_zips.py --out dist
       - uses: actions/upload-artifact@v4
         with:
-          name: aigeothermal-pln-zips
+          name: AIGeothermal-PLN
           path: dist/*.zip
       - name: Update skills-latest release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          kb_rev=$(python3 -c "import json;print(json.load(open('plugins/aigeothermal-pln/skills/geothermal-knowledge/references/KB/KB_MANIFEST.json')).get('kb_revision',0))")
-          notes="Build otomatis dari ${GITHUB_SHA::7} (KB revision ${kb_rev}). Upload ZIP ini hanya bila akun Anda tidak memakai sinkronisasi plugin dari GitHub."
+          notes="Build otomatis dari ${GITHUB_SHA::7}. Upload AIGeothermal-PLN.zip di claude.ai → Customize → Skills → + → Upload a skill. Cukup sekali; modul dan KB selanjutnya diperbarui otomatis dari GitHub."
           if gh release view skills-latest >/dev/null 2>&1; then
             gh release edit skills-latest --notes "$notes" --target "$GITHUB_SHA"
-            gh release upload skills-latest dist/*.zip --clobber
+            gh release upload skills-latest dist/AIGeothermal-PLN.zip --clobber
           else
-            gh release create skills-latest dist/*.zip --title "AIGeothermal-PLN plugin (latest)" --notes "$notes" --target "$GITHUB_SHA" --prerelease
+            gh release create skills-latest dist/AIGeothermal-PLN.zip --title "AIGeothermal-PLN (latest)" --notes "$notes" --target "$GITHUB_SHA"
           fi
