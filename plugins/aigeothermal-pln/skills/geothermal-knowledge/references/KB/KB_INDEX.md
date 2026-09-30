@@ -3,14 +3,14 @@
 Status: ACTIVE
 Index mode: LIGHT / ROUTING ONLY
 Knowledge base root: `references/KB/files/`
-KB revision: 3 (updated 2026-09-30T23:42:09+00:00)
+KB revision: 4 (updated 2026-09-30T23:44:29+00:00)
 
 Metadata router only; original source files are the source of truth. Files are added and indexed without deep-reading their contents.
 Index ini dibangun ulang otomatis oleh `scripts/kb_manager.py`; jangan edit manual.
 
 ## Source register
 
-Aktif: 49 · Superseded: 0
+Aktif: 50 · Superseded: 0
 
 | ID | Status | Judul | File | Disiplin | Tipe | Revisi | Topik / keyword | Locator | SHA-256 (prefix) |
 |---|---|---|---|---|---|---|---|---|---|
@@ -63,6 +63,7 @@ Aktif: 49 · Superseded: 0
 | GEO-0047 | ACTIVE | Proposal RKAB MCG - Blawan Ijen Tahun 2023 rev 3_1 (1) | files/GEO-0047__Proposal RKAB MCG - Blawan Ijen Tahun 2023 rev 3_1 (1).pdf | other | other | unknown |  |  | 393d70438f05 |
 | GEO-0048 | ACTIVE | Site Visit PLTP Ijen - Combined Cycle Power Plant Study | files/GEO-0048__Site Visit PLTP Ijen - Combined Cycle Power Plant Study.pdf | other | other | unknown |  |  | 728b9a0844dd |
 | GEO-0049 | ACTIVE | ucp5-grem-progress-factsheet | files/GEO-0049__ucp5-grem-progress-factsheet.pdf | other | other | unknown |  |  | de9b8e376bb0 |
+| GEO-0050 | ACTIVE | MP 07-Pengoperasian PLTP IP'16 | files/GEO-0050__MP 07-Pengoperasian PLTP IP_16.doc | other | other | unknown |  |  | ac728104531c |
 
 ## Retrieval defaults
 

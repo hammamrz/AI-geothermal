@@ -1,5 +1,9 @@
 # Changelog
 
+## KB rev 4 — 2026-09-30
+
+- Tambah GEO-0050 — MP 07-Pengoperasian PLTP IP'16 (`files/GEO-0050__MP 07-Pengoperasian PLTP IP_16.doc`, 7699968 bytes, SHA-256 `ac728104531c…`).
+
 ## KB rev 3 — 2026-09-30
 
 - Tambah GEO-0042 — 20250828 MCG_Project Overview_R1 - shared (`files/GEO-0042__20250828 MCG_Project Overview_R1 - shared.pdf`, 4770370 bytes, SHA-256 `acce4d5a9bf7…`).

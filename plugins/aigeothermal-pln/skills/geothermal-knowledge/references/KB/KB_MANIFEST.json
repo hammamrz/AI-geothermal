@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "kb_revision": 3,
+  "kb_revision": 4,
   "entries": [
     {
       "id": "GEO-0001",
@@ -638,7 +638,20 @@
       "sha256": "de9b8e376bb012a7df5a769d22ba97c1088dba506d081863003c4cfc1a230d62",
       "added_at": "2026-09-30T23:42:09+00:00",
       "source_channel": "zip:Geothermal.zip"
+    },
+    {
+      "id": "GEO-0050",
+      "file": "files/GEO-0050__MP 07-Pengoperasian PLTP IP_16.doc",
+      "title": "MP 07-Pengoperasian PLTP IP'16",
+      "discipline": "other",
+      "document_type": "other",
+      "revision": "unknown",
+      "status": "ACTIVE",
+      "size_bytes": 7699968,
+      "sha256": "ac728104531ca9c96de916bd697a8aa02d974528904c88c0c7d6e075afd1ea09",
+      "added_at": "2026-09-30T23:44:29+00:00",
+      "source_channel": "github-inbox"
     }
   ],
-  "updated_at": "2026-09-30T23:42:09+00:00"
+  "updated_at": "2026-09-30T23:44:29+00:00"
 }
