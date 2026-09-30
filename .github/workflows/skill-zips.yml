@@ -6,7 +6,7 @@ name: Skill ZIP
 on:
   push:
     branches: [main]
-    paths: ["standalone/**", "plugins/**", "scripts/build_skill_zips.py"]
+    paths: ["standalone/**", "plugins/**", "scripts/build_skill_zips.py", ".github/workflows/skill-zips.yml"]
   workflow_dispatch:
 
 permissions:
@@ -47,6 +47,10 @@ jobs:
           if gh release view skills-latest >/dev/null 2>&1; then
             gh release edit skills-latest --notes "$notes" --target "$GITHUB_SHA"
             gh release upload skills-latest dist/AIGeothermal-PLN.zip --clobber
+            # Hapus aset lama selain AIGeothermal-PLN.zip agar pengguna tidak salah unduh.
+            gh release view skills-latest --json assets --jq '.assets[].name' \
+              | grep -vx 'AIGeothermal-PLN.zip' \
+              | while read -r old; do gh release delete-asset skills-latest "$old" --yes; done
           else
             gh release create skills-latest dist/AIGeothermal-PLN.zip --title "AIGeothermal-PLN (latest)" --notes "$notes" --target "$GITHUB_SHA"
           fi
