@@ -1,5 +1,13 @@
 # Changelog
 
+## KB rev 1 — 2026-09-30
+
+- Tambah GEO-0001 — 01 Berbagai Jenis Sistem Panas Bumi dan Karakterisasinya (`files/GEO-0001__01 Berbagai Jenis Sistem Panas Bumi dan Karakterisasinya.pdf`, 9197417 bytes, SHA-256 `0e0f707c9870…`).
+- Tambah GEO-0002 — 02 Sistem Geoterma karakteristik dan komposisi fluidal (`files/GEO-0002__02 Sistem Geoterma karakteristik dan komposisi fluidal.pdf`, 2149640 bytes, SHA-256 `66589983f19c…`).
+- Tambah GEO-0003 — 03 Pengantar Teknik Geotermal Nov 2024 (`files/GEO-0003__03 Pengantar Teknik Geotermal Nov 2024.pdf`, 3870021 bytes, SHA-256 `fe9017056054…`).
+- Tambah GEO-0004 — 04  Intro Kegiatan Eksp dan Utilisasi 2024 (`files/GEO-0004__04  Intro Kegiatan Eksp dan Utilisasi 2024.pdf`, 2805555 bytes, SHA-256 `3b81187852a3…`).
+- Tambah GEO-0005 — Ringkasan (`files/GEO-0005__Ringkasan.docx`, 1018502 bytes, SHA-256 `e7bdbfdf6c0a…`).
+
 ## 1.0.0 — 2026-09-30 (konversi ke Claude)
 
 - Konversi dari plugin Codex/ChatGPT ke **plugin Claude** dalam marketplace privat (`.claude-plugin/marketplace.json`, `plugins/geothermal-review/.claude-plugin/plugin.json`). Manifest Codex (`.agents/`, `.codex-plugin/`, `plugin.json` Agent Plugins) dihapus.
