@@ -1,5 +1,72 @@
 {
   "schema_version": 2,
-  "kb_revision": 0,
-  "entries": []
+  "kb_revision": 1,
+  "entries": [
+    {
+      "id": "GEO-0001",
+      "file": "files/GEO-0001__01 Berbagai Jenis Sistem Panas Bumi dan Karakterisasinya.pdf",
+      "title": "01 Berbagai Jenis Sistem Panas Bumi dan Karakterisasinya",
+      "discipline": "other",
+      "document_type": "other",
+      "revision": "unknown",
+      "status": "ACTIVE",
+      "size_bytes": 9197417,
+      "sha256": "0e0f707c9870208bbaff820e77f98368e071f07059224cff4c4ff295cf683173",
+      "added_at": "2026-09-30T22:33:11+00:00",
+      "source_channel": "github-inbox"
+    },
+    {
+      "id": "GEO-0002",
+      "file": "files/GEO-0002__02 Sistem Geoterma karakteristik dan komposisi fluidal.pdf",
+      "title": "02 Sistem Geoterma karakteristik dan komposisi fluidal",
+      "discipline": "other",
+      "document_type": "other",
+      "revision": "unknown",
+      "status": "ACTIVE",
+      "size_bytes": 2149640,
+      "sha256": "66589983f19cf54071ddcdfc6fca9ec46b00cf87abe6e3887ee7f55298786f88",
+      "added_at": "2026-09-30T22:33:11+00:00",
+      "source_channel": "github-inbox"
+    },
+    {
+      "id": "GEO-0003",
+      "file": "files/GEO-0003__03 Pengantar Teknik Geotermal Nov 2024.pdf",
+      "title": "03 Pengantar Teknik Geotermal Nov 2024",
+      "discipline": "other",
+      "document_type": "other",
+      "revision": "unknown",
+      "status": "ACTIVE",
+      "size_bytes": 3870021,
+      "sha256": "fe9017056054841d8081e01a92389c5510692961d82aa1683583d72b9e4a3e9e",
+      "added_at": "2026-09-30T22:33:11+00:00",
+      "source_channel": "github-inbox"
+    },
+    {
+      "id": "GEO-0004",
+      "file": "files/GEO-0004__04  Intro Kegiatan Eksp dan Utilisasi 2024.pdf",
+      "title": "04  Intro Kegiatan Eksp dan Utilisasi 2024",
+      "discipline": "other",
+      "document_type": "other",
+      "revision": "unknown",
+      "status": "ACTIVE",
+      "size_bytes": 2805555,
+      "sha256": "3b81187852a3ca2240fce0a7b8c99a5938e1c36d58972162f10146116cb6f84f",
+      "added_at": "2026-09-30T22:33:11+00:00",
+      "source_channel": "github-inbox"
+    },
+    {
+      "id": "GEO-0005",
+      "file": "files/GEO-0005__Ringkasan.docx",
+      "title": "Ringkasan",
+      "discipline": "other",
+      "document_type": "other",
+      "revision": "unknown",
+      "status": "ACTIVE",
+      "size_bytes": 1018502,
+      "sha256": "e7bdbfdf6c0af8fb91402baca0ab09747d3e7400d9306a9686e413dee7452a3d",
+      "added_at": "2026-09-30T22:33:11+00:00",
+      "source_channel": "github-inbox"
+    }
+  ],
+  "updated_at": "2026-09-30T22:33:11+00:00"
 }
