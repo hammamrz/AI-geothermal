@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Belajar Drilling BHA — Catatan Lapangan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#10151b; --panel:#1a232b; --panel2:#212c37; --line:#2b3843;
+    --text:#eef2f1; --muted:#93a8a4; --rust:#d0672f; --rust-soft:#4a2c1d;
+    --cyan:#57b8c4; --amber:#f0b429; --good:#5fbf7d; --bad:#e2574c;
+    --f-disp:'Oswald', 'Arial Narrow', sans-serif;
+    --f-body:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --f-mono:'IBM Plex Mono', 'SFMono-Regular', Consolas, monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:var(--f-body);}
+  body{min-height:100vh;}
+  ::selection{background:var(--rust);color:#fff;}
+
+  .app{display:flex;min-height:100vh;}
+
+  /* ---- Depth rail (nav) ---- */
+  .rail{
+    width:190px;flex:0 0 190px;background:var(--panel);border-right:1px solid var(--line);
+    padding:28px 0;position:sticky;top:0;height:100vh;overflow-y:auto;
+  }
+  .rail-title{font-family:var(--f-mono);font-size:10px;letter-spacing:.14em;color:var(--muted);
+    text-transform:uppercase;padding:0 20px 18px;border-bottom:1px dashed var(--line);margin-bottom:8px;}
+  .tick{
+    display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:none;border:none;
+    color:var(--muted);font-family:var(--f-body);font-size:13.5px;padding:11px 20px;cursor:pointer;
+    border-left:3px solid transparent;transition:all .18s ease;
+  }
+  .tick .d{font-family:var(--f-mono);font-size:10.5px;color:var(--rust);width:44px;flex:0 0 44px;}
+  .tick .n{font-weight:500;}
+  .tick:hover{color:var(--text);background:rgba(255,255,255,.02);}
+  .tick.active{color:var(--text);border-left-color:var(--amber);background:var(--panel2);}
+  .tick.active .d{color:var(--amber);}
+  .rail-foot{padding:16px 20px 0;font-family:var(--f-mono);font-size:10px;color:var(--muted);
+    border-top:1px dashed var(--line);margin-top:8px;line-height:1.6;}
+
+  /* ---- Main ---- */
+  main{flex:1;min-width:0;}
+  .hero{padding:44px 44px 28px;border-bottom:1px solid var(--line);
+    background:radial-gradient(1200px 300px at 15% 0%, var(--rust-soft), transparent 60%);}
+  .eyebrow{font-family:var(--f-mono);font-size:11px;letter-spacing:.18em;color:var(--amber);text-transform:uppercase;}
+  h1.title{font-family:var(--f-disp);font-weight:700;font-size:38px;letter-spacing:.01em;margin:8px 0 6px;
+    text-transform:uppercase;}
+  .sub{color:var(--muted);font-size:15px;max-width:640px;line-height:1.55;}
+
+  .content{padding:36px 44px 90px;max-width:980px;}
+  section.panel{display:none;}
+  section.panel.active{display:block;animation:fade .25s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
+
+  h2.h{font-family:var(--f-disp);text-transform:uppercase;font-size:22px;letter-spacing:.02em;
+    color:var(--text);margin:34px 0 12px;border-bottom:1px solid var(--line);padding-bottom:8px;}
+  h2.h:first-child{margin-top:0;}
+  h3.h3{font-family:var(--f-disp);text-transform:uppercase;font-size:16px;letter-spacing:.03em;
+    color:var(--cyan);margin:22px 0 8px;}
+  p{line-height:1.65;color:#dbe4e2;font-size:15px;}
+  strong{color:var(--text);}
+  ol.steps{padding-left:0;list-style:none;counter-reset:step;}
+  ol.steps li{counter-increment:step;position:relative;padding:8px 0 8px 40px;font-size:14.5px;line-height:1.5;
+    color:#dbe4e2;border-bottom:1px dashed var(--line);}
+  ol.steps li::before{content:counter(step);position:absolute;left:0;top:8px;font-family:var(--f-mono);
+    color:var(--bg);background:var(--amber);width:24px;height:24px;border-radius:3px;display:flex;
+    align-items:center;justify-content:center;font-size:12px;font-weight:600;}
+
+  .callout{border-left:3px solid var(--amber);background:var(--panel2);padding:14px 16px;border-radius:0 6px 6px 0;
+    margin:16px 0;}
+  .callout .lbl{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.1em;color:var(--amber);
+    text-transform:uppercase;margin-bottom:6px;}
+  .callout p{margin:0;font-size:14px;color:#e6ede2;}
+
+  /* ---- cue cards ---- */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin:14px 0 30px;}
+  .plate{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:16px;position:relative;}
+  .plate .tag{font-family:var(--f-mono);font-size:10.5px;color:var(--bg);background:var(--rust);
+    display:inline-block;padding:2px 7px;border-radius:3px;font-weight:600;margin-bottom:10px;}
+  .plate h4{font-family:var(--f-disp);text-transform:uppercase;font-size:15px;letter-spacing:.01em;margin:0 0 8px;}
+  .plate p{font-size:13px;margin:0 0 8px;color:#cfd9d6;}
+  .plate .analogy{font-size:12.5px;color:var(--cyan);font-style:italic;margin:0;}
+
+  .group-lbl{font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;color:var(--muted);
+    text-transform:uppercase;margin:26px 0 4px;}
+
+  /* ---- flashcards ---- */
+  .fc-wrap{display:flex;flex-direction:column;align-items:center;padding:20px 0 10px;}
+  .fc-progress{font-family:var(--f-mono);color:var(--muted);font-size:12px;margin-bottom:16px;}
+  .fc-card{width:100%;max-width:480px;height:230px;perspective:1200px;cursor:pointer;}
+  .fc-inner{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d;}
+  .fc-card.flipped .fc-inner{transform:rotateY(180deg);}
+  .fc-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:12px;
+    display:flex;align-items:center;justify-content:center;text-align:center;padding:26px;
+    border:1px solid var(--line);}
+  .fc-front{background:linear-gradient(150deg,var(--panel2),var(--panel));}
+  .fc-front .term{font-family:var(--f-disp);font-size:26px;text-transform:uppercase;color:var(--amber);
+    letter-spacing:.02em;}
+  .fc-back{background:var(--rust-soft);transform:rotateY(180deg);}
+  .fc-back .def{font-size:15px;line-height:1.55;color:#f4ede6;}
+  .fc-hint{font-family:var(--f-mono);font-size:10.5px;color:var(--muted);position:absolute;bottom:10px;
+    left:0;right:0;text-align:center;letter-spacing:.08em;text-transform:uppercase;}
+  .fc-controls{display:flex;gap:10px;margin-top:20px;}
+  button.btn{font-family:var(--f-body);font-weight:600;font-size:13px;background:var(--panel2);
+    color:var(--text);border:1px solid var(--line);border-radius:6px;padding:10px 18px;cursor:pointer;
+    transition:all .15s ease;}
+  button.btn:hover{border-color:var(--amber);color:var(--amber);}
+  button.btn.primary{background:var(--rust);border-color:var(--rust);color:#fff;}
+  button.btn.primary:hover{background:#e07743;color:#fff;}
+
+  /* ---- quiz ---- */
+  .quiz-box{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:26px;max-width:640px;}
+  .quiz-meta{display:flex;justify-content:space-between;font-family:var(--f-mono);font-size:12px;
+    color:var(--muted);margin-bottom:14px;}
+  .quiz-q{font-size:16.5px;font-weight:600;margin-bottom:16px;line-height:1.5;}
+  .opt{display:block;width:100%;text-align:left;background:var(--panel);border:1px solid var(--line);
+    color:var(--text);border-radius:7px;padding:12px 14px;margin-bottom:9px;font-size:14px;cursor:pointer;
+    transition:all .15s ease;font-family:var(--f-body);}
+  .opt:hover:not(.disabled){border-color:var(--cyan);}
+  .opt.correct{border-color:var(--good);background:rgba(95,191,125,.12);}
+  .opt.wrong{border-color:var(--bad);background:rgba(226,87,76,.12);}
+  .opt.disabled{cursor:default;}
+  .explain{margin-top:14px;padding:12px 14px;background:var(--panel);border-left:3px solid var(--cyan);
+    border-radius:0 6px 6px 0;font-size:13.5px;color:#cfe0de;display:none;}
+  .explain.show{display:block;}
+  .quiz-next{margin-top:16px;display:none;}
+  .quiz-next.show{display:inline-block;}
+  .quiz-done{text-align:center;padding:20px 0;}
+  .quiz-done .score{font-family:var(--f-disp);font-size:44px;color:var(--amber);}
+
+  @media (max-width: 860px){
+    .app{flex-direction:column;}
+    .rail{width:100%;flex:none;height:auto;position:sticky;top:0;z-index:10;padding:12px 0;
+      display:flex;overflow-x:auto;white-space:nowrap;}
+    .rail-title, .rail-foot{display:none;}
+    .tick{border-left:none;border-bottom:3px solid transparent;padding:10px 14px;flex:0 0 auto;}
+    .tick.active{border-left:none;border-bottom-color:var(--amber);}
+    .hero{padding:28px 20px 20px;}
+    h1.title{font-size:26px;}
+    .content{padding:24px 20px 70px;}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <nav class="rail" id="rail">
+    <div class="rail-title">Log Kedalaman &mdash; Navigasi</div>
+    <button class="tick active" data-target="ringkasan"><span class="d">0m</span><span class="n">Ringkasan</span></button>
+    <button class="tick" data-target="komponen"><span class="d">750m</span><span class="n">Komponen BHA</span></button>
+    <button class="tick" data-target="arah"><span class="d">1500m</span><span class="n">Arah &amp; Kemudi</span></button>
+    <button class="tick" data-target="survey"><span class="d">2250m</span><span class="n">Survey &amp; Navigasi</span></button>
+    <button class="tick" data-target="risiko"><span class="d">3000m</span><span class="n">Risiko &amp; Kekuatan</span></button>
+    <button class="tick" data-target="istilah"><span class="d">3750m</span><span class="n">Istilah Sulit</span></button>
+    <button class="tick" data-target="flashcard"><span class="d">4500m</span><span class="n">Flashcard</span></button>
+    <button class="tick" data-target="kuis"><span class="d">TD</span><span class="n">Kuis Akhir</span></button>
+    <div class="rail-foot">Sumber: Drilling BHA<br>Halliburton, 24 Jul 2026</div>
+  </nav>
+
+  <main>
+    <div class="hero">
+      <div class="eyebrow">Catatan Lapangan &middot; Untuk Pemula</div>
+      <h1 class="title">Belajar Drilling BHA</h1>
+      <p class="sub">Rangkuman, kartu panduan, flashcard, dan kuis dari materi "Drilling BHA" &mdash; ditulis ulang
+      dengan bahasa sederhana dan analogi sehari-hari, untuk yang belum punya background teknik perminyakan.</p>
+    </div>
+
+    <div class="content">
+
+      <!-- ===================== RINGKASAN ===================== -->
+      <section class="panel active" id="ringkasan">
+        <h2 class="h">Apa itu BHA?</h2>
+        <p><strong>BHA (Bottom Hole Assembly)</strong> adalah rangkaian alat di ujung paling bawah dari seluruh
+        rangkaian pipa bor &mdash; mulai dari mata bor sampai ke pipa bor biasa. Kalau pipa bor itu diibaratkan
+        tangkai pancing yang panjang, BHA adalah kail, pemberat, dan sensor-sensor kecil yang dipasang di ujungnya.
+        Bagian inilah yang benar-benar menentukan ke arah mana dan seberapa cepat lubang sumur terbentuk.</p>
+
+        <div class="callout">
+          <div class="lbl">Kenapa BHA penting?</div>
+          <p>Pemilihan BHA yang tepat membuat mata bor bisa menembus batuan lebih cepat (istilahnya <strong>ROP</strong> &mdash;
+          Rate of Penetration) sekaligus menjaga arah sumur sesuai rencana. Kalau BHA salah desain, sumur bisa
+          melenceng arah, macet, atau bahkan patah di bawah tanah &mdash; yang berarti biaya membengkak.</p>
+        </div>
+
+        <h3 class="h3">Sedikit sejarah singkat</h3>
+        <p>Dulu semua sumur dibor lurus ke bawah (vertikal). Sejak tahun 1970-an, teknologi <em>directional drilling</em>
+        (pengeboran berarah) berkembang pesat, sehingga sekarang sumur bisa dibelokkan, dibuat horizontal, bahkan
+        bercabang banyak arah (<em>multilateral</em>) dan dipandu otomatis lewat data real-time dari bawah tanah.</p>
+
+        <h3 class="h3">Alur pikir merancang BHA (disederhanakan)</h3>
+        <ol class="steps">
+          <li>Kumpulkan data sumur yang dibutuhkan (kedalaman, jenis batuan, rencana arah, dll).</li>
+          <li>Tentukan tujuan rangkaian: mau <strong>menahan</strong>, <strong>menaikkan</strong>, atau <strong>menurunkan</strong> sudut kemiringan sumur?</li>
+          <li>Pilih sistem penggerak mata bor: rotary table biasa, motor lumpur, atau Rotary Steerable System (RSS).</li>
+          <li>Pilih jenis mata bor yang sesuai jenis batuan.</li>
+          <li>Atur jarak alat MWD/LWD dari material magnetik supaya bacaan arah tidak terganggu.</li>
+          <li>Tentukan posisi alat "jar" (alat pembebas pipa macet) di rangkaian.</li>
+          <li>Perhitungkan efek ukuran stabilizer terhadap perilaku arah BHA.</li>
+          <li>Hitung panjang drill collar yang dibutuhkan supaya beban ke mata bor pas.</li>
+        </ol>
+        <p style="color:var(--muted);font-size:13px;">Geser ke kanan/klik menu di kiri (atau atas, jika di HP) untuk lanjut ke bagian berikutnya.</p>
+      </section>
+
+      <!-- ===================== KOMPONEN ===================== -->
+      <section class="panel" id="komponen">
+        <h2 class="h">Komponen-Komponen BHA</h2>
+        <p>Anggap saja setiap komponen ini seperti alat berbeda dalam satu "kotak perkakas" yang disusun berurutan
+        dari mata bor ke atas. Berikut kartu panduan cepatnya &mdash; kode di pojok kiri atas cuma penanda kategori.</p>
+
+        <div class="group-lbl">Mata Bor &amp; Penggerak</div>
+        <div class="grid">
+          <div class="plate"><span class="tag">BIT-01</span><h4>PDC Bit</h4>
+            <p>Mata bor dengan mata potong berlian sintetis (fixed cutter). Memotong batuan dengan cara menggeser/mencukur.</p>
+            <p class="analogy">Seperti pisau serut kayu yang menyayat permukaan.</p></div>
+          <div class="plate"><span class="tag">BIT-02</span><h4>Roller Cone Bit</h4>
+            <p>Mata bor dengan 3 kerucut berputar (tri-cone) yang menghancurkan batuan dengan cara menumbuk &amp; menggerus.</p>
+            <p class="analogy">Cocok untuk batuan keras &mdash; seperti palu kecil yang berputar.</p></div>
+          <div class="plate"><span class="tag">MTR-01</span><h4>PDM / Mud Motor</h4>
+            <p>Motor bawah permukaan yang mengubah energi tekanan lumpur menjadi putaran untuk memutar mata bor.</p>
+            <p class="analogy">Seperti turbin air kecil yang diputar oleh aliran lumpur bertekanan tinggi.</p></div>
+        </div>
+
+        <div class="group-lbl">Penstabil &amp; Struktur Pipa</div>
+        <div class="grid">
+          <div class="plate"><span class="tag">STB-01</span><h4>Stabilizer</h4>
+            <p>Mengatur titik kontak BHA dengan dinding lubang, untuk menjaga atau mengubah sudut sumur.</p>
+            <p class="analogy">Seperti roda-roda kecil penstabil sepeda anak-anak.</p></div>
+          <div class="plate"><span class="tag">COL-01</span><h4>Drill Collar</h4>
+            <p>Pipa tebal &amp; berat yang menekan mata bor supaya bisa menembus batuan (memberi beban/WOB).</p>
+            <p class="analogy">Seperti pemberat pada tali pancing.</p></div>
+          <div class="plate"><span class="tag">COL-02</span><h4>NM Drill Collar</h4>
+            <p>Drill collar dari bahan non-magnetik, dipasang di sekitar alat MWD agar bacaan kompas tidak diganggu besi.</p>
+            <p class="analogy">Seperti memakai jam tangan anti-magnet di dekat kompas.</p></div>
+          <div class="plate"><span class="tag">PIP-01</span><h4>HWDP (Heavy Weight Drill Pipe)</h4>
+            <p>Pipa "peralihan" antara drill pipe biasa dan drill collar; aman dipakai dalam kondisi tertekan (kompresi).</p>
+            <p class="analogy">Seperti selang yang cukup kaku untuk didorong tanpa melengkung.</p></div>
+        </div>
+
+        <div class="group-lbl">Alat Khusus</div>
+        <div class="grid">
+          <div class="plate"><span class="tag">SPC-01</span><h4>Drilling Jar</h4>
+            <p>Alat yang menyimpan energi lalu melepaskannya sebagai kejutan (impact), untuk membebaskan pipa yang macet.</p>
+            <p class="analogy">Seperti "palu kejut" mekanik di dalam sumur.</p></div>
+          <div class="plate"><span class="tag">SPC-02</span><h4>Shock Sub</h4>
+            <p>Peredam getaran naik-turun (aksial) dekat mata bor, biasa dipakai saat mengebor formasi keras.</p>
+            <p class="analogy">Seperti shockbreaker motor, tapi untuk pipa bor.</p></div>
+          <div class="plate"><span class="tag">SPC-03</span><h4>Hole Opener / Reamer</h4>
+            <p>Alat pembesar diameter lubang bor, dipakai supaya casing lebih mudah dipasang atau aliran lumpur lebih lancar.</p>
+            <p class="analogy">Seperti mata bor kayu bertingkat yang memperbesar lubang secara bertahap.</p></div>
+          <div class="plate"><span class="tag">SPC-04</span><h4>Subs (XO / Bit Sub / Float Sub / Circ. Sub)</h4>
+            <p>Aneka penyambung kecil dengan fungsi khusus: mengubah ukuran ulir, mencegah aliran balik, atau membuka jalur sirkulasi tambahan.</p>
+            <p class="analogy">Seperti adaptor colokan listrik dengan fungsi tambahan.</p></div>
+        </div>
+
+        <div class="group-lbl">Alat Ukur</div>
+        <div class="grid">
+          <div class="plate"><span class="tag">SUR-01</span><h4>MWD</h4>
+            <p>Alat pengukur posisi sumur (kemiringan, arah, orientasi) secara real-time selama pengeboran.</p>
+            <p class="analogy">Seperti GPS bawah tanah, tapi datanya dikirim lewat pulsa tekanan di lumpur.</p></div>
+          <div class="plate"><span class="tag">SUR-02</span><h4>LWD</h4>
+            <p>Alat pengukur karakteristik batuan di sekitar lubang (formasi) secara real-time selama pengeboran.</p>
+            <p class="analogy">Seperti CT-scan formasi batuan sambil jalan.</p></div>
+        </div>
+      </section>
+
+      <!-- ===================== ARAH & KEMUDI ===================== -->
+      <section class="panel" id="arah">
+        <h2 class="h">Bagaimana BHA Membelokkan Arah Sumur</h2>
+        <p>Supaya sumur bisa dibelokkan sesuai rencana (bukan cuma lurus ke bawah), dikenal beberapa metode.
+        Urutannya di bawah ini kira-kira dari yang paling kuno ke yang paling modern.</p>
+
+        <h3 class="h3">Metode klasik</h3>
+        <p><strong>Jetting</strong> &mdash; menyemprotkan lumpur dari satu sisi mata bor lebih besar dari sisi lain,
+        sehingga "menggali" lebih banyak ke satu arah. Hanya efektif di formasi lunak.</p>
+        <p><strong>Whipstock</strong> &mdash; baji logam yang dipasang miring di dalam lubang untuk memaksa mata
+        bor baru mengarah ke sudut tertentu, seperti pemandu rel kereta.</p>
+
+        <h3 class="h3">Motor lumpur dengan "bent housing" (Steerable Motor)</h3>
+        <p>Motor lumpur bisa dipasang dengan sedikit bengkokan di badannya. Ada dua mode operasi:</p>
+        <ul>
+          <li><strong>Sliding</strong> &mdash; seluruh pipa dari permukaan TIDAK diputar, hanya motor di bawah yang
+          berputar sendiri memutar mata bor. Karena bengkokannya, arah terus terdorong ke satu sisi &rarr; sumur berbelok.</li>
+          <li><strong>Rotating</strong> &mdash; seluruh rangkaian diputar dari permukaan seperti biasa &rarr; sumur lurus mengikuti arah terakhir.</li>
+        </ul>
+
+        <h3 class="h3">Rotary Steerable System (RSS) &mdash; teknologi modern</h3>
+        <p>RSS bisa membelokkan arah sumur <strong>sambil seluruh rangkaian tetap berputar</strong> dari permukaan
+        sepanjang waktu (tidak perlu sliding). Ada dua gaya:</p>
+        <ul>
+          <li><strong>Push the bit</strong> &mdash; mendorong mata bor ke satu sisi memakai pad/piston, sehingga sisi mata bor "menggaruk" dinding lubang.</li>
+          <li><strong>Point the bit</strong> &mdash; benar-benar memiringkan (menunjuk) mata bor ke arah baru, tanpa gaya dorong dari samping.</li>
+        </ul>
+        <div class="callout">
+          <div class="lbl">Sering bikin bingung</div>
+          <p>Kenapa dorongan kecil dari satu sisi bisa mengubah arah sumur secara signifikan? Karena mata bor
+          terus maju ke depan sementara dorongan sampingnya konsisten &mdash; efeknya menumpuk sedikit demi sedikit
+          sepanjang puluhan meter, seperti menggeser pensil sedikit terus-menerus saat menggambar garis panjang: hasilnya jadi kurva.</p>
+        </div>
+
+        <h3 class="h3">Rotary BHA (tanpa motor/RSS) &mdash; hanya susunan pipa &amp; stabilizer</h3>
+        <p>Kadang pembelokan arah tidak perlu alat khusus &mdash; cukup atur posisi stabilizer di sepanjang rangkaian
+        supaya rangkaian itu sendiri "melengkung" sesuai hukum fisika sederhana:</p>
+        <div class="grid">
+          <div class="plate"><span class="tag">ROT-01</span><h4>Pendulum</h4>
+            <p>Untuk <strong>menurunkan</strong> sudut (drop). Memanfaatkan berat pipa yang menggantung bebas di bawah stabilizer.</p></div>
+          <div class="plate"><span class="tag">ROT-02</span><h4>Fulcrum</h4>
+            <p>Untuk <strong>menaikkan</strong> sudut (build). Stabilizer dekat mata bor membuat collar di atasnya melengkung dan mendorong bit ke sisi atas lubang.</p></div>
+          <div class="plate"><span class="tag">ROT-03</span><h4>Packed</h4>
+            <p>Untuk <strong>menjaga</strong> sudut tetap (hold). 3 atau lebih stabilizer dipasang berjajar agar rangkaian tetap kaku lurus.</p></div>
+        </div>
+      </section>
+
+      <!-- ===================== SURVEY & NAVIGASI ===================== -->
+      <section class="panel" id="survey">
+        <h2 class="h">Survey &amp; Navigasi Sumur</h2>
+        <p>Supaya tahu sumur sudah berada di posisi mana dan mengarah ke mana, ada beberapa istilah kunci:</p>
+
+        <h3 class="h3">Tiga ukuran dasar posisi sumur</h3>
+        <ul>
+          <li><strong>Inclination</strong> &mdash; sudut kemiringan lubang dari garis vertikal (0° = lurus ke bawah, 90° = horizontal).</li>
+          <li><strong>Azimuth</strong> &mdash; arah mata angin sumur, dari 0° sampai 360°, seperti bacaan kompas.</li>
+          <li><strong>Toolface</strong> &mdash; arah "hadap" alat pembelok saat itu juga.</li>
+        </ul>
+
+        <h3 class="h3">Dua jenis toolface</h3>
+        <p><strong>Magnetic toolface</strong> diukur relatif terhadap utara magnet bumi &mdash; dipakai saat sumur
+        masih hampir vertikal. <strong>Gravity toolface (high side)</strong> diukur relatif terhadap sisi tertinggi
+        lubang memakai gravitasi &mdash; dipakai setelah sumur cukup miring (biasanya di atas 5°).</p>
+
+        <h3 class="h3">Tiga referensi "utara"</h3>
+        <p><strong>True North</strong> (kutub utara asli bumi), <strong>Magnetic North</strong> (arah yang ditunjuk
+        kompas, sedikit bergeser dari True North), dan <strong>Grid North</strong> (utara pada peta datar/koordinat
+        UTM). Semua bacaan arah sumur perlu dikoreksi ke satu referensi yang sama supaya tidak salah hitung posisi.</p>
+
+        <h3 class="h3">Kenapa perlu drill collar non-magnetik?</h3>
+        <p>Pipa besi biasa bersifat magnetis dan bisa mengacaukan bacaan kompas alat MWD. Solusinya, di sekitar
+        alat MWD dipasang <strong>Non-Magnetic Drill Collar (NMDC)</strong>. Ada dua pendekatan: <strong>Long Collar</strong>
+        (NMDC dipasang cukup panjang di atas &amp; bawah alat sampai pengaruh besi hilang total) atau <strong>Short
+        Collar</strong> dengan koreksi matematis (disebut Short Collar Correction/SCC) jika NMDC-nya terpaksa dibuat pendek.</p>
+
+        <div class="callout">
+          <div class="lbl">Sering bikin bingung</div>
+          <p>Kenapa harus ada 2 jenis toolface? Saat sumur masih hampir vertikal, tidak ada "sisi atas" yang jelas
+          secara gravitasi (semua sisi terasa sama), jadi arah harus dibaca lewat kompas. Begitu sumur sudah cukup
+          miring, gravitasi bisa dengan jelas menunjuk sisi teratas lubang &mdash; referensi ini lebih stabil
+          daripada kompas yang bisa terganggu besi di sekitarnya.</p>
+        </div>
+      </section>
+
+      <!-- ===================== RISIKO & KEKUATAN ===================== -->
+      <section class="panel" id="risiko">
+        <h2 class="h">Risiko, Getaran, &amp; Kekuatan BHA</h2>
+        <p>Di dalam sumur, BHA mengalami tarikan, puntiran, getaran, tekanan, panas, dan bahan kimia sekaligus.
+        Semua ini bisa merusak alat kalau tidak diperhitungkan dengan benar.</p>
+
+        <h3 class="h3">Cara BHA bisa gagal (failure modes)</h3>
+        <ul>
+          <li><strong>Tensional yield</strong> &mdash; sambungan tertarik melebihi batas kekuatannya.</li>
+          <li><strong>Torsional yield</strong> &mdash; sambungan terpuntir berlebihan.</li>
+          <li><strong>Kombinasi tarik + puntir</strong> &mdash; keduanya terjadi bersamaan.</li>
+          <li><strong>Bending separation</strong> &mdash; sambungan terpisah karena tertekuk.</li>
+          <li><strong>Fatigue</strong> &mdash; retak akibat beban berulang dalam waktu lama, akhirnya patah.</li>
+          <li><strong>Burst</strong> &mdash; pecah karena tekanan dari dalam pipa.</li>
+          <li><strong>Collapse</strong> &mdash; penyok/hancur karena tekanan dari luar pipa.</li>
+        </ul>
+
+        <h3 class="h3">Yield strength, dengan bahasa sederhana</h3>
+        <p><strong>Yield strength</strong> adalah batas kekuatan material sebelum ia berubah bentuk permanen
+        (tidak kembali ke bentuk semula walau bebannya dilepas). Kalau terus ditarik melewati titik ini, material
+        akhirnya patah (fracture). Bayangkan menekuk penggaris plastik: sedikit ditekuk masih lurus lagi, tapi
+        ditekuk terlalu jauh akan tetap bengkok atau patah.</p>
+
+        <h3 class="h3">Efek lingkungan</h3>
+        <p><strong>Suhu</strong> &mdash; semakin panas sumur, semakin lemah baja. Pada suhu operasi normal alat
+        (150&ndash;200°C), yield strength baja bisa turun 12&ndash;15%.</p>
+        <p><strong>Korosi</strong> &mdash; karat akibat reaksi kimia dengan cairan/gas di sumur. <strong>Sweet
+        corrosion</strong> terjadi karena CO2 + air. <strong>Sour corrosion</strong> terjadi karena gas H2S dan
+        lebih berbahaya karena bisa menyebabkan retak &amp; pitting (lubang-lubang kecil) di logam.</p>
+      </section>
+
+      <!-- ===================== ISTILAH SULIT ===================== -->
+      <section class="panel" id="istilah">
+        <h2 class="h">Istilah yang Sering Bikin Bingung</h2>
+        <p>Ringkasan cepat konsep-konsep yang biasanya paling membingungkan untuk orang tanpa background teknik.</p>
+
+        <h3 class="h3">1. Kenapa jumlah "lobe" pada motor lumpur memengaruhi torsi vs RPM?</h3>
+        <p>Makin banyak lobe (gerigi) pada rotor/stator, torsi (tenaga puntir) makin besar tapi RPM (kecepatan
+        putar) makin rendah &mdash; dan sebaliknya. Analoginya seperti gigi sepeda: gigi kecil membuat kayuhan
+        cepat tapi ringan tenaganya, gigi besar membuat kayuhan lambat tapi bertenaga besar.</p>
+
+        <h3 class="h3">2. Point the bit vs Push the bit &mdash; apa bedanya secara fisik?</h3>
+        <p><strong>Point</strong>: mata bor betul-betul "menunjuk" ke arah baru, hampir tanpa gesekan sisi mata
+        bor ke dinding lubang. <strong>Push</strong>: mata bor tetap menghadap lurus, tapi didorong paksa ke
+        samping oleh pad, sehingga bagian sisi mata bor ikut menggaruk dinding lubang.</p>
+
+        <h3 class="h3">3. Pendulum vs Fulcrum vs Packed &mdash; kok bisa beda arah cuma dari posisi stabilizer?</h3>
+        <p>Bayangkan tongkat panjang dengan satu titik tumpu (stabilizer). Posisi titik tumpu itu menentukan
+        apakah ujung tongkat (mata bor) cenderung naik, turun, atau tetap lurus &mdash; sama seperti prinsip
+        tuas/pengungkit yang dipelajari di fisika dasar, hanya diterapkan pada pipa bor sepanjang ratusan meter.</p>
+
+        <h3 class="h3">4. Kenapa ada 2 jenis toolface (magnetic &amp; gravity)?</h3>
+        <p>Saat sumur nyaris vertikal, gravitasi tidak bisa menunjukkan "sisi atas" yang jelas (semua sisi
+        terasa rata), jadi harus pakai kompas magnetik. Setelah sumur cukup miring, gravitasi punya sisi
+        teratas yang jelas dan itu jadi referensi yang lebih stabil &mdash; karena kompas magnetik bisa
+        terganggu material besi di sekitarnya.</p>
+
+        <h3 class="h3">5. Kenapa butuh drill collar "non-magnetik" khusus?</h3>
+        <p>Alat MWD membaca arah sumur pakai sensor mirip kompas (magnetometer). Kalau di sekitarnya ada pipa
+        besi biasa yang termagnetisasi, bacaan itu jadi tidak akurat. Solusinya, di sekitar sensor dipasang pipa
+        dari logam yang tidak menyimpan sifat magnet, dengan jarak (spacing) yang dihitung supaya "gangguan"
+        dari pipa besi lain sudah cukup jauh untuk tidak terasa.</p>
+
+        <h3 class="h3">6. True North vs Magnetic North vs Grid North</h3>
+        <p><strong>True North</strong> = arah ke kutub utara bumi yang sebenarnya. <strong>Magnetic North</strong> =
+        arah yang ditunjuk jarum kompas (sedikit bergeser karena medan magnet bumi tidak persis di kutub).
+        <strong>Grid North</strong> = arah "utara" pada sistem peta datar (proyeksi UTM), yang juga sedikit
+        bergeser karena bumi bulat diproyeksikan jadi peta datar. Semua sumur harus dikoreksi ke satu acuan
+        yang sama supaya posisi di peta akurat.</p>
+      </section>
+
+      <!-- ===================== FLASHCARD ===================== -->
+      <section class="panel" id="flashcard">
+        <h2 class="h">Flashcard Istilah</h2>
+        <p>Klik kartu untuk membalik &amp; melihat definisinya. Gunakan tombol di bawah untuk lanjut atau acak urutan.</p>
+        <div class="fc-wrap">
+          <div class="fc-progress" id="fcProgress">Kartu 1 / 23</div>
+          <div class="fc-card" id="fcCard">
+            <div class="fc-inner">
+              <div class="fc-face fc-front"><div class="term" id="fcTerm">TERM</div><div class="fc-hint">Klik untuk membalik</div></div>
+              <div class="fc-face fc-back"><div class="def" id="fcDef">Definisi</div></div>
+            </div>
+          </div>
+          <div class="fc-controls">
+            <button class="btn" id="fcPrev">&larr; Sebelumnya</button>
+            <button class="btn" id="fcShuffle">Acak</button>
+            <button class="btn primary" id="fcNext">Berikutnya &rarr;</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== KUIS ===================== -->
+      <section class="panel" id="kuis">
+        <h2 class="h">Kuis Latihan</h2>
+        <p>15 soal pilihan ganda untuk menguji pemahamanmu. Jawaban langsung diberi penjelasan singkat.</p>
+        <div class="quiz-box" id="quizBox"></div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<script>
+// ---------------- Navigation ----------------
+const ticks = document.querySelectorAll('.tick');
+const panels = document.querySelectorAll('.panel');
+ticks.forEach(t => t.addEventListener('click', () => {
+  ticks.forEach(x => x.classList.remove('active'));
+  panels.forEach(p => p.classList.remove('active'));
+  t.classList.add('active');
+  document.getElementById(t.dataset.target).classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+}));
+
+// ---------------- Flashcards ----------------
+const cards = [
+  {t:"BHA", d:"Rangkaian alat di ujung bawah pipa bor, dari mata bor sampai pipa bor biasa; menentukan arah & efisiensi pengeboran."},
+  {t:"PDC Bit", d:"Mata bor dengan mata potong berlian sintetis (fixed cutter), memotong batuan dengan cara menggeser/mencukur."},
+  {t:"Roller Cone Bit", d:"Mata bor dengan 3 kerucut berputar (tri-cone), menghancurkan batuan dengan cara menumbuk & menggerus — cocok formasi keras."},
+  {t:"PDM / Mud Motor", d:"Motor bawah permukaan yang mengubah energi tekanan lumpur menjadi putaran untuk memutar mata bor tanpa memutar seluruh pipa."},
+  {t:"RSS", d:"Rotary Steerable System — alat pembelok modern yang bisa mengarahkan sumur sambil seluruh rangkaian pipa tetap berputar."},
+  {t:"Stabilizer", d:"Alat penstabil yang mengatur titik kontak BHA dengan dinding lubang, untuk menjaga atau mengubah sudut sumur."},
+  {t:"Drill Collar", d:"Pipa tebal & berat yang memberi beban (WOB) ke mata bor agar bisa menembus batuan."},
+  {t:"NM Drill Collar", d:"Drill collar dari bahan non-magnetik, dipasang di sekitar alat MWD agar bacaan kompas tidak terganggu besi."},
+  {t:"HWDP", d:"Heavy Weight Drill Pipe — pipa antara drill pipe biasa dan drill collar, aman dipakai dalam kondisi tertekan (kompresi)."},
+  {t:"Drilling Jar", d:"Alat 'pemukul' yang menyimpan energi lalu melepaskannya sebagai kejutan untuk membebaskan pipa yang macet."},
+  {t:"Shock Sub", d:"Peredam getaran aksial (naik-turun) di dekat mata bor, biasa dipakai di formasi keras."},
+  {t:"Hole Opener / Reamer", d:"Alat pembesar diameter lubang bor, dipakai untuk mempermudah pemasangan casing atau memperlancar aliran lumpur."},
+  {t:"MWD", d:"Measurement While Drilling — alat pengukur posisi sumur (inklinasi, azimuth, toolface) secara real-time selama pengeboran."},
+  {t:"LWD", d:"Logging While Drilling — alat pengukur karakteristik formasi batuan secara real-time selama pengeboran."},
+  {t:"Inclination", d:"Sudut kemiringan lubang bor diukur dari garis vertikal."},
+  {t:"Azimuth", d:"Arah horizontal sumur mengacu pada mata angin, dari 0° sampai 360°."},
+  {t:"Toolface", d:"Arah hadap alat pembelok saat ini; bisa diukur dari utara magnet (magnetic toolface) atau sisi tertinggi lubang (gravity toolface)."},
+  {t:"Pendulum BHA", d:"Susunan rotary BHA untuk menurunkan sudut kemiringan (drop), memanfaatkan berat pipa yang menggantung bebas di bawah stabilizer."},
+  {t:"Fulcrum BHA", d:"Susunan rotary BHA untuk menaikkan sudut (build); stabilizer dekat bit membuat collar di atasnya melengkung dan mendorong bit ke sisi atas lubang."},
+  {t:"Packed BHA", d:"Susunan rotary BHA untuk menjaga sudut tetap (hold), memakai 3 atau lebih stabilizer agar rangkaian tetap lurus/kaku."},
+  {t:"Whipstock", d:"Baji logam pemandu untuk membelokkan arah pengeboran awal ke arah tertentu."},
+  {t:"ROP", d:"Rate of Penetration — kecepatan mata bor menembus batuan (biasanya diukur feet/jam atau meter/jam)."},
+  {t:"WOB", d:"Weight on Bit — berat/beban yang ditekankan ke mata bor untuk membantu memotong batuan."}
+];
+let order = cards.map((_,i)=>i);
+let idx = 0;
+const fcCard = document.getElementById('fcCard');
+const fcTerm = document.getElementById('fcTerm');
+const fcDef = document.getElementById('fcDef');
+const fcProgress = document.getElementById('fcProgress');
+
+function renderCard(){
+  fcCard.classList.remove('flipped');
+  const c = cards[order[idx]];
+  fcTerm.textContent = c.t;
+  fcDef.textContent = c.d;
+  fcProgress.textContent = `Kartu ${idx+1} / ${cards.length}`;
+}
+fcCard.addEventListener('click', ()=> fcCard.classList.toggle('flipped'));
+document.getElementById('fcNext').addEventListener('click', ()=>{ idx=(idx+1)%cards.length; renderCard(); });
+document.getElementById('fcPrev').addEventListener('click', ()=>{ idx=(idx-1+cards.length)%cards.length; renderCard(); });
+document.getElementById('fcShuffle').addEventListener('click', ()=>{
+  for(let i=order.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [order[i],order[j]]=[order[j],order[i]]; }
+  idx=0; renderCard();
+});
+renderCard();
+
+// ---------------- Quiz ----------------
+const quiz = [
+  {q:"Apa kepanjangan BHA?", o:["Bit Hole Assembly","Bottom Hole Assembly","Bore Head Angle","Bit Head Alignment"], a:1,
+   e:"BHA = Bottom Hole Assembly, rangkaian alat di ujung bawah pipa bor."},
+  {q:"Fungsi utama drill collar adalah?", o:["Mengukur arah sumur","Memberi beban (berat) ke mata bor","Mengirim data ke permukaan","Membelokkan arah sumur"], a:1,
+   e:"Drill collar adalah pipa tebal & berat yang memberi WOB (Weight on Bit)."},
+  {q:"MWD kepanjangannya?", o:["Motor While Drilling","Measurement While Drilling","Mud While Drilling","Mechanical Well Device"], a:1,
+   e:"MWD = Measurement While Drilling, alat ukur posisi sumur real-time."},
+  {q:"Alat apa yang digunakan untuk membebaskan pipa yang macet/terjepit?", o:["Stabilizer","Drilling Jar","Reamer","Sub"], a:1,
+   e:"Drilling Jar menyimpan energi lalu melepaskannya sebagai kejutan untuk membebaskan pipa macet."},
+  {q:"Pada mud motor, jika jumlah lobe rotor/stator semakin banyak, maka:", o:["RPM naik, torsi turun","RPM turun, torsi naik","Keduanya naik","Keduanya tidak berubah"], a:1,
+   e:"Makin banyak lobe, torsi makin besar tapi RPM makin rendah — seperti gigi sepeda besar."},
+  {q:"Perbedaan utama antara 'point the bit' dan 'push the bit'?", o:["Point memiringkan mata bor langsung ke arah baru, Push mendorong dari samping","Push lebih murah, Point tidak dipakai","Point hanya untuk sumur vertikal","Tidak ada perbedaan"], a:0,
+   e:"Point the bit menunjuk langsung ke arah baru tanpa gaya dorong samping; Push the bit mendorong bit ke samping pakai pad."},
+  {q:"Rotary BHA jenis apa yang digunakan untuk menurunkan sudut kemiringan (drop)?", o:["Fulcrum","Packed","Pendulum","Rotary Steerable"], a:2,
+   e:"Pendulum BHA memanfaatkan berat pipa yang menggantung bebas untuk menurunkan sudut."},
+  {q:"Rotary BHA jenis apa yang digunakan untuk menaikkan sudut (build)?", o:["Fulcrum","Pendulum","Packed","Whipstock"], a:0,
+   e:"Fulcrum BHA membuat collar melengkung dan mendorong bit ke sisi atas lubang, menaikkan sudut."},
+  {q:"Apa fungsi Non-Magnetic Drill Collar (NMDC)?", o:["Menambah berat","Melindungi alat MWD dari gangguan medan magnet pipa besi","Membelokkan arah sumur","Mendinginkan alat"], a:1,
+   e:"NMDC menjaga bacaan kompas MWD tetap akurat dengan menjauhkan sensor dari pipa besi biasa."},
+  {q:"Toolface jenis apa yang dipakai ketika sumur masih hampir vertikal (kemiringan kecil)?", o:["Gravity toolface","Magnetic toolface","Grid toolface","True toolface"], a:1,
+   e:"Saat sumur hampir vertikal, gravitasi tidak jelas menunjuk sisi atas, jadi dipakai magnetic toolface."},
+  {q:"Apa itu Inclination?", o:["Arah mata angin sumur","Sudut kemiringan sumur dari vertikal","Kecepatan pengeboran","Berat pipa"], a:1,
+   e:"Inclination adalah sudut kemiringan lubang bor dari garis vertikal."},
+  {q:"Apa itu Azimuth?", o:["Sudut kemiringan sumur","Arah mata angin sumur (0-360°)","Panjang drill collar","Tekanan lumpur"], a:1,
+   e:"Azimuth adalah arah horizontal sumur mengacu pada mata angin."},
+  {q:"Manakah yang BUKAN termasuk failure mode BHA?", o:["Torsional yield","Burst","Collapse","Refinery loss"], a:3,
+   e:"'Refinery loss' bukan istilah failure mode BHA yang nyata; itu bukan bagian dari mekanisme kegagalan struktur BHA."},
+  {q:"Kenapa suhu tinggi berbahaya bagi kekuatan BHA?", o:["Membuat BHA lebih ringan","Menurunkan yield strength baja (bisa 12-15%)","Membuat pipa magnetis","Mempercepat ROP"], a:1,
+   e:"Pada suhu operasi normal (150-200°C), yield strength baja bisa turun 12-15%."},
+  {q:"Perbedaan Rotary Steerable System (RSS) dibanding motor konvensional?", o:["RSS tidak bisa dipakai untuk sumur horizontal","RSS bisa membelokkan arah sambil rangkaian tetap berputar penuh, motor perlu 'sliding' tanpa berputar","RSS lebih murah tapi tidak akurat","Motor selalu lebih cepat dari RSS"], a:1,
+   e:"RSS membelokkan arah sambil rangkaian tetap berputar terus; motor konvensional perlu mode sliding (tanpa putar) untuk membelokkan."}
+];
+let qIdx=0, score=0;
+const quizBox = document.getElementById('quizBox');
+
+function renderQuiz(){
+  if(qIdx >= quiz.length){
+    quizBox.innerHTML = `
+      <div class="quiz-done">
+        <div class="quiz-meta"><span>Selesai</span><span>TD tercapai</span></div>
+        <div class="score">${score} / ${quiz.length}</div>
+        <p style="color:var(--muted);margin-top:6px;">Jawaban benar</p>
+        <button class="btn primary" id="retryBtn" style="margin-top:14px;">Ulangi Kuis</button>
+      </div>`;
+    document.getElementById('retryBtn').addEventListener('click', ()=>{ qIdx=0; score=0; renderQuiz(); });
+    return;
+  }
+  const item = quiz[qIdx];
+  quizBox.innerHTML = `
+    <div class="quiz-meta"><span>Soal ${qIdx+1} / ${quiz.length}</span><span>Skor: ${score}</span></div>
+    <div class="quiz-q">${item.q}</div>
+    <div id="opts"></div>
+    <div class="explain" id="explain"></div>
+    <button class="btn primary quiz-next" id="nextBtn">${qIdx===quiz.length-1 ? 'Lihat Hasil' : 'Soal Berikutnya →'}</button>
+  `;
+  const optsWrap = document.getElementById('opts');
+  item.o.forEach((opt, i)=>{
+    const b = document.createElement('button');
+    b.className = 'opt';
+    b.textContent = opt;
+    b.addEventListener('click', ()=>{
+      if(b.classList.contains('answered-lock')) return;
+      document.querySelectorAll('#opts .opt').forEach((el, j)=>{
+        el.classList.add('disabled','answered-lock');
+        if(j===item.a) el.classList.add('correct');
+        else if(j===i) el.classList.add('wrong');
+      });
+      if(i===item.a) score++;
+      const ex = document.getElementById('explain');
+      ex.textContent = item.e;
+      ex.classList.add('show');
+      document.getElementById('nextBtn').classList.add('show');
+    });
+    optsWrap.appendChild(b);
+  });
+  document.getElementById('nextBtn').addEventListener('click', ()=>{ qIdx++; renderQuiz(); });
+}
+renderQuiz();
+</script>
+</body>
+</html>

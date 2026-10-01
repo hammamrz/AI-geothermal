@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Introduction of Geothermal Subsurface — Study Kit</title>
+<style>
+:root{
+  --rig-navy:#0d1b2e;
+  --rig-navy-2:#16283f;
+  --rig-steel:#2c4260;
+  --rig-amber:#e08c2b;
+  --rig-amber-2:#c9761c;
+  --rig-paper:#f3ede1;
+  --rig-paper-2:#e8dfc9;
+  --rig-ink:#1c2430;
+  --rig-line:#3f5a7a;
+  --ok:#3f9d5c;
+  --bad:#c5533b;
+  --mono: 'Courier New', Courier, monospace;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  background:var(--rig-navy);
+  background-image:
+    repeating-linear-gradient(0deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 40px),
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 40px);
+  color:var(--rig-paper);
+  font-family: Georgia, 'Times New Roman', serif;
+  line-height:1.5;
+}
+.wrap{max-width:1000px;margin:0 auto;padding:28px 22px 80px;}
+
+.rig-header{
+  border:2px solid var(--rig-amber);
+  padding:22px 26px;
+  position:relative;
+  margin-bottom:26px;
+  background:linear-gradient(180deg, var(--rig-navy-2), var(--rig-navy));
+}
+.rig-header::before{
+  content:"";
+  position:absolute; top:6px; left:6px; right:6px; bottom:6px;
+  border:1px solid rgba(224,140,43,0.35);
+  pointer-events:none;
+}
+.tag{
+  font-family: var(--mono);
+  letter-spacing:3px;
+  font-size:11px;
+  color:var(--rig-amber);
+  text-transform:uppercase;
+}
+h1{
+  font-family: 'Trebuchet MS', Helvetica, Arial, sans-serif;
+  font-weight:800;
+  font-size:clamp(24px,4.4vw,38px);
+  margin:6px 0 4px;
+  letter-spacing:0.5px;
+  color:#fff;
+}
+.subtitle{color:var(--rig-paper-2); font-style:italic; font-size:15px;}
+
+.tabs{
+  display:flex; gap:0; margin:26px 0 20px; flex-wrap:wrap;
+  border-bottom:2px solid var(--rig-steel);
+}
+.tab-btn{
+  font-family:'Trebuchet MS', sans-serif;
+  background:none;
+  border:none;
+  color:var(--rig-paper-2);
+  padding:10px 16px;
+  cursor:pointer;
+  font-size:13.5px;
+  font-weight:700;
+  letter-spacing:0.3px;
+  position:relative;
+  border-bottom:3px solid transparent;
+  transition:all .15s;
+}
+.tab-btn:hover{color:#fff;}
+.tab-btn.active{color:var(--rig-amber); border-bottom:3px solid var(--rig-amber);}
+.panel{display:none; animation:fade .25s ease;}
+.panel.active{display:block;}
+@keyframes fade{from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);}}
+
+.section-block{
+  background:var(--rig-paper);
+  color:var(--rig-ink);
+  border-left:6px solid var(--rig-amber);
+  padding:18px 22px;
+  margin-bottom:18px;
+}
+.section-block h2{
+  font-family:'Trebuchet MS', sans-serif;
+  margin:0 0 10px;
+  font-size:19px;
+  color:var(--rig-navy);
+  display:flex; align-items:center; gap:10px;
+}
+.section-block h2 .num{
+  font-family:var(--mono);
+  background:var(--rig-navy);
+  color:var(--rig-amber);
+  font-size:12px;
+  padding:3px 8px;
+}
+.section-block h3{font-size:15px; margin:14px 0 6px; color:var(--rig-amber-2);}
+.section-block ul{margin:4px 0 10px 18px; padding:0;}
+.section-block ol{margin:4px 0 10px 18px; padding:0;}
+.section-block li{margin-bottom:5px;}
+.formula{
+  font-family:var(--mono);
+  background:var(--rig-navy);
+  color:#ffd28a;
+  display:inline-block;
+  padding:6px 12px;
+  margin:6px 0;
+  font-size:13.5px;
+  border:1px dashed var(--rig-amber);
+}
+.chip-row{display:flex; flex-wrap:wrap; gap:6px; margin:8px 0;}
+.chip{
+  font-family:var(--mono);
+  font-size:12px;
+  background:var(--rig-steel);
+  color:#fff;
+  padding:4px 9px;
+  border-radius:3px;
+}
+table.datatab{width:100%; border-collapse:collapse; font-size:13.5px; margin:8px 0;}
+table.datatab th{padding:6px; text-align:left; background:var(--rig-navy); color:#fff;}
+table.datatab td{padding:6px; border-bottom:1px solid #ccc; vertical-align:top;}
+table.datatab tr:nth-child(even) td{background:var(--rig-paper-2);}
+table.datatab tr:nth-child(odd) td{background:#fff;}
+
+.fc-controls{display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:10px;}
+.fc-counter{font-family:var(--mono); color:var(--rig-amber); font-size:13px;}
+.fc-stage{perspective:1400px; max-width:560px; margin:0 auto; height:300px;}
+.fc-card{width:100%; height:100%; position:relative; transform-style:preserve-3d; transition:transform .5s cubic-bezier(.2,.8,.2,1); cursor:pointer;}
+.fc-card.flipped{transform:rotateY(180deg);}
+.fc-face{
+  position:absolute; inset:0;
+  backface-visibility:hidden;
+  border:2px solid var(--rig-amber);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; padding:26px;
+  background:linear-gradient(160deg, var(--rig-navy-2), var(--rig-navy));
+}
+.fc-face .eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:2px; color:var(--rig-amber); margin-bottom:14px; text-transform:uppercase;}
+.fc-face .content{font-family:'Trebuchet MS', sans-serif; font-size:18.5px; font-weight:700; color:#fff;}
+.fc-face.back{transform:rotateY(180deg); background:linear-gradient(160deg, var(--rig-paper-2), var(--rig-paper)); border-color:var(--rig-amber-2);}
+.fc-face.back .content{color:var(--rig-ink); font-size:15px; font-weight:400; font-family:Georgia, serif;}
+.fc-face.back .eyebrow{color:var(--rig-amber-2);}
+.fc-nav{display:flex; justify-content:center; gap:12px; margin-top:20px;}
+.btn{
+  font-family:'Trebuchet MS', sans-serif;
+  background:var(--rig-amber); color:var(--rig-navy); border:none;
+  padding:10px 20px; font-weight:800; cursor:pointer; font-size:14px; letter-spacing:0.5px;
+  transition:background .15s;
+}
+.btn:hover{background:#f5a13f;}
+.btn.secondary{background:transparent; color:var(--rig-amber); border:1px solid var(--rig-amber);}
+.btn.secondary:hover{background:rgba(224,140,43,0.15);}
+.hint{text-align:center; color:var(--rig-paper-2); font-size:12px; margin-top:10px; font-style:italic;}
+
+.q-block{
+  background:var(--rig-paper); color:var(--rig-ink); padding:18px 20px; margin-bottom:16px;
+  border-left:6px solid var(--rig-steel); position:relative;
+}
+.q-block.calc{border-left-color:var(--rig-amber);}
+.q-num{font-family:var(--mono); font-size:12px; color:#fff; background:var(--rig-navy); display:inline-block; padding:2px 8px; margin-bottom:8px;}
+.q-text{font-weight:700; margin-bottom:10px; font-size:15.5px;}
+.opts{display:grid; gap:8px; margin-bottom:10px;}
+.opt{border:1.5px solid var(--rig-steel); padding:9px 12px; cursor:pointer; background:#fff; font-size:14px; transition:all .12s;}
+.opt:hover{background:var(--rig-paper-2);}
+.opt.correct{background:#e2f3e6; border-color:var(--ok); font-weight:700;}
+.opt.wrong{background:#fbe4df; border-color:var(--bad);}
+.reveal-btn{font-family:var(--mono); font-size:12px; background:none; border:1px solid var(--rig-navy); color:var(--rig-navy); padding:6px 12px; cursor:pointer;}
+.answer-box{display:none; margin-top:10px; padding:10px 14px; background:#e9f0fb; border-left:4px solid var(--rig-steel); font-size:14px;}
+.answer-box.show{display:block;}
+.essay-input{width:100%; border:1.5px solid var(--rig-steel); padding:10px; font-family:Georgia, serif; font-size:14px; min-height:60px; margin-bottom:8px; resize:vertical;}
+
+.diff-block{background:var(--rig-paper); color:var(--rig-ink); padding:18px 22px; margin-bottom:18px; border:1px solid var(--rig-steel); border-top:5px solid var(--bad);}
+.diff-block h2{font-family:'Trebuchet MS', sans-serif; color:var(--rig-navy); font-size:18px; margin:0 0 10px;}
+.diff-block .why{background:#fff3e6; border-left:4px solid var(--rig-amber-2); padding:8px 12px; font-size:13.5px; margin:10px 0; font-style:italic;}
+.diagram{font-family:var(--mono); background:var(--rig-navy); color:#dfe9f5; padding:12px 14px; font-size:12.5px; white-space:pre; overflow-x:auto; margin:10px 0;}
+.example-box{background:var(--rig-navy); color:#ffd28a; padding:10px 14px; font-family:var(--mono); font-size:13px; margin:8px 0; white-space:pre-wrap;}
+
+.score-bar{
+  position:sticky; bottom:0; background:var(--rig-navy-2); border-top:2px solid var(--rig-amber);
+  padding:10px 18px; display:flex; justify-content:space-between; align-items:center;
+  font-family:var(--mono); font-size:13px; color:var(--rig-amber); margin-top:20px;
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="rig-header">
+    <div class="tag">Jakarta Drilling Society · Class Batch #6</div>
+    <h1>Introduction of Geothermal Subsurface</h1>
+    <div class="subtitle">Exploration • Development • Reservoir Management — Paket Belajar: Rangkuman • Flashcard • Latihan Soal • Bagian Sulit</div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="summary">📋 Rangkuman</button>
+    <button class="tab-btn" data-tab="flash">🎴 Flashcard</button>
+    <button class="tab-btn" data-tab="quiz">✏️ Latihan Soal</button>
+    <button class="tab-btn" data-tab="hard">⚠️ Bagian Sulit</button>
+  </div>
+
+  <!-- ===================== SUMMARY ===================== -->
+  <div class="panel active" id="summary">
+
+    <div class="section-block">
+      <h2><span class="num">01</span> Konsep Dasar Geothermal Energy</h2>
+      <p><b>Apa itu Geothermal Energy?</b> Sistem geothermal bekerja seperti air mendidih dalam ketel (kettle analogy): ada <b>heat source</b> (sumber panas) di dasar, <b>reservoir</b> berisi air/uap, dan <b>cap rock</b> di atasnya yang menjaga tekanan sebelum uap keluar lewat "cerat" (manifestasi permukaan).</p>
+      <h3>Di mana geothermal ditemukan?</h3>
+      <ul>
+        <li>Sebagian besar geothermal berhubungan dengan <b>vulkanisme di batas lempeng tektonik</b>.</li>
+        <li>Sebagian sistem geothermal juga berhubungan dengan fitur geologi struktural utama seperti <b>sesar (faults)</b>.</li>
+        <li><b>Potensi Geothermal Indonesia: 23,77 GW</b>, sedangkan <b>Kapasitas Terpasang baru 2,28 GW</b> (ESDM, 2021) — menunjukkan pemanfaatan yang masih jauh dari potensi.</li>
+      </ul>
+      <h3>4 Elemen Sistem Geothermal (Cumming, 2009)</h3>
+      <table class="datatab">
+        <tr><th>Elemen</th><th>Berkaitan dengan</th></tr>
+        <tr><td>Heat Source</td><td>Heat flow (aliran panas)</td></tr>
+        <tr><td>Reservoir & Fluid Pathway</td><td>Porosity & permeability</td></tr>
+        <tr><td>Cap Rock (clay cap)</td><td>Controlling factor (faktor pengontrol/penahan sistem)</td></tr>
+        <tr><td>Circulating Fluid</td><td>Temperature & chemistry</td></tr>
+      </table>
+      <p>Manifestasi permukaan yang umum dijumpai: <b>Acid Sulphate Fumarole</b> (dekat puncak, zona uap), <b>Chloride Spring</b> (lebih jauh dari puncak, mencerminkan fluida reservoir asli/outflow), dengan zona alterasi bertingkat: <b>Zeolite-Smectite Zone → Argillic Zone → Propylitic Zone</b> seiring bertambahnya kedalaman & suhu.</p>
+    </div>
+
+    <div class="section-block">
+      <h2><span class="num">02</span> Geothermal vs Petroleum System</h2>
+      <p>Meskipun sama-sama disiplin subsurface, kedua sistem punya perbedaan mendasar pada tiap komponennya:</p>
+      <table class="datatab">
+        <tr><th>Komponen</th><th>Geothermal</th><th>Petroleum</th></tr>
+        <tr><td><b>Source</b></td><td>Intrusi/batholith yang mendingin (tidak terlalu tua, Quaternary) sebagai sumber panas</td><td>Batuan sumber (source rock) kaya organik yang cukup matang menghasilkan hidrokarbon</td></tr>
+        <tr><td><b>Reservoir</b></td><td>Umumnya di lingkungan vulkanik</td><td>Umumnya di lingkungan sedimen</td></tr>
+        <tr><td><b>Cap</b></td><td>Umumnya zona alterasi lempung (smectite) yang melindungi sistem panas dari air dingin sekitar</td><td>Strata impermeabel (shale, garam, dll) yang menjebak hidrokarbon & mencegah migrasi lanjut</td></tr>
+        <tr><td><b>Fluid</b></td><td>Fluida hidrotermal yang bersirkulasi</td><td>Hidrokarbon (minyak/gas) terakumulasi</td></tr>
+        <tr><td><b>Pressure</b></td><td>Umumnya <i>underpressured</i></td><td>Umumnya <i>overpressured</i></td></tr>
+      </table>
+      <table class="datatab">
+        <tr><th>Komponen</th><th>Geothermal</th><th>Petroleum</th></tr>
+        <tr><td><b>Spatial</b></td><td>Mencakup setting geologi/vulkanik lokal</td><td>Setting regional/skala cekungan (basin-wide)</td></tr>
+        <tr><td><b>Temporal</b></td><td>Gunung api Quaternary menutupi formasi lebih tua (volcano-stratigraphy)</td><td>Rentang waktu lebih luas — evolusi cekungan melalui berbagai peristiwa tektonik (litostratigrafi, tektono-stratigrafi, sekuen-stratigrafi)</td></tr>
+      </table>
+    </div>
+
+    <div class="section-block">
+      <h2><span class="num">03</span> Tahapan Pengembangan & Kurva Risiko-Biaya</h2>
+      <h3>4 Tahap Kunci Pengembangan Geothermal</h3>
+      <ol>
+        <li><b>Prospects Selection & Exploration Phase</b> — pertanyaan kunci: <i>Is it worth drilling?</i></li>
+        <li><b>End of Exploration & Feasibility Study</b> — <i>Proceed? Berapa MW proyeknya? Teknologi apa yang dipilih?</i></li>
+        <li><b>Development Drilling & Construction</b> — <i>Berapa jumlah sumur? pad? target? urutan sumur? penyesuaian fasilitas permukaan?</i></li>
+        <li><b>Long Term Operations</b> — <i>Bagaimana mengelola produksi-injeksi selama operasi lapangan?</i></li>
+      </ol>
+      <h3>Kurva Risiko vs Biaya (Gehringer & Loksha, 2012)</h3>
+      <ul>
+        <li>Aktivitas bertahap dalam pengembangan lapangan geothermal dirancang untuk <b>secara bertahap menurunkan risiko</b>.</li>
+        <li><b>Risiko TERTINGGI</b> berkaitan dengan aktivitas subsurface (upstream), yaitu pada tahap <b>pre-feasibility & eksplorasi</b>.</li>
+        <li><b>Biaya TERTINGGI</b> justru berkaitan dengan <b>konstruksi fasilitas permukaan</b>.</li>
+        <li>Risiko turun signifikan <b>setelah pengeboran eksplorasi</b> selesai.</li>
+      </ul>
+      <h3>Pertanyaan "Is it worth Drilling?"</h3>
+      <div class="chip-row">
+        <span class="chip">How hot?</span><span class="chip">How permeable?</span>
+        <span class="chip">Is fluid benign?</span><span class="chip">How big?</span>
+      </div>
+      <h3>Kriteria Sistem Geothermal "Preferred"</h3>
+      <ul>
+        <li>High Temperature (Enthalpy)</li>
+        <li>"Good" Permeability (High productivity)</li>
+        <li>Shallow Reservoir Depth</li>
+        <li>Sufficient reservoir (cadangan cukup)</li>
+        <li>Sustainable resource</li>
+        <li>Benign Chemistry (kimia fluida tidak merusak/korosif)</li>
+      </ul>
+    </div>
+
+    <div class="section-block">
+      <h2><span class="num">04</span> Eksplorasi Geothermal (3G)</h2>
+      <p><b>Survey pendahuluan (preliminary survey)</b> terdiri dari 3 disiplin utama ("3G"):</p>
+      <table class="datatab">
+        <tr><th>Disiplin</th><th>Peran dalam Model Konseptual</th></tr>
+        <tr><td><b>Geology</b></td><td>Memberi kerangka umum (framework) untuk model konseptual sistem geothermal</td></tr>
+        <tr><td><b>Geochemistry</b></td><td>Memberi data keras (hard data) yang mengindikasikan suhu reservoir, tipe & asal fluida, serta data pendukung lain untuk membangun model konseptual</td></tr>
+        <tr><td><b>Geophysics (termasuk MT)</b></td><td>Menunjukkan struktur bawah permukaan terkait kedalaman, bentuk, dan ukuran reservoir</td></tr>
+      </table>
+      <h3>Integrasi Data Eksplorasi</h3>
+      <ul>
+        <li>Mengintegrasikan setting geologi, informasi geokimia, model geofisika, dan prinsip termodinamika.</li>
+        <li><b>Geologist memimpin proses</b> integrasi ini.</li>
+        <li>Model konseptual terintegrasi memandu penilaian & keputusan lanjutan (estimasi sumber daya, strategi pengeboran eksplorasi, manajemen ketidakpastian).</li>
+        <li>Digunakan <b>model-model alternatif</b> untuk menangkap rentang ketidakpastian yang ada.</li>
+      </ul>
+      <p><b>Tujuan Pengeboran Eksplorasi:</b> untuk <i>menguji model konseptual</i> yang sudah dibangun dari data 3G di atas.</p>
+    </div>
+
+    <div class="section-block">
+      <h2><span class="num">05</span> Drilling Objectives & Well Objectives</h2>
+      <h3>Segitiga Tujuan Pengeboran</h3>
+      <p>Di puncak: <b>Company Goals — Economic Viable Project</b>, ditopang oleh dua sisi:</p>
+      <table class="datatab">
+        <tr><th>Drilling Department Goals</th><th>Subsurface Department Goals</th></tr>
+        <tr><td>Mencapai tujuan sumur (well objective)</td><td>Mengebor sumur yang produktif</td></tr>
+        <tr><td>Menyelesaikan sumur sesuai desain awal secara aman</td><td>Menguji model konseptual</td></tr>
+        <tr><td>Sesuai jadwal (lebih cepat)</td><td>Mengurangi ketidakpastian reservoir</td></tr>
+        <tr><td>Sesuai anggaran (lebih murah)</td><td></td></tr>
+      </table>
+      <h3>Contoh Well Objectives & Strategi (dari berbagai lapangan dunia)</h3>
+      <table class="datatab">
+        <tr><th>Objective</th><th>Strategi/Taktik</th></tr>
+        <tr><td>Eksplorasi (uji model konseptual)</td><td>Sebar well pad, pindahkan rig setelah semua pad siap — fleksibilitas tinggi (mis. Muara Laboh, Rantau Dedap)</td></tr>
+        <tr><td>Minimize acid risk</td><td>Casing dalam, hindari perpotongan sesar dangkal, gunakan material khusus (mis. Tiwi, Palinpinon, Bac-Man)</td></tr>
+        <tr><td>Exploit shallow steam cap</td><td>Casing dangkal, gunakan sudut deviasi tinggi agar tetap di zona uap (mis. Salak, Wayang Windu)</td></tr>
+        <tr><td>Maximize overall production</td><td>Target area antara upflow & outflow, suhu tinggi (&gt;260°C), zona struktur baik; bor lubang besar bila perlu (mis. Salak)</td></tr>
+        <tr><td>Forked wells</td><td>Untuk target lebih dalam di area dengan pad terbatas, bor sumur Multi-Lateral (mis. Salak, Bulalo)</td></tr>
+        <tr><td>Reduce Costs</td><td>Di area yang sudah terbukti, bangun pad & cellar untuk mengebor banyak sumur dari 1 pad dengan skidding rig, jarak 250-400 m di ResTop (mis. Bulalo, Tongonan)</td></tr>
+        <tr><td>Minimize injection return risk</td><td>Cari area downhill dari separator dengan ResTop dalam; casing dalam, deviasi menjauh dari sumur produksi &gt;1 km (mis. Bulalo)</td></tr>
+        <tr><td>Optimize injection</td><td>Cari jarak "aman" yang menyapu panas & berkontribusi ke recharge, tapi sebagian target injeksi tetap di luar zona utama</td></tr>
+        <tr><td>Deep, high T-P productivity</td><td>Di lapangan dengan upflow permeabel, casing relatif dalam untuk fokus ke produksi enthalpy tinggi (mis. Olkaria Domes)</td></tr>
+      </table>
+      <h3>Prinsip Penting</h3>
+      <ul>
+        <li>Setiap sumur harus dipikirkan sebagai komponen dari keseluruhan program & tujuan pengeboran.</li>
+        <li>Umumnya satu sumur hanya bisa mencapai <b>1-2 objective</b> tanpa menjadi sulit diimplementasikan.</li>
+        <li>Jaga agar tujuan tetap sederhana & dapat dicapai, terutama di tahap eksplorasi awal.</li>
+        <li>Harus menimbang manfaat potensial dari <b>POS (Probability of Success)</b> vs <b>VOI (Value of Information)</b> — sebagian sumur fokus pada POS tinggi, sebagian lain punya komponen VOI kuat meski perkiraan POS lebih rendah.</li>
+      </ul>
+    </div>
+
+    <div class="section-block">
+      <h2><span class="num">06</span> Studi Kasus: Supreme Energy</h2>
+      <h3>3 Area Operasi</h3>
+      <ul>
+        <li><b>Muara Laboh</b> — Kabupaten Solok Selatan, ~135 km SE Padang, Sumatera Barat</li>
+        <li><b>Rantau Dedap</b> — ~250 km SW Palembang, Sumatera Selatan</li>
+        <li><b>Rajabasa</b> — ujung selatan Pulau Sumatera, ~60 km dari Bandar Lampung</li>
+      </ul>
+      <h3>Kronologi Proyek Muara Laboh</h3>
+      <table class="datatab">
+        <tr><th>Tahun</th><th>Kejadian</th></tr>
+        <tr><td>2010</td><td>IUP (izin pertambangan) diberikan</td></tr>
+        <tr><td>2012</td><td>PPA dan BVGL ditandatangani</td></tr>
+        <tr><td>2013</td><td>Pengeboran Eksplorasi</td></tr>
+        <tr><td>2014</td><td><b>Resource Confirmation 60 MWe</b> (teknologi Single Flash)</td></tr>
+        <tr><td>2015</td><td><b>Development Confirmation 80 MWe</b> (teknologi Dual Flash)</td></tr>
+        <tr><td>2016</td><td>Amandemen ke-2 PPA</td></tr>
+        <tr><td>2017</td><td>Perjanjian pinjaman ditandatangani</td></tr>
+        <tr><td>2018</td><td>Pengeboran Development selesai</td></tr>
+        <tr><td>Des 2019 – sekarang</td><td>Lapangan beroperasi pada kapasitas penuh</td></tr>
+      </table>
+      <h3>Overview Pengembangan Sumber Daya Muara Laboh</h3>
+      <ul>
+        <li>Produksi dari area elevasi & suhu tinggi di <b>Pad A, F, dan H</b>.</li>
+        <li>Injeksi brine ke area elevasi & suhu lebih rendah di <b>Pad D dan E</b>.</li>
+        <li>Power Plant & Separator Station berdekatan dengan <b>Pad A</b>.</li>
+        <li>Injeksi kondensat ke <b>Pad B</b>.</li>
+      </ul>
+      <h3>Rencana Pengembangan Tahap 2 (Stage 2)</h3>
+      <ul>
+        <li>Studi model numerik menunjukkan reservoir Muara Laboh dapat mendukung tambahan <b>~80 MWe</b>.</li>
+        <li>Sumur produksi baru dibor lebih dalam dari <b>Pad F & H yang sudah ada</b> (di luar Taman Nasional) untuk menargetkan reservoir SW di bawah taman.</li>
+        <li>Brine yang dipisahkan perlu diinjeksikan ke bagian barat lapangan untuk memberi dukungan tekanan ke reservoir SW — <b>Pad K baru</b> akan dibangun.</li>
+        <li>Injeksi ke Pad E akan dibatasi untuk meminimalkan <i>premature injection return</i> ke reservoir NE (Pad A).</li>
+      </ul>
+      <h3>Reservoir Management yang Baik</h3>
+      <ul>
+        <li>Pemahaman lebih baik tentang karakteristik reservoir & manajemen risiko.</li>
+        <li>Kontrol lebih baik untuk manajemen reservoir & operasi lapangan yang berkelanjutan.</li>
+        <li>Pemahaman lebih baik tentang potensi pengembangan lapangan lebih lanjut.</li>
+      </ul>
+      <p>Contoh nyata: <b>Tiwi Field</b> (Sugiaman, 2004) di Filipina & <b>Salak Field</b> (Golla et al., 2018) di Indonesia — keduanya menunjukkan pola sumur produksi & injeksi yang dikelompokkan berdasarkan zona reservoir yang berbeda.</p>
+    </div>
+
+    <div class="section-block">
+      <h2><span class="num">07</span> Exercise#1 (dari Slide)</h2>
+      <p>Sebuah lapangan geothermal di Amerika Selatan telah menyelesaikan eksplorasi 3G dan sedang merencanakan pengeboran eksplorasi dengan <b>budget disetujui USD 20 juta</b>. Data biaya:</p>
+      <table class="datatab">
+        <tr><th>Komponen</th><th>Biaya</th></tr>
+        <tr><td>Well Pad Cost — Pad A</td><td>USD 5 juta</td></tr>
+        <tr><td>Well Pad Cost — Pad B</td><td>USD 3 juta</td></tr>
+        <tr><td>Drilling Cost — Slim Hole (@1000 mMD)</td><td>USD 3 juta</td></tr>
+        <tr><td>Drilling Cost — Standard Hole (@1500 mMD)</td><td>USD 5 juta</td></tr>
+        <tr><td>Drilling Cost — Big Hole (@2500 mMD)</td><td>USD 8 juta</td></tr>
+        <tr><td>Well Testing Cost / sumur</td><td>USD 300 ribu</td></tr>
+      </table>
+      <p>Tugas: tentukan <b>jumlah well pad</b>, <b>jumlah sumur</b>, dan <b>karakteristik sumur</b> (tipe, total depth, inklinasi) yang paling sesuai — semuanya harus tetap dalam budget, disertai <b>penjelasan rasional</b> di balik pilihan tersebut. (Lihat contoh perhitungan lengkap di tab "Latihan Soal".)</p>
+    </div>
+  </div>
+
+  <!-- ===================== FLASHCARDS ===================== -->
+  <div class="panel" id="flash">
+    <div class="fc-controls">
+      <div class="fc-counter" id="fcCounter">Kartu 1 / 20</div>
+      <button class="btn secondary" id="fcShuffle">🔀 Acak Kartu</button>
+    </div>
+    <div class="fc-stage">
+      <div class="fc-card" id="fcCard">
+        <div class="fc-face front">
+          <div class="eyebrow">Istilah</div>
+          <div class="content" id="fcFront">-</div>
+        </div>
+        <div class="fc-face back">
+          <div class="eyebrow">Penjelasan</div>
+          <div class="content" id="fcBack">-</div>
+        </div>
+      </div>
+    </div>
+    <p class="hint">Klik kartu untuk membalik</p>
+    <div class="fc-nav">
+      <button class="btn secondary" id="fcPrev">← Sebelumnya</button>
+      <button class="btn" id="fcNext">Selanjutnya →</button>
+    </div>
+  </div>
+
+  <!-- ===================== QUIZ ===================== -->
+  <div class="panel" id="quiz">
+    <div id="quizContainer"></div>
+    <div class="score-bar">
+      <span>SKOR PILIHAN GANDA</span>
+      <span id="scoreDisplay">0 / 0 dijawab</span>
+    </div>
+  </div>
+
+  <!-- ===================== DIFFICULT PARTS ===================== -->
+  <div class="panel" id="hard">
+
+    <div class="diff-block">
+      <h2>1. Cap Rock & Tekanan: Geothermal vs Petroleum Berlawanan Arah</h2>
+      <p>Banyak yang mengira cap rock selalu berfungsi sama — padahal fungsinya justru <b>berlawanan arah</b> antara dua sistem:</p>
+      <div class="diagram">GEOTHERMAL Cap Rock (Smectite Clay):
+   Fungsi = MELINDUNGI sistem panas DARI air dingin di sekitarnya
+   Tekanan reservoir = umumnya UNDERPRESSURED
+
+PETROLEUM Cap Rock (Shale/Salt):
+   Fungsi = MENJEBAK hidrokarbon agar TIDAK bermigrasi keluar
+   Tekanan reservoir = umumnya OVERPRESSURED</div>
+      <div class="why">💡 Cara mudah mengingat: cap rock geothermal menjaga panas tetap TERKUNG (isolasi termal dari luar), sedangkan cap rock petroleum menjaga hidrokarbon tetap TERPERANGKAP (isolasi migrasi dari dalam) — dua arah perlindungan yang berbeda, sehingga wajar jika kondisi tekanannya pun berlawanan (under- vs over-pressured).</div>
+    </div>
+
+    <div class="diff-block">
+      <h2>2. Kurva Risiko vs Biaya — Kenapa Justru Berlawanan Arah?</h2>
+      <p>Ini paradoks yang sering membingungkan: tahap yang biayanya PALING MURAH (eksplorasi) justru risikonya PALING TINGGI, sementara tahap yang biayanya PALING MAHAL (konstruksi) risikonya sudah PALING RENDAH.</p>
+      <div class="diagram">Tahap:        Eksplorasi   →  Development Drilling  →  Construction & Operation
+Risiko:       TINGGI       →  Turun bertahap         →  RENDAH
+Biaya (kum.): RENDAH       →  Naik bertahap          →  TINGGI (100%)
+
+   Risk ↓ sementara Cost ↑  — dua kurva ini "menyilang", tidak sejalan!</div>
+      <p>Ini masuk akal karena: di tahap eksplorasi kita BELUM TAHU apakah reservoir benar-benar ada/produktif (ketidakpastian tertinggi), padahal uang yang dikeluarkan relatif kecil (survei, beberapa sumur uji). Begitu sumur eksplorasi berhasil mengonfirmasi reservoir, ketidakpastian teknis sudah sangat berkurang — sehingga uang besar yang dikeluarkan untuk membangun pembangkit di tahap konstruksi dilakukan dengan risiko subsurface yang sudah rendah.</p>
+      <div class="why">💡 Intinya: uang besar di tahap akhir itu "aman" secara teknis (risiko subsurface rendah), sedangkan uang kecil di tahap awal itu "berisiko" (belum ada kepastian resource) — bukan berarti tahap awal lebih murah karena lebih mudah.</div>
+    </div>
+
+    <div class="diff-block">
+      <h2>3. Kenapa Perlu 3 Disiplin (3G) Sekaligus, Bukan Cukup Satu Saja?</h2>
+      <p>Pemula sering bertanya: kalau geofisika sudah bisa "melihat" struktur bawah permukaan, kenapa masih perlu geologi dan geokimia?</p>
+      <div class="diagram">GEOLOGY      → menjawab: "Bagaimana KERANGKA/framework sistemnya?"
+                 (tapi tidak bisa mengukur suhu/kimia langsung)
+
+GEOCHEMISTRY → menjawab: "Berapa SUHU reservoir & dari MANA asal fluida?"
+                 (tapi tidak menunjukkan bentuk/ukuran struktur 3D)
+
+GEOPHYSICS   → menjawab: "Di mana LETAK, BENTUK, dan UKURAN reservoir?"
+                 (tapi tidak bisa memastikan suhu atau kimia fluida)
+
+   Ketiganya saling MELENGKAPI, bukan saling menggantikan.
+   Tanpa salah satu, model konseptual jadi TIDAK LENGKAP.</div>
+      <div class="why">💡 Karena masing-masing disiplin menjawab pertanyaan yang berbeda (kerangka vs suhu/kimia vs geometri 3D), model konseptual yang solid HARUS mengintegrasikan ketiganya — itulah kenapa geologist yang memimpin proses justru bertugas MENGGABUNGKAN ketiga sumber data ini, bukan hanya mengandalkan satu disiplin saja.</div>
+    </div>
+
+    <div class="diff-block">
+      <h2>4. POS vs VOI — Sumur "Gagal" yang Sebenarnya Berhasil</h2>
+      <p>Konsep paling sering disalahpahami pemula: mereka mengira SEMUA sumur eksplorasi harus punya probabilitas sukses (POS) setinggi mungkin. Padahal ada sumur yang sengaja dirancang dengan POS lebih rendah karena nilai utamanya ada di tempat lain.</p>
+      <div class="diagram">POS (Probability of Success):
+   → peluang sumur ini akan PRODUKTIF (menghasilkan uap/panas komersial)
+
+VOI (Value of Information):
+   → nilai INFORMASI yang didapat dari sumur ini untuk mengurangi
+     ketidakpastian model konseptual — walau sumur itu sendiri
+     ternyata TIDAK produktif
+
+Contoh: sumur delineasi di tepi reservoir yang diperkirakan POS rendah,
+tapi datanya SANGAT berharga untuk memastikan batas reservoir
+—> tetap "berhasil" secara VOI meski "gagal" secara POS produksi.</div>
+      <div class="why">💡 Karena satu sumur umumnya hanya bisa mencapai 1-2 objective, tim harus secara sadar MEMILIH: apakah sumur ini dioptimalkan untuk peluang produksi tertinggi (POS), atau untuk mengurangi ketidakpastian model (VOI) — dua tujuan ini kadang saling bertentangan dalam penempatan & desain sumur yang sama.</div>
+    </div>
+
+    <div class="diff-block">
+      <h2>5. Single Flash vs Dual Flash — Kenapa MWe Bisa Naik dari 60 ke 80 Tanpa Resource Baru?</h2>
+      <p>Pada kronologi Muara Laboh, tahun 2014 dikonfirmasi 60 MWe (Single Flash) lalu tahun 2015 naik menjadi 80 MWe (Dual Flash) — banyak yang mengira ini berarti ditemukan cadangan baru, padahal sebenarnya PERUBAHAN TEKNOLOGI konversi energi.</p>
+      <div class="diagram">SINGLE FLASH:
+   Fluida panas bumi (brine + steam) → dipisah SATU KALI di separator
+   → hanya uap tekanan tinggi yang dipakai memutar turbin
+   → sisa brine (masih cukup panas) LANGSUNG diinjeksikan kembali
+
+DUAL FLASH:
+   Fluida panas bumi → dipisah tahap 1 (sama seperti Single Flash)
+   → brine sisa tahap 1 di-"flash" LAGI pada tekanan lebih rendah
+   → dihasilkan uap TAMBAHAN (tekanan rendah) untuk turbin tambahan
+   → baru setelah itu brine sisa diinjeksikan
+
+   Hasil: energi yang tadinya "terbuang" di brine sisa Single Flash
+   kini ikut dimanfaatkan → OUTPUT MWe lebih besar dari resource YANG SAMA</div>
+      <div class="why">💡 Kenaikan 60→80 MWe antara tahun 2014-2015 bukan berasal dari cadangan baru yang ditemukan, melainkan dari keputusan teknologi pembangkit yang lebih efisien memanfaatkan energi dari fluida yang sama — inilah sebabnya "Resource Confirmation" dan "Development Confirmation" bisa menghasilkan angka MW yang berbeda meski berasal dari studi reservoir yang sama.</div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
+  });
+});
+
+let flashcards = [
+  {f:"4 Elemen Sistem Geothermal", b:"Heat Source (→heat flow), Reservoir & Fluid Pathway (→porositas & permeabilitas), Cap Rock (→faktor pengontrol), Circulating Fluid (→suhu & kimia). Bekerja seperti air mendidih dalam ketel."},
+  {f:"Cap Rock (Smectite Clay)", b:"Zona alterasi lempung yang melindungi sistem panas dari air dingin di sekitarnya — berbeda fungsi dari cap rock petroleum yang menjebak hidrokarbon."},
+  {f:"Upflow", b:"Jalur naiknya fluida panas dari sumber panas menuju permukaan, biasanya melalui rekahan/fault; area ini biasanya jadi target utama sumur produksi bersuhu tinggi."},
+  {f:"Outflow", b:"Aliran lateral fluida panas yang mendingin & menjauh dari zona upflow, sering muncul di permukaan sebagai mata air klorida (chloride spring)."},
+  {f:"Enthalpy", b:"Kandungan energi panas per satuan massa fluida; sistem geothermal 'preferred' dicirikan oleh enthalpy/temperatur tinggi."},
+  {f:"3G Survey", b:"Tiga disiplin utama eksplorasi awal: Geology (kerangka model), Geochemistry (data suhu & tipe fluida), Geophysics/MT (struktur bawah permukaan)."},
+  {f:"Magnetotelluric (MT) Survey", b:"Metode geofisika untuk memetakan struktur resistivitas bawah permukaan, membantu menunjukkan kedalaman, bentuk, dan ukuran reservoir."},
+  {f:"Conceptual Model", b:"Model terintegrasi dari data geologi, geokimia, geofisika, dan prinsip termodinamika, dipimpin oleh geologist, menjadi dasar keputusan eksplorasi & pengeboran."},
+  {f:"POS (Probability of Success)", b:"Kemungkinan sebuah sumur berhasil menembus target dan menjadi produktif secara komersial."},
+  {f:"VOI (Value of Information)", b:"Nilai informasi yang diperoleh dari sebuah sumur untuk mengurangi ketidakpastian model konseptual, terlepas dari apakah sumur itu sendiri produktif."},
+  {f:"Preferred Geothermal System", b:"Kombinasi ideal: suhu tinggi (enthalpy), permeabilitas baik, reservoir dangkal, cadangan cukup, sustainable, dan kimia fluida jinak (benign)."},
+  {f:"Single Flash vs Dual Flash", b:"Teknologi pembangkit; Dual Flash memanfaatkan brine sisa dari flash pertama untuk menghasilkan uap tambahan, sehingga output MW lebih besar dari resource yang sama."},
+  {f:"IUP", b:"Izin Usaha Pertambangan (mining right) — izin dasar yang harus diperoleh sebelum proyek panas bumi dapat berjalan."},
+  {f:"PPA (Power Purchase Agreement)", b:"Kontrak jual-beli listrik jangka panjang antara pengembang geothermal dengan offtaker (mis. PLN)."},
+  {f:"Resource vs Development Confirmation", b:"Tahap studi kelayakan bertahap; Resource Confirmation menentukan potensi awal (mis. 60 MWe), Development Confirmation mengunci desain final proyek (mis. 80 MWe)."},
+  {f:"Slim / Standard / Big Hole", b:"Kategori ukuran sumur eksplorasi berdasarkan kedalaman & biaya, contoh: Slim @1000 mMD, Standard @1500 mMD, Big @2500 mMD."},
+  {f:"Forked Wells (Multi Lateral)", b:"Strategi mengebor beberapa lintasan/cabang dari satu sumur untuk menjangkau target lebih dalam saat lahan pad terbatas."},
+  {f:"Injection Return Risk", b:"Risiko air injeksi (lebih dingin) kembali terlalu cepat ke sumur produksi terdekat, sehingga menurunkan suhu/produktivitas sumur produksi."},
+  {f:"Drilling Objectives Triangle", b:"Company Goals (proyek ekonomis) di puncak, ditopang Drilling Dept Goals (aman, sesuai desain, tepat waktu, hemat biaya) & Subsurface Dept Goals (produktif, uji model konseptual, kurangi ketidakpastian)."},
+  {f:"Reservoir Management yang Baik", b:"Menghasilkan pemahaman lebih baik atas karakteristik reservoir & manajemen risiko, kontrol operasi berkelanjutan, dan potensi pengembangan lapangan lanjutan."},
+];
+let fcIndex = 0;
+let flipped = false;
+
+function renderCard(){
+  document.getElementById('fcFront').textContent = flashcards[fcIndex].f;
+  document.getElementById('fcBack').textContent = flashcards[fcIndex].b;
+  document.getElementById('fcCounter').textContent = `Kartu ${fcIndex+1} / ${flashcards.length}`;
+  document.getElementById('fcCard').classList.remove('flipped');
+  flipped = false;
+}
+document.getElementById('fcCard').addEventListener('click', ()=>{
+  flipped = !flipped;
+  document.getElementById('fcCard').classList.toggle('flipped', flipped);
+});
+document.getElementById('fcNext').addEventListener('click', ()=>{
+  fcIndex = (fcIndex+1) % flashcards.length;
+  renderCard();
+});
+document.getElementById('fcPrev').addEventListener('click', ()=>{
+  fcIndex = (fcIndex-1+flashcards.length) % flashcards.length;
+  renderCard();
+});
+document.getElementById('fcShuffle').addEventListener('click', ()=>{
+  for(let i=flashcards.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [flashcards[i],flashcards[j]]=[flashcards[j],flashcards[i]];
+  }
+  fcIndex=0;
+  renderCard();
+});
+renderCard();
+
+const quizData = [
+  {
+    type:'mcq',
+    q:"Apa 4 elemen dasar sistem geothermal menurut materi (Cumming, 2009)?",
+    opts:[
+      "Heat Source, Reservoir & Fluid Pathway, Cap Rock, Circulating Fluid",
+      "Source Rock, Reservoir, Trap, Seal",
+      "Magma, Air Tanah, Batuan Induk, Uap Panas",
+      "Upflow, Outflow, Recharge, Discharge"
+    ],
+    correct:0
+  },
+  {
+    type:'mcq',
+    q:"Pada perbandingan Geothermal vs Petroleum System, kondisi tekanan reservoir geothermal umumnya adalah...",
+    opts:["Overpressured, sama seperti petroleum","Underpressured","Sama dengan tekanan atmosfer permukaan","Tidak dapat diukur secara langsung"],
+    correct:1
+  },
+  {
+    type:'mcq',
+    q:"Berdasarkan kurva Geothermal Development Stages (Gehringer & Loksha, 2012), tahap dengan RISIKO PROYEK TERTINGGI adalah...",
+    opts:["Construction & Operation","Development Drilling (F/S Planning & Drilling)","Pre-Survey, Exploration, dan Test Drilling","Start-up"],
+    correct:2
+  },
+  {
+    type:'mcq',
+    q:"Sebaliknya, tahap dengan BIAYA KUMULATIF TERTINGGI adalah...",
+    opts:["Pre-Survey","Exploration","Construction & Operation (terutama konstruksi fasilitas permukaan)","Test Drilling"],
+    correct:2
+  },
+  {
+    type:'mcq',
+    q:"Apa fungsi utama survey Geofisika/MT dalam tahap eksplorasi geothermal?",
+    opts:[
+      "Menentukan tipe & asal fluida reservoir",
+      "Menunjukkan struktur bawah permukaan terkait kedalaman, bentuk, dan ukuran reservoir",
+      "Memetakan sejarah letusan gunung api secara kronologis",
+      "Menghitung volume cadangan hidrokarbon"
+    ],
+    correct:1
+  },
+  {
+    type:'mcq',
+    q:"Konsep VOI (Value of Information) dalam well objectives berarti...",
+    opts:[
+      "Sumur hanya dinilai berhasil jika terbukti produktif secara komersial",
+      "Nilai sebuah sumur juga bisa berasal dari informasi yang mengurangi ketidakpastian model, meski sumur itu sendiri tidak produktif",
+      "VOI hanya berlaku untuk sumur injeksi, bukan produksi",
+      "VOI mengacu pada volume fluida yang berhasil diproduksi"
+    ],
+    correct:1
+  },
+  {
+    type:'mcq',
+    q:"Berdasarkan data ESDM 2021 pada materi, bagaimana perbandingan potensi geothermal Indonesia terhadap kapasitas yang sudah terpasang?",
+    opts:["23,77 GW potensi vs 2,28 GW terpasang","2,28 GW potensi vs 23,77 GW terpasang","10 GW potensi vs 5 GW terpasang","Potensi dan kapasitas terpasang sudah setara"],
+    correct:0
+  },
+  {
+    type:'calc',
+    q:"Gunakan data biaya Exercise#1 (Pad A = USD 5 juta, Pad B = USD 3 juta; Slim Hole @1000mMD = USD 3 juta, Standard Hole @1500mMD = USD 5 juta, Big Hole @2500mMD = USD 8 juta; Well Testing = USD 300 ribu/sumur) dengan budget eksplorasi USD 20 juta. Rancang SATU skenario (jumlah pad, jumlah sumur, jenis sumur) yang muat dalam budget, lalu hitung total biayanya!",
+    answer:"Catatan: ini soal perencanaan terbuka (open-ended) — banyak skenario valid. Berikut SALAH SATU contoh solusi:\n\nSkenario: Bangun kedua pad (A & B), lalu bor 3 sumur —\n1 Standard Hole (@1500mMD) dari Pad A (untuk menargetkan zona upflow/suhu tinggi, POS lebih tinggi)\n2 Slim Hole (@1000mMD): 1 dari Pad A, 1 dari Pad B (untuk delineasi/VOI dengan biaya lebih murah)\n\nPerhitungan:\nWell Pad Cost = Pad A + Pad B = 5 + 3 = 8 juta\nDrilling Cost = 1×Standard(5) + 2×Slim(3+3) = 5 + 6 = 11 juta\nWell Testing = 3 sumur × 0,3 juta = 0,9 juta\n\nTOTAL = 8 + 11 + 0,9 = 19,9 juta (dalam budget USD 20 juta, sisa buffer USD 0,1 juta)\n\nRasional: 1 sumur Standard di Pad A menguji target utama (POS tinggi, dekat upflow), sedangkan 2 sumur Slim yang lebih murah dipakai untuk delineasi/menambah VOI di area sekitar — sesuai prinsip 'satu sumur hanya mencapai 1-2 objective' dan menyeimbangkan POS vs VOI dalam satu program eksplorasi."
+  },
+  {
+    type:'calc',
+    q:"Sebuah lapangan lain memiliki data biaya berbeda: Pad C = USD 4 juta, Pad D = USD 2 juta; Slim Hole = USD 2,5 juta, Standard Hole = USD 4 juta, Big Hole = USD 7 juta; Well Testing = USD 250 ribu/sumur. Budget eksplorasi = USD 15 juta. Apakah rencana berikut MUAT dalam budget: membangun kedua pad (C & D), lalu mengebor 3 sumur Standard Hole? Tunjukkan perhitungannya!",
+    answer:"Well Pad Cost = Pad C + Pad D = 4 + 2 = 6 juta\nDrilling Cost = 3 × Standard Hole = 3 × 4 = 12 juta\nWell Testing = 3 × 0,25 = 0,75 juta\n\nTOTAL = 6 + 12 + 0,75 = 18,75 juta\n\nKESIMPULAN: TIDAK MUAT dalam budget USD 15 juta — kelebihan USD 3,75 juta.\n\nSalah satu perbaikan: kurangi menjadi 2 sumur Standard Hole (bukan 3) →\nTotal = 6 + (2×4) + (2×0,25) = 6 + 8 + 0,5 = 14,5 juta → MUAT, dengan sisa buffer USD 0,5 juta."
+  },
+  {
+    type:'essay',
+    q:"Mengapa tahap eksplorasi geothermal dianggap sebagai tahap dengan RISIKO TERTINGGI meskipun biayanya jauh lebih kecil dibanding tahap konstruksi? Jelaskan dengan kata-katamu sendiri.",
+    answer:"Contoh jawaban: Karena di tahap eksplorasi, keberadaan dan kualitas reservoir (suhu, permeabilitas, ukuran, kandungan kimia) masih berupa perkiraan dari data tidak langsung (geologi, geokimia, geofisika) — belum ada satu pun sumur yang benar-benar membuktikan bahwa resource-nya ekonomis untuk dikembangkan. Setiap dolar yang dikeluarkan di tahap ini punya kemungkinan besar 'hangus' jika ternyata sumur uji tidak menemukan reservoir yang layak. Sebaliknya, begitu masuk tahap konstruksi, resource sudah dikonfirmasi lewat sumur eksplorasi & development — sehingga meskipun biayanya jauh lebih besar (membangun pembangkit), risiko TEKNIS/SUBSURFACE-nya sudah rendah karena yang tersisa hanyalah risiko konstruksi & operasional, bukan risiko 'apakah resource-nya ada'."
+  },
+  {
+    type:'essay',
+    q:"Berdasarkan tabel Well Objectives, pilih SATU contoh (misalnya 'Minimize acid risk' atau 'Exploit shallow steam cap') dan jelaskan mengapa strategi pengeborannya berbeda dari strategi 'Maximize overall production'.",
+    answer:"Contoh jawaban (untuk 'Minimize acid risk'): Strategi minimize acid risk mengharuskan casing dipasang lebih dalam dan menghindari perpotongan dengan sesar dangkal, serta memakai material tahan korosi — karena fluida asam di zona dangkal (dekat fumarole) dapat merusak casing dan peralatan produksi dengan cepat. Ini membatasi pilihan trayektori sumur demi keamanan jangka panjang infrastruktur. Sebaliknya, strategi 'maximize overall production' justru menargetkan area antara upflow dan outflow bersuhu tinggi (>260°C) di zona struktur yang baik, dan berani mengebor lubang besar jika diperlukan — fokus utamanya adalah volume produksi maksimal, bukan menghindari risiko korosi, sehingga toleransi risiko dan desain sumurnya pun berbeda."
+  }
+];
+
+const quizContainer = document.getElementById('quizContainer');
+let answered = 0;
+let totalMcq = quizData.filter(q=>q.type==='mcq').length;
+
+quizData.forEach((item, idx)=>{
+  const block = document.createElement('div');
+  block.className = 'q-block' + (item.type!=='mcq' ? ' calc' : '');
+
+  if(item.type === 'mcq'){
+    block.innerHTML = `
+      <div class="q-num">SOAL ${idx+1} · PILIHAN GANDA</div>
+      <div class="q-text">${item.q}</div>
+      <div class="opts" id="opts-${idx}"></div>
+    `;
+    const optsDiv = block.querySelector(`#opts-${idx}`);
+    item.opts.forEach((opt,oi)=>{
+      const o = document.createElement('div');
+      o.className='opt';
+      o.textContent = opt;
+      o.addEventListener('click', ()=>{
+        if(optsDiv.dataset.locked) return;
+        optsDiv.dataset.locked = "1";
+        [...optsDiv.children].forEach((c,ci)=>{
+          if(ci===item.correct) c.classList.add('correct');
+          else if(ci===oi) c.classList.add('wrong');
+        });
+        answered++;
+        document.getElementById('scoreDisplay').textContent = `${answered} / ${totalMcq} dijawab`;
+      });
+      optsDiv.appendChild(o);
+    });
+  } else if(item.type === 'calc'){
+    block.innerHTML = `
+      <div class="q-num">SOAL ${idx+1} · HITUNGAN / PERENCANAAN</div>
+      <div class="q-text">${item.q.replace(/\n/g,'<br>')}</div>
+      <textarea class="essay-input" placeholder="Tuliskan langkah perhitunganmu di sini..."></textarea>
+      <button class="reveal-btn">Lihat Jawaban</button>
+      <div class="answer-box">${item.answer.replace(/\n/g,'<br>')}</div>
+    `;
+    const btn = block.querySelector('.reveal-btn');
+    const ans = block.querySelector('.answer-box');
+    btn.addEventListener('click', ()=>{
+      ans.classList.toggle('show');
+      btn.textContent = ans.classList.contains('show') ? 'Sembunyikan Jawaban' : 'Lihat Jawaban';
+    });
+  } else {
+    block.innerHTML = `
+      <div class="q-num">SOAL ${idx+1} · ESAI</div>
+      <div class="q-text">${item.q}</div>
+      <textarea class="essay-input" placeholder="Tulis jawabanmu di sini..."></textarea>
+      <button class="reveal-btn">Lihat Contoh Jawaban</button>
+      <div class="answer-box">${item.answer}</div>
+    `;
+    const btn = block.querySelector('.reveal-btn');
+    const ans = block.querySelector('.answer-box');
+    btn.addEventListener('click', ()=>{
+      ans.classList.toggle('show');
+      btn.textContent = ans.classList.contains('show') ? 'Sembunyikan Jawaban' : 'Lihat Contoh Jawaban';
+    });
+  }
+  quizContainer.appendChild(block);
+});
+document.getElementById('scoreDisplay').textContent = `0 / ${totalMcq} dijawab`;
+</script>
+</body>
+</html>

@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Introduction Drilling Engineering — Study Kit</title>
+<style>
+:root{
+  --rig-navy:#0d1b2e;
+  --rig-navy-2:#16283f;
+  --rig-steel:#2c4260;
+  --rig-amber:#e08c2b;
+  --rig-amber-2:#c9761c;
+  --rig-paper:#f3ede1;
+  --rig-paper-2:#e8dfc9;
+  --rig-ink:#1c2430;
+  --rig-line:#3f5a7a;
+  --ok:#3f9d5c;
+  --bad:#c5533b;
+  --mono: 'Courier New', Courier, monospace;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  background:var(--rig-navy);
+  background-image:
+    repeating-linear-gradient(0deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 40px),
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 40px);
+  color:var(--rig-paper);
+  font-family: Georgia, 'Times New Roman', serif;
+  line-height:1.5;
+}
+.wrap{max-width:1000px;margin:0 auto;padding:28px 22px 80px;}
+
+.rig-header{
+  border:2px solid var(--rig-amber);
+  padding:22px 26px;
+  position:relative;
+  margin-bottom:26px;
+  background:linear-gradient(180deg, var(--rig-navy-2), var(--rig-navy));
+}
+.rig-header::before{
+  content:"";
+  position:absolute; top:6px; left:6px; right:6px; bottom:6px;
+  border:1px solid rgba(224,140,43,0.35);
+  pointer-events:none;
+}
+.tag{
+  font-family: var(--mono);
+  letter-spacing:3px;
+  font-size:11px;
+  color:var(--rig-amber);
+  text-transform:uppercase;
+}
+h1{
+  font-family: 'Trebuchet MS', Helvetica, Arial, sans-serif;
+  font-weight:800;
+  font-size:clamp(26px,4.6vw,40px);
+  margin:6px 0 4px;
+  letter-spacing:0.5px;
+  color:#fff;
+}
+.subtitle{color:var(--rig-paper-2); font-style:italic; font-size:15px;}
+
+.tabs{
+  display:flex; gap:0; margin:26px 0 20px; flex-wrap:wrap;
+  border-bottom:2px solid var(--rig-steel);
+}
+.tab-btn{
+  font-family:'Trebuchet MS', sans-serif;
+  background:none;
+  border:none;
+  color:var(--rig-paper-2);
+  padding:10px 16px;
+  cursor:pointer;
+  font-size:13.5px;
+  font-weight:700;
+  letter-spacing:0.3px;
+  position:relative;
+  border-bottom:3px solid transparent;
+  transition:all .15s;
+}
+.tab-btn:hover{color:#fff;}
+.tab-btn.active{color:var(--rig-amber); border-bottom:3px solid var(--rig-amber);}
+.panel{display:none; animation:fade .25s ease;}
+.panel.active{display:block;}
+@keyframes fade{from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);}}
+
+.section-block{
+  background:var(--rig-paper);
+  color:var(--rig-ink);
+  border-left:6px solid var(--rig-amber);
+  padding:18px 22px;
+  margin-bottom:18px;
+}
+.section-block h2{
+  font-family:'Trebuchet MS', sans-serif;
+  margin:0 0 10px;
+  font-size:19px;
+  color:var(--rig-navy);
+  display:flex; align-items:center; gap:10px;
+}
+.section-block h2 .num{
+  font-family:var(--mono);
+  background:var(--rig-navy);
+  color:var(--rig-amber);
+  font-size:12px;
+  padding:3px 8px;
+}
+.section-block h3{font-size:15px; margin:14px 0 6px; color:var(--rig-amber-2);}
+.section-block ul{margin:4px 0 10px 18px; padding:0;}
+.section-block ol{margin:4px 0 10px 18px; padding:0;}
+.section-block li{margin-bottom:5px;}
+.formula{
+  font-family:var(--mono);
+  background:var(--rig-navy);
+  color:#ffd28a;
+  display:inline-block;
+  padding:6px 12px;
+  margin:6px 0;
+  font-size:13.5px;
+  border:1px dashed var(--rig-amber);
+}
+.chip-row{display:flex; flex-wrap:wrap; gap:6px; margin:8px 0;}
+.chip{
+  font-family:var(--mono);
+  font-size:12px;
+  background:var(--rig-steel);
+  color:#fff;
+  padding:4px 9px;
+  border-radius:3px;
+}
+table.datatab{width:100%; border-collapse:collapse; font-size:13.5px; margin:8px 0;}
+table.datatab th{padding:6px; text-align:left; background:var(--rig-navy); color:#fff;}
+table.datatab td{padding:6px; border-bottom:1px solid #ccc;}
+table.datatab tr:nth-child(even) td{background:var(--rig-paper-2);}
+table.datatab tr:nth-child(odd) td{background:#fff;}
+
+.fc-controls{display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:10px;}
+.fc-counter{font-family:var(--mono); color:var(--rig-amber); font-size:13px;}
+.fc-stage{perspective:1400px; max-width:560px; margin:0 auto; height:300px;}
+.fc-card{width:100%; height:100%; position:relative; transform-style:preserve-3d; transition:transform .5s cubic-bezier(.2,.8,.2,1); cursor:pointer;}
+.fc-card.flipped{transform:rotateY(180deg);}
+.fc-face{
+  position:absolute; inset:0;
+  backface-visibility:hidden;
+  border:2px solid var(--rig-amber);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; padding:26px;
+  background:linear-gradient(160deg, var(--rig-navy-2), var(--rig-navy));
+}
+.fc-face .eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:2px; color:var(--rig-amber); margin-bottom:14px; text-transform:uppercase;}
+.fc-face .content{font-family:'Trebuchet MS', sans-serif; font-size:19px; font-weight:700; color:#fff;}
+.fc-face.back{transform:rotateY(180deg); background:linear-gradient(160deg, var(--rig-paper-2), var(--rig-paper)); border-color:var(--rig-amber-2);}
+.fc-face.back .content{color:var(--rig-ink); font-size:15.5px; font-weight:400; font-family:Georgia, serif;}
+.fc-face.back .eyebrow{color:var(--rig-amber-2);}
+.fc-nav{display:flex; justify-content:center; gap:12px; margin-top:20px;}
+.btn{
+  font-family:'Trebuchet MS', sans-serif;
+  background:var(--rig-amber); color:var(--rig-navy); border:none;
+  padding:10px 20px; font-weight:800; cursor:pointer; font-size:14px; letter-spacing:0.5px;
+  transition:background .15s;
+}
+.btn:hover{background:#f5a13f;}
+.btn.secondary{background:transparent; color:var(--rig-amber); border:1px solid var(--rig-amber);}
+.btn.secondary:hover{background:rgba(224,140,43,0.15);}
+.hint{text-align:center; color:var(--rig-paper-2); font-size:12px; margin-top:10px; font-style:italic;}
+
+.q-block{
+  background:var(--rig-paper); color:var(--rig-ink); padding:18px 20px; margin-bottom:16px;
+  border-left:6px solid var(--rig-steel); position:relative;
+}
+.q-block.calc{border-left-color:var(--rig-amber);}
+.q-num{font-family:var(--mono); font-size:12px; color:#fff; background:var(--rig-navy); display:inline-block; padding:2px 8px; margin-bottom:8px;}
+.q-text{font-weight:700; margin-bottom:10px; font-size:15.5px;}
+.opts{display:grid; gap:8px; margin-bottom:10px;}
+.opt{border:1.5px solid var(--rig-steel); padding:9px 12px; cursor:pointer; background:#fff; font-size:14px; transition:all .12s;}
+.opt:hover{background:var(--rig-paper-2);}
+.opt.correct{background:#e2f3e6; border-color:var(--ok); font-weight:700;}
+.opt.wrong{background:#fbe4df; border-color:var(--bad);}
+.reveal-btn{font-family:var(--mono); font-size:12px; background:none; border:1px solid var(--rig-navy); color:var(--rig-navy); padding:6px 12px; cursor:pointer;}
+.answer-box{display:none; margin-top:10px; padding:10px 14px; background:#e9f0fb; border-left:4px solid var(--rig-steel); font-size:14px;}
+.answer-box.show{display:block;}
+.essay-input{width:100%; border:1.5px solid var(--rig-steel); padding:10px; font-family:Georgia, serif; font-size:14px; min-height:60px; margin-bottom:8px; resize:vertical;}
+
+.diff-block{background:var(--rig-paper); color:var(--rig-ink); padding:18px 22px; margin-bottom:18px; border:1px solid var(--rig-steel); border-top:5px solid var(--bad);}
+.diff-block h2{font-family:'Trebuchet MS', sans-serif; color:var(--rig-navy); font-size:18px; margin:0 0 10px;}
+.diff-block .why{background:#fff3e6; border-left:4px solid var(--rig-amber-2); padding:8px 12px; font-size:13.5px; margin:10px 0; font-style:italic;}
+.diagram{font-family:var(--mono); background:var(--rig-navy); color:#dfe9f5; padding:12px 14px; font-size:12.5px; white-space:pre; overflow-x:auto; margin:10px 0;}
+.example-box{background:var(--rig-navy); color:#ffd28a; padding:10px 14px; font-family:var(--mono); font-size:13px; margin:8px 0; white-space:pre-wrap;}
+
+.score-bar{
+  position:sticky; bottom:0; background:var(--rig-navy-2); border-top:2px solid var(--rig-amber);
+  padding:10px 18px; display:flex; justify-content:space-between; align-items:center;
+  font-family:var(--mono); font-size:13px; color:var(--rig-amber); margin-top:20px;
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="rig-header">
+    <div class="tag">Jakarta Drilling Society · 02 Mei 2026</div>
+    <h1>Introduction Drilling Engineering</h1>
+    <div class="subtitle">Paket Belajar: Rangkuman • Flashcard • Latihan Soal • Bagian Sulit</div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="summary">📋 Rangkuman</button>
+    <button class="tab-btn" data-tab="flash">🎴 Flashcard</button>
+    <button class="tab-btn" data-tab="quiz">✏️ Latihan Soal</button>
+    <button class="tab-btn" data-tab="hard">⚠️ Bagian Sulit</button>
+  </div>
+
+  <!-- ===================== SUMMARY ===================== -->
+  <div class="panel active" id="summary">
+
+    <div class="section-block">
+      <h2><span class="num">01</span> Drilling History</h2>
+      <p><b>Sejarah Perminyakan Indonesia:</b></p>
+      <ul>
+        <li><b>17 Nov 1884</b> — Zijlker mengebor sumur Telaga Tiga; hanya diperoleh ~200 liter minyak, semburan gas tinggi menggagalkan harapan produksi besar.</li>
+        <li><b>1885</b> — Sumur Telaga Tunggal I: pada kedalaman 121 m muncul semburan minyak besar → <b>momentum pertama keberhasilan penambangan minyak di Indonesia</b>.</li>
+        <li><b>1907</b> — Royal Dutch & Shell merger menjadi BPM, satu-satunya perusahaan minyak di Indonesia sampai 1911.</li>
+        <li><b>1968</b> — PN Permina + PN Pertamin bergabung menjadi <b>PN Pertamina</b>.</li>
+      </ul>
+      <p><b>Sejarah Geothermal Indonesia:</b></p>
+      <ul>
+        <li><b>1918</b> — Usulan JB Van Dijk memanfaatkan panas bumi Kamojang, Jawa Barat.</li>
+        <li><b>1926</b> — Sumur KMJ-3 di Kamojang menghasilkan uap → tonggak pemboran eksplorasi panas bumi pertama; hingga kini masih menghasilkan uap kering 140°C, 2,5 atm.</li>
+        <li><b>1972</b> — Pemboran 6 sumur di Dieng (kedalaman 613 m) — tidak ditemukan uap.</li>
+        <li><b>1994–1995</b> — Kontrak pengusahaan panas bumi dengan berbagai swasta (Wayang Windu, Karaha, Dieng, Patuha, Bali).</li>
+      </ul>
+      <p><b>Rekor & Masa Depan:</b> Grafik "BP Worldwide Drilling Envelope" menunjukkan batas kombinasi TVD vs departure (jarak horizontal) yang pernah dicapai sumur directional dunia. Untuk geothermal, contoh sumur SLR-J-7D mencapai TD 3.009 m, 340°C. <b>Future Supercritical Geothermal System</b> menargetkan kedalaman 4.500–5.000 m, suhu &gt;375°C, dengan tantangan steam/brine scale problem vs potensi water-to-gas (tanpa masalah scale).</p>
+    </div>
+
+    <div class="section-block">
+      <h2><span class="num">02</span> Drilling & Rig Type</h2>
+      <h3>A. Klasifikasi Drilling</h3>
+      <p><b>Berdasarkan lokasi:</b> Onshore (Oil & Gas Well, Geothermal) vs Offshore (Deep Water, Surface Stack, Swamp Barge).</p>
+      <p><b>Berdasarkan kategori:</b></p>
+      <ul>
+        <li><b>Exploration</b> → Wildcat (sumur eksplorasi di area yang belum pernah dibor) & Delineation (menentukan batas reservoir)</li>
+        <li><b>Development</b> → Production Well, Injection Well, Waste Disposal Well</li>
+        <li><b>Relief Well</b> — dibor menuju sumur blowout untuk menyuntikkan lumpur berat agar blowout dapat dimatikan</li>
+      </ul>
+      <p><b>Berdasarkan geometri sumur:</b> Vertical (lurus), Directional (berarah), Horizontal (datar), Multi Lateral (bercabang)</p>
+
+      <h3>B. Jenis Rig & Platform</h3>
+      <div class="chip-row">
+        <span class="chip">Land Rig</span><span class="chip">Jack Up Rig</span>
+        <span class="chip">Semi Submersible</span><span class="chip">Drillship</span><span class="chip">Swamp Barge</span>
+      </div>
+      <p><b>Platform Offshore:</b> Grounded (Concrete Gravity Platform, Swamp Barge) vs Floating (Tension Leg Platform/TLP, SPAR Platform).</p>
+
+      <h3>C. Rig Mobilization & Moving</h3>
+      <ul>
+        <li><b>Rig Mobilization</b> — proses terstruktur menyiapkan, mengangkut, dan merakit rig di lokasi baru (rig up); biaya lump-sum mencakup persiapan, personel, inspeksi, bahan bakar, kelengkapan spare part, kepabeanan, hingga semua inspeksi selesai sesuai regulasi EBTKE/Pemerintah.</li>
+        <li><b>Rig Demobilization</b> — proses aman & efisien memindahkan peralatan, material, personel setelah operasi selesai; termasuk asuransi, standby rate, pembongkaran, logistik, dan reklamasi lokasi.</li>
+        <li><b>Rig Moving</b> — RD (Rig Down), RM (Rig Move), RU (Rig Up); dalam satu wellpad memakai Skidding/Walking, antar wellpad memakai Big Wheel.</li>
+        <li><b>Alat berat pendukung:</b> Fork Lift, Vacuum Truck, Low Boy, Winch Truck, Foco Truck, Hi Boy, Crawler Crane, Roughter Crane.</li>
+      </ul>
+
+      <h3>D. Struktur & Peralatan Rig Darat</h3>
+      <p><b>Rig Structure:</b> Crown Block, Travelling Block, Top Drive System, Derrick (Top/Middle/Bottom Mast), Rig Floor, Drawwork, Dog-House, Monkey-Board, Sub Structure, V Door, Cat-Walk, Skid System.</p>
+      <p><b>Rig Equipment:</b> BOP, Koomey & Accumulator, Mud Pumps, Mud Tanks, Shale Shakers, Desilter, Desander, Gas-Degasser, Genset, SCR/VFD, Fuel Tanks, Mini Camps & Office, Warehouse, Automatic Driller.</p>
+
+      <h3>E. 5 Komponen Utama Drilling Rig</h3>
+      <ol>
+        <li><b>Rig Hoisting System</b> — mengangkat/menurunkan rangkaian pipa</li>
+        <li><b>Rig Rotating System</b> — memutar drill string</li>
+        <li><b>Rig Circulation System</b> — mensirkulasikan lumpur bor; komponen: Mud Pumps, Swivel & Standpipe, Shale Shaker (menyaring cutting), Desander/Desilter (memisahkan padatan halus), Degasser (membuang gas), Mud Tanks</li>
+        <li><b>Well Control Equipment</b> — mencegah blowout (BOP)</li>
+        <li><b>Drill String</b> — rangkaian pipa dari permukaan hingga bit</li>
+      </ol>
+
+      <h3>F. Weight Indicator & Weight On Bit (WOB)</h3>
+      <div class="formula">Weight Indicator (Off Bottom) = Travelling Block + Top Drive System + BHA Weight</div>
+      <div class="example-box">Contoh: Travelling Block +30 Klbs, TDS +25 Klbs, BHA 150 Klbs
+→ Weight Indicator = 30 + 25 + 150 = 205 Klbs</div>
+      <div class="formula">WOB = Weight Indicator (Off Bottom) − Weight Indicator (On Bottom, saat ini)</div>
+
+      <h3>G. Drilling Bit</h3>
+      <p><b>3 Kategori Bit:</b> Tri Cone (Mill Tooth atau Insert/TCI), PDC (Fixed Cutter), Hybrid (kombinasi PDC + roller cone, mis. Kymera).</p>
+      <ul>
+        <li><b>Tricone Bit</b> — gigi baja (steel tooth, hardface tungsten carbide) atau insert tungsten carbide (TCI) pada cone yang berputar; memotong dengan cara <i>crushing</i> batuan.</li>
+        <li><b>PDC Bit</b> — cutter diamond sintetis (fixed cutter, tanpa bagian berputar); memotong dengan cara <i>shearing</i> — metode paling efisien untuk sebagian besar jenis batuan.</li>
+        <li><b>Hybrid Bit</b> — menggabungkan cutter PDC dan roller cone (mis. StingBlade, Kymera).</li>
+      </ul>
+      <p><b>Rumus umur bit (Bit Life) & jarak pengeboran (Footage):</b></p>
+      <div class="formula">Bit Life (menit) = (Bit Revolution @ 80% Reliability) / Total Bit RPM</div>
+      <div class="formula">Total Bit RPM = Drill String Surface RPM + Down Hole Motor RPM</div>
+      <div class="formula">Down Hole Motor RPM = Flow Rate (gpm) × faktor rev/gallon mud motor</div>
+      <div class="formula">Drilling Footage = ROP (ft/hour) × Bit Life (hours)</div>
+      <div class="example-box">Contoh (Rotary murni, tanpa mud motor):
+80% Reliability bit revolution = 900.000 rev, RPM = 100
+Bit Life = 900.000 / 100 = 9.000 menit = 150 jam
+ROP = 10 ft/jam → Footage = 10 × 150 = 1.500 ft
+
+Contoh (Directional, pakai Mud Motor):
+Surface RPM = 60, Flow Rate = 1.200 gpm, faktor 0,130 rev/gal
+Down Hole Motor RPM = 1.200 × 0,130 = 156 RPM
+Total Bit RPM = 60 + 156 = 216 RPM
+Bit Life = 900.000 / 216 = 4.166,7 menit ≈ 69,4 jam
+ROP = 15 ft/jam → Footage = 15 × 69,4 ≈ 1.035 ft</div>
+    </div>
+
+    <div class="section-block">
+      <h2><span class="num">03</span> Well Construction</h2>
+      <h3>A. Directional Drilling & BHA</h3>
+      <p>Evolusi navigasi arah sumur: <b>Singleshot/Steering Tool (1970-an)</b> → <b>Rotary → Steerable Rotary (1990-an – pertengahan 1990-an)</b>.</p>
+      <p><b>BHA (Bottom Hole Assembly)</b> dari bawah ke atas: Drilling Bit → Mud Motor → MWD Tool → Drill Collar → IBS (Integrated String Stabilizer) → HWDP (Heavy Weight Drill Pipe) → DP (Drill Pipe) menuju permukaan.</p>
+      <p><b>MWD (Measurement While Drilling):</b> mengirim data survei (sudut lubang, azimuth, temperatur) via pulsa tekanan lumpur dalam bentuk bilangan biner, dikonversi komputer ke desimal.</p>
+      <p><b>4 Jenis Trajektori:</b> Vertical, J-Type, S-Type, Horizontal.</p>
+      <p><b>Sidetrack (Whipstock/Side Track Hole):</b> menggunakan Window Mill & Water Melon Mill untuk membuka jendela pada casing lama, dengan BHA khusus (mill, XO, HWDP, DC, hydraulic jars).</p>
+
+      <h3>B. Casing Design</h3>
+      <p>Komponen fisik casing: <b>Box End</b> & <b>Pin End</b> (sambungan), <b>Casing Collar/Coupling</b>, <b>Casing Protector</b>. Jenis thread bervariasi tergantung spesifikasi.</p>
+      <p><b>Casing Depth Selection</b> — dipilih berdasarkan jendela antara <b>Pore Pressure</b> dan <b>Fracture Pressure</b> (dalam satuan Equivalent Mud Weight/ppg) sepanjang kedalaman sumur, agar mud weight yang dipakai tetap aman di setiap interval.</p>
+      <p><b>Perbedaan Casing Oil & Gas vs Geothermal:</b> desain geothermal umumnya menghadapi suhu jauh lebih tinggi sehingga pemilihan grade, thread, dan clearance connector lebih ketat.</p>
+      <p><b>Contoh Spesifikasi Casing Geothermal (dari standar internal):</b></p>
+      <table class="datatab">
+        <tr><th>Casing</th><th>Spesifikasi Kunci</th></tr>
+        <tr><td>30" Conductor</td><td>R-3, Plain end, Non-Seamless (Spiral/SAW/ERW), wall 0.5–0.75", bore pile & cemented</td></tr>
+        <tr><td>20" Casing</td><td>133 ppf, K-55/X-56, R-3, thread ≤3 TPI (JANGAN pakai BTC), Non-Seamless</td></tr>
+        <tr><td>13-3/8" Liner / Tie Back</td><td>Seamless, 68 ppf (liner) / 68–72 ppf (tie back), L-80, R-3, Premium Thread; JANGAN pakai K-55 atau BTC</td></tr>
+        <tr><td>10-3/4" Perforated Liner</td><td>Seamless, 40 ppf, K-55/L-80, R-3, BTC SCC</td></tr>
+        <tr><td>8-5/8" / 7" Perforated Liner</td><td>Seamless, 24 ppf (8-5/8") / 23-26 ppf (7"), K-55, R-3, BTC SCC</td></tr>
+      </table>
+      <p><b>11 Hal yang Dipertimbangkan saat Membeli Casing:</b> Unit cost (per Joint/Meter), delivery point (Batam/wellsite), sumber mill (USA/Eropa/Rusia/Jepang/China), delivery term (DDU/DDP), payment term, penalti keterlambatan, biaya handling, biaya storage, casing grouping, toleransi kuantitas (-3%+0% atau -3%+3%), local content.</p>
+
+      <h3>C. Cementing Design</h3>
+      <p>Contoh prosedur cementing 26" section – 20" casing: (1) RIH Casing 20", (2) RIH Stinger, (3) Pump spacer & lead-tail slurry, (4) Displace string & POOH Stinger, (5) WOC.</p>
+      <p><b>Additif Semen:</b> Class G Cement, Silica Flour, Retarder (memperlambat setting) / Accelerator (mempercepat), Plasticizer/Superplasticizer (perbaiki workability), Dispersant (menurunkan viskositas), Fluid Loss Control Agent, Defoamer & Anti-Gas Migration Additive.</p>
+      <p><b>Volume Semen (BBF — Barrel per Foot):</b></p>
+      <div class="formula">BBF Kapasitas Dalam Pipa = ID² / 1029.4</div>
+      <div class="formula">BBF Annulus (di luar pipa) = (OD² − ID²) / 1029.4</div>
+
+      <h3>D. Wellhead</h3>
+      <p>Desain wellhead berbeda untuk 3 konteks: <b>Onshore Oil & Gas</b>, <b>Offshore Oil & Gas</b>, dan <b>Geothermal</b> — masing-masing punya konfigurasi valve/master valve sesuai tekanan kerja & kondisi lapangan (contoh: konfigurasi 1 Master Valve 12" 900# dengan spacer spool untuk mengurangi stres pipa pada jalur produksi 12").</p>
+
+      <h3>E. Drilling Fluid (Mud)</h3>
+      <p><b>3 Jenis:</b> WBM (Water Base Mud), OBM (Oil Base Mud), SBF (Synthetic Base Fluid).</p>
+      <p><b>Fungsi:</b> Well Control (menjaga tekanan hidrostatik cegah blowout), Cuttings Transport, Cooling & Lubrication bit, Wellbore Stability, Formation Protection.</p>
+      <p><b>Komposisi:</b> Clay (bentonite — viskositas/suspensi), Weighting agent (barium sulfat/kalsium karbonat — kontrol densitas), Polimer/thickener (xanthan gum, guar gum, CMC — atur viskositas), Deflocculant (lignosulfonat), Corrosion inhibitor, lubricant, pH-control agent, serta aditif khusus lain (fluid loss control, suspension, thermal stability).</p>
+
+      <h3>F. Wellpad Design</h3>
+      <p><b>Ideal Elevated Wellpad:</b> mengalirkan drainase dari cellar ke mud pond melalui settling pond → water & mud pond.</p>
+      <p><b>Jarak Ideal Antar Sumur:</b> 13,5–15,0 meter (agar saat rig skid ke sumur berikutnya, sumur yang sudah dibor tetap bisa diakses untuk wireline/well test).</p>
+      <div class="formula">Separation Factor (SF) = (Radius Elips-1 + Radius Elips-2) / Jarak antar lubang</div>
+      <p>SF &gt; 1 berarti "elips ketidakpastian" antar dua lintasan sumur tidak saling bersinggungan (aman); SF ≤ 1 berarti berpotensi bertabrakan (perlu mitigasi anti-collision).</p>
+    </div>
+
+    <div class="section-block">
+      <h2><span class="num">04</span> Drilling Cost & Procurement</h2>
+      <h3>A. Perbandingan Biaya</h3>
+      <p><b>Sumur Oil & Gas:</b> satu sumur dapat berbiaya USD 1 juta hingga 140 juta.</p>
+      <p><b>Sumur Geothermal (USD/meter):</b> Minimum 2.400, Rata-rata (2021) 3.258, Maksimum 7.400. Perbandingan antar negara (2018–2021): Indonesia ~3.258–3.960 USD/m, Filipina ~3.600, New Zealand ~2.148, Kenya ~2.084, Iceland ~1.859, Turki ~752 USD/m — menunjukkan Indonesia relatif mahal dibanding negara lain, dengan target potensi efisiensi hingga di bawah 1.500 USD/m.</p>
+      <p>Data biaya diambil dari 242 sumur geothermal Indonesia (2011–Q3 2021) menunjukkan <b>rentang biaya yang sangat lebar</b> — mengindikasikan adanya potensi penghematan biaya pengeboran yang besar melalui lesson learnt & best practice.</p>
+
+      <h3>B. Sejarah "The Economic Way to Drill Geothermal Well"</h3>
+      <p>Timeline JDS: Agustus 2017 (kontrak eksplorasi non-IPM di PT SMGP) → 2018–2019 (ITB Geothermal Workshop, topik Drilling Procurement Strategy) → 23 Des 2020 (kolaborasi JDS & Enerka webinar) → Juli 2021 (kesepakatan JDS-EBTKE menerbitkan buku) → 9 Des 2022 (buku "Pedoman Efisiensi Biaya Pemboran Sumur Panas Bumi" diluncurkan EBTKE & ESDM) → Mei 2023 (revisi buku) → 2024 (Rig Sizing for Drilling Geothermal Well in Indonesia).</p>
+
+      <h3>C. Peringkat Metode Efisiensi Biaya Drilling</h3>
+      <ol>
+        <li>Drilling Personnel Integrity</li>
+        <li>Procurement Strategy</li>
+        <li>Rig Sizing</li>
+        <li>The Economic Way to Drill Geothermal Well</li>
+        <li>Post Drilling Review and Lesson Learnt</li>
+      </ol>
+
+      <h3>D. Strategi Procurement</h3>
+      <p>Total ada <b>38 kontrak diskrit</b> dalam operasi drilling, dikelompokkan menjadi: Purchase (Casing, Wellhead, Liner Adapter, Drilling Bits, Casing Accessories, DSA & X/O), Services (Drilling Rig, Cement & Mud, Directional Drilling, Air Drilling, dll — 20 jenis), dan Support (Site Construction, Diesel Fuel, Water Pump, UKL/UPL, Security, dll — 12 jenis).</p>
+      <p><b>3 Model Kontrak:</b></p>
+      <div class="chip-row">
+        <span class="chip">Discrete (35 kontrak terpisah)</span>
+        <span class="chip">Bundled (5-10 kontrak gabungan)</span>
+        <span class="chip">IPM/Turnkey (1-2 kontrak, via 1 Integrated Drilling Services)</span>
+      </div>
+      <p>Semakin ke arah IPM/Turnkey, semakin sedikit jumlah kontrak yang dikelola Company (COM) karena tanggung jawab terkonsolidasi ke satu Contractor (CON) atau Integrated Drilling Services (IDS).</p>
+
+      <h3>E. Rig Sizing (Ekonomi)</h3>
+      <div class="formula">Rig Daily Rental ≈ 25–27 USD/HP/hari</div>
+      <table class="datatab">
+        <tr><th>Rig Size (HP)</th><th>Sewa Harian</th><th>Konsumsi BBM/hari</th></tr>
+        <tr><td>1.000 HP</td><td>$27.000</td><td>6.500 Liter</td></tr>
+        <tr><td>1.500 HP</td><td>$37.500</td><td>12.300 Liter</td></tr>
+        <tr><td>2.000 HP</td><td>$50.000</td><td>—</td></tr>
+      </table>
+      <p>Semakin besar HP rig, biaya sewa & bahan bakar meningkat signifikan — sehingga pemilihan ukuran rig (rig sizing) yang tepat sesuai kebutuhan sumur adalah salah satu kunci efisiensi biaya terbesar.</p>
+    </div>
+
+    <div class="section-block">
+      <h2><span class="num">05</span> Drilling Risk & Problem</h2>
+      <p><b>3 Masalah Utama Pengeboran:</b></p>
+      <ul>
+        <li><b>Underground Blowout</b> — aliran fluida bertekanan tinggi yang tidak terkendali di bawah permukaan (antar formasi), bukan langsung keluar ke permukaan.</li>
+        <li><b>Stuck Pipe</b> — rangkaian pipa bor terjepit di dalam lubang bor sehingga tidak bisa digerakkan.</li>
+        <li><b>Mud Losses (Loss Circulation)</b> — hilangnya lumpur bor ke dalam formasi.</li>
+      </ul>
+      <p>Risiko lain: kegagalan struktur rig (mis. offshore jack-up rig collapse) yang memerlukan prosedur evakuasi.</p>
+      <p><b>Sertifikasi Wajib Personel Offshore:</b> Well Control – Sub Sea BOP, Sea Survival Training, HUET (Helicopter Underwater Escape Training), BOSIET (Basic Offshore Safety Induction and Emergency Training).</p>
+    </div>
+
+    <div class="section-block">
+      <h2><span class="num">06</span> Latihan / Exercise dari Slide</h2>
+      <p>Slide menyajikan latihan hitungan nyata dari program pemboran <b>WJR1-3</b>:</p>
+      <ul>
+        <li><b>Cement Volume Calculation</b> — menggunakan rumus BBF di atas.</li>
+        <li><b>26" Hole Section</b>: Footage dibutuhkan = 1.400 − 155 = 1.245 ft; ROP rata-rata = 14,5 FPH; Bit revolution (80% reliability) = 1.100.000 rev; Surface RPM = 60; Flow rate = 1.000 gpm; faktor mud motor 9-5/8" = 0,130 rev/gal → Down Hole Motor RPM = 130; Total Bit RPM = 190; Bit Life = 1.100.000/190 ≈ 5.789 menit ≈ 96 jam; Footage kapasitas bit = 14,5 × 96 ≈ 1.399 ft (lebih besar dari 1.245 ft yang dibutuhkan → cukup 1 bit).</li>
+        <li><b>12-1/4" Hole Section</b>: Footage dibutuhkan = 5.300 − 2.550 = 2.750 ft; ROP = 38,9 FPH; Bit revolution = 900.000 rev; Surface RPM = 70; Flow rate = 1.000 gpm; faktor mud motor 8-1/2" = 0,130 rev/gal → Down Hole Motor RPM = 130; Total Bit RPM = 200; Bit Life = 900.000/200 = 4.500 menit = 75 jam; Footage kapasitas bit = 38,9 × 75 ≈ 2.917 ft (lebih besar dari 2.750 ft yang dibutuhkan → cukup 1 bit).</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ===================== FLASHCARDS ===================== -->
+  <div class="panel" id="flash">
+    <div class="fc-controls">
+      <div class="fc-counter" id="fcCounter">Kartu 1 / 20</div>
+      <button class="btn secondary" id="fcShuffle">🔀 Acak Kartu</button>
+    </div>
+    <div class="fc-stage">
+      <div class="fc-card" id="fcCard">
+        <div class="fc-face front">
+          <div class="eyebrow">Istilah</div>
+          <div class="content" id="fcFront">-</div>
+        </div>
+        <div class="fc-face back">
+          <div class="eyebrow">Penjelasan</div>
+          <div class="content" id="fcBack">-</div>
+        </div>
+      </div>
+    </div>
+    <p class="hint">Klik kartu untuk membalik</p>
+    <div class="fc-nav">
+      <button class="btn secondary" id="fcPrev">← Sebelumnya</button>
+      <button class="btn" id="fcNext">Selanjutnya →</button>
+    </div>
+  </div>
+
+  <!-- ===================== QUIZ ===================== -->
+  <div class="panel" id="quiz">
+    <div id="quizContainer"></div>
+    <div class="score-bar">
+      <span>SKOR PILIHAN GANDA</span>
+      <span id="scoreDisplay">0 / 0 dijawab</span>
+    </div>
+  </div>
+
+  <!-- ===================== DIFFICULT PARTS ===================== -->
+  <div class="panel" id="hard">
+
+    <div class="diff-block">
+      <h2>1. Weight Indicator vs Weight On Bit (WOB) — Sering Tertukar</h2>
+      <p><b>Weight Indicator (WI)</b> adalah pembacaan total beban yang digantung di hook (travelling block + top drive + BHA + drill string) — ini adalah <i>hook load</i>, bukan berat yang ditekankan ke bit.</p>
+      <p><b>WOB (Weight On Bit)</b> justru dihitung dari <i>berkurangnya</i> pembacaan WI ketika sebagian berat rangkaian pipa "dilepas" ke dasar lubang (ke bit), bukan ditambahkan.</p>
+      <div class="diagram">Off Bottom (bit menggantung bebas):
+   WI = 240 Klbs   →   WOB = 0  (semua berat masih ditahan hook)
+
+On Bottom (driller slack-off, sebagian berat ditumpu formasi via bit):
+   WI = 230 Klbs   →   WOB = 240 - 230 = 10 Klbs
+   WI = 220 Klbs   →   WOB = 240 - 220 = 20 Klbs
+   WI = 200 Klbs   →   WOB = 240 - 200 = 40 Klbs</div>
+      <div class="why">💡 Semakin driller menurunkan bacaan Weight Indicator, semakin BESAR beban yang ditransfer ke bit (WOB makin besar) — karena beban itu "dipindahkan" dari hook ke formasi, bukan ditambahkan dari luar sistem.</div>
+    </div>
+
+    <div class="diff-block">
+      <h2>2. Menghitung Umur Bit (Bit Life) saat Pakai Mud Motor</h2>
+      <p>Poin paling membingungkan: RPM total bit BUKAN hanya RPM dari meja putar/top drive (surface RPM) — ada tambahan RPM dari mud motor di bawah permukaan yang ikut memutar bit secara independen.</p>
+      <div class="diagram">Total Bit RPM = Surface RPM (dari rig)  +  Down Hole Motor RPM (dari mud motor)
+
+Down Hole Motor RPM = Flow Rate (gpm) × faktor (rev/gallon) mud motor</div>
+      <div class="example-box">Contoh:
+Surface RPM = 60
+Flow Rate = 1.200 gpm, faktor mud motor = 0,130 rev/gal
+→ Down Hole Motor RPM = 1.200 × 0,130 = 156 RPM
+→ Total Bit RPM = 60 + 156 = 216 RPM (jauh lebih tinggi dari surface RPM saja!)</div>
+      <p>Karena Total Bit RPM lebih tinggi, bit berputar lebih cepat → umur bit dalam MENIT lebih pendek dibanding pengeboran rotary murni dengan revolution rating yang sama. Tapi karena ROP directional biasanya lebih tinggi, footage yang dihasilkan tetap kompetitif.</p>
+      <div class="why">💡 Jangan lupa mengonversi hasil akhir dari MENIT ke JAM sebelum dikalikan dengan ROP (ft/jam) untuk mendapatkan Drilling Footage — ini titik kesalahan paling umum di soal latihan.</div>
+    </div>
+
+    <div class="diff-block">
+      <h2>3. Rumus BBF (Barrel per Foot) untuk Volume Semen</h2>
+      <p>Ada DUA rumus BBF yang mirip tapi untuk konteks berbeda — sering tertukar:</p>
+      <div class="diagram">BBF di DALAM pipa (inside capacity):
+   BBF = ID² / 1029.4
+   → dipakai untuk menghitung volume fluida DI DALAM casing/drill pipe
+
+BBF di ANNULUS (ruang di LUAR pipa, di dalam lubang bor):
+   BBF = (OD² - ID²) / 1029.4
+   → dipakai untuk menghitung volume SEMEN yang mengisi ruang
+     antara casing dan dinding lubang bor (atau casing sebelumnya)</div>
+      <div class="why">💡 Untuk cementing job, yang ingin dihitung biasanya adalah volume ANNULUS (semen yang mengisi ruang di luar casing) — pastikan pakai rumus (OD² − ID²)/1029.4, bukan ID² saja, atau volume semen akan jauh lebih kecil dari kebutuhan sebenarnya.</div>
+    </div>
+
+    <div class="diff-block">
+      <h2>4. Discrete vs Bundled vs IPM/Turnkey Contract</h2>
+      <p>Ketiga model procurement ini sering disamaratakan, padahal berbeda secara mendasar pada SIAPA yang menanggung risiko koordinasi antar-vendor.</p>
+      <div class="diagram">DISCRETE (35 kontrak):
+COMPANY ──┬── Kontraktor Rig
+          ├── Kontraktor Cementing
+          ├── Kontraktor Mud
+          └── ...dst (Company mengoordinasikan SEMUA vendor sendiri)
+
+BUNDLED (5-10 kontrak):
+COMPANY ──┬── Integrated Drilling Services (IDS) → beberapa sub-kontraktor
+          └── beberapa kontrak besar lain
+
+IPM / TURNKEY (1-2 kontrak):
+COMPANY ──── 1 Kontraktor IPM → SELURUH sub-kontraktor di bawah 1 payung</div>
+      <p><b>Trade-off:</b> Discrete memberi kontrol maksimal ke Company tapi beban koordinasi & risiko jadwal paling besar. IPM/Turnkey memindahkan beban koordinasi ke satu kontraktor tapi Company kehilangan kontrol detail dan biasanya membayar premium risiko.</p>
+      <div class="why">💡 Ingat: makin sedikit jumlah kontrak (ke arah IPM), bukan berarti makin murah secara nominal — melainkan makin sedikit BEBAN MANAJEMEN & RISIKO KOORDINASI yang ditanggung Company.</div>
+    </div>
+
+    <div class="diff-block">
+      <h2>5. Mengapa Rig Sizing Mempengaruhi Biaya Secara Non-Linear</h2>
+      <p>Data slide menunjukkan biaya sewa & bahan bakar TIDAK naik linear terhadap HP rig:</p>
+      <div class="diagram">1.000 HP → $27.000/hari,  6.500 L/hari
+1.500 HP → $37.500/hari, 12.300 L/hari   (naik 50% HP, BBM naik ~89%!)</div>
+      <p>Kenaikan HP 50% (1.000→1.500) menyebabkan kenaikan konsumsi bahan bakar hampir 90%, bukan 50%. Ini karena rig dengan HP lebih besar biasanya membawa lebih banyak sistem pendukung (pompa lebih besar, genset lebih banyak) yang juga menambah beban bahan bakar dasar (base load), bukan hanya menambah kapasitas mengangkat/mengebor.</p>
+      <div class="why">💡 Inilah alasan "Rig Sizing" menjadi peringkat #3 dalam metode efisiensi biaya drilling — memilih rig yang PAS (bukan lebih besar "untuk jaga-jaga") berdampak besar terhadap total biaya harian, bukan hanya biaya sewa tapi juga biaya bahan bakar yang naik tidak proporsional.</div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
+  });
+});
+
+let flashcards = [
+  {f:"Wildcat Well", b:"Sumur eksplorasi yang dibor di area yang belum pernah dibor sama sekali sebelumnya — risiko tertinggi, tujuan menemukan reservoir baru."},
+  {f:"Delineation Well", b:"Sumur eksplorasi lanjutan untuk menentukan batas/luas dari reservoir yang sudah ditemukan oleh wildcat well."},
+  {f:"RD / RM / RU", b:"Rig Down (membongkar rig), Rig Move (memindahkan rig), Rig Up (memasang kembali rig) — tahapan rig moving antar sumur/wellpad."},
+  {f:"BHA (Bottom Hole Assembly)", b:"Rangkaian di ujung bawah drill string: Bit → Mud Motor → MWD Tool → Drill Collar → Stabilizer → HWDP, sebelum Drill Pipe ke permukaan."},
+  {f:"WOB (Weight On Bit)", b:"Beban yang ditransfer ke mata bor, dihitung dari selisih Weight Indicator saat off-bottom dikurangi saat on-bottom."},
+  {f:"Tricone Bit", b:"Bit dengan 3 cone berputar bergigi (steel tooth atau tungsten carbide insert/TCI) yang memotong batuan dengan cara crushing."},
+  {f:"PDC Bit", b:"Fixed cutter bit dengan cutter diamond sintetis (Polycrystalline Diamond Compact); memotong dengan cara shearing, tanpa bagian berputar."},
+  {f:"Hybrid Bit", b:"Bit yang menggabungkan cutter PDC dan roller cone dalam satu desain, contoh: Kymera, StingBlade."},
+  {f:"Mud Motor", b:"Alat downhole yang mengubah energi hidrolik aliran lumpur menjadi putaran tambahan pada bit, terdiri dari rotor, stator, bearing stack, driveshaft."},
+  {f:"MWD (Measurement While Drilling)", b:"Alat yang mengirim data survei (sudut, azimuth, temperatur) via pulsa tekanan lumpur dalam bentuk bilangan biner ke permukaan."},
+  {f:"BBF (Barrel per Foot)", b:"Satuan volume fluida/semen per satu foot panjang pipa/annulus; dihitung dari ID² atau (OD²-ID²) dibagi 1029.4."},
+  {f:"WBM / OBM / SBF", b:"3 jenis dasar drilling fluid: Water Base Mud, Oil Base Mud, Synthetic Base Fluid."},
+  {f:"Separation Factor (SF)", b:"Rasio jumlah radius elips ketidakpastian dua lintasan sumur terhadap jarak antar lubang; SF>1 aman, SF≤1 berisiko tabrakan lintasan."},
+  {f:"IPM / Turnkey Contract", b:"Model procurement dengan hanya 1-2 kontrak besar, di mana satu kontraktor mengoordinasikan seluruh sub-kontraktor di bawahnya."},
+  {f:"Discrete Contract", b:"Model procurement dengan banyak kontrak terpisah (±35 kontrak) yang masing-masing dikelola langsung oleh Company."},
+  {f:"HUET", b:"Helicopter Underwater Escape Training — pelatihan wajib bagi personel offshore untuk melarikan diri dari helikopter yang jatuh ke air."},
+  {f:"BOSIET", b:"Basic Offshore Safety Induction and Emergency Training — sertifikasi dasar keselamatan wajib untuk bekerja di fasilitas offshore."},
+  {f:"Underground Blowout", b:"Aliran fluida formasi bertekanan tinggi yang tidak terkendali di bawah permukaan (antar formasi), berbeda dari blowout yang keluar ke permukaan."},
+  {f:"Relief Well", b:"Sumur yang dibor menuju sumur blowout untuk menyuntikkan lumpur berat, mengurangi laju blowout, hingga akhirnya mematikan sumur tersebut."},
+  {f:"Rig Sizing", b:"Proses menentukan ukuran/kapasitas HP rig yang paling sesuai dengan kebutuhan sumur — berdampak besar pada biaya sewa & bahan bakar harian."},
+];
+let fcIndex = 0;
+let flipped = false;
+
+function renderCard(){
+  document.getElementById('fcFront').textContent = flashcards[fcIndex].f;
+  document.getElementById('fcBack').textContent = flashcards[fcIndex].b;
+  document.getElementById('fcCounter').textContent = `Kartu ${fcIndex+1} / ${flashcards.length}`;
+  document.getElementById('fcCard').classList.remove('flipped');
+  flipped = false;
+}
+document.getElementById('fcCard').addEventListener('click', ()=>{
+  flipped = !flipped;
+  document.getElementById('fcCard').classList.toggle('flipped', flipped);
+});
+document.getElementById('fcNext').addEventListener('click', ()=>{
+  fcIndex = (fcIndex+1) % flashcards.length;
+  renderCard();
+});
+document.getElementById('fcPrev').addEventListener('click', ()=>{
+  fcIndex = (fcIndex-1+flashcards.length) % flashcards.length;
+  renderCard();
+});
+document.getElementById('fcShuffle').addEventListener('click', ()=>{
+  for(let i=flashcards.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [flashcards[i],flashcards[j]]=[flashcards[j],flashcards[i]];
+  }
+  fcIndex=0;
+  renderCard();
+});
+renderCard();
+
+const quizData = [
+  {
+    type:'mcq',
+    q:"Sumur eksplorasi yang dibor di area yang belum pernah dibor sama sekali untuk mencari reservoir baru disebut...",
+    opts:["Delineation Well","Wildcat Well","Injection Well","Relief Well"],
+    correct:1
+  },
+  {
+    type:'mcq',
+    q:"Manakah urutan evolusi teknologi navigasi directional drilling yang benar sesuai materi?",
+    opts:[
+      "Rotary Steerable → Steering Tool → Rotary",
+      "Singleshot/Steering Tool → Rotary → Steerable Rotary",
+      "Steerable Rotary → Singleshot → Rotary",
+      "Rotary → Singleshot → Steerable Rotary"
+    ],
+    correct:1
+  },
+  {
+    type:'mcq',
+    q:"Bit yang memotong batuan dengan cara 'shearing' (paling efisien untuk sebagian besar jenis batuan) dan tidak memiliki bagian berputar adalah...",
+    opts:["Tricone Mill Tooth","Tricone TCI","PDC Bit","Hybrid Bit (roller cone bagian)"],
+    correct:2
+  },
+  {
+    type:'mcq',
+    q:"Apa fungsi UTAMA Shale Shaker dalam Rig Circulation System?",
+    opts:[
+      "Menambahkan berat ke lumpur bor",
+      "Menyaring/memisahkan cutting dan partikel besar dari lumpur bor",
+      "Memompa lumpur ke dalam sumur",
+      "Mengukur tekanan formasi"
+    ],
+    correct:1
+  },
+  {
+    type:'mcq',
+    q:"Model procurement dengan HANYA 1-2 kontrak besar, di mana satu kontraktor bertanggung jawab mengoordinasikan seluruh sub-kontraktor, disebut...",
+    opts:["Discrete Contract","Bundled Contract","IPM/Turnkey Contract","Lump-Sum Contract"],
+    correct:2
+  },
+  {
+    type:'mcq',
+    q:"Sertifikasi yang WAJIB dimiliki personel offshore untuk melatih evakuasi dari helikopter yang jatuh ke laut adalah...",
+    opts:["BOSIET","HUET","Well Control Sub Sea BOP","Sea Survival Training"],
+    correct:1
+  },
+  {
+    type:'mcq',
+    q:"Casing pertama yang dipasang, berupa pipa non-seamless (Spiral/SAW/ERW) dengan sistem 'bore pile and cemented' pada spesifikasi geothermal, adalah casing...",
+    opts:["20\" Casing","13-3/8\" Liner","30\" Conductor","7\" Perforated Liner"],
+    correct:2
+  },
+  {
+    type:'calc',
+    q:"Sebuah rig melakukan directional drilling dengan Surface RPM = 80, Flow Rate = 900 gpm, dan faktor mud motor = 0,150 rev/gallon. Bit revolution rating pada 80% reliability = 950.000 revolusi, dan ROP rata-rata = 18 ft/jam. Hitung Total Bit RPM, Bit Life (dalam jam), dan Drilling Footage!",
+    answer:"Down Hole Motor RPM = 900 × 0,150 = 135 RPM\nTotal Bit RPM = 80 + 135 = 215 RPM\nBit Life = 950.000 / 215 = 4.418,6 menit ≈ 73,6 jam\nDrilling Footage = 18 ft/jam × 73,6 jam ≈ 1.325 ft"
+  },
+  {
+    type:'calc',
+    q:"Hitung volume semen (dalam BBF) untuk ANNULUS antara casing 9-5/8\" (OD = 9,625\") dan lubang bor 12-1/4\" (ID lubang = 12,25\"), menggunakan rumus BBF Annulus = (OD² − ID²) / 1029.4. Jika panjang interval yang perlu disemen adalah 500 ft, berapa total volume semen dalam barrel?",
+    answer:"BBF = (12,25² − 9,625²) / 1029.4\n   = (150,06 − 92,64) / 1029.4\n   = 57,42 / 1029.4\n   ≈ 0,0558 bbl/ft\n\nTotal Volume = 0,0558 bbl/ft × 500 ft ≈ 27,9 barrel"
+  },
+  {
+    type:'calc',
+    q:"Sebuah rig 1.500 HP disewa selama 45 hari untuk mengebor 1 sumur geothermal. Berdasarkan data slide (sewa ≈ $37.500/hari, BBM ≈ 12.300 liter/hari, asumsi harga BBM $0,9/liter), hitung total biaya sewa rig dan total biaya bahan bakar selama masa pengeboran tersebut!",
+    answer:"Total biaya sewa = $37.500 × 45 hari = $1.687.500\nTotal konsumsi BBM = 12.300 liter × 45 hari = 553.500 liter\nTotal biaya BBM = 553.500 liter × $0,9 = $498.150\n\nTotal biaya sewa + BBM ≈ $1.687.500 + $498.150 = $2.185.650"
+  },
+  {
+    type:'essay',
+    q:"Jelaskan mengapa WOB (Weight On Bit) dihitung sebagai SELISIH pembacaan Weight Indicator (off-bottom dikurangi on-bottom), bukan sebagai penambahan berat baru?",
+    answer:"Contoh jawaban: Karena berat total rangkaian pipa (travelling block + top drive + BHA + drill string) sudah sepenuhnya digantung oleh hook saat bit belum menyentuh dasar (off-bottom). Ketika driller menurunkan rangkaian hingga bit menyentuh formasi (on-bottom) dan menahan sebagian beban, sebagian dari berat yang tadinya ditahan hook kini 'dipindahkan' dan ditumpu oleh formasi melalui bit — sehingga pembacaan di permukaan (Weight Indicator) TURUN, bukan naik. Selisih penurunan itulah yang mencerminkan besarnya beban yang benar-benar menekan bit ke formasi."
+  },
+  {
+    type:'essay',
+    q:"Berdasarkan data 'Rank of Drilling Cost Efficiencies Method', mengapa 'Drilling Personnel Integrity' menjadi peringkat #1, lebih tinggi dari 'Rig Sizing' atau strategi procurement lainnya?",
+    answer:"Contoh jawaban: Karena seberapa pun baik strategi procurement, pemilihan rig, atau program teknis dirancang, keberhasilan eksekusinya tetap bergantung pada integritas dan kompetensi personel yang menjalankannya di lapangan. Personel yang tidak berintegritas dapat menimbulkan biaya tersembunyi (kecurangan pengadaan, laporan yang tidak akurat, keputusan teknis yang tidak optimal) yang jauh melampaui penghematan dari strategi rig sizing atau procurement sekalipun — sehingga faktor manusia menjadi fondasi yang harus benar terlebih dahulu sebelum faktor-faktor teknis/komersial lainnya bisa efektif."
+  }
+];
+
+const quizContainer = document.getElementById('quizContainer');
+let answered = 0;
+let totalMcq = quizData.filter(q=>q.type==='mcq').length;
+
+quizData.forEach((item, idx)=>{
+  const block = document.createElement('div');
+  block.className = 'q-block' + (item.type!=='mcq' ? ' calc' : '');
+
+  if(item.type === 'mcq'){
+    block.innerHTML = `
+      <div class="q-num">SOAL ${idx+1} · PILIHAN GANDA</div>
+      <div class="q-text">${item.q}</div>
+      <div class="opts" id="opts-${idx}"></div>
+    `;
+    const optsDiv = block.querySelector(`#opts-${idx}`);
+    item.opts.forEach((opt,oi)=>{
+      const o = document.createElement('div');
+      o.className='opt';
+      o.textContent = opt;
+      o.addEventListener('click', ()=>{
+        if(optsDiv.dataset.locked) return;
+        optsDiv.dataset.locked = "1";
+        [...optsDiv.children].forEach((c,ci)=>{
+          if(ci===item.correct) c.classList.add('correct');
+          else if(ci===oi) c.classList.add('wrong');
+        });
+        answered++;
+        document.getElementById('scoreDisplay').textContent = `${answered} / ${totalMcq} dijawab`;
+      });
+      optsDiv.appendChild(o);
+    });
+  } else if(item.type === 'calc'){
+    block.innerHTML = `
+      <div class="q-num">SOAL ${idx+1} · HITUNGAN</div>
+      <div class="q-text">${item.q.replace(/\n/g,'<br>')}</div>
+      <textarea class="essay-input" placeholder="Tuliskan langkah perhitunganmu di sini..."></textarea>
+      <button class="reveal-btn">Lihat Jawaban</button>
+      <div class="answer-box">${item.answer.replace(/\n/g,'<br>')}</div>
+    `;
+    const btn = block.querySelector('.reveal-btn');
+    const ans = block.querySelector('.answer-box');
+    btn.addEventListener('click', ()=>{
+      ans.classList.toggle('show');
+      btn.textContent = ans.classList.contains('show') ? 'Sembunyikan Jawaban' : 'Lihat Jawaban';
+    });
+  } else {
+    block.innerHTML = `
+      <div class="q-num">SOAL ${idx+1} · ESAI</div>
+      <div class="q-text">${item.q}</div>
+      <textarea class="essay-input" placeholder="Tulis jawabanmu di sini..."></textarea>
+      <button class="reveal-btn">Lihat Contoh Jawaban</button>
+      <div class="answer-box">${item.answer}</div>
+    `;
+    const btn = block.querySelector('.reveal-btn');
+    const ans = block.querySelector('.answer-box');
+    btn.addEventListener('click', ()=>{
+      ans.classList.toggle('show');
+      btn.textContent = ans.classList.contains('show') ? 'Sembunyikan Jawaban' : 'Lihat Contoh Jawaban';
+    });
+  }
+  quizContainer.appendChild(block);
+});
+document.getElementById('scoreDisplay').textContent = `0 / ${totalMcq} dijawab`;
+</script>
+</body>
+</html>

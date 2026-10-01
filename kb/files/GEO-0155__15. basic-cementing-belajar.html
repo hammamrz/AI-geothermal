@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Basic Cementing — Paket Belajar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#12151a;
+    --panel:#1a1e25;
+    --panel2:#20252d;
+    --border:#2b313b;
+    --text:#e9e7e1;
+    --muted:#8b93a1;
+    --red:#e5342a;
+    --red-dim:#7a221e;
+    --amber:#f4b400;
+    --blue:#4a90c9;
+    --green:#4fae6e;
+    --depth-line: repeating-linear-gradient(to bottom, var(--border) 0 1px, transparent 1px 24px);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  ::selection{background:var(--red);color:#fff;}
+
+  /* ---------- HEADER / HERO ---------- */
+  .hero{
+    position:relative;
+    border-bottom:1px solid var(--border);
+    background:
+      linear-gradient(180deg, rgba(229,52,42,0.10), transparent 60%),
+      var(--bg);
+    overflow:hidden;
+    padding:38px 6vw 26px;
+  }
+  .depth-rail{
+    position:absolute; left:0; top:0; bottom:0; width:64px;
+    background-image:var(--depth-line);
+    background-position:0 0;
+    opacity:.55;
+    font-family:'JetBrains Mono',monospace;
+    font-size:9px;
+    color:var(--muted);
+  }
+  .depth-rail span{
+    position:absolute; left:8px; transform:translateY(-50%);
+  }
+  .hero-inner{ position:relative; margin-left:64px; }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    letter-spacing:.14em;
+    color:var(--amber);
+    text-transform:uppercase;
+    display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{content:"●"; color:var(--red); font-size:10px;}
+  h1.title{
+    font-family:'Oswald',sans-serif;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.01em;
+    font-size:clamp(28px,4.6vw,52px);
+    margin:8px 0 6px;
+    line-height:1.02;
+    color:#fff;
+  }
+  h1.title em{ color:var(--red); font-style:normal; }
+  .subtitle{
+    color:var(--muted);
+    font-size:15px;
+    max-width:640px;
+    line-height:1.55;
+    margin-bottom:18px;
+  }
+  .hero-stats{
+    display:flex; gap:0; flex-wrap:wrap;
+    border-top:1px solid var(--border);
+    margin-top:6px;
+  }
+  .hstat{
+    padding:14px 22px 4px 0;
+    margin-right:22px;
+    border-right:1px solid var(--border);
+    min-width:110px;
+  }
+  .hstat:last-child{border-right:none;}
+  .hstat b{
+    font-family:'Oswald',sans-serif;
+    font-size:24px;
+    color:var(--red);
+    display:block;
+  }
+  .hstat span{
+    font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.06em;
+  }
+
+  /* ---------- TABS ---------- */
+  .tabbar{
+    position:sticky; top:0; z-index:50;
+    display:flex; gap:2px;
+    background:var(--panel);
+    border-bottom:1px solid var(--border);
+    padding:0 6vw;
+    overflow-x:auto;
+  }
+  .tabbtn{
+    font-family:'Oswald',sans-serif;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    font-size:14px;
+    background:transparent;
+    border:none;
+    color:var(--muted);
+    padding:16px 20px 13px;
+    cursor:pointer;
+    border-bottom:3px solid transparent;
+    white-space:nowrap;
+    transition:color .15s ease, border-color .15s ease;
+  }
+  .tabbtn .n{ color:var(--red); margin-right:8px; font-family:'JetBrains Mono',monospace; font-size:12px;}
+  .tabbtn:hover{ color:var(--text); }
+  .tabbtn.active{ color:#fff; border-bottom-color:var(--red); }
+
+  main{ padding:34px 6vw 70px; max-width:1180px; margin:0 auto; }
+  .panel{ display:none; animation:fadeIn .25s ease; }
+  .panel.active{ display:block; }
+  @keyframes fadeIn{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;} }
+
+  .section-head{
+    display:flex; align-items:baseline; gap:12px;
+    margin:38px 0 16px;
+  }
+  .section-head:first-child{ margin-top:0; }
+  .section-head .tag{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px; color:var(--red);
+    border:1px solid var(--red-dim);
+    padding:3px 8px; border-radius:3px;
+    text-transform:uppercase; letter-spacing:.06em;
+  }
+  .section-head h2{
+    font-family:'Oswald',sans-serif;
+    text-transform:uppercase;
+    font-size:21px;
+    margin:0;
+    color:#fff;
+    letter-spacing:.01em;
+  }
+  .section-head .line{ flex:1; height:1px; background:var(--border); }
+
+  .lead-note{
+    color:var(--muted); font-size:14.5px; line-height:1.6; max-width:760px; margin-bottom:18px;
+  }
+
+  /* ---------- SUMMARY CARDS ---------- */
+  .grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px; }
+  .card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:6px;
+    padding:18px 18px 16px;
+  }
+  .card h3{
+    font-family:'Oswald',sans-serif;
+    font-size:15px;
+    text-transform:uppercase;
+    margin:0 0 10px;
+    color:var(--amber);
+    letter-spacing:.03em;
+  }
+  .card ul{ margin:0; padding-left:18px; color:var(--text); font-size:13.6px; line-height:1.65; }
+  .card ul li{ margin-bottom:5px; }
+  .card p{ font-size:13.6px; color:var(--text); line-height:1.6; margin:0 0 8px;}
+  .card .mini{ color:var(--muted); font-size:12.5px; }
+
+  .callout{
+    border-left:3px solid var(--red);
+    background:rgba(229,52,42,0.07);
+    padding:12px 16px;
+    border-radius:0 4px 4px 0;
+    font-size:13.8px;
+    color:var(--text);
+    margin:16px 0;
+  }
+  .callout b{ color:var(--red); }
+
+  table.simple{ width:100%; border-collapse:collapse; font-size:13px; margin-top:6px; }
+  table.simple th, table.simple td{
+    border:1px solid var(--border); padding:8px 10px; text-align:left;
+  }
+  table.simple th{
+    background:var(--panel2); color:var(--amber);
+    font-family:'JetBrains Mono',monospace; font-size:11.5px; text-transform:uppercase;
+  }
+  table.simple td{ color:var(--text); }
+  code.f{
+    font-family:'JetBrains Mono',monospace;
+    background:var(--panel2);
+    border:1px solid var(--border);
+    padding:1px 6px; border-radius:3px;
+    color:var(--blue);
+  }
+
+  /* ---------- QUIZ ---------- */
+  .quiz-top{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:20px;}
+  .scorebox{
+    font-family:'JetBrains Mono',monospace;
+    background:var(--panel); border:1px solid var(--border); border-radius:6px;
+    padding:10px 16px; font-size:13px; color:var(--muted);
+  }
+  .scorebox b{ color:var(--amber); font-size:16px; }
+  .progressbar{ height:6px; background:var(--panel2); border-radius:4px; overflow:hidden; flex:1; min-width:180px; margin:0 16px;}
+  .progressbar i{ display:block; height:100%; background:var(--red); width:0%; transition:width .3s ease; }
+  .btn{
+    font-family:'Oswald',sans-serif; text-transform:uppercase; letter-spacing:.04em;
+    background:var(--red); color:#fff; border:none; border-radius:5px;
+    padding:9px 18px; font-size:13px; cursor:pointer;
+  }
+  .btn.secondary{ background:transparent; border:1px solid var(--border); color:var(--text); }
+  .btn:hover{ filter:brightness(1.1); }
+
+  .qcard{
+    background:var(--panel); border:1px solid var(--border); border-radius:8px;
+    padding:24px; margin-bottom:16px;
+  }
+  .qmeta{ font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); text-transform:uppercase; margin-bottom:8px; letter-spacing:.05em;}
+  .qtext{ font-size:16.5px; font-weight:500; margin-bottom:16px; line-height:1.5; }
+  .opts{ display:grid; gap:9px; }
+  .opt{
+    text-align:left;
+    background:var(--panel2); border:1px solid var(--border); color:var(--text);
+    padding:11px 14px; border-radius:6px; cursor:pointer; font-size:14px;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .opt:hover{ border-color:var(--blue); }
+  .opt.correct{ border-color:var(--green); background:rgba(79,174,110,0.12); }
+  .opt.wrong{ border-color:var(--red); background:rgba(229,52,42,0.12); }
+  .opt[disabled]{ cursor:default; }
+  .explain{
+    margin-top:14px; padding:12px 14px; border-radius:6px;
+    background:var(--panel2); border:1px solid var(--border);
+    font-size:13.5px; color:var(--muted); display:none; line-height:1.55;
+  }
+  .explain b{ color:var(--text); }
+  .quiz-nav{ display:flex; justify-content:space-between; margin-top:6px; }
+  #quizResult{ display:none; text-align:center; padding:40px 20px; }
+  #quizResult h3{ font-family:'Oswald',sans-serif; font-size:30px; text-transform:uppercase; color:#fff;}
+  #quizResult .big{ font-family:'Oswald',sans-serif; font-size:56px; color:var(--red); }
+
+  /* ---------- FLASHCARDS ---------- */
+  .fc-top{ display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:18px;}
+  .fc-filter{ display:flex; gap:6px; flex-wrap:wrap; }
+  .chip{
+    font-family:'JetBrains Mono',monospace; font-size:11px; text-transform:uppercase;
+    background:var(--panel2); border:1px solid var(--border); color:var(--muted);
+    padding:6px 11px; border-radius:20px; cursor:pointer;
+  }
+  .chip.active{ background:var(--red); color:#fff; border-color:var(--red); }
+  .fc-stage{ display:flex; flex-direction:column; align-items:center; gap:16px; }
+  .fc-count{ font-family:'JetBrains Mono',monospace; color:var(--muted); font-size:12px; }
+  .flashcard{
+    width:100%; max-width:560px; height:270px;
+    perspective:1400px; cursor:pointer;
+  }
+  .fc-inner{
+    position:relative; width:100%; height:100%;
+    transform-style:preserve-3d; transition:transform .5s cubic-bezier(.2,.9,.3,1);
+  }
+  .flashcard.flipped .fc-inner{ transform:rotateY(180deg); }
+  .fc-face{
+    position:absolute; inset:0; backface-visibility:hidden;
+    border-radius:10px; border:1px solid var(--border);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:30px; text-align:center;
+  }
+  .fc-front{
+    background:linear-gradient(160deg, var(--panel), var(--panel2));
+  }
+  .fc-front .cat{
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--amber);
+    text-transform:uppercase; letter-spacing:.08em; position:absolute; top:16px; left:20px;
+  }
+  .fc-front .term{
+    font-family:'Oswald',sans-serif; font-size:26px; text-transform:uppercase; color:#fff;
+  }
+  .fc-front .hint{ position:absolute; bottom:14px; font-size:11px; color:var(--muted); }
+  .fc-back{
+    background:linear-gradient(160deg, #1e2a20, var(--panel2));
+    transform:rotateY(180deg);
+    border-color:var(--green);
+  }
+  .fc-back p{ font-size:14.5px; line-height:1.55; color:var(--text); margin:0;}
+  .fc-controls{ display:flex; gap:10px; align-items:center; }
+
+  /* ---------- DIFFICULT CONCEPTS ---------- */
+  .acc-item{
+    background:var(--panel); border:1px solid var(--border); border-radius:8px;
+    margin-bottom:12px; overflow:hidden;
+  }
+  .acc-head{
+    display:flex; align-items:center; gap:12px; justify-content:space-between;
+    padding:16px 18px; cursor:pointer;
+  }
+  .acc-head h4{
+    font-family:'Oswald',sans-serif; text-transform:uppercase; font-size:15.5px; margin:0; color:#fff;
+    display:flex; align-items:center; gap:10px;
+  }
+  .acc-head h4 .diff{
+    font-family:'JetBrains Mono',monospace; font-size:9.5px; padding:2px 7px; border-radius:3px;
+    background:var(--red-dim); color:#ffb2ad; letter-spacing:.05em;
+  }
+  .acc-head .chev{ color:var(--muted); transition:transform .25s ease; font-size:18px; }
+  .acc-item.open .chev{ transform:rotate(45deg); color:var(--red); }
+  .acc-body{
+    max-height:0; overflow:hidden; transition:max-height .3s ease;
+    padding:0 18px;
+  }
+  .acc-item.open .acc-body{ padding-bottom:18px; }
+  .acc-body p{ font-size:14px; line-height:1.65; color:var(--text); margin:0 0 10px;}
+  .acc-body .why{
+    background:var(--panel2); border-left:3px solid var(--amber); padding:10px 14px;
+    border-radius:0 5px 5px 0; font-size:13.3px; color:var(--muted); margin-top:10px;
+  }
+  .acc-body .why b{ color:var(--amber); }
+
+  footer{
+    text-align:center; padding:30px; color:var(--muted); font-size:12px;
+    border-top:1px solid var(--border); font-family:'JetBrains Mono',monospace;
+  }
+
+  @media(max-width:640px){
+    .depth-rail{ display:none; }
+    .hero-inner{ margin-left:0; }
+    .tabbtn{ padding:14px 12px 11px; font-size:12.5px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="depth-rail" id="depthRail"></div>
+  <div class="hero-inner">
+    <div class="eyebrow">OPT · Basic Cementing Training</div>
+    <h1 class="title">Cement Slurry Design, <em>Equipment</em> &amp; Operation</h1>
+    <p class="subtitle">Paket belajar interaktif dari materi Basic Cementing Training (Jakarta, 4 Juli 2026). Rangkuman, latihan soal, flashcard, dan penjelasan konsep-konsep yang sering membingungkan — semua dalam satu halaman.</p>
+    <div class="hero-stats">
+      <div class="hstat"><b>6</b><span>Bagian Materi</span></div>
+      <div class="hstat"><b>20</b><span>Soal Latihan</span></div>
+      <div class="hstat"><b>24</b><span>Flashcard</span></div>
+      <div class="hstat"><b>6</b><span>Konsep Sulit</span></div>
+      <div class="hstat"><b>1x</b><span>"One-Shot Job"</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="tabbar">
+  <button class="tabbtn active" data-tab="ringkasan"><span class="n">01</span>Ringkasan</button>
+  <button class="tabbtn" data-tab="latihan"><span class="n">02</span>Latihan Soal</button>
+  <button class="tabbtn" data-tab="flashcard"><span class="n">03</span>Flashcard</button>
+  <button class="tabbtn" data-tab="sulit"><span class="n">04</span>Konsep Sulit</button>
+</div>
+
+<main>
+
+  <!-- ===================== TAB 1: RINGKASAN ===================== -->
+  <section class="panel active" id="panel-ringkasan">
+
+    <div class="section-head"><span class="tag">Part 1</span><h2>Konsekuensi Cementing yang Buruk</h2><span class="line"></span></div>
+    <div class="callout"><b>Cementing adalah pekerjaan "one-shot"</b> — hanya ada satu kesempatan untuk melakukannya dengan benar. Kesalahan bisa mahal dan berujung bencana.</div>
+    <div class="grid">
+      <div class="card">
+        <h3>Deepwater Horizon (BP, April 2010)</h3>
+        <ul>
+          <li>Blowout terjadi karena semen gagal menyekat annulus casing secara efektif.</li>
+          <li>Investigasi resmi menyimpulkan penyebabnya adalah <b>pekerjaan cementing yang buruk</b>.</li>
+          <li>11 pekerja meninggal; tumpahan minyak terbesar dalam sejarah AS.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Dampak</h3>
+        <ul>
+          <li>4,9 juta barel minyak tumpah, 2.500 km² air laut tercemar.</li>
+          <li>Bencana ekologis — satwa liar (burung, ikan) terdampak parah.</li>
+          <li>BP didenda <b>$20,8 miliar</b>.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Tanggung Jawab Cementing Engineer</h3>
+        <p>Tim cementing bertanggung jawab menyelesaikan setiap operasi cementing dengan sukses. Prinsipnya: <em>"Let Deepwater Horizon only happen in the movie."</em></p>
+      </div>
+    </div>
+
+    <div class="section-head"><span class="tag">Part 2</span><h2>Apa itu Cementing?</h2><span class="line"></span></div>
+    <div class="grid">
+      <div class="card">
+        <h3>Definisi &amp; Tujuan</h3>
+        <p>Memasukkan material semen (slurry) ke annulus antara casing dan open hole/casing sebelumnya untuk:</p>
+        <ul>
+          <li>Zonal isolation (memisahkan zona oil/gas/water)</li>
+          <li>Menopang beban aksial casing</li>
+          <li>Melindungi &amp; menyangga casing dan borehole</li>
+          <li>Melindungi air tawar dari kontaminasi</li>
+          <li>Menyiapkan kondisi baik untuk stimulasi (acidizing/fracturing)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>4 Klasifikasi Casing String</h3>
+        <ul>
+          <li><b>Conductor pipe</b> — pertama &amp; terpendek; cegah washout &amp; kontaminasi shallow sand.</li>
+          <li><b>Surface casing</b> — lindungi fresh water, dasar mekanis untuk BOP.</li>
+          <li><b>Intermediate casing/liner</b> — isolasi zona bertekanan tinggi/loss di atas zona target.</li>
+          <li><b>Production casing/liner</b> — string terakhir, isolasi zona produksi.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Metode Cementing per Casing</h3>
+        <ul>
+          <li><b>Conductor:</b> Stab-in cementing / Macaroni pipe (top job, maks 250-300 ft)</li>
+          <li><b>Surface:</b> Single stage cementing (cementing head, top &amp; bottom plug)</li>
+          <li><b>Intermediate:</b> Dual stage cementing (DV tool)</li>
+          <li><b>Production:</b> Liner cementing (annular clearance kecil, alat khusus)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Casing Accessories</h3>
+        <ul>
+          <li><b>Centralizer &amp; stop collar</b> — memusatkan casing di lubang bor.</li>
+          <li><b>Float collar &amp; float shoe</b> — kontrol aliran semen, cegah backflow.</li>
+          <li><b>Wiper plug (top/bottom)</b> — pisahkan slurry dari lumpur/displacement fluid.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section-head"><span class="tag">Part 3</span><h2>Peralatan Cementing</h2><span class="line"></span></div>
+    <div class="grid">
+      <div class="card">
+        <h3>4 Sistem Utama</h3>
+        <ul>
+          <li><b>Cement Supply System</b> — surge tank, menyalurkan semen kering ke mixer.</li>
+          <li><b>Water Supply System</b> — LAS (liquid-additive metering, hemat tempat) vs Mix Water Tank (perlu premix, boros ruang).</li>
+          <li><b>Mixing System</b> — high energy mixer + pompa sirkulasi mencampur semen &amp; air jadi slurry.</li>
+          <li><b>Pumping System</b> — cementing pump (plunger 3-silinder) memompa slurry ke sumur lewat cementing head.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Konfigurasi Unit</h3>
+        <ul>
+          <li>Onshore: vehicle-mounted cementing equipment (truck).</li>
+          <li>Offshore: skid cementing equipment.</li>
+        </ul>
+        <p class="mini">Cementing adalah kerja multidisiplin: Equipment &amp; Tools, Chemistry of Cement, dan Cementing Engineering (fluid mechanics, rock mechanics, dsb).</p>
+      </div>
+    </div>
+
+    <div class="section-head"><span class="tag">Part 4</span><h2>Slurry (Semen &amp; Working Fluids)</h2><span class="line"></span></div>
+    <div class="grid">
+      <div class="card">
+        <h3>Urutan Working Fluids</h3>
+        <ol style="margin:0;padding-left:18px;font-size:13.6px;line-height:1.7;">
+          <li>Drilling fluid (lumpur di dalam sumur)</li>
+          <li>Preflush: <b>washer fluid</b> (bersihkan wellbore) → <b>spacer</b> (pisahkan lumpur & semen)</li>
+          <li>Cement slurry: <b>lead slurry</b> (ringan, isolasi zona atas) → <b>tail slurry</b> (berat, seal kuat di bawah)</li>
+        </ol>
+      </div>
+      <div class="card">
+        <h3>Well Cement (Portland Cement)</h3>
+        <p>API-ISO mengenal 8 kelas: A, B, C, D, E, F, G, H. <b>Kelas G &amp; H</b> paling umum dipakai dalam cementing.</p>
+        <table class="simple"><tr><th>Senyawa</th><th>Kandungan</th></tr>
+        <tr><td>C3S</td><td>40–80%</td></tr><tr><td>C2S</td><td>2–30%</td></tr>
+        <tr><td>C4AF</td><td>4–15%</td></tr><tr><td>C3A</td><td>3–15%</td></tr></table>
+      </div>
+      <div class="card">
+        <h3>Additive Utama</h3>
+        <ul>
+          <li><b>Dispersant</b> — turunkan viskositas, permudah pompa.</li>
+          <li><b>Retarder / Accelerator</b> — perlambat / percepat setting time.</li>
+          <li><b>Fluid loss control agent</b> — kurangi kehilangan cairan ke formasi.</li>
+          <li><b>Weighting agent / Extender</b> — naikkan/turunkan densitas &amp; volume.</li>
+          <li><b>Gas control (anti-migration) agent</b> — cegah gas migration.</li>
+          <li><b>Expanding agent</b> — bantu semen mengembang, isi rongga, ikatan lebih kuat.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>8 Properti Kunci Slurry</h3>
+        <table class="simple">
+          <tr><th>Properti</th><th>Fungsi Teknis</th></tr>
+          <tr><td>Density</td><td>Pore pressure &lt; ECD &lt; Fracture pressure</td></tr>
+          <tr><td>API Fluid Loss</td><td>Hindari bridge plugging &amp; formation damage</td></tr>
+          <tr><td>Rheology</td><td>Efisiensi displacement</td></tr>
+          <tr><td>Free Water</td><td>Hindari annulus bypass</td></tr>
+          <tr><td>Thickening Time</td><td>Keamanan operasi</td></tr>
+          <tr><td>Compressive Strength</td><td>Menopang casing &amp; isolasi</td></tr>
+          <tr><td>Static Gel Strength</td><td>Cegah migrasi gas saat statis</td></tr>
+          <tr><td>Cement Hydration</td><td>Ketahanan terhadap invasi gas saat setting</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section-head"><span class="tag">Part 5</span><h2>Case Study — Sumur Manohara-01</h2><span class="line"></span></div>
+    <div class="grid">
+      <div class="card">
+        <h3>Data Sumur</h3>
+        <ul>
+          <li>Operasi: 9-5/8" Casing Cementing, Indonesia</li>
+          <li>Open hole 12-1/4", TD 6.130 ft</li>
+          <li>Float collar 6.045,41 ft; float shoe 6.125,74 ft</li>
+          <li>BHST 223°F, BHCT 170°F</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Aturan Excess Cement Slurry</h3>
+        <ul>
+          <li>Ada caliper log: excess ≥ <b>20%</b> dari volume annulus logging</li>
+          <li>Tanpa caliper — Surface: ≥100% · Intermediate: ≥50% · Production: ≥40%</li>
+          <li>Bagian overlap casing-casing: 0% excess</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Kebijakan Thickening Time</h3>
+        <p>Thickening time minimum = nilai yang lebih besar dari:</p>
+        <ul><li><code class="f">Job pumping time × 1.5</code></li><li><code class="f">Job pumping time + 2 jam</code></li></ul>
+        <p class="mini">Pumping time dihitung sejak semen kontak air sampai akhir job.</p>
+      </div>
+    </div>
+
+    <div class="section-head"><span class="tag">Part 6</span><h2>Tantangan Cementing &amp; Evaluasi</h2><span class="line"></span></div>
+    <div class="grid">
+      <div class="card">
+        <h3>Total Circulation Loss</h3>
+        <p>Hilangnya fluida/semen total/parsial ke zona sangat permeabel (naturally cavernous, fissured) atau akibat fracturing.</p>
+        <p><b>Konsekuensi:</b> buang waktu (stuck pipe, casing tambahan), meleset target (skin damage, isolasi buruk), operasi berbahaya (kick/blowout).</p>
+      </div>
+      <div class="card">
+        <h3>SmaGEL &amp; ProNET (Solusi Lost Circulation)</h3>
+        <ul>
+          <li><b>SmaGEL</b> — gelling block cement: cair saat dipompa, membentuk gel kuat saat diam (mencegah fallback), efektif untuk formasi cavernous/vuggy.</li>
+          <li><b>ProNET</b> — material fiber lanjutan yang bercampur dengan semen membentuk jembatan (bridging) untuk menutup zona lost circulation; inert, tidak mempengaruhi thickening time/compressive strength.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Cementing Evaluation Tools</h3>
+        <ul>
+          <li><b>CBL</b> (Cement Bond Log) — amplitudo gelombang sonic; amplitudo rendah = bonding bagus.</li>
+          <li><b>VDL</b> (Variable Density Log) — waveform lengkap, deteksi channeling, biasa digabung dengan CBL.</li>
+          <li><b>USIT</b> (Ultrasonic Imaging Tool) — citra 360°, resolusi tinggi, ukur ketebalan &amp; impedansi semen.</li>
+          <li><b>Pressure test</b> — verifikasi casing &amp; semen menahan tekanan tanpa bocor.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:30px;"><b>REMEMBER:</b> Good operations with fatal accident is nothing. "Start the job" bukan langkah pertama — urutannya: <b>Design → Preparation → Execution → Evaluation.</b></div>
+  </section>
+
+  <!-- ===================== TAB 2: LATIHAN SOAL ===================== -->
+  <section class="panel" id="panel-latihan">
+    <div class="section-head"><span class="tag">Kuis</span><h2>Latihan Soal Pilihan Ganda</h2><span class="line"></span></div>
+    <p class="lead-note">20 soal mencakup seluruh materi. Pilih jawaban, lihat penjelasan langsung, lalu lanjut ke soal berikutnya.</p>
+
+    <div class="quiz-top">
+      <div class="scorebox">Skor: <b id="scoreNow">0</b> / <span id="scoreTotal">0</span></div>
+      <div class="progressbar"><i id="progFill"></i></div>
+      <button class="btn secondary" id="restartBtn">Ulangi Kuis</button>
+    </div>
+
+    <div class="qcard" id="qCard">
+      <div class="qmeta">Soal <span id="qIndex">1</span> / <span id="qCountTotal">20</span></div>
+      <div class="qtext" id="qText"></div>
+      <div class="opts" id="qOpts"></div>
+      <div class="explain" id="qExplain"></div>
+      <div class="quiz-nav">
+        <button class="btn secondary" id="prevBtn">← Sebelumnya</button>
+        <button class="btn" id="nextBtn">Selanjutnya →</button>
+      </div>
+    </div>
+
+    <div id="quizResult">
+      <div class="big" id="finalScore">0/20</div>
+      <h3>Kuis Selesai!</h3>
+      <p class="lead-note" id="finalMsg" style="margin:0 auto 20px;"></p>
+      <button class="btn" id="retryBtn">Coba Lagi</button>
+    </div>
+  </section>
+
+  <!-- ===================== TAB 3: FLASHCARD ===================== -->
+  <section class="panel" id="panel-flashcard">
+    <div class="section-head"><span class="tag">Hafalan</span><h2>Flashcard Istilah Cementing</h2><span class="line"></span></div>
+    <p class="lead-note">Klik kartu untuk membalik. Gunakan filter kategori untuk fokus belajar per topik.</p>
+
+    <div class="fc-top">
+      <div class="fc-filter" id="fcFilters"></div>
+      <button class="chip" id="shuffleBtn">🔀 Acak</button>
+    </div>
+
+    <div class="fc-stage">
+      <div class="fc-count"><span id="fcIndex">1</span> / <span id="fcTotal">24</span></div>
+      <div class="flashcard" id="flashcard">
+        <div class="fc-inner">
+          <div class="fc-face fc-front">
+            <span class="cat" id="fcCat">Kategori</span>
+            <div class="term" id="fcTerm">Term</div>
+            <span class="hint">klik untuk lihat jawaban</span>
+          </div>
+          <div class="fc-face fc-back">
+            <p id="fcDef">Definisi</p>
+          </div>
+        </div>
+      </div>
+      <div class="fc-controls">
+        <button class="btn secondary" id="fcPrev">← Sebelumnya</button>
+        <button class="btn" id="fcNext">Selanjutnya →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== TAB 4: KONSEP SULIT ===================== -->
+  <section class="panel" id="panel-sulit">
+    <div class="section-head"><span class="tag">Pendalaman</span><h2>Konsep-Konsep yang Sering Membingungkan</h2><span class="line"></span></div>
+    <p class="lead-note">Klik tiap topik untuk membuka penjelasan lebih detail, lengkap dengan alasan mengapa konsep ini penting dan sering salah dipahami.</p>
+    <div id="accWrap"></div>
+  </section>
+
+</main>
+
+<footer>OPT · BASIC CEMENTING TRAINING — PAKET BELAJAR INTERAKTIF · DIBUAT DARI MATERI JAKARTA, 4 JULI 2026</footer>
+
+<script>
+/* ================= TAB SWITCHING ================= */
+const tabBtns = document.querySelectorAll('.tabbtn');
+const panels = document.querySelectorAll('.panel');
+tabBtns.forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    tabBtns.forEach(b=>b.classList.remove('active'));
+    panels.forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-'+btn.dataset.tab).classList.add('active');
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+});
+
+/* ================= DEPTH RAIL DECORATION ================= */
+const rail = document.getElementById('depthRail');
+const depths = [0,207,349.9,2624.9,5930,6129.9,7354.1];
+const maxD = 7500;
+depths.forEach(d=>{
+  const el = document.createElement('span');
+  el.style.top = (d/maxD*100)+'%';
+  el.textContent = d+"'";
+  rail.appendChild(el);
+});
+
+/* ================= QUIZ DATA ================= */
+const quiz = [
+  {q:"Mengapa cementing disebut sebagai pekerjaan \"one-shot\"?", opts:["Karena hanya butuh satu jenis semen","Karena hanya ada satu kesempatan untuk melakukannya dengan benar","Karena hanya dilakukan sekali dalam umur sumur","Karena hanya satu orang yang mengerjakannya"], correct:1, exp:"Cementing tidak bisa diulang dengan mudah setelah slurry mengeras di tempat yang salah — karena itu disebut \"one-shot job\"."},
+  {q:"Apa penyebab langsung blowout Deepwater Horizon menurut investigasi resmi?", opts:["Kegagalan BOP semata","Human error operator rig","Semen gagal menyekat casing annulus secara efektif","Cuaca buruk di Gulf of Mexico"], correct:2, exp:"Joint survey oleh US Bureau of Ocean Energy Management dan Coast Guard menyimpulkan penyebab langsungnya adalah kegagalan semen menyekat annulus casing."},
+  {q:"Berapa nilai denda yang dikenakan kepada BP akibat insiden Deepwater Horizon?", opts:["$2,8 miliar","$8,2 miliar","$20,8 miliar","$208 juta"], correct:2, exp:"BP didenda $20,8 miliar akibat tumpahan minyak terbesar dalam sejarah industri perminyakan AS."},
+  {q:"Casing string manakah yang biasanya menjadi yang pertama dan terpendek?", opts:["Production casing","Surface casing","Intermediate casing","Conductor pipe"], correct:3, exp:"Conductor pipe adalah string pertama dan terpendek, berfungsi mencegah washout di bawah rig dan melindungi shallow sand dari kontaminasi lumpur."},
+  {q:"Metode cementing conductor pipe yang menggunakan tubing kecil hingga kedalaman maks. 250–300 ft disebut...", opts:["Stab-in cementing","Single stage cementing","Macaroni pipe cementing (top job)","Dual stage cementing"], correct:2, exp:"Macaroni pipe cementing (top job) menggunakan tubing kecil untuk membawa semen ke permukaan, umumnya sampai kedalaman 250–300 ft dengan friction pressure tinggi."},
+  {q:"Apa fungsi utama float collar dan float shoe?", opts:["Memusatkan casing di lubang bor","Mengontrol aliran semen dan mencegah backflow (aliran balik)","Memisahkan slurry dari drilling fluid","Menopang beban aksial casing"], correct:1, exp:"Float collar & float shoe mengontrol aliran semen selama cementing, memastikan penempatan yang tepat dan mencegah semen kembali masuk ke casing."},
+  {q:"Apa fungsi utama centralizer?", opts:["Mempercepat setting time semen","Mengurangi viskositas slurry","Memastikan casing berada di tengah wellbore untuk maksimalkan pengisian semen","Mendinginkan slurry di sumur dalam"], correct:2, exp:"Centralizer memastikan casing tersentralisasi terhadap dinding wellbore, memaksimalkan pengisian semen dan mencegah annular space berlebih di satu sisi."},
+  {q:"Menurut API Spec 10D, berapa standoff minimum yang disyaratkan untuk centralizer?", opts:["50%","67%","75%","100%"], correct:1, exp:"API Spec 10D mensyaratkan standoff minimum 67%, meski standoff ini tidak selalu menjamin efisiensi displacement yang memadai di lapangan — disarankan mencapai standoff sebaik mungkin."},
+  {q:"Dari 4 sistem utama peralatan cementing, sistem manakah yang bertugas mencampur bulk cement dan air menjadi slurry?", opts:["Cement Supply System","Water Supply System","Mixing System","Pumping System"], correct:2, exp:"Mixing System (terdiri dari high energy mixer, pompa sirkulasi, dsb.) bertugas mencampur bulk cement dan mixing water menjadi slurry semen."},
+  {q:"Apa kelemahan utama dari Mix Water Tank dibanding Liquid-Additive Metering System (LAS)?", opts:["Tidak bisa mencampur air dengan aditif sama sekali","Membutuhkan footprint besar dan mixture akan terbuang bila job ditunda/dibatalkan","Hanya bisa dipakai di offshore","Tidak cocok untuk pekerjaan cementing skala besar"], correct:1, exp:"Mix water tank membutuhkan volume tangki besar dan premix sebelum job; jika job tertunda/dibatalkan, campuran yang sudah disiapkan akan terbuang percuma."},
+  {q:"Apa perbedaan utama antara lead slurry dan tail slurry?", opts:["Lead slurry dipompa terakhir, tail slurry dipompa pertama","Lead slurry biasanya lebih ringan untuk zona atas, tail slurry lebih berat dan set cepat untuk zona bawah/casing shoe","Lead slurry hanya dipakai di production casing","Tail slurry tidak mengandung semen"], correct:1, exp:"Lead slurry dipompa lebih dulu, biasanya lebih ringan, untuk isolasi zonal di bagian atas sumur. Tail slurry dipompa terakhir, lebih berat, memberikan seal kuat & cepat set di sekitar casing shoe."},
+  {q:"Kelas semen Portland API-ISO manakah yang paling umum digunakan dalam operasi cementing?", opts:["Kelas A dan B","Kelas C dan D","Kelas G dan H","Kelas E dan F"], correct:2, exp:"Ada 8 kelas semen API-ISO (A-H), namun Kelas G dan H adalah yang paling banyak digunakan dalam operasi cementing."},
+  {q:"Aditif apa yang berfungsi menurunkan viskositas slurry agar lebih mudah dipompa?", opts:["Retarder","Accelerator","Dispersant","Weighting agent"], correct:2, exp:"Dispersant mengurangi viskositas slurry sehingga lebih mudah dipompa dan mengalir efektif melalui wellbore."},
+  {q:"Jika hydrostatic pressure slurry lebih kecil dari pore pressure formasi, apa yang bisa terjadi?", opts:["Lost circulation","Well kick atau blowout","Semen mengeras terlalu cepat","Cement channeling"], correct:1, exp:"Hydrostatic pressure < pore pressure → well kick atau blowout. Sebaliknya, hydrostatic pressure > fracture pressure → lost circulation."},
+  {q:"Apa yang dimaksud dengan \"free water\" pada cement slurry, dan mengapa idealnya nol?", opts:["Air ekstra yang membuat slurry lebih murah; jumlahnya tidak penting","Air bebas yang bisa membentuk water channel di sisi atas casing pada sumur miring, menyebabkan bypass annulus","Air yang digunakan untuk mencuci wellbore sebelum semen dipompa","Air yang ditambahkan setelah semen mengeras"], correct:1, exp:"Free water berlebih pada sumur deviated dapat membentuk 'water strip' di sisi atas cincin semen-casing, menghubungkan formasi dengan tekanan berbeda — karena itu idealnya free water nol."},
+  {q:"Alat apa yang digunakan untuk menguji thickening time slurry pada kondisi suhu dan tekanan simulasi downhole?", opts:["Rotational viscometer","HPHT Consistometer","Static Gel Strength Analyzer","Fluid Loss Cell"], correct:1, exp:"HPHT (High Pressure High Temperature) Consistometer digunakan untuk uji thickening time, mensimulasikan waktu, suhu, dan tekanan yang akan dialami slurry selama pemompaan."},
+  {q:"Menurut kebijakan pada materi, thickening time minimum sebuah slurry harus diambil dari nilai mana?", opts:["Job pumping time saja","Nilai terbesar antara (pumping time × 1.5) dan (pumping time + 2 jam)","Selalu tepat 4 jam","Nilai terkecil antara (pumping time × 1.5) dan (pumping time + 2 jam)"], correct:1, exp:"Thickening time minimum = nilai yang LEBIH BESAR antara (job pumping time × 1.5) dan (job pumping time + 2 jam), untuk memastikan margin keamanan operasi."},
+  {q:"Jika data caliper log open hole TIDAK tersedia, berapa persentase excess volume standar untuk production casing?", opts:["≥100%","≥50%","≥40%","0%"], correct:2, exp:"Tanpa caliper log: Surface casing ≥100%, Intermediate casing ≥50%, Production casing ≥40% dari volume annulus standar. Bagian overlap casing-casing: 0%."},
+  {q:"Apa fungsi utama Cement Bond Log (CBL) dalam evaluasi cementing?", opts:["Mengukur densitas slurry sebelum dipompa","Menentukan integritas ikatan semen di belakang casing lewat amplitudo gelombang sonic","Mengukur thickening time slurry","Menghitung volume excess cement"], correct:1, exp:"CBL memancarkan gelombang sonic dan mengukur amplitudo sinyal balik; amplitudo rendah menandakan bonding semen yang baik, amplitudo tinggi menandakan free pipe/bonding buruk."},
+  {q:"Teknologi SmaGEL pada materi cementing challenges digunakan untuk menangani masalah apa?", opts:["Gas migration pada sumur HPHT","Lost circulation pada formasi cavernous/vuggy","Kontaminasi lumpur berbasis minyak (OBM)","Korosi casing"], correct:1, exp:"SmaGEL adalah gelling block cement system yang cair saat dipompa namun cepat membentuk gel saat diam, sangat efektif menangani lost circulation di formasi cavernous atau vuggy di mana LCM biasa kurang efektif."}
+];
+
+let curQ = 0;
+let userAnswers = new Array(quiz.length).fill(null);
+
+document.getElementById('scoreTotal').textContent = quiz.length;
+document.getElementById('qCountTotal').textContent = quiz.length;
+
+function renderQuestion(){
+  document.getElementById('qCard').style.display='block';
+  document.getElementById('quizResult').style.display='none';
+  const item = quiz[curQ];
+  document.getElementById('qIndex').textContent = curQ+1;
+  document.getElementById('qText').textContent = item.q;
+  const optsWrap = document.getElementById('qOpts');
+  optsWrap.innerHTML='';
+  const explain = document.getElementById('qExplain');
+  explain.style.display='none';
+  explain.innerHTML = '<b>Penjelasan:</b> '+item.exp;
+
+  item.opts.forEach((opt,i)=>{
+    const b = document.createElement('button');
+    b.className='opt';
+    b.textContent = opt;
+    if(userAnswers[curQ]!==null){
+      b.disabled = true;
+      if(i===item.correct) b.classList.add('correct');
+      if(i===userAnswers[curQ] && i!==item.correct) b.classList.add('wrong');
+      explain.style.display='block';
+    }
+    b.addEventListener('click', ()=>{
+      if(userAnswers[curQ]!==null) return;
+      userAnswers[curQ]=i;
+      updateScore();
+      renderQuestion();
+    });
+    optsWrap.appendChild(b);
+  });
+
+  document.getElementById('prevBtn').disabled = curQ===0;
+  document.getElementById('nextBtn').textContent = curQ===quiz.length-1 ? 'Lihat Hasil →' : 'Selanjutnya →';
+  const pct = ((curQ+1)/quiz.length)*100;
+  document.getElementById('progFill').style.width = pct+'%';
+}
+
+function updateScore(){
+  let s=0;
+  userAnswers.forEach((a,i)=>{ if(a===quiz[i].correct) s++; });
+  document.getElementById('scoreNow').textContent = s;
+}
+
+document.getElementById('nextBtn').addEventListener('click', ()=>{
+  if(curQ < quiz.length-1){ curQ++; renderQuestion(); }
+  else { showResult(); }
+});
+document.getElementById('prevBtn').addEventListener('click', ()=>{
+  if(curQ>0){ curQ--; renderQuestion(); }
+});
+document.getElementById('restartBtn').addEventListener('click', resetQuiz);
+document.getElementById('retryBtn').addEventListener('click', resetQuiz);
+
+function resetQuiz(){
+  curQ=0; userAnswers = new Array(quiz.length).fill(null);
+  updateScore();
+  renderQuestion();
+}
+
+function showResult(){
+  document.getElementById('qCard').style.display='none';
+  document.getElementById('quizResult').style.display='block';
+  let s=0;
+  userAnswers.forEach((a,i)=>{ if(a===quiz[i].correct) s++; });
+  document.getElementById('finalScore').textContent = s+'/'+quiz.length;
+  let msg='';
+  const pct = s/quiz.length;
+  if(pct>=0.85) msg='Luar biasa! Kamu sudah menguasai materi cementing dengan sangat baik.';
+  else if(pct>=0.6) msg='Bagus! Beberapa konsep masih perlu diulang — coba cek tab Konsep Sulit.';
+  else msg='Yuk pelajari lagi tab Ringkasan dan Flashcard, lalu coba kuis ini sekali lagi.';
+  document.getElementById('finalMsg').textContent = msg;
+}
+renderQuestion();
+
+/* ================= FLASHCARD DATA ================= */
+const cards = [
+  {cat:"Konsekuensi", term:"One-Shot Job", def:"Prinsip bahwa cementing hanya punya satu kesempatan untuk dilakukan dengan benar — tidak mudah diulang setelah slurry mengeras di posisi salah."},
+  {cat:"Konsekuensi", term:"Cement Bond", def:"Ikatan antara semen dengan casing dan formasi yang menentukan keberhasilan zonal isolation; kegagalan bond menjadi penyebab langsung blowout Deepwater Horizon."},
+  {cat:"Casing", term:"Conductor Pipe", def:"Casing string pertama dan terpendek; mencegah washout di bawah rig dan melindungi shallow sand dari kontaminasi lumpur bor."},
+  {cat:"Casing", term:"Surface Casing", def:"Casing string kedua; melindungi formasi air tawar dangkal dan menyediakan dasar mekanis untuk pemasangan BOP."},
+  {cat:"Casing", term:"Intermediate Casing/Liner", def:"Casing di antara surface dan production casing; mengisolasi zona bertekanan tinggi, loss zone, salt formation, atau heaving shale."},
+  {cat:"Casing", term:"Production Casing/Liner", def:"Elemen tubular terakhir yang disemen dalam sumur; mengisolasi zona di atas dan di dalam zona produksi, menahan beban selama testing & produksi."},
+  {cat:"Casing", term:"Stab-in Cementing", def:"Metode cementing conductor pipe dengan sedikit kontaminasi, sedikit channeling, volume displacement kecil, dan waktu rig lebih singkat."},
+  {cat:"Casing", term:"Dual Stage Cementing", def:"Metode cementing dua tahap menggunakan DV tool untuk memisahkan dan mengisolasi zona, mengurangi hydrostatic pressure berlebih pada formasi lemah."},
+  {cat:"Aksesori", term:"Centralizer", def:"Alat yang memastikan casing berada di tengah wellbore untuk memaksimalkan pengisian semen dan mencegah annular space berlebih."},
+  {cat:"Aksesori", term:"Standoff", def:"Persentase yang menunjukkan seberapa tersentralisasi casing di lubang bor; dihitung sebagai (actual clearance / concentric clearance) × 100%. Minimum API: 67%."},
+  {cat:"Aksesori", term:"Float Collar & Float Shoe", def:"Mengontrol aliran semen selama cementing, memastikan penempatan tepat dan mencegah semen kembali (backflow) ke dalam casing."},
+  {cat:"Aksesori", term:"Wiper Plug", def:"Top dan bottom plug yang memisahkan cement slurry dari drilling fluid dan displacement fluid untuk menjaga kebersihan job."},
+  {cat:"Peralatan", term:"Surge Tank (Cement Supply System)", def:"Menghubungkan silo semen dengan sistem pencampuran, memastikan pasokan semen kering yang stabil dan mengurangi debu di sekitar mixing system."},
+  {cat:"Peralatan", term:"LAS (Liquid-Additive Metering System)", def:"Sistem penyimpanan, transportasi, dan metering aditif cair; footprint kecil, bisa mencampur air & aditif secara kontinu selama proses cementing."},
+  {cat:"Peralatan", term:"Cementing Pump", def:"Pompa plunger horizontal tiga silinder single-acting, digerakkan diesel engine, untuk memompa cement slurry, air bersih, dan fluida lain."},
+  {cat:"Peralatan", term:"Cementing Head", def:"Alat di kepala casing yang mendistribusikan cement slurry ke dalam sumur melalui casing atau liner, mengontrol pelepasan top/bottom plug."},
+  {cat:"Slurry", term:"Washer Fluid", def:"Preflush pertama yang dipompa untuk membersihkan wellbore dan membantu menghilangkan mud cake sebelum semen ditempatkan."},
+  {cat:"Slurry", term:"Spacer", def:"Fluida preflush yang memisahkan cement slurry dari drilling fluid secara efektif, mencegah kontaminasi slurry oleh lumpur."},
+  {cat:"Slurry", term:"Lead Slurry", def:"Slurry semen pertama yang dipompa, biasanya lebih ringan, mencakup bagian atas sumur, berfungsi memberikan zonal isolation."},
+  {cat:"Slurry", term:"Tail Slurry", def:"Slurry semen terakhir yang dipompa, lebih berat dari lead slurry, memberikan seal kuat & cepat set di sekitar casing shoe."},
+  {cat:"Slurry", term:"Thickening Time", def:"Lama waktu slurry semen tetap dapat dipompa (pumpable) di dalam sumur pada kondisi suhu dan tekanan tertentu."},
+  {cat:"Slurry", term:"Static Gel Strength (SGS)", def:"Ukuran kemampuan material membentuk integritas struktural saat statis; nilai SGS idealnya <45 menit untuk mencegah gas migration."},
+  {cat:"Evaluasi", term:"CBL (Cement Bond Log)", def:"Log yang mengukur amplitudo gelombang sonic melalui casing; amplitudo rendah = bonding baik, amplitudo tinggi = bonding buruk/free pipe."},
+  {cat:"Evaluasi", term:"USIT (Ultrasonic Imaging Tool)", def:"Alat dengan transduser ultrasonik berputar yang menghasilkan citra 360° dari selubung semen; mengukur ketebalan semen, impedansi, korosi, micro annulus."}
+];
+
+let fcOrder = cards.map((_,i)=>i);
+let fcIdx = 0;
+let fcCatFilter = 'Semua';
+
+const categories = ['Semua', ...new Set(cards.map(c=>c.cat))];
+const fcFiltersWrap = document.getElementById('fcFilters');
+categories.forEach(cat=>{
+  const chip = document.createElement('button');
+  chip.className = 'chip'+(cat==='Semua'?' active':'');
+  chip.textContent = cat;
+  chip.addEventListener('click', ()=>{
+    fcCatFilter = cat;
+    document.querySelectorAll('.fc-filter .chip').forEach(c=>c.classList.remove('active'));
+    chip.classList.add('active');
+    applyFilter();
+  });
+  fcFiltersWrap.appendChild(chip);
+});
+
+function applyFilter(){
+  fcOrder = cards.map((_,i)=>i).filter(i => fcCatFilter==='Semua' || cards[i].cat===fcCatFilter);
+  fcIdx = 0;
+  document.getElementById('flashcard').classList.remove('flipped');
+  renderCard();
+}
+
+function renderCard(){
+  const total = fcOrder.length;
+  document.getElementById('fcTotal').textContent = total;
+  if(total===0){
+    document.getElementById('fcTerm').textContent = '—';
+    document.getElementById('fcDef').textContent = 'Tidak ada kartu pada kategori ini.';
+    document.getElementById('fcIndex').textContent = 0;
+    return;
+  }
+  const c = cards[fcOrder[fcIdx]];
+  document.getElementById('fcCat').textContent = c.cat;
+  document.getElementById('fcTerm').textContent = c.term;
+  document.getElementById('fcDef').textContent = c.def;
+  document.getElementById('fcIndex').textContent = fcIdx+1;
+}
+
+document.getElementById('flashcard').addEventListener('click', function(){
+  this.classList.toggle('flipped');
+});
+document.getElementById('fcNext').addEventListener('click', ()=>{
+  if(fcOrder.length===0) return;
+  fcIdx = (fcIdx+1) % fcOrder.length;
+  document.getElementById('flashcard').classList.remove('flipped');
+  renderCard();
+});
+document.getElementById('fcPrev').addEventListener('click', ()=>{
+  if(fcOrder.length===0) return;
+  fcIdx = (fcIdx-1+fcOrder.length) % fcOrder.length;
+  document.getElementById('flashcard').classList.remove('flipped');
+  renderCard();
+});
+document.getElementById('shuffleBtn').addEventListener('click', ()=>{
+  for(let i=fcOrder.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [fcOrder[i],fcOrder[j]]=[fcOrder[j],fcOrder[i]];
+  }
+  fcIdx=0;
+  document.getElementById('flashcard').classList.remove('flipped');
+  renderCard();
+});
+renderCard();
+
+/* ================= DIFFICULT CONCEPTS DATA ================= */
+const difficult = [
+  {
+    level:"Sering Salah", title:"Kenapa harus ada Excess Cement Slurry?",
+    body:`<p>Volume semen yang dihitung dari diameter open hole "nominal" hampir selalu <b>lebih kecil</b> dari kebutuhan riil di lapangan, karena lubang bor jarang berbentuk silinder sempurna — ada washout, enlargement, atau ketidakteraturan formasi.</p>
+    <p>Aturan pada materi ini:</p>
+    <table class="simple"><tr><th>Kondisi</th><th>Excess</th></tr>
+    <tr><td>Ada caliper log</td><td>≥20% dari volume annulus hasil logging</td></tr>
+    <tr><td>Tanpa caliper — Surface casing</td><td>≥100% volume annulus standar</td></tr>
+    <tr><td>Tanpa caliper — Intermediate casing</td><td>≥50% volume annulus standar</td></tr>
+    <tr><td>Tanpa caliper — Production casing</td><td>≥40% volume annulus standar</td></tr>
+    <tr><td>Overlap casing-casing</td><td>0%</td></tr></table>
+    <div class="why"><b>Kenapa ini penting:</b> Kekurangan volume slurry berarti kegagalan job (top of cement tidak tercapai) — jauh lebih mahal untuk diperbaiki (remedial cementing/squeeze) daripada memompa sedikit lebih banyak semen di awal. Semakin dangkal casing-nya (surface casing), semakin besar ketidakpastian ukuran lubang, sehingga excess-nya paling besar (100%).</div>`
+  },
+  {
+    level:"Perlu Latihan", title:"Menghitung Standoff Centralizer",
+    body:`<p>Standoff mengukur seberapa "di tengah" posisi casing terhadap dinding lubang bor:</p>
+    <p style="text-align:center;font-family:'JetBrains Mono',monospace;font-size:16px;color:var(--blue);">Standoff = (Actual Clearance ÷ Concentric Clearance) × 100%</p>
+    <p><b>Concentric clearance</b> = jarak casing-hole bila casing berada tepat di tengah (kondisi ideal). <b>Actual clearance</b> = jarak riil casing ke dinding hole di titik tersempit, akibat gravitasi/deviasi.</p>
+    <p>Skala referensi dari materi: 100% (sempurna di tengah), 75%, 50%, hingga 0% (casing menyentuh dinding hole — bahaya channeling).</p>
+    <div class="why"><b>Kenapa ini penting:</b> API Spec 10D mensyaratkan minimum 67% — tapi ini <b>bukan jaminan</b> displacement efficiency yang baik. Standoff rendah menyebabkan semen "mengalir malas" di sisi sempit dan cepat di sisi lebar, meninggalkan channel lumpur yang tidak tergantikan — inilah salah satu skenario mirip kegagalan di Deepwater Horizon.</div>`
+  },
+  {
+    level:"Sering Salah", title:"Kebijakan Thickening Time — Kenapa Ada Dua Formula?",
+    body:`<p>Thickening time minimum = <b>nilai TERBESAR</b> dari dua perhitungan berikut:</p>
+    <ul><li><code class="f">Job pumping time × 1.5</code></li><li><code class="f">Job pumping time + 2 jam</code></li></ul>
+    <p><b>Contoh:</b> Jika pumping time = 3 jam → opsi 1: 3 × 1.5 = 4,5 jam; opsi 2: 3 + 2 = 5 jam. Maka thickening time minimum yang harus didesain = <b>5 jam</b> (yang lebih besar).</p>
+    <p>Jika pumping time = 1 jam → opsi 1: 1 × 1.5 = 1,5 jam; opsi 2: 1 + 2 = 3 jam. Thickening time minimum = <b>3 jam</b>.</p>
+    <div class="why"><b>Kenapa dua formula:</b> Untuk job singkat, faktor pengali 1.5x saja tidak memberi margin keamanan yang cukup (hanya nambah 0,5 jam) — sehingga formula "+2 jam" mengambil alih sebagai batas bawah aman. Untuk job panjang, +2 jam saja proporsinya kecil, sehingga faktor 1.5x menjadi lebih relevan. Kombinasi keduanya memastikan margin aman di semua durasi job.</div>`
+  },
+  {
+    level:"Konsep Inti", title:"Rheology — Kapan Semen Berperilaku seperti Toothpaste, Air, atau Starch?",
+    body:`<p>Materi menunjukkan grafik shear stress vs shear rate dengan beberapa model fluida: Newtonian (air), Power Law (starch solution), Bingham Plastic (toothpaste), dan Herschel-Bulkley (drilling fluid, shear-thinning).</p>
+    <p>Plastic viscosity (Pv) dan yield point (Ty) dihitung dari pembacaan viscometer rotasi pada 300 rpm dan 100 rpm:</p>
+    <p style="font-family:'JetBrains Mono',monospace;color:var(--blue);">Pv = (θ300 − θ100) × 1.5<br>Ty = θ300 − Pv</p>
+    <p>600 rpm sengaja <b>tidak dipakai</b> untuk menghitung Pv dan Ty karena pada shear rate setinggi itu, fase padat dan cair pada slurry cenderung terpisah (segregasi), sehingga datanya tidak representatif.</p>
+    <div class="why"><b>Kenapa ini penting:</b> Rheology yang baik memungkinkan slurry mencapai aliran turbulen atau plug flow, yang jauh lebih efektif "menyapu" lumpur dari annulus dibanding aliran laminar biasa — inilah kunci displacement efficiency yang tinggi.</div>`
+  },
+  {
+    level:"Konsep Inti", title:"Density Slurry: Menyeimbangkan Dua Batas Tekanan Sekaligus",
+    body:`<p>Densitas slurry harus dijaga dalam koridor aman:</p>
+    <p style="text-align:center;font-family:'JetBrains Mono',monospace;color:var(--blue);">Pore pressure &lt; ECD annulus &lt; Fracture pressure</p>
+    <ul>
+      <li>Jika <b>hydrostatic pressure &gt; fracture pressure</b> → formasi retak → <b>lost circulation</b>.</li>
+      <li>Jika <b>hydrostatic pressure &lt; pore pressure</b> → formasi "menang" melawan kolom fluida → <b>well kick atau blowout</b>.</li>
+    </ul>
+    <div class="why"><b>Kenapa ini konsep inti:</b> Ini adalah versi cementing dari prinsip well control yang sama dipakai saat drilling — tapi di cementing tantangannya ganda karena slurry biasanya lebih berat dari lumpur, sehingga jendela aman (pressure window) sering kali lebih sempit, khususnya di intermediate casing yang berada di antara pore pressure tinggi di bawah dan fracture pressure rendah di atas ("narrow pressure window").</div>`
+  },
+  {
+    level:"Perlu Latihan", title:"Membaca CBL/VDL — Amplitudo Tinggi vs Rendah",
+    body:`<p>Ini seringkali membingungkan karena terasa berlawanan dengan intuisi: <b>amplitudo tinggi bukan berarti bagus</b>.</p>
+    <table class="simple"><tr><th>Amplitudo</th><th>Artinya</th></tr>
+    <tr><td>Tinggi</td><td>Semen buruk / free pipe / kemungkinan channeling — gelombang sonic "memantul" kuat karena casing tidak teredam semen</td></tr>
+    <tr><td>Rendah</td><td>Bonding semen baik — energi gelombang sonic diserap oleh semen yang menempel erat pada casing</td></tr></table>
+    <p>Logikanya: semen yang menempel erat pada casing meredam getaran sonic (menyerap energinya), sedangkan casing yang "bebas" (free pipe/tidak ada semen) akan terus bergetar dan memantulkan sinyal kuat kembali ke receiver — persis seperti garpu tala yang digantung bebas berbunyi lebih keras daripada yang dipegang tangan.</p>
+    <div class="why"><b>Kenapa ini penting:</b> VDL biasanya dijalankan bersama CBL untuk konfirmasi — VDL yang baik menunjukkan "formation arrival" yang jelas dengan "pipe arrival" lemah, sedangkan bonding buruk menunjukkan sebaliknya (pipe arrival kuat, formation arrival lemah/tidak ada).</div>`
+  }
+];
+
+const accWrap = document.getElementById('accWrap');
+difficult.forEach((d,i)=>{
+  const item = document.createElement('div');
+  item.className='acc-item';
+  item.innerHTML = `
+    <div class="acc-head">
+      <h4><span class="diff">${d.level}</span>${d.title}</h4>
+      <span class="chev">+</span>
+    </div>
+    <div class="acc-body">${d.body}</div>
+  `;
+  item.querySelector('.acc-head').addEventListener('click', ()=>{
+    const body = item.querySelector('.acc-body');
+    const isOpen = item.classList.contains('open');
+    // close all
+    document.querySelectorAll('.acc-item').forEach(o=>{
+      o.classList.remove('open');
+      o.querySelector('.acc-body').style.maxHeight = null;
+    });
+    if(!isOpen){
+      item.classList.add('open');
+      body.style.maxHeight = body.scrollHeight + 40 + 'px';
+    }
+  });
+  accWrap.appendChild(item);
+});
+// open first by default
+accWrap.firstChild.querySelector('.acc-head').click();
+</script>
+</body>
+</html>

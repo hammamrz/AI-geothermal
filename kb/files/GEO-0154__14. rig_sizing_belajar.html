@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rig Sizing for Drilling Geothermal — Paket Belajar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#12161c;
+    --bg-panel:#1a2028;
+    --bg-panel-2:#1f2630;
+    --border:#313b48;
+    --border-hi:#4a5768;
+    --amber:#e8871e;
+    --amber-dim:#8a5518;
+    --yellow:#f4b740;
+    --text:#eae6db;
+    --text-dim:#95a1af;
+    --text-faint:#5c6774;
+    --success:#6fbf73;
+    --success-bg:#1c2b1d;
+    --danger:#e1543a;
+    --danger-bg:#2b1c19;
+    --rivet:#0c0f13;
+    --radius:3px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(ellipse at top left, #1b222b 0%, var(--bg) 55%),
+      repeating-linear-gradient(135deg, rgba(255,255,255,0.012) 0px, rgba(255,255,255,0.012) 1px, transparent 1px, transparent 8px);
+    color:var(--text);
+    font-family:'IBM Plex Sans', sans-serif;
+    min-height:100vh;
+    padding:18px 14px 60px;
+  }
+  .wrap{max-width:980px;margin:0 auto;}
+
+  /* ---- title block (engineering drawing style header) ---- */
+  .titleblock{
+    border:1px solid var(--border-hi);
+    background:var(--bg-panel);
+    position:relative;
+    margin-bottom:18px;
+    box-shadow: 0 1px 0 rgba(255,255,255,0.03) inset, 0 8px 24px rgba(0,0,0,0.35);
+  }
+  .titleblock::before, .titleblock::after,
+  .tb-corner-br::before, .tb-corner-br::after { content:""; }
+  .rivet{
+    position:absolute; width:7px;height:7px;border-radius:50%;
+    background:radial-gradient(circle at 35% 35%, #6b7684, var(--rivet) 70%);
+    box-shadow:0 0 0 1px rgba(0,0,0,0.6);
+  }
+  .rivet.tl{top:7px;left:7px;} .rivet.tr{top:7px;right:7px;}
+  .rivet.bl{bottom:7px;left:7px;} .rivet.br{bottom:7px;right:7px;}
+  .tb-top{
+    display:flex; justify-content:space-between; align-items:flex-start;
+    padding:20px 26px 14px;
+    border-bottom:1px solid var(--border);
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.14em;
+    color:var(--amber); text-transform:uppercase; margin-bottom:6px;
+  }
+  h1{
+    font-family:'Oswald',sans-serif; font-weight:600; font-size:clamp(22px,4vw,32px);
+    letter-spacing:.01em; margin:0; text-transform:uppercase; line-height:1.15;
+  }
+  .subtitle{color:var(--text-dim); font-size:14px; margin-top:6px;}
+  .tb-meta{
+    font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--text-dim);
+    text-align:right; line-height:1.9; white-space:nowrap;
+  }
+  .tb-meta b{color:var(--text); font-weight:600;}
+  .tb-strip{
+    display:flex; flex-wrap:wrap; gap:0;
+    font-family:'IBM Plex Mono',monospace; font-size:10.5px;
+  }
+  .tb-strip div{
+    flex:1; min-width:120px; padding:9px 26px; border-right:1px solid var(--border);
+    color:var(--text-dim);
+  }
+  .tb-strip div:last-child{border-right:none;}
+  .tb-strip b{display:block; color:var(--amber); font-size:9.5px; letter-spacing:.08em; text-transform:uppercase; margin-bottom:3px;}
+  .tb-strip span{color:var(--text);}
+
+  /* ---- tabs ---- */
+  .tabs{
+    display:flex; gap:6px; margin-bottom:18px; flex-wrap:wrap;
+  }
+  .tab-btn{
+    flex:1; min-width:140px;
+    background:var(--bg-panel); border:1px solid var(--border);
+    color:var(--text-dim); font-family:'Oswald',sans-serif; font-weight:500;
+    font-size:13px; letter-spacing:.05em; text-transform:uppercase;
+    padding:13px 10px; cursor:pointer; border-radius:var(--radius);
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    transition:all .15s ease;
+  }
+  .tab-btn .num{
+    font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--text-faint);
+    border:1px solid var(--border); border-radius:2px; padding:1px 5px;
+  }
+  .tab-btn:hover{border-color:var(--border-hi); color:var(--text);}
+  .tab-btn.active{
+    background:linear-gradient(180deg, #26303c, var(--bg-panel-2));
+    border-color:var(--amber); color:var(--yellow);
+    box-shadow:0 0 0 1px rgba(232,135,30,0.15) inset;
+  }
+  .tab-btn.active .num{border-color:var(--amber); color:var(--amber);}
+
+  .panel{display:none; animation:fade .25s ease;}
+  .panel.active{display:block;}
+  @keyframes fade{from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);}}
+
+  /* ---- generic section card ---- */
+  .card{
+    background:var(--bg-panel); border:1px solid var(--border); border-radius:var(--radius);
+    padding:20px 22px; margin-bottom:14px;
+  }
+  .card h2{
+    font-family:'Oswald',sans-serif; font-size:17px; text-transform:uppercase;
+    letter-spacing:.03em; color:var(--yellow); margin:0 0 12px; font-weight:600;
+    display:flex; align-items:center; gap:10px;
+  }
+  .card h2 .tag{
+    font-family:'IBM Plex Mono',monospace; font-size:10px; background:var(--amber-dim);
+    color:#ffd8ab; padding:2px 7px; border-radius:2px; letter-spacing:0;
+  }
+  .card p{color:var(--text); line-height:1.65; font-size:14.5px; margin:0 0 10px;}
+  .card ul{margin:0 0 8px; padding-left:20px; color:var(--text);}
+  .card li{margin-bottom:6px; line-height:1.55; font-size:14.5px;}
+  .card b{color:var(--yellow); font-weight:600;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  .kicker{color:var(--text-dim); font-size:12px; text-transform:uppercase; letter-spacing:.08em; margin:16px 0 8px; font-weight:600;}
+  .kicker:first-child{margin-top:0;}
+
+  .stat-row{display:flex; gap:10px; flex-wrap:wrap; margin:10px 0 4px;}
+  .stat{
+    flex:1; min-width:130px; background:var(--bg-panel-2); border:1px solid var(--border);
+    border-left:3px solid var(--amber); padding:10px 12px; border-radius:2px;
+  }
+  .stat .v{font-family:'IBM Plex Mono',monospace; font-size:19px; color:var(--yellow); font-weight:600;}
+  .stat .l{font-size:11px; color:var(--text-dim); margin-top:2px;}
+
+  table{width:100%; border-collapse:collapse; margin:10px 0; font-size:13px;}
+  th,td{border:1px solid var(--border); padding:7px 9px; text-align:left;}
+  th{background:var(--bg-panel-2); color:var(--amber); font-family:'IBM Plex Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:.03em;}
+  td{color:var(--text-dim); font-family:'IBM Plex Mono',monospace; font-size:12.5px;}
+  td.h{color:var(--text); font-family:'IBM Plex Sans',sans-serif; font-size:13px;}
+  .table-wrap{overflow-x:auto;}
+
+  .conclusion-list{counter-reset:c;}
+  .conclusion-list li{list-style:none; position:relative; padding-left:30px; margin-bottom:10px;}
+  .conclusion-list li::before{
+    counter-increment:c; content: counter(c);
+    position:absolute; left:0; top:1px;
+    width:20px;height:20px; border-radius:50%; background:var(--amber-dim); color:#ffe3c2;
+    font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:700;
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  /* ---- quiz ---- */
+  .quiz-score{
+    display:flex; justify-content:space-between; align-items:center;
+    background:var(--bg-panel); border:1px solid var(--border); border-radius:var(--radius);
+    padding:14px 20px; margin-bottom:14px; flex-wrap:wrap; gap:10px;
+  }
+  .quiz-score .label{font-family:'Oswald',sans-serif; text-transform:uppercase; font-size:13px; color:var(--text-dim); letter-spacing:.05em;}
+  .quiz-score .score{font-family:'IBM Plex Mono',monospace; font-size:20px; color:var(--yellow); font-weight:600;}
+  .reset-btn{
+    background:none; border:1px solid var(--border-hi); color:var(--text-dim);
+    font-family:'IBM Plex Mono',monospace; font-size:11px; padding:7px 12px; border-radius:2px;
+    cursor:pointer; text-transform:uppercase; letter-spacing:.06em;
+  }
+  .reset-btn:hover{border-color:var(--amber); color:var(--yellow);}
+
+  .q-card{
+    background:var(--bg-panel); border:1px solid var(--border); border-radius:var(--radius);
+    padding:18px 20px; margin-bottom:12px;
+  }
+  .q-head{display:flex; gap:10px; align-items:baseline; margin-bottom:10px;}
+  .q-num{font-family:'IBM Plex Mono',monospace; color:var(--amber); font-size:13px; font-weight:600; flex-shrink:0;}
+  .q-text{font-size:15px; line-height:1.55;}
+  .q-cat{
+    display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.06em;
+    text-transform:uppercase; color:var(--text-faint); border:1px solid var(--border); border-radius:2px;
+    padding:2px 6px; margin-bottom:8px;
+  }
+  .opts{display:flex; flex-direction:column; gap:7px; margin-top:10px;}
+  .opt{
+    text-align:left; background:var(--bg-panel-2); border:1px solid var(--border); color:var(--text);
+    padding:10px 13px; border-radius:2px; cursor:pointer; font-size:14px; font-family:'IBM Plex Sans',sans-serif;
+    transition:all .12s ease; display:flex; gap:10px;
+  }
+  .opt .k{font-family:'IBM Plex Mono',monospace; color:var(--text-dim); flex-shrink:0;}
+  .opt:hover:not(.locked){border-color:var(--border-hi); background:#242c37;}
+  .opt.correct{border-color:var(--success); background:var(--success-bg); color:#c9e8ca;}
+  .opt.wrong{border-color:var(--danger); background:var(--danger-bg); color:#f3c3ba;}
+  .opt.locked{cursor:default;}
+  .explain{
+    margin-top:12px; padding:11px 14px; border-left:3px solid var(--amber);
+    background:var(--bg-panel-2); font-size:13.5px; color:var(--text-dim); line-height:1.55;
+    display:none; border-radius:0 2px 2px 0;
+  }
+  .explain.show{display:block;}
+  .explain b{color:var(--yellow);}
+
+  /* ---- flashcards ---- */
+  .fc-filter{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px;}
+  .fc-filter button{
+    background:var(--bg-panel); border:1px solid var(--border); color:var(--text-dim);
+    font-family:'IBM Plex Mono',monospace; font-size:11px; padding:7px 13px; border-radius:2px;
+    cursor:pointer; text-transform:uppercase; letter-spacing:.05em;
+  }
+  .fc-filter button.active{border-color:var(--amber); color:var(--yellow); background:var(--bg-panel-2);}
+  .fc-grid{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(230px,1fr)); gap:14px;
+  }
+  .fc-scene{perspective:1200px; height:180px;}
+  .fc-card{
+    position:relative; width:100%; height:100%; cursor:pointer;
+    transform-style:preserve-3d; transition:transform .5s cubic-bezier(.4,.2,.2,1);
+  }
+  .fc-scene.flipped .fc-card{transform:rotateY(180deg);}
+  .fc-face{
+    position:absolute; inset:0; backface-visibility:hidden;
+    border-radius:var(--radius); padding:16px; display:flex; flex-direction:column;
+    border:1px solid var(--border-hi);
+  }
+  .fc-front{
+    background:linear-gradient(155deg,#212a35,#1a2028);
+  }
+  .fc-back{
+    background:linear-gradient(155deg,#2a2013,#1f180f);
+    transform:rotateY(180deg); border-color:var(--amber-dim);
+  }
+  .fc-cat{font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:.08em; text-transform:uppercase; color:var(--amber); margin-bottom:8px;}
+  .fc-term{font-family:'Oswald',sans-serif; font-size:16px; font-weight:600; color:var(--text); line-height:1.3; flex:1; display:flex; align-items:center;}
+  .fc-def{font-size:13px; color:#f0e3cc; line-height:1.5; flex:1; display:flex; align-items:center;}
+  .fc-hint{font-family:'IBM Plex Mono',monospace; font-size:9.5px; color:var(--text-faint); text-align:right;}
+
+  /* ---- difficult sections ---- */
+  .diff-card{
+    background:var(--bg-panel); border:1px solid var(--border); border-radius:var(--radius);
+    margin-bottom:14px; overflow:hidden;
+  }
+  .diff-head{
+    padding:16px 20px; cursor:pointer; display:flex; justify-content:space-between; align-items:center; gap:10px;
+    background:var(--bg-panel-2);
+  }
+  .diff-head:hover{background:#242e3a;}
+  .diff-title{font-family:'Oswald',sans-serif; font-size:15.5px; text-transform:uppercase; letter-spacing:.02em; color:var(--text); font-weight:600;}
+  .diff-badge{font-family:'IBM Plex Mono',monospace; font-size:9.5px; color:var(--danger); border:1px solid var(--danger); padding:2px 7px; border-radius:2px; flex-shrink:0; text-transform:uppercase; letter-spacing:.05em;}
+  .diff-chevron{color:var(--text-dim); font-size:14px; transition:transform .2s ease; flex-shrink:0;}
+  .diff-card.open .diff-chevron{transform:rotate(180deg);}
+  .diff-body{max-height:0; overflow:hidden; transition:max-height .3s ease;}
+  .diff-card.open .diff-body{max-height:2000px;}
+  .diff-inner{padding:4px 20px 20px;}
+  .diff-inner p{color:var(--text); line-height:1.65; font-size:14.5px; margin:0 0 10px;}
+  .diff-inner .step{
+    background:var(--bg-panel-2); border-left:3px solid var(--yellow); padding:10px 14px; margin:10px 0; border-radius:0 2px 2px 0;
+  }
+  .diff-inner .step b{color:var(--yellow);}
+  .diff-inner code{background:#0e1217; color:#8fd4a0; padding:2px 6px; border-radius:2px; font-family:'IBM Plex Mono',monospace; font-size:13px;}
+
+  footer{text-align:center; color:var(--text-faint); font-size:11px; font-family:'IBM Plex Mono',monospace; margin-top:26px; letter-spacing:.04em;}
+
+  @media (max-width:600px){
+    .tb-top{flex-direction:column; gap:12px;}
+    .tb-meta{text-align:left;}
+    .tab-btn{min-width:calc(50% - 3px); font-size:11.5px; padding:11px 6px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="titleblock">
+    <div class="rivet tl"></div><div class="rivet tr"></div><div class="rivet bl"></div><div class="rivet br"></div>
+    <div class="tb-top">
+      <div>
+        <div class="eyebrow">Paket Belajar Interaktif · Drilling Engineering</div>
+        <h1>Rig Sizing for Drilling Geothermal Well</h1>
+        <div class="subtitle">Ringkasan · Soal Latihan · Flashcard · Pembahasan Bagian Sulit</div>
+      </div>
+      <div class="tb-meta">
+        SUMBER: <b>Rig Sizing for Drilling Geothermal — Rev. 8</b><br>
+        SERI: <b>JDS Batch-7</b><br>
+        TOPIK: <b>Drawwork · TDS · Drill Pipe · Mud Pump</b>
+      </div>
+    </div>
+    <div class="tb-strip">
+      <div><b>Rig cost</b><span>±42% biaya pemboran</span></div>
+      <div><b>Rig optimum</b><span>1000–1200 HP</span></div>
+      <div><b>Target biaya</b><span>&lt; USD 1.000/meter</span></div>
+      <div><b>Kedalaman tipikal</b><span>1200–2800 m-MD</span></div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="ringkasan"><span class="num">01</span> Ringkasan</button>
+    <button class="tab-btn" data-tab="soal"><span class="num">02</span> Soal Latihan</button>
+    <button class="tab-btn" data-tab="flashcard"><span class="num">03</span> Flashcard</button>
+    <button class="tab-btn" data-tab="sulit"><span class="num">04</span> Bagian Sulit</button>
+  </div>
+
+  <!-- ================= TAB 1: RINGKASAN ================= -->
+  <div class="panel active" id="panel-ringkasan">
+
+    <div class="card">
+      <h2>Mengapa Rig Sizing Penting <span class="tag">Latar Belakang</span></h2>
+      <p>Rig services adalah komponen biaya terbesar dalam pemboran sumur geothermal. Sebelum materi ini disusun, belum ada prosedur baku untuk memilih ukuran rig dan kelengkapan peralatan yang tepat — sehingga banyak operator cenderung memilih rig dengan kapasitas berlebih (over-sized), padahal itu berarti biaya sewa yang tidak perlu.</p>
+      <div class="stat-row">
+        <div class="stat"><div class="v">42%</div><div class="l">Rig services dari total biaya pemboran</div></div>
+        <div class="stat"><div class="v">242 sumur</div><div class="l">Data biaya 2011–Q3 2021 (basis studi)</div></div>
+        <div class="stat"><div class="v">95%</div><div class="l">Operator RI pakai rig 1500–2000 HP</div></div>
+        <div class="stat"><div class="v">3300 m</div><div class="l">Sumur geothermal terdalam di Indonesia</div></div>
+      </div>
+      <p>Studi ini membandingkan kebutuhan aktual (beban pemboran riil di lapangan) terhadap kapasitas rig yang tersedia, untuk menjawab pertanyaan inti: <b>apakah rig 1000 HP cukup untuk mengebor sumur geothermal di Indonesia?</b></p>
+    </div>
+
+    <div class="card">
+      <h2>Peta Rig di Indonesia</h2>
+      <p>Kelas horsepower rig darat yang umum tersedia: 150, 250, 300, 350, 400, 450, 500, 550, 750, 800, 1000, 1500, 1750, dan 2000 HP. Untuk sumur geothermal, mayoritas operator memakai rig besar (1500–2000 HP) meski kedalaman sumur terdalam baru 3300 m-MD — indikasi kuat adanya over-sizing.</p>
+      <div class="table-wrap"><table>
+        <tr><th>Kelas Rig</th><th>Jumlah Blok Terpakai</th><th>Porsi Utilisasi</th></tr>
+        <tr><td class="h">1000 HP</td><td>2 blok</td><td>5%</td></tr>
+        <tr><td class="h">1500 HP</td><td>18 blok</td><td>49%</td></tr>
+        <tr><td class="h">1700 HP</td><td>4 blok</td><td>11%</td></tr>
+        <tr><td class="h">2000 HP</td><td>13 blok</td><td>35%</td></tr>
+      </table></div>
+      <p>Harga sewa rig (2023, referensi SKK Migas): kisaran <b>22,7–33,0 USD/HP/hari</b> (rata-rata 27,4). Contoh: rig 1500 HP ≈ USD 34.000–38.000/hari; rig 1000 HP ≈ USD 26.000/hari. Bukti nyata di lapangan: <b>KS ORKA</b> berhasil mengebor sampai TD 2700 m-MD memakai rig 1000 HP (Kaishan-1, TDS 350T/800HP, DP 5" 19,5 ppf G-105).</p>
+    </div>
+
+    <div class="card">
+      <h2>Definisi Beban Pemboran (Drilling Loads)</h2>
+      <p>Empat jenis beban yang menjadi dasar seluruh perhitungan sizing rig:</p>
+      <ul>
+        <li><b>Pick Up</b> — berat rangkaian pipa saat ditarik naik (tripping out).</li>
+        <li><b>Slack Off</b> — berat rangkaian pipa saat diturunkan (tripping in).</li>
+        <li><b>Overpulled</b> — beban tarik tambahan di atas pick up load, biasanya untuk mengaktifkan drilling jars saat berusaha melepas pipa terjepit (stuck pipe).</li>
+        <li><b>Surface Drilling Torque</b> — momen puntir yang dibutuhkan untuk memutar seluruh rangkaian pipa dan bit di dasar sumur.</li>
+      </ul>
+      <p>Keempatnya lalu memetakan langsung ke pemilihan komponen rig: <b>Pick Up → kapasitas tarik rig (Rated Drilling Depth)</b>, <b>Surface Torque → pemilihan Top Drive System</b>, dan <b>Surface Pump Pressure/flow rate → horsepower Mud Pump</b>.</p>
+    </div>
+
+    <div class="card">
+      <h2>Drawwork Horsepower</h2>
+      <p>Drawwork adalah komponen penentu horsepower rig. Rumusnya menghubungkan hook load (W), kecepatan naik traveling block (Vh), dan efisiensi drawwork (η, umumnya 0,8):</p>
+      <p class="mono" style="font-size:15px;color:var(--yellow);text-align:center;padding:8px 0;">HP = (W × Vh) / (33.000 × η)</p>
+      <p>Studi lapangan di Dieng-2 (TD terdalam 3009 m-MD) menunjukkan drawwork mayoritas bekerja di ≤700 HP, dan jarang menyentuh 700–1000 HP. Simulasi menunjukkan rig 1000 HP mampu menarik pipa 50–60 fpm untuk mengaktifkan jars pada kedalaman stuck 3500 m-MD — cukup untuk kondisi tipikal geothermal Indonesia.</p>
+    </div>
+
+    <div class="card">
+      <h2>Top Drive System (TDS)</h2>
+      <p>TDS dipilih berdasarkan tiga aspek: <b>tipe</b> (hidrolik vs elektrik), <b>tonase</b> (250–350 Ton vs 500 Ton), dan <b>horsepower</b> (800 HP vs 1000 HP). Parameter kunci: surface RPM (40–100), maximum continuous torque terhadap kedalaman, dan make-up torque drill pipe.</p>
+      <div class="table-wrap"><table>
+        <tr><th>Kelas TDS</th><th>HP</th><th>Continuous Torque</th><th>Rated Depth</th></tr>
+        <tr><td class="h">250 Ton</td><td>400–600</td><td>21.000–24.000 ft-lbs</td><td>2000–2300 m</td></tr>
+        <tr><td class="h">350 Ton</td><td>600–1000</td><td>30.000–46.000 ft-lbs</td><td>3000–4500 m</td></tr>
+        <tr><td class="h">500 Ton</td><td>800–1300</td><td>37.000–70.000 ft-lbs</td><td>3700 – &gt;6000 m</td></tr>
+      </table></div>
+      <p>Aturan pemilihan: bandingkan Rated Drilling Depth dari sisi hoisting capacity dan dari sisi continuous torque, lalu <b>pilih yang lebih dangkal (lebih konservatif)</b>. Rekomendasi kesimpulan studi: <b>TDS 350 Ton, 800 HP</b> adalah titik optimum untuk sumur geothermal dalam di Indonesia.</p>
+    </div>
+
+    <div class="card">
+      <h2>Drill Pipe Sizing</h2>
+      <p>Hook load maksimum dibatasi oleh <b>kekuatan tarik (tensile strength)</b> drill pipe, bukan hanya kapasitas mast. Maximum Hook Load = Tensile Strength Drill Pipe + berat Traveling Block + TDS (≈39 Klbs).</p>
+      <div class="table-wrap"><table>
+        <tr><th>Spesifikasi DP</th><th>Tensile (85% SF), Klbs</th><th>Max Hook Load, Klbs</th><th>DP Rated Depth</th></tr>
+        <tr><td class="h">5" 19,5 ppf, G-105</td><td>376</td><td>415</td><td>2250 m</td></tr>
+        <tr><td class="h">5" 25,6 ppf, G-105</td><td>505</td><td>544</td><td>3500 m</td></tr>
+        <tr><td class="h">5" 19,5 ppf, S-135</td><td>484</td><td>523</td><td>3250 m</td></tr>
+      </table></div>
+      <p><b>DP Rated Drilling Depth = nilai terkecil</b> antara kedalaman berdasarkan hook load (tensile) dan kedalaman berdasarkan make-up torque. Kesimpulan studi: grade <b>S-135 tidak direkomendasikan</b> untuk sumur geothermal karena tidak tahan H2S — gunakan G-105 (19,5 ppf & 25,6 ppf).</p>
+    </div>
+
+    <div class="card">
+      <h2>Mud Pump Sizing</h2>
+      <p>Kebutuhan lapangan tipikal: <b>1200 GPM @ 2600 PSI</b> (Dieng-2) atau <b>1000 GPM @ 2900 PSI</b> (lapangan lain). Jumlah pompa direkomendasikan mengikuti prinsip: jumlah pompa aktif + 1 unit cadangan (spare) + 1 unit khusus annulus.</p>
+      <div class="table-wrap"><table>
+        <tr><th>Mud Pump</th><th>Jumlah Unit</th><th>Ukuran Liner</th><th>Max SPP</th></tr>
+        <tr><td class="h">800 HP</td><td>4 unit</td><td>5-1/2"</td><td>2915 PSI</td></tr>
+        <tr><td class="h">1000 HP</td><td>3 unit</td><td>6 – 6-1/2"</td><td>2550–3000 PSI</td></tr>
+        <tr><td class="h">1300 HP</td><td>2 unit</td><td>6-3/4 – 7"</td><td>2741–2998 PSI</td></tr>
+        <tr><td class="h">1600 HP</td><td>2 unit</td><td>7"</td><td>3190–3434 PSI</td></tr>
+      </table></div>
+    </div>
+
+    <div class="card">
+      <h2>Rig Mast: 3 Joints vs 2 Joints Stand</h2>
+      <p>Pilihan jumlah joint per stand pipa berdampak besar ke waktu, biaya, dan area rig.</p>
+      <div class="table-wrap"><table>
+        <tr><th></th><th>3 Joints per Stand</th><th>2 Joints per Stand</th></tr>
+        <tr><td class="h">Keunggulan</td><td>Tripping lebih cepat, koneksi lebih sedikit</td><td>Mast lebih pendek, biaya lebih murah, rig moving/skidding lebih cepat, layout lebih kecil, fleksibel untuk work-over</td></tr>
+        <tr><td class="h">Kekurangan</td><td>Mast lebih tinggi & mahal, moving lebih lama, area layout lebih besar (&gt;3300 m²)</td><td>Tripping lebih lama, koneksi lebih banyak</td></tr>
+        <tr><td class="h">Contoh biaya</td><td>USD 27.400/hari, 50 hari ke TD → USD 1,37 juta</td><td>USD 20.000/hari, 52,25 hari ke TD → USD 1,045 juta (hemat ≈ USD 325 K)</td></tr>
+      </table></div>
+      <p>Meski trip lebih lambat, total biaya rig 2 joints lebih rendah karena daily rate jauh lebih murah — area layout juga ~30% lebih kecil (≈2300 m² vs &gt;3300 m²).</p>
+    </div>
+
+    <div class="card">
+      <h2>Rig Moving: Skid vs Walking System</h2>
+      <p>Waktu & biaya dari rig release sampai siap spud sumur berikutnya dalam satu wellpad:</p>
+      <div class="table-wrap"><table>
+        <tr><th>Metode</th><th>Waktu</th><th>Biaya</th></tr>
+        <tr><td class="h">Tanpa skid system (LD/RD/RM/RU/MU pipa penuh)</td><td>10 hari</td><td>≈ USD 700 K</td></tr>
+        <tr><td class="h">Skid, tanpa drill string stand up</td><td>5 hari</td><td>≈ USD 370 K</td></tr>
+        <tr><td class="h">Skid, dengan drill string stand up</td><td>3 hari</td><td>≈ USD 210 K</td></tr>
+        <tr><td class="h">Walking system, dengan stand up</td><td>0,5 hari</td><td>≈ USD 35 K</td></tr>
+      </table></div>
+    </div>
+
+    <div class="card">
+      <h2>Opsi Memiliki Rig Sendiri</h2>
+      <p>Untuk program pemboran yang banyak dan berkelanjutan, memiliki rig sendiri (harga rig bekas 1000–1500 HP: USD 2,5–4,5 juta) dapat menekan biaya harian secara signifikan dibanding sewa. Dalam contoh studi, break-even tercapai setelah ≈173 hari operasi (≈5 sumur); mulai sumur ke-6, penghematan mencapai USD 15 K/hari (≈USD 525 K/sumur), plus tidak ada biaya mobilisasi/demobilisasi ulang (≈USD 1,3 juta). Contoh nyata operator dengan rig sendiri mencatat biaya USD 1.437–1.606/meter.</p>
+    </div>
+
+    <div class="card">
+      <h2>Kesimpulan Studi</h2>
+      <ul class="conclusion-list">
+        <li>Mayoritas operator geothermal memakai rig oversized (1500–2000 HP) padahal sumur terdalam di Indonesia baru 3300 m-MD.</li>
+        <li>Rig <b>1000–1200 HP adalah ukuran optimum</b> untuk sumur geothermal tipikal di Indonesia.</li>
+        <li>Direkomendasikan <b>TDS 350 Ton, 800 HP</b> dikombinasikan dengan drill pipe grade G-105 (19,5 & 25,6 ppf); grade S-135 tidak disarankan karena tidak tahan H2S.</li>
+        <li><b>Mast 2 joints</b> memberi penghematan lain: beban mobilisasi lebih ringan, layout lebih kecil, rig moving/rigging up lebih cepat, dan lebih fleksibel untuk work-over.</li>
+        <li>Untuk kampanye pemboran eksplorasi & pengembangan yang panjang, disarankan memiliki <b>rig sendiri berukuran 1000–1200 HP</b>.</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- ================= TAB 2: SOAL LATIHAN ================= -->
+  <div class="panel" id="panel-soal">
+    <div class="quiz-score">
+      <div class="label">Skor Latihan</div>
+      <div class="score"><span id="score-val">0</span> / <span id="score-total">0</span></div>
+      <button class="reset-btn" id="quiz-reset">Ulangi Kuis</button>
+    </div>
+    <div id="quiz-container"></div>
+  </div>
+
+  <!-- ================= TAB 3: FLASHCARD ================= -->
+  <div class="panel" id="panel-flashcard">
+    <div class="card" style="margin-bottom:16px;">
+      <p style="margin:0;">Klik kartu untuk membalik dan melihat definisi / nilai kunci. Gunakan filter kategori untuk fokus pada satu topik.</p>
+    </div>
+    <div class="fc-filter" id="fc-filter"></div>
+    <div class="fc-grid" id="fc-grid"></div>
+  </div>
+
+  <!-- ================= TAB 4: BAGIAN SULIT ================= -->
+  <div class="panel" id="panel-sulit">
+    <div class="card" style="margin-bottom:16px;">
+      <p style="margin:0;">Enam konsep di materi ini paling sering bikin bingung karena melibatkan beberapa variabel sekaligus dan istilah teknis yang mirip. Klik tiap bagian untuk membuka penjelasan langkah demi langkah beserta contoh angka dari materi.</p>
+    </div>
+    <div id="diff-container"></div>
+  </div>
+
+  <footer>RIG SIZING FOR DRILLING GEOTHERMAL WELL · REV. 8 · JDS BATCH-7 · PAKET BELAJAR DIBUAT DARI MATERI ASLI</footer>
+</div>
+
+<script>
+/* ---------------- TAB SWITCHING ---------------- */
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-'+btn.dataset.tab).classList.add('active');
+  });
+});
+
+/* ---------------- QUIZ DATA ---------------- */
+const quizData = [
+  {
+    cat:"Latar Belakang",
+    q:"Berapa persen porsi Rig Services terhadap total biaya pemboran sumur geothermal menurut studi ini?",
+    opts:["Sekitar 25%","Sekitar 42%","Sekitar 60%","Sekitar 15%"],
+    correct:1,
+    explain:"Rig Services adalah komponen biaya terbesar, yaitu sekitar <b>42%</b> dari total biaya pemboran — inilah alasan utama mengapa rig sizing yang tepat berdampak besar pada efisiensi biaya."
+  },
+  {
+    cat:"Latar Belakang",
+    q:"Berdasarkan data utilisasi rig di Indonesia, berapa persen operator geothermal menggunakan rig 1500–2000 HP, padahal sumur terdalam baru 3300 m-MD?",
+    opts:["50%","70%","95%","30%"],
+    correct:2,
+    explain:"<b>95%</b> operator memakai rig 1500–2000 HP. Ini menunjukkan indikasi kuat terjadinya over-sizing rig dibanding kebutuhan aktual kedalaman sumur."
+  },
+  {
+    cat:"Rig Review",
+    q:"Rig 1000 HP milik KS ORKA (Kaishan-1) berhasil mengebor sampai kedalaman berapa?",
+    opts:["1800 m-MD","2700 m-MD","3300 m-MD","4500 m-MD"],
+    correct:1,
+    explain:"Rig Kaishan-1 (1000 HP) berhasil mencapai TD <b>2700 m-MD</b>, menjadi bukti lapangan bahwa rig 1000 HP layak dipertimbangkan untuk sumur geothermal tipikal di Indonesia."
+  },
+  {
+    cat:"Beban Pemboran",
+    q:"Apa fungsi utama dari 'Overpulled Load' dalam operasi pemboran?",
+    opts:[
+      "Mengukur tekanan pompa lumpur",
+      "Mengaktifkan drilling jars saat berusaha melepas stuck pipe",
+      "Menentukan kecepatan rotary table",
+      "Mengukur berat casing saat running"
+    ],
+    correct:1,
+    explain:"Overpulled load adalah beban tarik tambahan di atas pick up load, biasanya <b>100–120 Klbs</b>, yang diberikan untuk mengaktifkan drilling jars ketika mencoba melepas rangkaian pipa yang terjepit (stuck pipe)."
+  },
+  {
+    cat:"Beban Pemboran",
+    q:"Manakah pasangan beban-ke-komponen rig yang BENAR?",
+    opts:[
+      "Surface Torque → menentukan ukuran Mud Pump",
+      "Pick Up → menentukan Top Drive System",
+      "Surface Pump Pressure/flow rate → menentukan horsepower Mud Pump",
+      "Slack Off → menentukan Rated Drilling Depth"
+    ],
+    correct:2,
+    explain:"Pemetaan yang benar: <b>Pick Up → Rated Drilling Depth (kapasitas tarik rig)</b>, <b>Surface Torque → Top Drive Selection</b>, dan <b>Surface Pump Pressure/flow rate → Mud Pump HP</b>."
+  },
+  {
+    cat:"Drawwork",
+    q:"Dalam rumus Drawwork Horsepower, apa arti simbol η (eta)?",
+    opts:[
+      "Efisiensi drawwork (umumnya 0,8)",
+      "Kecepatan traveling block",
+      "Berat hook load",
+      "Faktor apung lumpur (buoyancy factor)"
+    ],
+    correct:0,
+    explain:"η adalah <b>efisiensi drawwork ke hook</b>, biasanya diambil 0,8 (80–90% tergantung jumlah drilling line dan kondisi sheave bearing). Rumusnya: HP = (W × Vh) / (33.000 × η)."
+  },
+  {
+    cat:"Drawwork",
+    q:"Berdasarkan data aktual Dieng-2 (TD terdalam 3009 m-MD), pada kisaran berapa HP drawwork paling sering bekerja?",
+    opts:["≤700 HP", "700–1000 HP terus-menerus", "Selalu di atas 1000 HP", "Selalu di bawah 300 HP"],
+    correct:0,
+    explain:"Drawwork paling sering bekerja di <b>700 HP atau kurang</b>; rentang 700–1000 HP justru sangat jarang terjadi. Ini menguatkan kesimpulan bahwa rig 1000 HP sudah lebih dari cukup."
+  },
+  {
+    cat:"Top Drive System",
+    q:"Apa saja tiga aspek utama dalam memilih Top Drive System (TDS)?",
+    opts:[
+      "Warna, berat, dan merek",
+      "Tipe (hidrolik/elektrik), tonase, dan horsepower",
+      "Panjang mast, jumlah joint, dan kecepatan rotary",
+      "Harga sewa, lokasi pabrik, dan garansi"
+    ],
+    correct:1,
+    explain:"Tiga aspek pemilihan TDS: <b>tipe</b> (hydraulic top drive vs electric), <b>tonase</b> (250–350 Ton vs 500 Ton), dan <b>horsepower</b> (800 HP vs 1000 HP)."
+  },
+  {
+    cat:"Top Drive System",
+    q:"Ketika Rated Drilling Depth dari sisi hoisting capacity berbeda dengan sisi continuous torque, aturan mana yang dipakai?",
+    opts:[
+      "Selalu pakai nilai hoisting capacity",
+      "Selalu pakai nilai continuous torque",
+      "Pilih nilai kedalaman yang lebih dangkal (lebih konservatif)",
+      "Ambil rata-rata dari keduanya"
+    ],
+    correct:2,
+    explain:"Aturannya: <b>bandingkan dan pilih kedalaman yang lebih dangkal</b> di antara kedua batasan tersebut — prinsip ini juga sama dipakai untuk menentukan DP Rated Drilling Depth."
+  },
+  {
+    cat:"Top Drive System",
+    q:"TDS kelas mana yang direkomendasikan sebagai kesimpulan studi untuk sumur geothermal dalam di Indonesia?",
+    opts:["250 Ton, 400 HP","350 Ton, 800 HP","500 Ton, 1300 HP","750 Ton, 1500 HP"],
+    correct:1,
+    explain:"Kesimpulan studi merekomendasikan <b>TDS 350 Ton, 800 HP</b>, dikombinasikan dengan drill pipe grade G-105 (19,5 ppf & 25,6 ppf)."
+  },
+  {
+    cat:"Drill Pipe",
+    q:"Maximum Hook Load pada suatu drill pipe dihitung dari apa?",
+    opts:[
+      "Tensile strength drill pipe + berat traveling block & TDS",
+      "Panjang total drill string saja",
+      "Kapasitas mud pump",
+      "Diameter rotary table"
+    ],
+    correct:0,
+    explain:"Maximum Hook Load = <b>Tensile Strength Drill Pipe + berat Traveling Block + TDS</b> (kontribusi tambahan sekitar 39 Klbs)."
+  },
+  {
+    cat:"Drill Pipe",
+    q:"Mengapa drill pipe grade S-135 TIDAK direkomendasikan untuk sumur geothermal menurut kesimpulan studi?",
+    opts:[
+      "Karena terlalu murah",
+      "Karena tidak tahan H2S",
+      "Karena diameternya terlalu besar",
+      "Karena hanya tersedia dalam ukuran pendek"
+    ],
+    correct:1,
+    explain:"Meski secara tensile strength S-135 lebih kuat dari G-105, S-135 <b>tidak tahan terhadap H2S</b> — kondisi yang umum dijumpai di lingkungan sumur geothermal, sehingga G-105 lebih dipilih."
+  },
+  {
+    cat:"Drill Pipe",
+    q:"DP Rated Drilling Depth ditentukan dengan cara apa?",
+    opts:[
+      "Mengambil nilai terbesar antara kedalaman hook load dan make-up torque",
+      "Mengambil nilai terkecil antara kedalaman berbasis hook load dan berbasis make-up torque",
+      "Hanya berdasarkan make-up torque",
+      "Hanya berdasarkan hook load"
+    ],
+    correct:1,
+    explain:"DP Rated Drilling Depth = <b>nilai terkecil (paling konservatif)</b> antara kedalaman yang dihitung dari batas hook load (tensile) dan kedalaman yang dihitung dari batas make-up torque."
+  },
+  {
+    cat:"Mud Pump",
+    q:"Berapa target flow rate & tekanan pompa lumpur untuk lapangan Dieng-2?",
+    opts:["1000 GPM @ 2900 PSI","1200 GPM @ 2600 PSI","800 GPM @ 2000 PSI","1500 GPM @ 3500 PSI"],
+    correct:1,
+    explain:"Dieng-2 membutuhkan <b>1200 GPM @ 2600 PSI</b>, sedangkan lapangan lain (referensi lain) membutuhkan 1000 GPM @ 2900 PSI."
+  },
+  {
+    cat:"Mud Pump",
+    q:"Prinsip apa yang dipakai untuk menentukan JUMLAH unit mud pump yang dibutuhkan?",
+    opts:[
+      "Jumlah pompa aktif saja, tanpa cadangan",
+      "Jumlah pompa aktif + 1 cadangan (spare) + 1 khusus annulus",
+      "Selalu menggunakan 2 pompa berapapun kebutuhannya",
+      "Berdasarkan jumlah hole section saja"
+    ],
+    correct:1,
+    explain:"Rekomendasi: jumlah pompa yang benar-benar dipakai untuk sirkulasi, <b>ditambah 1 unit spare (cadangan)</b> dan <b>1 unit khusus untuk keperluan annulus</b>."
+  },
+  {
+    cat:"Rig Mast",
+    q:"Apa keunggulan utama rig mast dengan 2 joints per stand dibanding 3 joints?",
+    opts:[
+      "Tripping jauh lebih cepat",
+      "Mast lebih pendek, lebih murah, moving/skidding lebih cepat, dan layout lebih kecil",
+      "Kapasitas hook load jauh lebih besar",
+      "Torsi drilling lebih tinggi"
+    ],
+    correct:1,
+    explain:"2 joints stand memberi mast lebih pendek & struktur lebih ringan, biaya sewa lebih murah, rig moving/skidding lebih cepat, area layout ~30% lebih kecil, dan lebih fleksibel untuk operasi work-over — meski tripping-nya lebih lambat."
+  },
+  {
+    cat:"Rig Mast",
+    q:"Dalam studi kasus perbandingan biaya, mengapa rig mast 2 joints (USD 20.000/hari, 52,25 hari) akhirnya LEBIH HEMAT dibanding 3 joints (USD 27.400/hari, 50 hari), walau waktu ke TD-nya lebih lama?",
+    opts:[
+      "Karena rate harian yang jauh lebih murah menutupi tambahan waktu",
+      "Karena 2 joints tidak butuh mud pump",
+      "Karena 3 joints tidak bisa mencapai TD",
+      "Karena keduanya sebenarnya sama biayanya"
+    ],
+    correct:0,
+    explain:"Total biaya 3 joints ≈ USD 1,37 juta vs 2 joints ≈ USD 1,045 juta (hemat ≈USD 325 K). Selisih <b>daily rate yang jauh lebih murah</b> pada rig 2 joints lebih besar dampaknya dibanding tambahan hari kerja."
+  },
+  {
+    cat:"Rig Moving",
+    q:"Metode rig moving mana yang tercepat dan termurah dalam satu wellpad?",
+    opts:[
+      "Skid tanpa drill string stand up (5 hari)",
+      "Tanpa skid system sama sekali (10 hari)",
+      "Walking system dengan drill string stand up (0,5 hari)",
+      "Skid dengan drill string stand up (3 hari)"
+    ],
+    correct:2,
+    explain:"<b>Walking system dengan drill string stand up</b> adalah yang tercepat (0,5 hari, ≈USD 35 K) dibanding skid system (3–5 hari) atau tanpa skid sama sekali (10 hari, ≈USD 700 K)."
+  },
+  {
+    cat:"Ekonomi Rig",
+    q:"Menurut studi kasus 'memiliki rig sendiri', setelah kira-kira berapa hari operasi tercapai titik impas (break-even) dibanding sewa rig?",
+    opts:["±50 hari","±100 hari","±173 hari (≈5 sumur)","±365 hari"],
+    correct:2,
+    explain:"Break-even tercapai di sekitar <b>173 hari operasi rig (≈5 sumur)</b>. Mulai sumur ke-6, penghematan mencapai USD 15 K/hari atau setara USD 525 K per sumur."
+  },
+  {
+    cat:"Kesimpulan",
+    q:"Menurut kesimpulan akhir studi, berapa ukuran rig yang paling optimum untuk sumur geothermal tipikal di Indonesia?",
+    opts:["650–850 HP","1000–1200 HP","1500–1700 HP","Di atas 2000 HP"],
+    correct:1,
+    explain:"Kesimpulan studi: rig <b>1000–1200 HP adalah ukuran optimum</b>, jauh lebih kecil dari kebiasaan pasar (1500–2000 HP) yang dipakai 95% operator saat ini."
+  }
+];
+
+let userAnswers = new Array(quizData.length).fill(null);
+document.getElementById('score-total').textContent = quizData.length;
+
+function renderQuiz(){
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  quizData.forEach((item, qi)=>{
+    const card = document.createElement('div');
+    card.className = 'q-card';
+    card.innerHTML = `
+      <div class="q-cat">${item.cat}</div>
+      <div class="q-head"><div class="q-num">Q${qi+1}.</div><div class="q-text">${item.q}</div></div>
+      <div class="opts" id="opts-${qi}"></div>
+      <div class="explain" id="explain-${qi}"><b>Penjelasan:</b> ${item.explain}</div>
+    `;
+    container.appendChild(card);
+    const optsWrap = card.querySelector(`#opts-${qi}`);
+    const letters = ['A','B','C','D'];
+    item.opts.forEach((optText, oi)=>{
+      const b = document.createElement('button');
+      b.className = 'opt';
+      b.innerHTML = `<span class="k">${letters[oi]}</span><span>${optText}</span>`;
+      b.addEventListener('click', ()=> selectAnswer(qi, oi));
+      optsWrap.appendChild(b);
+    });
+  });
+  updateScore();
+}
+
+function selectAnswer(qi, oi){
+  if(userAnswers[qi] !== null) return;
+  userAnswers[qi] = oi;
+  const optsWrap = document.getElementById(`opts-${qi}`);
+  const buttons = optsWrap.querySelectorAll('.opt');
+  buttons.forEach((btn, idx)=>{
+    btn.classList.add('locked');
+    if(idx === quizData[qi].correct) btn.classList.add('correct');
+    else if(idx === oi) btn.classList.add('wrong');
+  });
+  document.getElementById(`explain-${qi}`).classList.add('show');
+  updateScore();
+}
+
+function updateScore(){
+  const score = userAnswers.reduce((acc, ans, i)=> ans === quizData[i].correct ? acc+1 : acc, 0);
+  document.getElementById('score-val').textContent = score;
+}
+
+document.getElementById('quiz-reset').addEventListener('click', ()=>{
+  userAnswers = new Array(quizData.length).fill(null);
+  renderQuiz();
+});
+
+renderQuiz();
+
+/* ---------------- FLASHCARD DATA ---------------- */
+const fcData = [
+  {cat:"Definisi", term:"Pick Up Load", def:"Berat rangkaian pipa yang terukur saat ditarik naik (tripping out) dari lubang sumur."},
+  {cat:"Definisi", term:"Slack Off Load", def:"Berat rangkaian pipa yang terukur saat diturunkan (tripping in) ke dalam sumur."},
+  {cat:"Definisi", term:"Overpulled Load", def:"Beban tarik tambahan di atas pick up load (umumnya 100–120 Klbs) untuk mengaktifkan drilling jars saat mengatasi stuck pipe."},
+  {cat:"Definisi", term:"Surface Drilling Torque", def:"Momen puntir yang dibutuhkan untuk memutar seluruh rangkaian pipa dan bit di dasar sumur."},
+  {cat:"Definisi", term:"Rated Drilling Depth", def:"Kedalaman maksimum yang mampu dicapai suatu rig, ditentukan dari kapasitas hoisting (mast) maupun kapasitas torsi (TDS)."},
+  {cat:"Definisi", term:"Drawwork", def:"Komponen rig yang mengontrol hoisting (menaikkan) dan lowering (menurunkan) rangkaian pipa bor — penentu utama horsepower rig."},
+  {cat:"Formula", term:"Rumus Drawwork HP", def:"HP = (W × Vh) / (33.000 × η) — W = hook load (lbs), Vh = kecepatan traveling block (fpm), η = efisiensi drawwork (≈0,8)."},
+  {cat:"Formula", term:"Maximum Hook Load", def:"= Tensile Strength Drill Pipe + berat Traveling Block + TDS (kontribusi tambahan ≈39 Klbs)."},
+  {cat:"Formula", term:"Contoh Hitung Hookload", def:"BHA 150 Klbs, MW 10,3 ppg, Buoyancy Factor 0,84 → Hookload = 17 + 22 + (150 × 0,84) = 165 Klbs (tanpa asumsi drag)."},
+  {cat:"Formula", term:"DP Rated Drilling Depth", def:"Ambil nilai TERKECIL antara kedalaman berbasis hook load (tensile) dan kedalaman berbasis make-up torque."},
+  {cat:"Angka Kunci", term:"Rig cost share", def:"Rig Services ≈ 42% dari total biaya pemboran sumur geothermal — komponen biaya terbesar."},
+  {cat:"Angka Kunci", term:"Target biaya pemboran", def:"< USD 1.000 per meter dengan penggunaan rig 1000 HP yang tepat sasaran."},
+  {cat:"Angka Kunci", term:"Rig optimum RI", def:"1000–1200 HP — ukuran rekomendasi akhir studi untuk sumur geothermal tipikal di Indonesia."},
+  {cat:"Angka Kunci", term:"Overpull untuk jars", def:"100–120 Klbs — margin tarik tambahan tipikal untuk mengaktifkan drilling jars 8-1/2\" – 6-1/2\"."},
+  {cat:"Angka Kunci", term:"Kedalaman terdalam RI", def:"3300 m-MD — sumur geothermal terdalam di Indonesia saat studi ini dibuat."},
+  {cat:"Angka Kunci", term:"TDS rekomendasi", def:"350 Ton, 800 HP — kombinasi TDS yang direkomendasikan untuk sumur geothermal dalam."},
+  {cat:"Angka Kunci", term:"Drill pipe rekomendasi", def:"5\" DP, grade G-105 (19,5 ppf & 25,6 ppf) — S-135 tidak dipakai karena tidak tahan H2S."},
+  {cat:"Angka Kunci", term:"API Spec 8C", def:"Safety Factor 2,25 — standar desain untuk Drilling & Production Hoisting Equipment."},
+  {cat:"Angka Kunci", term:"API Spec 4F", def:"Safety Factor 1,25 — standar desain untuk mast, substructure, dan crown block assemblies."},
+  {cat:"Angka Kunci", term:"API Spec 7K", def:"Safety Factor 3,00 — standar desain untuk komponen drawworks."},
+  {cat:"Angka Kunci", term:"Rig 2 joints vs 3 joints (area)", def:"Rig 2 joints hanya butuh ≈2300 m² layout — sekitar 30% lebih kecil dibanding rig 3 joints (>3300 m²)."},
+  {cat:"Angka Kunci", term:"Break-even rig sendiri", def:"≈173 hari operasi (≈5 sumur); mulai sumur ke-6 hemat ≈USD 15 K/hari (≈USD 525 K/sumur)."},
+];
+
+let fcActiveFilter = "Semua";
+const fcCats = ["Semua", ...new Set(fcData.map(f=>f.cat))];
+
+function renderFcFilter(){
+  const wrap = document.getElementById('fc-filter');
+  wrap.innerHTML = '';
+  fcCats.forEach(cat=>{
+    const b = document.createElement('button');
+    b.textContent = cat;
+    if(cat === fcActiveFilter) b.classList.add('active');
+    b.addEventListener('click', ()=>{ fcActiveFilter = cat; renderFcFilter(); renderFcGrid(); });
+    wrap.appendChild(b);
+  });
+}
+
+function renderFcGrid(){
+  const grid = document.getElementById('fc-grid');
+  grid.innerHTML = '';
+  const items = fcActiveFilter === "Semua" ? fcData : fcData.filter(f=>f.cat===fcActiveFilter);
+  items.forEach(item=>{
+    const scene = document.createElement('div');
+    scene.className = 'fc-scene';
+    scene.innerHTML = `
+      <div class="fc-card">
+        <div class="fc-face fc-front">
+          <div class="fc-cat">${item.cat}</div>
+          <div class="fc-term">${item.term}</div>
+          <div class="fc-hint">Klik untuk membalik ↻</div>
+        </div>
+        <div class="fc-face fc-back">
+          <div class="fc-cat">Jawaban</div>
+          <div class="fc-def">${item.def}</div>
+          <div class="fc-hint">Klik untuk kembali ↻</div>
+        </div>
+      </div>
+    `;
+    scene.addEventListener('click', ()=> scene.classList.toggle('flipped'));
+    grid.appendChild(scene);
+  });
+}
+
+renderFcFilter();
+renderFcGrid();
+
+/* ---------------- DIFFICULT SECTIONS DATA ---------------- */
+const diffData = [
+  {
+    title:"Menghitung Drawwork Horsepower",
+    level:"Perlu rumus",
+    html:`
+      <p>Ini konsep yang sering membingungkan karena menggabungkan tiga variabel berbeda satuan: beban (hook load), kecepatan (fpm), dan efisiensi mekanis.</p>
+      <div class="step"><b>Rumus:</b> <code>HP = (W × Vh) / (33.000 × η)</code><br>
+      W = hook load aktual (lbs) · Vh = kecepatan pick-up traveling block (fpm) · η = efisiensi drawwork ke hook (≈0,8, tergantung jumlah drilling line & kondisi sheave bearing)</p></div>
+      <p><b>Cara membaca angka 33.000</b> — ini adalah konstanta konversi satuan (1 HP = 33.000 ft-lbs/menit), bukan variabel yang perlu dicari.</p>
+      <div class="step"><b>Contoh kasus dari materi:</b> Pada TD 3000 m-MD dengan rig drawwork 1000 HP: saat POOH 500 m pertama, kecepatan naik ke 60 fpm; saat POOH dari 2500 m ke permukaan, kecepatan awal 80 fpm naik bertahap ke 100 fpm. Semakin dekat ke permukaan, hook load makin ringan (karena panjang pipa yang tergantung makin pendek), sehingga kecepatan bisa dinaikkan tanpa melebihi HP maksimum drawwork.</p></div>
+      <p><b>Inti yang perlu diingat:</b> HP dibutuhkan naik jika beban (W) besar ATAU kecepatan (Vh) tinggi. Karena itu driller biasanya menaikkan kecepatan tarik secara bertahap seiring beban yang berkurang saat mendekati permukaan — bukan langsung full speed dari dasar sumur.</p>
+    `
+  },
+  {
+    title:"Menentukan Hook Load Maksimum (dengan Buoyancy Factor)",
+    level:"Sering tertukar",
+    html:`
+      <p>Banyak yang bingung membedakan berat BHA "di udara" (air weight) dengan berat efektifnya di dalam lumpur bor. Buoyancy Factor (BF) mengoreksi hal ini.</p>
+      <div class="step"><b>Komponen Hook Load:</b><br>
+      Hook Load = (Berat BHA di udara × BF) + Top Drive System (+17 Klbs) + Traveling Block (+22 Klbs)</p></div>
+      <div class="step"><b>Contoh angka dari materi:</b><br>
+      Berat BHA di udara = 150 Klbs · Mud Weight = 10,3 ppg · Buoyancy Factor = 0,84<br>
+      Hook Load = 17 + 22 + (150 × 0,84) = <b>165 Klbs</b><br>
+      <i>(Catatan penting: perhitungan ini TANPA asumsi drag/gesekan dinding sumur — nilai aktual di lapangan biasanya sedikit lebih tinggi karena drag.)</i></p></div>
+      <p><b>Kenapa BF selalu &lt; 1?</b> Karena lumpur bor memberi gaya apung (buoyancy) pada rangkaian pipa baja yang terendam di dalamnya — sama seperti benda terasa lebih ringan saat ditimbang di dalam air. Semakin berat mud weight (ppg), semakin kecil BF, dan semakin ringan berat efektif drill string.</p>
+      <p><b>Pick Up vs Slack Off:</b> Pick Up Load = berat string + drag (karena gesekan melawan arah tarik ke atas). Slack Off Load = berat string − drag (karena gesekan membantu menahan saat diturunkan). Overpulled ditambahkan DI ATAS pick up load, bukan di atas slack off.</p>
+    `
+  },
+  {
+    title:"Logika Pemilihan Top Drive System (TDS)",
+    level:"Banyak variabel",
+    html:`
+      <p>TDS sering jadi bagian paling rumit karena ada DUA batasan independen yang harus dicek sekaligus: kapasitas angkat (hoisting) DAN kapasitas torsi (torque) — dan keduanya bisa memberi "rated depth" yang berbeda.</p>
+      <div class="step"><b>Langkah penentuan:</b><br>
+      1. Hitung Rated Drilling Depth dari sisi <b>Hoisting Capacity</b> (Max Hookload + 120 Klbs overpull ÷ kapasitas TDS)<br>
+      2. Hitung Rated Drilling Depth dari sisi <b>Max Continuous Torque</b> TDS dibanding kebutuhan surface torque aktual pada kedalaman tersebut<br>
+      3. <b>Pilih nilai kedalaman yang lebih dangkal</b> dari keduanya — itulah TDS Rated Drilling Depth yang sebenarnya</p></div>
+      <div class="step"><b>Contoh dari tabel materi (TDS 500 Ton):</b><br>
+      800 HP → torsi 37.000 lbs-ft → rated depth 3700 m<br>
+      1000 HP → torsi 52.000 lbs-ft → rated depth 5250 m<br>
+      1300 HP → torsi 70.000 lbs-ft → rated depth &gt;6000 m</p></div>
+      <p><b>Kenapa TDS makin besar HP-nya bisa jadi kurang efisien?</b> Materi menyebut TDS 1000 HP pada kelas 350-400 Ton "sufficient dengan 50% safety factor, TAPI 2-3 ton lebih berat → DE-EFFICIENCY". Artinya: TDS yang jauh melebihi kebutuhan aktual menambah berat & konsumsi bahan bakar rig tanpa manfaat tambahan yang berarti — prinsip yang sama dengan alasan mengapa rig oversized (1500-2000 HP) dianggap boros untuk sumur yang hanya butuh 1000-1200 HP.</p>
+    `
+  },
+  {
+    title:"DP Rated Drilling Depth: Hook Load vs Make-Up Torque",
+    level:"Sering tertukar",
+    html:`
+      <p>Drill pipe punya DUA batasan kekuatan yang berbeda arah gaya: tarik (tensile, untuk hook load) dan puntir (torque, untuk make-up connection). Siswa sering hanya mengecek salah satu.</p>
+      <div class="step"><b>Contoh dari materi — 5" DP, 19,5 ppf, Grade G-105:</b><br>
+      • Dari sisi Hook Load (tensile 85% SF = 376 Klbs, + 39 Klbs TB/TDS = 415 Klbs Max Hookload) → kedalaman aman = <b>2250 m</b><br>
+      • Dari sisi Make-Up Torque (30,7 Klbs-ft) → kedalaman aman = <b>3000 m</b><br>
+      • <b>DP Rated Drilling Depth = 2250 m</b> (ambil yang lebih kecil/konservatif)</p></div>
+      <p><b>Mengapa harus ambil yang terkecil?</b> Karena drill pipe bisa gagal lewat DUA mekanisme berbeda: (1) parted / putus karena melebihi tensile strength, atau (2) thread rusak karena over make-up torque. Rig harus dirancang agar TIDAK melewati batas manapun — sehingga batas yang paling ketat (kedalaman terkecil) yang menentukan.</p>
+      <div class="step"><b>Trik cepat mengingat:</b> Drill pipe dengan ppf (berat per kaki) lebih besar dan grade lebih tinggi (G-105 → S-135) umumnya punya tensile lebih besar sehingga rated depth-nya lebih dalam — tapi S-135 dikeluarkan dari opsi geothermal karena tidak tahan H2S, jadi upgrade praktis yang dipakai adalah menaikkan ppf, bukan grade.</p>
+    `
+  },
+  {
+    title:"Trade-off Rig Mast: 2 Joints vs 3 Joints",
+    level:"Butuh analisis biaya",
+    html:`
+      <p>Bagian ini sering disalahpahami sebagai "3 joints selalu lebih baik karena lebih cepat" — padahal studi menunjukkan hasil akhir justru sebaliknya jika dihitung total biaya sampai TD.</p>
+      <div class="step"><b>Dari sisi WAKTU saja, 3 joints memang lebih cepat:</b><br>
+      Untuk trip BHA 12-1/4" sepanjang 2400 m: 3 joints perlu 80× koneksi, 2 joints perlu 120× koneksi. Semakin dalam BHA (mis. 3000 m), selisihnya bisa mencapai ratusan menit per trip.</p></div>
+      <div class="step"><b>Tapi dari sisi rig moving, 2 joints lebih cepat:</b> mast lebih pendek dan lebih ringan untuk dipindah/di-skid antar sumur dalam satu wellpad.</div>
+      <div class="step"><b>Yang menentukan pemenang adalah TOTAL biaya sampai TD, bukan waktu per aktivitas:</b><br>
+      3 joints: USD 27.400/hari × 50 hari = <b>USD 1.370.000</b><br>
+      2 joints: USD 20.000/hari × 52,25 hari = <b>USD 1.045.000</b><br>
+      → 2 joints tetap 2,25 hari lebih lama sampai TD, tapi <b>hemat ≈USD 325.000</b> karena selisih daily rate (USD 7.400/hari lebih murah) jauh lebih besar dampaknya daripada tambahan waktu.</p></div>
+      <p><b>Pelajaran umum:</b> Saat membandingkan opsi rig, jangan berhenti di satu metrik (kecepatan tripping saja atau harga sewa saja) — selalu hitung <b>total biaya = daily rate × total hari kerja sampai TD</b>, karena rate murah dengan waktu sedikit lebih lama bisa mengalahkan rate mahal dengan waktu lebih cepat.</p>
+    `
+  },
+  {
+    title:"Menentukan Jumlah dan Ukuran Mud Pump",
+    level:"Perlu logika desain",
+    html:`
+      <p>Bagian ini sering membingungkan karena "jumlah pompa" ditentukan bukan hanya dari flow rate yang dibutuhkan, tapi juga dari filosofi keandalan operasional (redundancy).</p>
+      <div class="step"><b>Prinsip jumlah pompa:</b><br>
+      Jumlah pompa dipakai untuk sirkulasi aktif + <b>1 unit spare (cadangan jika satu pompa rusak/maintenance)</b> + <b>1 unit khusus untuk annulus</b> (misalnya untuk operasi seperti reverse circulation atau kebutuhan sirkulasi tambahan).</p></div>
+      <div class="step"><b>Contoh perhitungan (kebutuhan 1200 GPM @ 2600 PSI, Mud Pump 1000 HP):</b><br>
+      3 unit pompa @ ~430 GPM (liner 6-1/2") pada 100 SPM → total kapasitas cukup, dengan Max SPP 2550 PSI. Susunan operasionalnya: sebagian pompa aktif sirkulasi + 1 spare + 1 annulus, TIDAK berarti seluruh unit menyala bersamaan sepanjang waktu.</p></div>
+      <p><b>Kenapa liner lebih kecil dipakai lebih banyak pompa (mis. 800 HP → 4 unit, liner 5-1/2") sementara HP lebih besar pakai lebih sedikit (1600 HP → 2 unit, liner 7")?</b> Karena pompa dengan HP lebih tinggi per unit mampu menghasilkan flow rate lebih besar dengan liner lebih besar pula, sehingga jumlah unit yang dibutuhkan untuk mencapai target GPM total menjadi lebih sedikit — trade-off-nya adalah biaya investasi/sewa per unit yang lebih mahal.</p>
+    `
+  }
+];
+
+function renderDiff(){
+  const container = document.getElementById('diff-container');
+  container.innerHTML = '';
+  diffData.forEach((item, i)=>{
+    const el = document.createElement('div');
+    el.className = 'diff-card';
+    el.innerHTML = `
+      <div class="diff-head">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <span class="mono" style="color:var(--text-faint);font-size:12px;">0${i+1}</span>
+          <span class="diff-title">${item.title}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span class="diff-badge">${item.level}</span>
+          <span class="diff-chevron">▾</span>
+        </div>
+      </div>
+      <div class="diff-body"><div class="diff-inner">${item.html}</div></div>
+    `;
+    el.querySelector('.diff-head').addEventListener('click', ()=> el.classList.toggle('open'));
+    container.appendChild(el);
+  });
+  // open first by default
+  container.firstElementChild.classList.add('open');
+}
+renderDiff();
+</script>
+</body>
+</html>

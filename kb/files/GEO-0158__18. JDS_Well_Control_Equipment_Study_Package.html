@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Well Control Equipment & Basic Well Control Technique</title>
+<style>
+  :root{
+    --navy-950:#050b14;
+    --navy-900:#0a1628;
+    --navy-800:#0f2138;
+    --navy-700:#16304d;
+    --navy-600:#1e3f63;
+    --steel:#3d6a8a;
+    --steel-light:#6fa3c7;
+    --amber:#e8a13c;
+    --amber-light:#ffcc80;
+    --amber-dim:#8a6320;
+    --red-flag:#d64545;
+    --green-ok:#4caf7d;
+    --text-light:#eef3f8;
+    --text-dim:#a9bcd0;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Segoe UI',Tahoma,Verdana,sans-serif;
+    background:radial-gradient(ellipse at top, var(--navy-800), var(--navy-950) 70%);
+    color:var(--text-light);
+    min-height:100vh;
+  }
+  header{
+    padding:28px 20px 18px;
+    text-align:center;
+    border-bottom:2px solid var(--amber-dim);
+    background:linear-gradient(180deg, rgba(232,161,60,0.08), transparent);
+  }
+  header h1{
+    margin:0 0 6px;
+    font-size:1.6em;
+    color:var(--amber-light);
+    letter-spacing:0.5px;
+  }
+  header p{
+    margin:0;
+    color:var(--text-dim);
+    font-size:0.95em;
+  }
+  .tabs{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:8px;
+    padding:18px 12px 0;
+    max-width:1000px;
+    margin:0 auto;
+  }
+  .tab-btn{
+    background:var(--navy-700);
+    border:1px solid var(--steel);
+    color:var(--text-dim);
+    padding:11px 22px;
+    border-radius:8px 8px 0 0;
+    cursor:pointer;
+    font-size:0.95em;
+    font-weight:600;
+    transition:all 0.2s ease;
+  }
+  .tab-btn:hover{background:var(--navy-600); color:var(--text-light);}
+  .tab-btn.active{
+    background:var(--amber);
+    color:var(--navy-950);
+    border-color:var(--amber);
+  }
+  main{
+    max-width:1000px;
+    margin:0 auto;
+    padding:26px 18px 60px;
+  }
+  .panel{display:none; animation:fadeIn 0.35s ease;}
+  .panel.active{display:block;}
+  @keyframes fadeIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+
+  h2.section-title{
+    color:var(--amber-light);
+    border-left:4px solid var(--amber);
+    padding-left:12px;
+    margin-top:34px;
+    font-size:1.25em;
+  }
+  h2.section-title:first-child{margin-top:0;}
+
+  .card{
+    background:var(--navy-800);
+    border:1px solid var(--navy-600);
+    border-radius:10px;
+    padding:16px 20px;
+    margin:14px 0;
+  }
+  .card h3{margin-top:0; color:var(--steel-light);}
+  .card ul{margin:8px 0; padding-left:20px;}
+  .card li{margin:5px 0;}
+  .formula{
+    background:var(--navy-900);
+    border:1px dashed var(--amber-dim);
+    border-radius:8px;
+    padding:12px 16px;
+    font-family:'Consolas','Courier New',monospace;
+    color:var(--amber-light);
+    text-align:center;
+    margin:10px 0;
+    font-size:1.05em;
+  }
+  .insight-box{
+    background:linear-gradient(135deg, rgba(232,161,60,0.12), rgba(232,161,60,0.03));
+    border:1px solid var(--amber-dim);
+    border-radius:10px;
+    padding:14px 18px;
+    margin:14px 0;
+  }
+  .insight-box strong{color:var(--amber-light);}
+
+  /* Quiz */
+  .quiz-progress{
+    text-align:center;
+    color:var(--text-dim);
+    margin-bottom:14px;
+    font-size:0.9em;
+  }
+  .q-block{
+    background:var(--navy-800);
+    border:1px solid var(--navy-600);
+    border-radius:10px;
+    padding:18px 20px;
+    margin-bottom:16px;
+  }
+  .q-block .q-text{font-weight:600; margin-bottom:10px; color:var(--text-light);}
+  .q-options{display:flex; flex-direction:column; gap:8px;}
+  .opt-btn{
+    text-align:left;
+    background:var(--navy-700);
+    border:1px solid var(--steel);
+    color:var(--text-light);
+    padding:10px 14px;
+    border-radius:7px;
+    cursor:pointer;
+    font-size:0.95em;
+  }
+  .opt-btn:hover{background:var(--navy-600);}
+  .opt-btn.correct{background:var(--green-ok); border-color:var(--green-ok); color:#04150c;}
+  .opt-btn.wrong{background:var(--red-flag); border-color:var(--red-flag); color:#2a0505;}
+  .opt-btn.disabled{pointer-events:none;}
+  .explain{
+    margin-top:10px;
+    padding:10px 14px;
+    background:var(--navy-900);
+    border-left:3px solid var(--amber);
+    border-radius:6px;
+    font-size:0.9em;
+    color:var(--text-dim);
+    display:none;
+  }
+  .explain.show{display:block;}
+  .quiz-score-bar{
+    text-align:center;
+    margin:20px 0;
+  }
+  .quiz-score-bar button{
+    background:var(--amber);
+    color:var(--navy-950);
+    border:none;
+    padding:10px 22px;
+    border-radius:8px;
+    font-weight:700;
+    cursor:pointer;
+  }
+  #scoreDisplay{
+    font-size:1.1em;
+    color:var(--amber-light);
+    margin-bottom:10px;
+    font-weight:700;
+  }
+
+  /* Flashcards */
+  .flash-wrap{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:16px;
+  }
+  .flash-counter{color:var(--text-dim); font-size:0.9em;}
+  .flashcard{
+    width:100%;
+    max-width:560px;
+    height:280px;
+    perspective:1200px;
+    cursor:pointer;
+  }
+  .flash-inner{
+    position:relative;
+    width:100%;
+    height:100%;
+    transition:transform 0.6s;
+    transform-style:preserve-3d;
+  }
+  .flashcard.flipped .flash-inner{transform:rotateY(180deg);}
+  .flash-face{
+    position:absolute;
+    width:100%;
+    height:100%;
+    backface-visibility:hidden;
+    border-radius:14px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:26px;
+    font-size:1.15em;
+    border:2px solid var(--amber-dim);
+  }
+  .flash-front{
+    background:linear-gradient(160deg, var(--navy-800), var(--navy-700));
+    color:var(--text-light);
+    font-weight:600;
+  }
+  .flash-back{
+    background:linear-gradient(160deg, var(--amber-dim), var(--navy-800));
+    color:var(--amber-light);
+    transform:rotateY(180deg);
+    font-size:1.0em;
+  }
+  .flash-tag{
+    position:absolute;
+    top:12px;
+    left:16px;
+    font-size:0.7em;
+    color:var(--steel-light);
+    text-transform:uppercase;
+    letter-spacing:1px;
+  }
+  .flash-nav{
+    display:flex;
+    gap:12px;
+    align-items:center;
+  }
+  .flash-nav button{
+    background:var(--navy-700);
+    border:1px solid var(--steel);
+    color:var(--text-light);
+    padding:9px 18px;
+    border-radius:7px;
+    cursor:pointer;
+    font-weight:600;
+  }
+  .flash-nav button:hover{background:var(--navy-600);}
+  .flash-hint{color:var(--text-dim); font-size:0.85em;}
+
+  /* Difficult concepts */
+  .ascii-box{
+    background:var(--navy-950);
+    border:1px solid var(--steel);
+    border-radius:8px;
+    padding:14px;
+    font-family:'Consolas','Courier New',monospace;
+    color:var(--steel-light);
+    white-space:pre;
+    overflow-x:auto;
+    font-size:0.82em;
+    line-height:1.35;
+    margin:12px 0;
+  }
+  .worked{
+    background:var(--navy-900);
+    border-radius:8px;
+    padding:12px 16px;
+    margin:10px 0;
+    font-size:0.92em;
+  }
+  .worked .step{margin:4px 0; color:var(--text-dim);}
+  .worked .result{color:var(--green-ok); font-weight:700;}
+
+  footer{
+    text-align:center;
+    padding:20px;
+    color:var(--text-dim);
+    font-size:0.8em;
+    border-top:1px solid var(--navy-700);
+  }
+
+  @media (max-width:600px){
+    .tab-btn{padding:9px 14px; font-size:0.85em;}
+    header h1{font-size:1.25em;}
+    .flashcard{height:320px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>⚙ Well Control Equipment & Basic Well Control Technique</h1>
+  <p>Jakarta Drilling Society — Subur Arianto | Paket Belajar Interaktif Offline</p>
+</header>
+
+<div class="tabs">
+  <button class="tab-btn active" data-tab="ringkasan">📘 Ringkasan</button>
+  <button class="tab-btn" data-tab="latihan">📝 Latihan Soal</button>
+  <button class="tab-btn" data-tab="flashcard">🃏 Flashcard</button>
+  <button class="tab-btn" data-tab="sulit">🧩 Bagian Sulit</button>
+</div>
+
+<main>
+
+<!-- ==================== RINGKASAN ==================== -->
+<section id="ringkasan" class="panel active">
+
+  <h2 class="section-title">1. Mengapa Well Control Penting?</h2>
+  <div class="card">
+    <p>Industri drilling menghabiskan jutaan dolar untuk insiden well control, dan seringkali menyebabkan tumpahan lingkungan. Namun yang paling penting: well control problem dapat menyebabkan hilangnya <strong>nyawa manusia</strong>.</p>
+    <p><strong>Drilling Risk Management</strong> bekerja dengan cara: mengidentifikasi Hazard, Risk, dan Consequence → menentukan Probability & Impact → mengurangi risiko ke level <strong>ALARP</strong> (As Low As Reasonably Practicable) dengan menambahkan safeguard.</p>
+  </div>
+
+  <h2 class="section-title">2. Well Control Safeguards (Barrier)</h2>
+  <div class="card">
+    <p><strong>Barrier</strong>: komponen dan/atau praktik yang, jika diterapkan dengan benar, berkontribusi pada keandalan sistem total (total system reliability) dalam sumur dengan mencegah aliran fluida atau gas ke permukaan.</p>
+    <ul>
+      <li><strong>Operational Barrier</strong> — prosedur & praktik kerja</li>
+      <li><strong>Physical Barrier</strong> — terdiri dari:
+        <ul>
+          <li>Hydrostatic Pressure</li>
+          <li>Mechanical Barrier (BOP, valve)</li>
+          <li>Solid Cement</li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <h2 class="section-title">3. Rig Circulating System</h2>
+  <div class="card">
+    <p>Sistem sirkulasi tertutup (closed circulation) mengalirkan lumpur dengan urutan:</p>
+    <ol>
+      <li>Dari Mud Tanks</li>
+      <li>Ke Mud Pumps</li>
+      <li>Melalui Stand-Pipe, Kelly Hose, Swivel, Kelly (atau Top Drive)</li>
+      <li>Turun melalui drill string, keluar di nozzle bit</li>
+      <li>Keluar ke annulus dan naik ke permukaan</li>
+      <li>Kembali ke mud tanks via Flow Line dan Shale Shaker</li>
+    </ol>
+    <p>Komponen tambahan: Desilter, Desander, Mud Cleaner, Centrifuge, Degasser, Mixing Tank.</p>
+  </div>
+
+  <h2 class="section-title">4. Well Control System — Komponen Utama</h2>
+  <div class="card">
+    <ul>
+      <li><strong>BOP Stack</strong>: Annular Preventer, Ram Preventer</li>
+      <li><strong>BOP Control Unit</strong>: Accumulator / Koomey Unit</li>
+      <li><strong>BOP Control Panel</strong>: driller's panel & remote panel</li>
+      <li><strong>Choke & Kill Lines</strong> beserta valve</li>
+      <li><strong>Choke Manifold</strong> dan valve</li>
+    </ul>
+  </div>
+
+  <h2 class="section-title">5. Fungsi BOP Stack</h2>
+  <div class="card">
+    <ul>
+      <li><strong>Sealing</strong> — menutup sumur di sekitar tubular yang berada di BOP</li>
+      <li><strong>Stripping</strong> — menggerakkan pipa masuk/keluar saat sumur bertekanan</li>
+      <li><strong>Blinding</strong> — menutup sumur tanpa tubular (biasanya dikombinasikan dengan kemampuan <em>shear</em>)</li>
+      <li><strong>Hanging off</strong> — menggantung tool joint drill pipe pada pipe ram</li>
+    </ul>
+    <p>Side outlet BOP juga memungkinkan controlled venting (influx) dan pumping mud untuk bullheading.</p>
+  </div>
+
+  <h2 class="section-title">6. Klasifikasi BOP</h2>
+  <div class="card">
+    <ul>
+      <li><strong>Class 3 (A1–R2)</strong>: Annular + Blind-Shear Ram + Fixed Pipe Ram — untuk RWP 3,000 & 5,000 psi</li>
+      <li><strong>Class 4 (A1–R3)</strong>: Annular + Variable Pipe Ram + Blind-Shear Ram + Fixed Pipe Ram — untuk RWP 10,000 & 15,000 psi</li>
+    </ul>
+  </div>
+
+  <h2 class="section-title">7. Komponen Pendukung Well Control</h2>
+  <div class="card">
+    <ul>
+      <li><strong>Side Outlet Valves</strong>: choke line minimal 1 hydraulic gate valve; kill line minimal 1 hydraulic gate valve (atau 2 manual valve + check valve). Check valve mencegah gas masuk area pompa.</li>
+      <li><strong>Drilling Spool</strong>: tempat pemasangan choke/kill line alternatif dari BOP outlet flange; item "disposable" agar wear tidak mengenai BOP; RWP ≥ Ram BOP; thru bore = bore BOP & max bore casing/tubing head spool teratas.</li>
+      <li><strong>Choke Manifold</strong>: hingga 4 choke (min. 2, salah satu remote operated); ada bleed/bypass line untuk membuang trapped pressure.</li>
+      <li><strong>BOP Hydraulic Control Unit (Koomey Unit)</strong>: terdiri dari accumulator bottle, pompa listrik & pompa udara, regulator annular, manifold regulator, bypass valve, dll.</li>
+      <li><strong>Full Opening Safety Valve (FOSV)</strong>, <strong>TDS Safety Valve (Top Drive IBOP)</strong>, dan <strong>Internal BOP (IBOP)</strong> — safety valve yang dipasang di drill string.</li>
+      <li><strong>Mud-Gas Separator</strong>: memisahkan gas dari lumpur menggunakan vent line back pressure dan dip tube hydrostatic; kapasitas ditentukan oleh tinggi dip tube dan berat mud seal.</li>
+      <li><strong>Geothermal Well Control</strong>: setup khas menggunakan Rotating Head, Annular Preventer, Banjo Box, Rams, Air-Mud Separator, Blooie Line, Rock Muffler. Master valve dipasang saat menembus reservoir section.</li>
+    </ul>
+  </div>
+
+  <h2 class="section-title">8. Konsep Tekanan (Pressure)</h2>
+  <div class="card">
+    <p><strong>Pressure</strong> = Force per unit Area (psi = pound per square inch).</p>
+    <div class="formula">P = F / A</div>
+
+    <p><strong>Hydrostatic Pressure (HP)</strong> = tekanan akibat berat kolom fluida, tergantung densitas fluida (ppg) dan tinggi vertikal/TVD (ft).</p>
+    <div class="formula">HP (psi) = 0.052 × MW (ppg) × TVD (ft)</div>
+
+    <p><strong>Formation/Pore Pressure</strong>: tekanan dalam pori-pori batuan. Untuk kestabilan sumur dan well control, hydrostatic pressure harus ≥ formation pressure.</p>
+
+    <p><strong>Fracture Pressure</strong>: tekanan borehole maksimum yang bisa ditahan formasi sebelum pecah. Dinyatakan sebagai fracture gradient (psi/ft atau ppg), ditentukan melalui Leak-Off Test (LOT).</p>
+    <div class="formula">Fracture Pressure = MUD (psi) + LOT (psi)</div>
+
+    <div class="insight-box">
+      <strong>Kondisi Ideal:</strong> Formation Pressure &lt; Mud Hydrostatic &lt; Fracture Pressure.<br>
+      Overbalanced (HP jauh &gt; Formation) → risiko lost circulation & differential sticking.<br>
+      Underbalanced (HP &lt; Formation) → risiko influx / kick.
+    </div>
+  </div>
+
+  <h2 class="section-title">9. Surface Pressure & Bottom Hole Pressure (BHP)</h2>
+  <div class="card">
+    <p><strong>Surface Pressure</strong>: tekanan yang bekerja di puncak kolom fluida. Saat well shut-in akibat kick, dikenal istilah:</p>
+    <ul>
+      <li><strong>SIDPP</strong> = Shut-In Drill Pipe Pressure</li>
+      <li><strong>SICP</strong> = Shut-In Casing Pressure</li>
+    </ul>
+    <p><strong>Kondisi Statis (tidak ada aliran/pergerakan pipa):</strong></p>
+    <div class="formula">Well terbuka ke atmosfer: BHP = HP<br>Well shut-in akibat kick: BHP = Surface Pressure + HP</div>
+    <ul>
+      <li>Di dalam Drill String: BHP = HP mud dalam string + SIDPP</li>
+      <li>Di Casing/Open Hole: BHP = HP mud annulus + HP Kick + SICP</li>
+    </ul>
+  </div>
+
+  <h2 class="section-title">10. Friction Pressure (FrP)</h2>
+  <div class="card">
+    <p>Pada kondisi dinamis (fluida mengalir), muncul tekanan yang melawan arah aliran disebut <strong>Friction Pressure</strong>. Gauge akan membaca seluruh friction pressure yang berada di <em>downstream</em>.</p>
+    <p>Friction pressure bergantung pada: geometri (panjang MD, flow area), rheology fluida, densitas (hubungan linear), dan flow rate (hubungan kuadrat).</p>
+    <div class="formula">FrP₂ = FrP₁ × (MW₂ / MW₁)  &nbsp;|&nbsp;  FrP₂ = FrP₁ × (Q₂/Q₁)²</div>
+    <p><strong>Persamaan sirkulasi maju (forward circulation):</strong></p>
+    <div class="formula">Standpipe Pressure = FrP<sub>surf</sub> + FrP<sub>ds</sub> + FrP<sub>bit</sub> + FrP<sub>ann</sub></div>
+    <p>Hanya FrP<sub>ann</sub> yang bekerja ke arah bawah (menambah BHP):</p>
+    <div class="formula">BHP = HP + FrP<sub>ann</sub>  &nbsp;→&nbsp;  ECD = MW + FrP<sub>ann</sub> / (0.052 × TVD)</div>
+  </div>
+
+  <h2 class="section-title">11. Relationship of Pressure to Volume (Gas)</h2>
+  <div class="card">
+    <p>Gas lebih ringan dari fluida dan akan bermigrasi saat sumur shut-in, menciptakan tekanan permukaan yang lebih tinggi jika tidak diberi ruang untuk mengembang (expand). Gas bersifat compressible mengikuti Hukum Gas Ideal (mengabaikan efek temperatur):</p>
+    <div class="formula">P × V = Konstan</div>
+    <p>Semakin volume bertambah (choke dibuka), tekanan gas menurun — dan sebaliknya.</p>
+  </div>
+
+  <h2 class="section-title">12. Kick — Penyebab & Deteksi</h2>
+  <div class="card">
+    <p><strong>Kick</strong> = aliran fluida formasi yang tidak diinginkan dan tidak disengaja ke dalam lubang sumur.</p>
+    <p><strong>Penyebab Kick:</strong></p>
+    <ul>
+      <li>Tekanan abnormal (abnormal pressure)</li>
+      <li>Gagal mengisi lubang dengan benar (failure to fill the hole)</li>
+      <li>Densitas fluida tidak cukup</li>
+      <li>Lost circulation</li>
+      <li>Swabbing</li>
+      <li>Human error</li>
+      <li>Annular gas flow setelah cementing</li>
+    </ul>
+    <p><strong>Indikator Kick (Real time):</strong> ROP naik/turun tiba-tiba (drilling break), perubahan torque & drag, penurunan densitas shale.</p>
+    <p><strong>Indikator Kick (Bottoms-up):</strong> kenaikan connection/trip/background gas, perubahan volume/ukuran/bentuk cutting, perubahan sifat mud (gas cut, water cut), perubahan suhu flowline.</p>
+    <p><strong>Alarm Deteksi:</strong> high & low pit level alarm (audio-visual, misal ±5 bbl), flow return indicator (audio-visual).</p>
+  </div>
+
+  <h2 class="section-title">13. Positive Kick Indicators & Aksi</h2>
+  <div class="card">
+    <p><strong>Saat drilling</strong> — jika terjadi: peningkatan flow, pit gain, atau flow saat pompa mati → <strong>Driller harus shut-in</strong>.</p>
+    <p><strong>Saat tripping</strong> — jika terjadi flow positif saat pipa statis → <strong>Driller harus shut-in</strong>. Jika terjadi deviasi trip log (short fill up saat POOH, excess pit gain saat RIH) → <strong>Driller harus cek flow</strong>: jika flowing → shut-in; jika tidak flowing → siapkan trip ke bottom.</p>
+  </div>
+
+  <h2 class="section-title">14. Prosedur Shut-In</h2>
+  <div class="card">
+    <p><strong>Saat drilling (Three S's):</strong> Space out (terhadap BOPE) → Shut down (stop rotasi & pompa) → Shut-in the well.</p>
+    <p><strong>Saat tripping (Three S's):</strong> Stab drill pipe safety valve (tutup) → Space out (terhadap BOPE) → Shut-in. <em>Catatan: pasang IBOP dan siapkan untuk strip kembali ke bottom.</em></p>
+    <p><strong>Jenis Shut-In (API):</strong></p>
+    <ul>
+      <li><strong>Hard Shut-in</strong>: Choke & HCR tertutup → Close preventer → Open HCR</li>
+      <li><strong>Soft Shut-in</strong>: Choke terbuka & HCR tertutup → Open HCR → Close preventer → Close choke</li>
+    </ul>
+  </div>
+
+  <h2 class="section-title">15. Konsep Constant BHP & Driller's Method</h2>
+  <div class="card">
+    <p><strong>Constant BHP concept</strong> bertujuan mengidentifikasi tekanan permukaan yang menyeimbangkan formation pore pressure, meliputi: SICP, SIDPP & KMW, kill rate/pump speed, ICP & SCR, penggunaan pump+choke untuk menjaga BHP konstan, dan memperhitungkan lag time saat manipulasi choke.</p>
+
+    <p><strong>SICP</strong> (Shut-In Casing Pressure):</p>
+    <div class="formula">SICP = FP − HP<sub>ann mud</sub> − HP<sub>influx</sub></div>
+    <p>Prosedur: konfirmasi shut-in → buka HCR valve & catat casing pressure → catat SICP saat sudah <strong>stabil</strong>.</p>
+
+    <p><strong>SIDPP</strong> (Shut-In Drill Pipe Pressure) memberi pembacaan langsung formation pressure:</p>
+    <div class="formula">SIDPP = FP − HP<sub>drill string</sub></div>
+    <div class="formula">KMW (ppg) = MW asli + SIDPP / (0.052 × TVD)</div>
+
+    <p><strong>ICP</strong> (Initial Circulating Pressure) = tekanan sirkulasi saat pompa mencapai kill speed:</p>
+    <div class="formula">ICP = SIDPP + SCR</div>
+    <p>ICP <strong>tidak</strong> mengandung safety factor/overbalance. Jika DPP turun di bawah ICP saat sirkulasi → sumur underbalanced, risiko influx tambahan.</p>
+
+    <p><strong>Driller's Method</strong> — well control method berbasis Constant BHP, menggunakan 2 sirkulasi:</p>
+    <ul>
+      <li><strong>Sirkulasi pertama</strong>: membuang influx dengan fluida asli. CP dijaga konstan saat menaikkan pompa; setelah stabil, <strong>DPP dijaga konstan</strong> (menggunakan choke) hingga influx habis. Saat mematikan pompa, CP dijaga konstan.</li>
+      <li><strong>Sirkulasi kedua</strong>: mematikan sumur (kill the well) dengan KMW. Saat memompa KMW turun ke bit, <strong>CP dijaga konstan</strong>. Setelah KMW mencapai bit, catat Final Circulating Pressure (FCP) dan <strong>DPP dijaga konstan di FCP</strong> hingga seluruh sistem terdisplace dan MW masuk = MW keluar = KMW.</li>
+    </ul>
+    <p>Metode ini sederhana namun mensyaratkan tidak ada gas tersisa di annulus.</p>
+  </div>
+
+</section>
+
+<!-- ==================== LATIHAN SOAL ==================== -->
+<section id="latihan" class="panel">
+  <h2 class="section-title">📝 Latihan Soal</h2>
+  <p style="color:var(--text-dim);">Klik salah satu jawaban untuk melihat apakah benar, beserta penjelasannya.</p>
+  <div class="quiz-progress" id="quizProgress"></div>
+  <div id="quizContainer"></div>
+  <div class="quiz-score-bar">
+    <div id="scoreDisplay"></div>
+    <button onclick="resetQuiz()">🔄 Ulangi Kuis</button>
+  </div>
+</section>
+
+<!-- ==================== FLASHCARD ==================== -->
+<section id="flashcard" class="panel">
+  <h2 class="section-title">🃏 Flashcard</h2>
+  <div class="flash-wrap">
+    <div class="flash-counter" id="flashCounter"></div>
+    <div class="flashcard" id="flashcard" onclick="flipCard()">
+      <div class="flash-inner">
+        <div class="flash-face flash-front">
+          <div><span class="flash-tag">Istilah</span><div id="flashFrontText"></div></div>
+        </div>
+        <div class="flash-face flash-back">
+          <div id="flashBackText"></div>
+        </div>
+      </div>
+    </div>
+    <div class="flash-hint">Klik kartu untuk membalik</div>
+    <div class="flash-nav">
+      <button onclick="prevCard()">⬅ Sebelumnya</button>
+      <button onclick="shuffleCards()">🔀 Acak</button>
+      <button onclick="nextCard()">Berikutnya ➡</button>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== BAGIAN SULIT ==================== -->
+<section id="sulit" class="panel">
+  <h2 class="section-title">🧩 Konsep-Konsep Sulit</h2>
+
+  <div class="card">
+    <h3>1. Kenapa BHP = HP + FrP<sub>ann</sub> saat sirkulasi (bukan dikurangi)?</h3>
+    <p>Ini sering membingungkan karena friction pressure "melawan arah aliran" — jadi kenapa dia justru <em>menambah</em> BHP di annulus?</p>
+    <p>Kuncinya: friction pressure di dalam drill string (FrP<sub>ds</sub>) memang bekerja melawan arah aliran (ke atas, karena fluida mengalir ke bawah) — sehingga standpipe pressure harus lebih tinggi untuk mendorong fluida turun. Tapi di annulus, fluida mengalir <strong>ke atas</strong> menuju permukaan, sehingga friction di annulus melawan arah aliran itu — yaitu bekerja <strong>ke bawah</strong>, menekan balik ke arah bit. Efek "menekan ke bawah" inilah yang menambah tekanan efektif di dasar sumur.</p>
+    <div class="ascii-box">
+Kondisi STATIS (tidak ada aliran):
+   DP          ANNULUS
+   |    |      |    |
+   |    |      |    |
+   |    |      |    |
+   ------------------
+        BHP = HP saja
+
+Kondisi DINAMIS (sirkulasi maju):
+   DP          ANNULUS
+   | ↓  |      | ↑  |   <- arah aliran fluida
+   | ↓  |      | ↑  |
+   |FrP↑|      |FrP↓|   <- arah gaya friction (LAWAN aliran)
+   ------------------
+        BHP = HP + FrP_ann
+        (FrP annulus menekan KE BAWAH → menambah BHP)
+    </div>
+    <div class="insight-box">
+      <strong>Insight:</strong> Inilah mengapa ECD (Equivalent Circulating Density) selalu &gt; static mud weight. Semakin cepat pompa (flow rate naik), semakin besar FrP<sub>ann</sub>, semakin besar pula ECD — risiko fracture formasi meningkat saat sirkulasi kencang di sumur dengan margin fracture yang sempit.
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>2. Kenapa saat Driller's Method, kadang CP yang dijaga konstan, kadang DPP?</h3>
+    <p>Aturan umum: <strong>pilih parameter yang secara langsung merepresentasikan BHP konstan pada fase tersebut</strong>, lalu gunakan choke untuk menjaganya tetap.</p>
+    <ul>
+      <li><strong>Saat menaikkan/menurunkan kecepatan pompa</strong> (belum ada aliran stabil dari drill string ke bit) → jaga <strong>CP (Casing Pressure) konstan</strong>, karena BHP saat ini masih dikontrol langsung oleh tekanan casing (annulus belum mengalami perubahan komposisi fluida).</li>
+      <li><strong>Saat fluida asli sedang mengalir stabil dan membuang influx (sirkulasi 1)</strong> → jaga <strong>DPP konstan</strong>, karena DPP secara langsung merepresentasikan tekanan di dasar drill string yang harus tetap konstan agar BHP tidak berubah — sementara CP boleh naik-turun mengikuti pergerakan influx di annulus.</li>
+      <li><strong>Saat KMW sedang turun ke bit (sirkulasi 2, sebelum sampai bit)</strong> → jaga <strong>CP konstan</strong> lagi (karena annulus masih berisi fluida lama, densitas belum berubah dari sisi DP).</li>
+      <li><strong>Setelah KMW sampai bit dan naik ke permukaan (sirkulasi 2, setelah FCP tercatat)</strong> → jaga <strong>DPP konstan di FCP</strong> hingga selesai.</li>
+    </ul>
+    <div class="ascii-box">
+Ringkasan "kapan jaga apa":
+
+  Ubah kecepatan pompa (start/stop)  --> jaga CP konstan
+  Fluida asli sirkulasi (buang kick) --> jaga DPP konstan
+  KMW turun menuju bit               --> jaga CP konstan
+  KMW naik dari bit ke permukaan     --> jaga DPP konstan (di FCP)
+    </div>
+    <div class="insight-box"><strong>Insight:</strong> Logikanya sederhana — DPP adalah cerminan langsung dari HP di dalam drill string yang isinya diketahui pasti (densitas fluida di DP tidak berubah selama fase itu). CP dipakai saat densitas di dalam DP <em>sedang berubah</em> (transisi pompa) sehingga DPP belum bisa dijadikan acuan stabil.</div>
+  </div>
+
+  <div class="card">
+    <h3>3. Hard Shut-in vs Soft Shut-in — kenapa urutannya berlawanan?</h3>
+    <div class="ascii-box">
+HARD SHUT-IN (choke tertutup dari awal):
+  1. Close preventer   (BOP menutup annulus)
+  2. Open HCR          (baru buka jalur ke choke manifold,
+                         tapi choke itu sendiri sudah tertutup)
+  --> Sumur langsung "dikunci penuh" secepat mungkin.
+  --> Tekanan kick tercatat lebih akurat & cepat,
+      tapi ada risiko water-hammer / tekanan kejut sesaat.
+
+SOFT SHUT-IN (choke terbuka dari awal):
+  1. Open HCR          (jalur ke choke manifold sudah terbuka)
+  2. Close preventer    (BOP menutup annulus, fluida masih
+                         bisa "mengalir pelan" lewat choke terbuka)
+  3. Close choke        (baru choke ditutup perlahan)
+  --> Menghindari lonjakan tekanan mendadak (surge) saat BOP
+      menutup, karena masih ada jalur keluar sementara.
+    </div>
+    <p><strong>Kenapa dipilih salah satu?</strong> Hard shut-in lebih cepat dan lebih disukai secara modern karena meminimalkan volume influx yang masuk (waktu reaksi lebih singkat), terutama untuk formasi dengan risiko gas shallow atau high-rate kick. Soft shut-in lebih "lembut" ke sistem tapi memberi waktu lebih lama bagi influx untuk terus masuk sebelum sumur benar-benar tertutup — biasanya dipilih jika ada kekhawatiran soal integritas casing/wellhead terhadap tekanan kejut.</p>
+  </div>
+
+  <div class="card">
+    <h3>4. Kenapa BOP Class 4 punya Variable Pipe Ram, sedangkan Class 3 tidak?</h3>
+    <p>Class 3 (rated 3,000–5,000 psi) menggunakan <strong>Fixed Pipe Ram</strong> — ukurannya hanya cocok untuk satu diameter pipa tertentu. Class 4 (rated 10,000–15,000 psi), yang biasa dipakai pada sumur bertekanan lebih tinggi dan lebih kompleks (lebih banyak ukuran drill string dipakai bergantian), dilengkapi <strong>Variable Pipe Ram</strong> tambahan yang bisa menutup rentang diameter pipa berbeda — memberi fleksibilitas tanpa harus mengganti ram fisik di rig floor saat situasi darurat.</p>
+    <div class="ascii-box">
+Class 3 - A1-R2 (3,000 / 5,000 psi)      Class 4 - A1-R3 (10,000 / 15,000 psi)
+   [ANNULAR PREVENTER]                      [ANNULAR PREVENTER]
+   [BLIND-SHEAR RAM]   <-choke/kill->        [VARIABLE PIPE RAM]
+   [FIXED PIPE RAM]                          [BLIND-SHEAR RAM]  <-choke/kill->
+   [WELLHEAD]                                [FIXED PIPE RAM]
+                                              [WELLHEAD]
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>5. Kenapa Mud-Gas Separator butuh "Dip Tube" dan bukan sekadar tangki terbuka?</h3>
+    <p>Mud-gas separator (poor-boy degasser) memisahkan gas dari mud return yang mungkin ter-cut gas saat kick sedang di-sirkulasikan keluar. Prinsipnya sederhana tapi sering disalahpahami:</p>
+    <div class="ascii-box">
+          VENT LINE (gas keluar, harus LEBAR & PENDEK)
+                 ^
+                 |
+     +-----------+-----------+
+     |     GAS terpisah      |  <- P1 (back pressure di vent line)
+     |-----------------------|
+     |                       |
+     |   MUD turun & keluar  |
+     |   lewat Dip Tube      |
+     |           ||          |
+     |           ||          |
+     +-----------||----------+
+                 ||  <- Dip Tube (mud seal)
+                 vv
+          keluar ke shaker
+
+Prinsip kerja:
+- Mud masuk dari sisi atas, gas yang lebih ringan naik & keluar
+  lewat vent line.
+- Mud yang lebih berat turun dan keluar lewat DIP TUBE, yang
+  selalu terendam mud (menciptakan "mud seal").
+- Mud seal inilah yang MENCEGAH gas ikut lolos keluar lewat
+  jalur mud (bukan vent line) -- karena gas tidak bisa
+  menembus kolom hidrostatik mud di dip tube.
+    </div>
+    <div class="insight-box">
+      <strong>Insight kritis:</strong> Kapasitas maksimum separator dibatasi oleh dua hal: (1) tinggi dip tube / U-tube — makin tinggi, makin besar hydrostatic seal yang bisa ditahan; dan (2) berat mud seal itu sendiri. Jika laju gas masuk terlalu besar melebihi kapasitas ini, mud seal bisa "tertiup" (blown), dan gas akan ikut keluar lewat jalur mud menuju shaker — situasi berbahaya karena gas jadi tidak terkendali di area terbuka (bukan lewat vent line/flare yang terkontrol). Inilah alasan mengapa vent line HARUS lebar dan pendek — untuk meminimalkan back pressure (P1) yang justru bisa mendorong balik dan mengganggu keseimbangan mud seal.
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>6. Menghitung ECD — kenapa hasilnya lebih tinggi dari mud weight statis?</h3>
+    <p>Contoh soal di materi (Bottom Hole Pressure): Fluid weight 12.0 ppg, TVD 8,000 ft, friction pressure annulus dihitung dari Pump Pressure dikurangi friction di DP dan bit.</p>
+    <div class="worked">
+      <div class="step">FrP<sub>ann</sub> = Pump Pressure − FrP<sub>ds</sub> − FrP<sub>bit</sub></div>
+      <div class="step">FrP<sub>ann</sub> = 3,500 − 1,000 − 2,100 = 400 psi</div>
+      <div class="step">ECD = MW + FrP<sub>ann</sub> / (0.052 × TVD)</div>
+      <div class="step">ECD = 12.0 + 400 / (0.052 × 8,000)</div>
+      <div class="step">ECD = 12.0 + 400 / 416</div>
+      <div class="step">ECD = 12.0 + 0.96</div>
+      <div class="result">ECD ≈ 12.96 ppg ≈ 13.0 ppg</div>
+    </div>
+    <p>Perhatikan: MD (10,000 ft) tidak dipakai langsung dalam rumus ECD — yang dipakai adalah <strong>TVD</strong> (8,000 ft), karena hydrostatic pressure hanya bergantung pada kedalaman vertikal, bukan panjang lintasan (measured depth). MD hanya relevan untuk menghitung friction pressure di sepanjang pipa (karena friction bergantung pada panjang aktual aliran).</p>
+  </div>
+
+</section>
+
+</main>
+
+<footer>
+  Paket belajar offline — Jakarta Drilling Society | Materi: Introduction to Well Control Equipment and Basic Well Control Technique (Subur Arianto)
+</footer>
+
+<script>
+// ===================== TAB SWITCHING =====================
+const tabBtns = document.querySelectorAll('.tab-btn');
+const panels = document.querySelectorAll('.panel');
+tabBtns.forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    tabBtns.forEach(b=>b.classList.remove('active'));
+    panels.forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
+  });
+});
+
+// ===================== QUIZ DATA =====================
+const quizData = [
+  {
+    q: "Apa fungsi utama dari 'Barrier' dalam well control?",
+    opts: [
+      "Mempercepat laju pemboran",
+      "Komponen/praktik yang mencegah aliran fluida atau gas ke permukaan",
+      "Menurunkan biaya operasi rig",
+      "Mengganti fungsi mud pump"
+    ],
+    correct: 1,
+    explain: "Barrier adalah komponen dan/atau praktik yang, jika diterapkan dengan benar, berkontribusi pada total system reliability dengan mencegah fluida atau gas mengalir ke permukaan."
+  },
+  {
+    q: "Manakah yang TERMASUK Physical Barrier?",
+    opts: [
+      "Prosedur kerja (SOP)",
+      "Pelatihan crew",
+      "Hydrostatic pressure, mechanical barrier, dan solid cement",
+      "Jadwal shift kerja"
+    ],
+    correct: 2,
+    explain: "Physical Barrier terdiri dari tiga hal: Hydrostatic Pressure, Mechanical Barrier, dan Solid Cement. Prosedur/SOP termasuk Operational Barrier."
+  },
+  {
+    q: "Fungsi BOP 'Blinding' adalah...",
+    opts: [
+      "Menggantung drill pipe pada pipe ram",
+      "Menutup sumur tanpa ada tubular yang melintasi BOP",
+      "Menggerakkan pipa saat sumur bertekanan",
+      "Menutup sumur di sekitar tubular yang ada"
+    ],
+    correct: 1,
+    explain: "Blinding adalah kemampuan menutup sumur ketika TIDAK ada tubular yang melintasi BOP — biasanya dikombinasikan dengan kemampuan shear (memotong pipa/casing)."
+  },
+  {
+    q: "BOP Class berapa yang menggunakan Variable Pipe Ram dan dirating untuk 10,000/15,000 psi?",
+    opts: ["Class 2", "Class 3", "Class 4", "Class 5"],
+    correct: 2,
+    explain: "Class 4 (A1-R3) untuk RWP 10,000 dan 15,000 psi dilengkapi Annular, Variable Pipe Ram, Blind-Shear Ram, dan Fixed Pipe Ram."
+  },
+  {
+    q: "Choke manifold minimal harus memiliki berapa choke, dan berapa yang harus remotely operated?",
+    opts: [
+      "Minimal 2 choke, 1 remotely operated",
+      "Minimal 4 choke, semua manual",
+      "Minimal 1 choke saja",
+      "Minimal 3 choke, semua remotely operated"
+    ],
+    correct: 0,
+    explain: "Choke manifold harus punya minimum 2 choke, salah satunya harus remotely operated. Boleh hingga 4 choke, dengan 1-2 di antaranya manual."
+  },
+  {
+    q: "Apa yang mencegah gas masuk ke area pompa pada kill line?",
+    opts: ["Hydraulic Gate Valve", "Check Valve", "Manifold Regulator", "Annular Preventer"],
+    correct: 1,
+    explain: "Check Valve pada kill line berfungsi mencegah gas masuk ke area pompa."
+  },
+  {
+    q: "Hydrostatic pressure suatu kolom fluida 9.1 ppg pada TVD 9,000 ft adalah...",
+    opts: ["4,259 psi", "3,900 psi", "4,680 psi", "3,542 psi"],
+    correct: 0,
+    explain: "HP = 0.052 × MW × TVD = 0.052 × 9.1 × 9,000 = 4,259 psi."
+  },
+  {
+    q: "Jika fluid level 9.9 ppg turun 500 ft di dalam sumur, berapa penurunan hydrostatic pressure-nya?",
+    opts: ["257 psi", "300 psi", "180 psi", "515 psi"],
+    correct: 0,
+    explain: "Δ HP = 0.052 × MW × ΔTVD = 0.052 × 9.9 × 500 = 257.4 ≈ 257 psi."
+  },
+  {
+    q: "Untuk drilling control dan well control, hubungan yang benar antara hydrostatic pressure dan formation pressure adalah...",
+    opts: [
+      "Hydrostatic harus selalu lebih kecil dari formation",
+      "Hydrostatic harus sama dengan fracture pressure",
+      "Hydrostatic harus minimal sama, lebih baik lebih besar dari formation pressure",
+      "Tidak ada hubungan khusus antara keduanya"
+    ],
+    correct: 2,
+    explain: "Hydrostatic pressure harus minimal sama dengan, tapi lebih baik lebih besar dari, formation pressure — agar sumur tetap terkendali (tidak underbalanced)."
+  },
+  {
+    q: "Fracture Pressure ditentukan melalui pengujian apa?",
+    opts: ["Formation Integrity Test saja", "Leak-off Test (LOT)", "Cement Bond Log", "Pressure While Drilling"],
+    correct: 1,
+    explain: "Leak-off Test (LOT) adalah uji untuk menentukan fracture pressure formasi. Fracture Pressure = tekanan mud (psi) + LOT (psi)."
+  },
+  {
+    q: "Kondisi 'Overbalanced' terjadi ketika...",
+    opts: [
+      "Mud Hydrostatic < Formation Pressure",
+      "Mud Hydrostatic > Formation Pressure (jauh melebihi)",
+      "Mud Hydrostatic = Fracture Pressure",
+      "Formation Pressure = Fracture Pressure"
+    ],
+    correct: 1,
+    explain: "Overbalanced terjadi saat Mud Hydrostatic jauh melebihi Formation Pressure, berpotensi menyebabkan lost circulation atau differential sticking."
+  },
+  {
+    q: "Rumus BHP di dalam drill string pada kondisi shut-in akibat kick adalah...",
+    opts: [
+      "BHP = HP mud annulus + SICP",
+      "BHP = HP mud dalam string + SIDPP",
+      "BHP = SIDPP saja",
+      "BHP = HP mud dalam string − SIDPP"
+    ],
+    correct: 1,
+    explain: "Di dalam Drill String, BHP = HP mud dalam string + Shut-In Drill Pipe Pressure (SIDPP)."
+  },
+  {
+    q: "Friction pressure yang terbaca oleh sebuah gauge adalah friction pressure yang berada di...",
+    opts: ["Upstream dari gauge", "Downstream dari gauge", "Rata-rata seluruh sistem", "Hanya di titik gauge itu sendiri"],
+    correct: 1,
+    explain: "Gauge akan melihat/membaca seluruh friction pressure yang berada di downstream dari posisinya."
+  },
+  {
+    q: "Manakah friction pressure yang bekerja ke ARAH BAWAH (menambah BHP) saat forward circulation?",
+    opts: ["FrP di drill string (FrP_ds)", "FrP di permukaan (FrP_surf)", "FrP di annulus (FrP_ann)", "FrP di bit (FrP_bit)"],
+    correct: 2,
+    explain: "FrP_ann adalah satu-satunya friction pressure yang bekerja ke arah bawah, karena melawan aliran fluida di annulus yang mengalir ke atas — sehingga menambah BHP."
+  },
+  {
+    q: "Berapa friction pressure baru jika MW dinaikkan dari 9.5 ppg ke 10.5 ppg, sedangkan parameter lain tetap, dan friction pressure awal 700 psi?",
+    opts: ["700 psi", "774 psi", "633 psi", "733 psi"],
+    correct: 1,
+    explain: "FrP2 = FrP1 × (MW2/MW1) = 700 × (10.5/9.5) = 700 × 1.105 ≈ 774 psi."
+  },
+  {
+    q: "Hitung ECD forward circulation: MW 12.0 ppg, TVD 8,000 ft, pump pressure 3,500 psi, FrP di DP 1,000 psi, FrP di bit 2,100 psi (abaikan friction permukaan).",
+    opts: ["12.8 ppg", "13.0 ppg", "13.9 ppg", "19.5 ppg"],
+    correct: 1,
+    explain: "FrP_ann = 3,500 − 1,000 − 2,100 = 400 psi. ECD = 12.0 + 400/(0.052×8,000) = 12.0 + 0.96 ≈ 13.0 ppg."
+  },
+  {
+    q: "Gas kick volume awal 4 bbl pada tekanan formasi 4,200 psi. Setelah dibleed off 2 bbl (volume jadi 6 bbl), berapa tekanan gas baru?",
+    opts: ["2,800 psi", "3,150 psi", "2,100 psi", "6,300 psi"],
+    correct: 0,
+    explain: "P×V = konstan. P2 = (P1×V1)/V2 = (4,200×4)/6 = 2,800 psi."
+  },
+  {
+    q: "Manakah yang BUKAN termasuk penyebab kick?",
+    opts: ["Swabbing", "Lost circulation", "Densitas fluida cukup dan terkontrol", "Annular gas flow setelah cementing"],
+    correct: 2,
+    explain: "Densitas fluida yang CUKUP dan terkontrol justru mencegah kick. Penyebab kick termasuk: abnormal pressure, gagal fill hole, densitas TIDAK cukup, lost circulation, swabbing, human error, annular gas flow."
+  },
+  {
+    q: "Saat drilling, jika terjadi 'flow with the pumps off', tindakan driller yang benar adalah...",
+    opts: ["Melanjutkan drilling seperti biasa", "Driller harus shut-in", "Menunggu instruksi supervisor tanpa tindakan", "Menambah mud weight tanpa shut-in"],
+    correct: 1,
+    explain: "Flow dengan pompa mati (pumps off) adalah indikator kick positif — driller harus segera shut-in."
+  },
+  {
+    q: "Urutan 'Three S's' untuk shut-in saat drilling adalah...",
+    opts: [
+      "Shut-in, Space out, Shut down",
+      "Space out, Shut down, Shut-in",
+      "Shut down, Shut-in, Space out",
+      "Stab, Space out, Shut-in"
+    ],
+    correct: 1,
+    explain: "Saat drilling: Space out (terhadap BOPE) → Shut down (stop rotasi & pompa) → Shut-in the well."
+  },
+  {
+    q: "Pada Hard Shut-in, urutan yang benar adalah...",
+    opts: [
+      "Open HCR → Close preventer",
+      "Close preventer → Open HCR",
+      "Close choke → Close preventer",
+      "Open HCR → Close choke"
+    ],
+    correct: 1,
+    explain: "Hard shut-in: Close preventer (BOP menutup) lalu Open HCR — choke sudah tertutup sejak awal."
+  },
+  {
+    q: "SIDPP memberikan pembacaan langsung dari...",
+    opts: ["Fracture pressure formasi", "Formation pressure selama kick", "Kapasitas mud pump", "Volume influx"],
+    correct: 1,
+    explain: "SIDPP = FP − HP drill string, sehingga memberi pembacaan langsung formation pressure selama kick."
+  },
+  {
+    q: "Apa itu ICP (Initial Circulating Pressure)?",
+    opts: [
+      "SIDPP dikurangi SCR",
+      "SIDPP ditambah SCR (tanpa safety factor)",
+      "SICP ditambah SCR",
+      "Tekanan casing saat shut-in"
+    ],
+    correct: 1,
+    explain: "ICP = SIDPP + SCR. ICP tidak mengandung safety factor/overbalance — jika DPP di bawah ICP saat sirkulasi, sumur akan underbalanced."
+  },
+  {
+    q: "Pada sirkulasi PERTAMA Driller's Method (membuang influx), parameter apa yang dijaga konstan setelah pompa mencapai kill speed?",
+    opts: ["Casing Pressure (CP)", "Drill Pipe Pressure (DPP)", "Pump Pressure saja", "Volume mud pit"],
+    correct: 1,
+    explain: "Setelah pompa mencapai kill speed dan ICP tercatat, DPP dijaga KONSTAN menggunakan choke hingga influx habis disirkulasikan keluar."
+  },
+  {
+    q: "Pada sirkulasi KEDUA Driller's Method, setelah KMW mencapai bit, parameter apa yang dijaga konstan hingga selesai?",
+    opts: ["CP terus menerus", "DPP pada Final Circulating Pressure (FCP)", "SICP awal", "Volume pit saja"],
+    correct: 1,
+    explain: "Setelah KMW mencapai bit, DPP dicatat sebagai FCP dan dijaga konstan pada nilai tersebut hingga seluruh sistem terdisplace (MW masuk = MW keluar = KMW)."
+  },
+  {
+    q: "Driller's Method mensyaratkan kondisi khusus agar metode ini bisa berjalan dengan sederhana, yaitu...",
+    opts: [
+      "Tidak ada gas tersisa di annulus",
+      "Mud weight harus di atas 15 ppg",
+      "TVD sumur harus di bawah 5,000 ft",
+      "Choke manifold harus manual semua"
+    ],
+    correct: 0,
+    explain: "Driller's Method sederhana secara konsep, tetapi mensyaratkan tidak ada gas yang tersisa di annulus agar perhitungan tekanan tetap akurat."
+  }
+];
+
+let userAnswers = new Array(quizData.length).fill(null);
+
+function renderQuiz(){
+  const container = document.getElementById('quizContainer');
+  container.innerHTML = '';
+  quizData.forEach((item, idx)=>{
+    const block = document.createElement('div');
+    block.className = 'q-block';
+    block.innerHTML = `
+      <div class="q-text">${idx+1}. ${item.q}</div>
+      <div class="q-options" id="opts-${idx}"></div>
+      <div class="explain" id="explain-${idx}">💡 ${item.explain}</div>
+    `;
+    container.appendChild(block);
+    const optsDiv = block.querySelector(`#opts-${idx}`);
+    item.opts.forEach((opt, oidx)=>{
+      const b = document.createElement('button');
+      b.className = 'opt-btn';
+      b.textContent = String.fromCharCode(65+oidx) + '. ' + opt;
+      b.onclick = ()=>selectAnswer(idx, oidx);
+      optsDiv.appendChild(b);
+    });
+  });
+  updateProgress();
+}
+
+function selectAnswer(qIdx, oIdx){
+  if(userAnswers[qIdx] !== null) return;
+  userAnswers[qIdx] = oIdx;
+  const optsDiv = document.getElementById(`opts-${qIdx}`);
+  const buttons = optsDiv.querySelectorAll('.opt-btn');
+  buttons.forEach((btn, i)=>{
+    btn.classList.add('disabled');
+    if(i === quizData[qIdx].correct) btn.classList.add('correct');
+    else if(i === oIdx) btn.classList.add('wrong');
+  });
+  document.getElementById(`explain-${qIdx}`).classList.add('show');
+  updateProgress();
+}
+
+function updateProgress(){
+  const answered = userAnswers.filter(a=>a!==null).length;
+  const correct = userAnswers.filter((a,i)=>a===quizData[i].correct).length;
+  document.getElementById('quizProgress').textContent = `Terjawab: ${answered}/${quizData.length}`;
+  document.getElementById('scoreDisplay').textContent = answered>0 ? `Skor: ${correct}/${answered} benar (dari ${answered} dijawab)` : '';
+}
+
+function resetQuiz(){
+  userAnswers = new Array(quizData.length).fill(null);
+  renderQuiz();
+  window.scrollTo({top: document.getElementById('latihan').offsetTop - 20, behavior:'smooth'});
+}
+
+renderQuiz();
+
+// ===================== FLASHCARD DATA =====================
+const flashData = [
+  {front:"Barrier (Well Control)", back:"Komponen dan/atau praktik yang, jika diterapkan dengan benar, berkontribusi pada total system reliability dengan mencegah fluida/gas mengalir ke permukaan. Terdiri dari Operational Barrier dan Physical Barrier."},
+  {front:"3 Komponen Physical Barrier", back:"1) Hydrostatic Pressure, 2) Mechanical Barrier, 3) Solid Cement."},
+  {front:"4 Fungsi Vital BOP Stack", back:"Sealing, Stripping, Blinding, Hanging off."},
+  {front:"BOP Class 3", back:"A1–R2: Annular + Blind-Shear Ram + Fixed Pipe Ram. Rating: 3,000 & 5,000 psi RWP."},
+  {front:"BOP Class 4", back:"A1–R3: Annular + Variable Pipe Ram + Blind-Shear Ram + Fixed Pipe Ram. Rating: 10,000 & 15,000 psi RWP."},
+  {front:"Drilling Spool", back:"Item disposable tempat memasang choke & kill line, agar wear tidak mengenai BOP langsung. RWP harus ≥ Ram BOP; thru bore sama dengan BOP dan max bore casing/tubing head spool teratas."},
+  {front:"Choke Manifold — syarat minimum", back:"Minimal 2 choke, salah satu harus remotely operated (maks. 4 choke). Harus ada bleed/bypass line untuk membuang trapped pressure."},
+  {front:"Fungsi Check Valve pada Kill Line", back:"Mencegah gas masuk ke area pompa."},
+  {front:"BOP Hydraulic Control Unit lain nama", back:"Koomey Unit / Accumulator Unit — berisi accumulator bottle, pompa listrik, pompa udara, regulator, dll."},
+  {front:"FOSV", back:"Full Opening Safety Valve — safety valve manual yang dipasang di drill string saat terjadi kick ketika tidak ada top drive."},
+  {front:"IBOP", back:"Internal BOP — safety valve di dalam drill string (upper sub, lower sub, valve seat & spring) yang mencegah aliran balik ke dalam pipa."},
+  {front:"Mud-Gas Separator — 2 komponen penentu kapasitas", back:"1) Tinggi Dip Tube (U-tube), 2) Berat Mud Seal. Vent line harus lebar & pendek untuk mengurangi back pressure."},
+  {front:"Rumus Hydrostatic Pressure", back:"HP (psi) = 0.052 × Mud Weight (ppg) × TVD (ft)"},
+  {front:"Formation/Pore Pressure", back:"Tekanan yang terkandung dalam pori-pori batuan (dipengaruhi porosity/storage capacity dan permeability/flow capacity)."},
+  {front:"Fracture Pressure", back:"Tekanan borehole maksimum yang bisa ditahan formasi sebelum pecah/split. Ditentukan lewat Leak-off Test (LOT). Fracture Pressure = MUD psi + LOT psi."},
+  {front:"Kondisi Ideal Tekanan Sumur", back:"Formation Pressure < Mud Hydrostatic < Fracture Pressure (mendekati Balance, tidak overbalanced maupun underbalanced berlebihan)."},
+  {front:"SIDPP", back:"Shut-In Drill Pipe Pressure. SIDPP = Formation Pressure − HP drill string. Memberi pembacaan langsung formation pressure selama kick."},
+  {front:"SICP", back:"Shut-In Casing Pressure. SICP = Formation Pressure − HP annulus mud − HP influx."},
+  {front:"Rumus Kill Mud Weight (KMW)", back:"KMW (ppg) = Mud Weight asli (ppg) + SIDPP (psi) / [0.052 × TVD (ft)]"},
+  {front:"Rumus BHP saat Shut-in (Drill String)", back:"BHP = HP mud dalam drill string + SIDPP"},
+  {front:"Rumus BHP saat Shut-in (Casing/Open Hole)", back:"BHP = HP mud annulus + HP Kick + SICP"},
+  {front:"Friction Pressure (FrP) — arah kerja", back:"Selalu bekerja BERLAWANAN dengan arah aliran fluida. Gauge membaca seluruh friction pressure di sisi downstream-nya."},
+  {front:"FrP yang menambah BHP saat sirkulasi maju", back:"Hanya FrP annulus (FrP_ann) — karena melawan aliran annulus yang naik, sehingga menekan ke bawah dan menambah BHP."},
+  {front:"Rumus ECD", back:"ECD = Mud Weight + FrP_ann / (0.052 × TVD). ECD selalu lebih besar dari static mud weight saat sirkulasi berjalan."},
+  {front:"Hubungan FrP terhadap Densitas Fluida", back:"FrP2 = FrP1 × (MW2 / MW1) — hubungan linear (approx)."},
+  {front:"Hubungan FrP terhadap Flow Rate", back:"FrP2 = FrP1 × (Q2/Q1)² — hubungan kuadrat (approx)."},
+  {front:"Hukum Gas Ideal (untuk well control)", back:"P × V = Konstan (mengabaikan efek temperatur). Saat volume gas naik (choke dibuka), tekanan gas turun — dan sebaliknya."},
+  {front:"Definisi Kick", back:"Aliran fluida formasi yang tidak diinginkan dan tidak disengaja (undesirable & unintentional) ke dalam lubang sumur."},
+  {front:"7 Penyebab Kick", back:"Abnormal pressure, gagal fill hole, densitas fluida tidak cukup, lost circulation, swabbing, human error, annular gas flow setelah cementing."},
+  {front:"Indikator Kick 'Real time'", back:"ROP naik/turun (drilling break), perubahan torque & drag, penurunan densitas shale."},
+  {front:"Indikator Kick 'Bottoms-up'", back:"Kenaikan connection/trip/background gas, perubahan volume/ukuran cutting, perubahan sifat mud (gas cut/water cut), perubahan suhu flowline."},
+  {front:"Positive Kick Indicator saat Drilling", back:"Peningkatan flow, pit gain, flow saat pompa mati (pumps off) → Driller HARUS shut-in."},
+  {front:"3 S's Shut-in saat Drilling", back:"Space out (terhadap BOPE) → Shut down (stop rotasi & pompa) → Shut-in the well."},
+  {front:"3 S's Shut-in saat Tripping", back:"Stab drill pipe safety valve → Space out (terhadap BOPE) → Shut-in. Lalu pasang IBOP dan siapkan strip ke bottom."},
+  {front:"Hard Shut-in", back:"Choke & HCR tertutup. Urutan: Close preventer → Open HCR."},
+  {front:"Soft Shut-in", back:"Choke terbuka & HCR tertutup. Urutan: Open HCR → Close preventer → Close choke."},
+  {front:"ICP (Initial Circulating Pressure)", back:"ICP = SIDPP + SCR (Slow Circulating Rate pressure). TIDAK mengandung safety factor/overbalance."},
+  {front:"Driller's Method — Prinsip Dasar", back:"Constant BHP well control method menggunakan 2 sirkulasi: (1) buang influx dengan fluida asli, (2) matikan sumur dengan kill mud weight (KMW)."},
+  {front:"Driller's Method — Sirkulasi 1, parameter dijaga konstan", back:"Setelah pompa capai kill speed (CP dijaga konstan saat menaikkan pompa), lalu DPP dijaga KONSTAN menggunakan choke hingga influx habis."},
+  {front:"Driller's Method — Sirkulasi 2, parameter dijaga konstan", back:"Saat KMW turun ke bit: CP dijaga konstan. Setelah KMW capai bit (catat FCP): DPP dijaga konstan di FCP hingga sistem selesai terdisplace."},
+  {front:"Syarat Driller's Method berjalan sederhana", back:"Tidak ada gas yang tersisa di annulus."},
+  {front:"Geothermal Well Control — komponen khas", back:"Rotating Head, Annular Preventer, Banjo Box, Rams, Air-Mud Separator, Blooie Line, Rock Muffler. Master Valve dipasang saat menembus reservoir section."}
+];
+
+let flashOrder = flashData.map((_,i)=>i);
+let flashIdx = 0;
+
+function renderFlashcard(){
+  const item = flashData[flashOrder[flashIdx]];
+  document.getElementById('flashFrontText').textContent = item.front;
+  document.getElementById('flashBackText').textContent = item.back;
+  document.getElementById('flashCounter').textContent = `Kartu ${flashIdx+1} dari ${flashData.length}`;
+  document.getElementById('flashcard').classList.remove('flipped');
+}
+
+function flipCard(){
+  document.getElementById('flashcard').classList.toggle('flipped');
+}
+
+function nextCard(){
+  flashIdx = (flashIdx + 1) % flashData.length;
+  renderFlashcard();
+}
+
+function prevCard(){
+  flashIdx = (flashIdx - 1 + flashData.length) % flashData.length;
+  renderFlashcard();
+}
+
+function shuffleCards(){
+  for(let i=flashOrder.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [flashOrder[i], flashOrder[j]] = [flashOrder[j], flashOrder[i]];
+  }
+  flashIdx = 0;
+  renderFlashcard();
+}
+
+renderFlashcard();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Casing Design — Paket Belajar</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  :root{
+    --bg: #12161b;
+    --bg-panel: #1b2229;
+    --bg-panel-2: #212a33;
+    --border: #2c363f;
+    --text: #e7ebee;
+    --text-muted: #93a1ac;
+    --amber: #e2872a;
+    --amber-dim: #7a5528;
+    --steel: #4f92a8;
+    --green: #4caf7d;
+    --red: #d16a6a;
+  }
+  *{ box-sizing: border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background:
+      radial-gradient(1200px 600px at 10% -10%, #1a2129 0%, transparent 60%),
+      var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', sans-serif;
+    line-height: 1.55;
+    min-height: 100vh;
+  }
+  ::selection{ background: var(--amber-dim); color: #fff; }
+
+  .app{ max-width: 980px; margin: 0 auto; padding: 28px 20px 80px; }
+
+  header.hero{
+    position: relative;
+    border: 1px solid var(--border);
+    background:
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 28px),
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 28px),
+      linear-gradient(160deg, #1c242c, #151a1f);
+    border-radius: 4px;
+    padding: 30px 26px 24px;
+    margin-bottom: 22px;
+    overflow: hidden;
+  }
+  .eyebrow{
+    font-family: 'IBM Plex Mono', monospace;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-size: 11px;
+    color: var(--amber);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .eyebrow .dot{ width:7px; height:7px; border-radius:50%; background: var(--amber); box-shadow: 0 0 8px var(--amber); }
+  h1.title{
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    font-size: clamp(26px, 4.4vw, 38px);
+    margin: 0 0 8px;
+    color: #f3f5f7;
+  }
+  .title .thin{ font-weight: 400; color: var(--steel); }
+  .subtitle{ color: var(--text-muted); font-size: 14.5px; max-width: 640px; }
+  .gauge-row{
+    display:flex; gap:18px; margin-top:18px; flex-wrap: wrap;
+    font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: var(--text-muted);
+  }
+  .gauge-row span b{ color: var(--text); font-weight: 600;}
+
+  nav.tabs{
+    display:flex;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 22px;
+    background: var(--bg-panel);
+  }
+  nav.tabs button{
+    flex: 1 1 0;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 14px 8px;
+    cursor: pointer;
+    border-right: 1px solid var(--border);
+    display:flex; flex-direction:column; align-items:center; gap:4px;
+    transition: background .15s, color .15s;
+  }
+  nav.tabs button:last-child{ border-right:none; }
+  nav.tabs button .num{ font-size:10px; opacity:.6; }
+  nav.tabs button:hover{ background: var(--bg-panel-2); color: var(--text); }
+  nav.tabs button.active{
+    color: #fff;
+    background: linear-gradient(180deg, #26313b, #1b232b);
+    box-shadow: inset 0 -2px 0 var(--amber);
+  }
+
+  section.panel{ display:none; animation: fade .25s ease; }
+  section.panel.active{ display:block; }
+  @keyframes fade{ from{ opacity:0; transform: translateY(4px);} to{opacity:1; transform:none;} }
+
+  h2.section-title{
+    font-family: 'Oswald', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    font-size: 20px;
+    color: var(--amber);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 10px;
+    margin: 34px 0 14px;
+    display:flex; align-items:center; gap:10px;
+  }
+  h2.section-title:first-of-type{ margin-top: 4px; }
+  h2.section-title .tag{
+    font-family:'IBM Plex Mono', monospace; font-size:10.5px; color: var(--steel);
+    border: 1px solid var(--steel); padding: 2px 7px; border-radius: 3px; text-transform: none; letter-spacing: 0;
+  }
+
+  .card{
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px 18px;
+    margin-bottom: 12px;
+  }
+  .card h3{ margin: 0 0 8px; font-size: 15.5px; color: #fff; font-weight:600; }
+  .card p{ margin: 0 0 8px; color: var(--text); font-size: 14.5px; }
+  .card p:last-child{ margin-bottom:0; }
+  .card ul{ margin: 6px 0 0; padding-left: 20px; color: var(--text); font-size: 14.5px;}
+  .card ul li{ margin-bottom: 4px; }
+  .card ol{ margin: 6px 0 0; padding-left: 20px; color: var(--text); font-size: 14.5px;}
+  .card ol li{ margin-bottom: 6px; }
+  .card.compact{ padding: 12px 16px; }
+
+  .grid2{ display:grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 640px){ .grid2{ grid-template-columns: 1fr; } }
+
+  table.spec{
+    width:100%; border-collapse: collapse; font-size: 13.5px; margin-top: 6px;
+  }
+  table.spec th, table.spec td{
+    border: 1px solid var(--border); padding: 8px 10px; text-align: left; vertical-align: top;
+  }
+  table.spec th{
+    background: var(--bg-panel-2); font-family:'IBM Plex Mono', monospace; font-size: 11.5px;
+    text-transform: uppercase; letter-spacing: .04em; color: var(--amber);
+  }
+  table.spec td.oil{ color: var(--steel); }
+  table.spec td.geo{ color: var(--amber); }
+  table.data{ width:100%; border-collapse: collapse; font-size: 13px; margin-top: 8px; font-family:'IBM Plex Mono', monospace;}
+  table.data th, table.data td{ border:1px solid var(--border); padding:6px 9px; text-align:right; }
+  table.data th{ background: var(--bg-panel-2); color: var(--amber); text-transform:uppercase; font-size:10.5px; letter-spacing:.04em; }
+  table.data td:first-child, table.data th:first-child{ text-align:left; }
+
+  .pill{
+    display:inline-block; font-family:'IBM Plex Mono', monospace; font-size: 10.5px;
+    padding: 2px 8px; border-radius: 20px; border: 1px solid var(--border); color: var(--text-muted);
+    margin-right: 6px;
+  }
+  .formula{
+    font-family:'IBM Plex Mono', monospace; background: var(--bg); border:1px solid var(--border);
+    border-radius:4px; padding: 10px 14px; color: var(--steel); font-size: 14px; display:inline-block; margin: 6px 0;
+  }
+
+  /* QUIZ */
+  .quiz-progress{
+    display:flex; align-items:center; gap:12px; margin-bottom: 16px;
+    font-family:'IBM Plex Mono', monospace; font-size: 12px; color: var(--text-muted);
+  }
+  .quiz-bar{ flex:1; height:6px; background: var(--bg-panel-2); border-radius:3px; overflow:hidden; border:1px solid var(--border);}
+  .quiz-bar-fill{ height:100%; background: linear-gradient(90deg, var(--steel), var(--amber)); width:0%; transition: width .3s; }
+  .q-block{
+    background: var(--bg-panel); border:1px solid var(--border); border-radius:4px; padding:18px; margin-bottom:14px;
+  }
+  .q-num{ font-family:'IBM Plex Mono', monospace; color: var(--amber); font-size:11px; text-transform:uppercase; letter-spacing:.08em; margin-bottom:6px;}
+  .q-text{ font-size: 15px; color:#fff; font-weight:500; margin-bottom:12px; }
+  .opt{
+    display:block; width:100%; text-align:left; background: var(--bg-panel-2); border:1px solid var(--border);
+    color: var(--text); padding: 10px 12px; border-radius:4px; margin-bottom:8px; cursor:pointer; font-size:14px;
+    font-family:'IBM Plex Sans', sans-serif; transition: border-color .12s, background .12s;
+  }
+  .opt:hover{ border-color: var(--steel); }
+  .opt.correct{ border-color: var(--green); background: rgba(76,175,125,0.12); color:#fff; }
+  .opt.wrong{ border-color: var(--red); background: rgba(209,106,106,0.12); color:#fff; }
+  .opt[disabled]{ cursor: default; }
+  .explain{
+    margin-top: 10px; padding: 10px 12px; background: var(--bg); border-left: 3px solid var(--steel);
+    font-size: 13.5px; color: var(--text-muted); display:none; border-radius: 0 3px 3px 0;
+  }
+  .explain.show{ display:block; }
+  .quiz-footer{ display:flex; justify-content: space-between; align-items:center; margin-top: 18px; }
+  .btn{
+    font-family:'IBM Plex Mono', monospace; font-size:12.5px; text-transform:uppercase; letter-spacing:.05em;
+    background: var(--amber); color:#1a1408; border:none; padding: 10px 18px; border-radius:4px; cursor:pointer; font-weight:600;
+  }
+  .btn:hover{ filter: brightness(1.08); }
+  .btn.secondary{ background: transparent; border: 1px solid var(--border); color: var(--text-muted); }
+  .btn.secondary:hover{ color: var(--text); border-color: var(--steel); }
+  .btn[disabled]{ opacity:.4; cursor:not-allowed; }
+  #quizResult{ text-align:center; padding: 30px 10px; }
+  #quizResult .score{ font-family:'Oswald', sans-serif; font-size: 44px; color: var(--amber); }
+  #quizResult .score span{ font-size: 20px; color: var(--text-muted); }
+
+  /* FLASHCARDS */
+  .fc-wrap{ display:flex; flex-direction:column; align-items:center; }
+  .fc-meta{
+    font-family:'IBM Plex Mono', monospace; font-size: 12px; color: var(--text-muted); margin-bottom: 12px;
+    display:flex; gap: 14px; align-items:center;
+  }
+  .fc-scene{ perspective: 1400px; width:100%; max-width: 560px; height: 250px; margin-bottom: 18px; }
+  .fc-card{
+    width:100%; height:100%; position:relative; transform-style: preserve-3d; transition: transform .5s;
+    cursor:pointer;
+  }
+  .fc-card.flipped{ transform: rotateY(180deg); }
+  .fc-face{
+    position:absolute; inset:0; backface-visibility:hidden; border-radius:6px; border:1px solid var(--border);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding: 24px;
+  }
+  .fc-front{ background: linear-gradient(160deg, #212a33, #171d23); }
+  .fc-front .fc-label{ font-family:'IBM Plex Mono', monospace; font-size:10.5px; color:var(--amber); text-transform:uppercase; letter-spacing:.1em; margin-bottom:12px;}
+  .fc-front .fc-term{ font-family:'Oswald', sans-serif; font-size: 24px; color:#fff; text-transform:uppercase; }
+  .fc-front .fc-hint{ margin-top:14px; font-size:11.5px; color: var(--text-muted); font-family:'IBM Plex Mono', monospace;}
+  .fc-back{
+    background: linear-gradient(160deg, #24333a, #182229);
+    transform: rotateY(180deg);
+    color: var(--text); font-size: 14.5px;
+  }
+  .fc-back .fc-label{ font-family:'IBM Plex Mono', monospace; font-size:10.5px; color:var(--steel); text-transform:uppercase; letter-spacing:.1em; margin-bottom:10px;}
+  .fc-controls{ display:flex; gap: 10px; }
+
+  footer.note{
+    margin-top: 44px; padding-top: 16px; border-top: 1px dashed var(--border);
+    font-size: 12px; color: var(--text-muted); font-family: 'IBM Plex Mono', monospace;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .fc-card, section.panel, .quiz-bar-fill{ transition: none !important; animation: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="hero">
+    <div class="eyebrow"><span class="dot"></span>MODUL PELATIHAN &middot; CASING DESIGN</div>
+    <h1 class="title">Casing Design <span class="thin">Setting Depth & Well Sizing</span></h1>
+    <p class="subtitle">Paket belajar interaktif dari materi "Casing Design — Casing Setting Depth and Well Sizing" — rangkuman, latihan soal, flashcard istilah teknis, dan penjelasan bagian yang sering membingungkan.</p>
+    <div class="gauge-row">
+      <span>FOKUS: <b>Casing Setting Depth &amp; Well Sizing</b></span>
+      <span>CAKUPAN: <b>8 topik</b></span>
+      <span>TOTAL SOAL: <b>15</b></span>
+      <span>TOTAL FLASHCARD: <b>16</b></span>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab-btn active" data-tab="ringkasan"><span>📘 Rangkuman</span><span class="num">TAB 1</span></button>
+    <button class="tab-btn" data-tab="latihan"><span>📝 Latihan Soal</span><span class="num">TAB 2</span></button>
+    <button class="tab-btn" data-tab="flashcard"><span>🔁 Flashcard</span><span class="num">TAB 3</span></button>
+    <button class="tab-btn" data-tab="sulit"><span>🧩 Bagian Sulit</span><span class="num">TAB 4</span></button>
+  </nav>
+
+  <!-- ======================= TAB 1: RINGKASAN ======================= -->
+  <section class="panel active" id="ringkasan">
+
+    <h2 class="section-title">1. Tujuan Pembelajaran <span class="tag">objectives</span></h2>
+    <div class="card">
+      <ul>
+        <li>Mengidentifikasi fungsi utama casing pada sebuah sumur.</li>
+        <li>Mengidentifikasi casing string yang menopang struktur sumur dan bagaimana beban tersebar di sepanjang rangkaian casing.</li>
+        <li>Mengidentifikasi faktor-faktor yang menentukan kedalaman minimum pemasangan casing (minimum setting depth).</li>
+        <li>Memahami perbedaan metode <b>top-down</b> dan <b>bottom-up</b> dalam pemilihan casing seat.</li>
+        <li>Mampu melakukan seleksi casing seat metode top-down berdasarkan data kekuatan formasi &amp; tekanan pori.</li>
+      </ul>
+    </div>
+
+    <h2 class="section-title">2. Casing Design Overview <span class="tag">overview</span></h2>
+    <div class="card">
+      <p>Preliminary casing design memiliki dua deliverable utama:</p>
+      <ul>
+        <li><b>Casing Sizes (OD)</b> — ukuran diameter luar casing tiap seksi.</li>
+        <li><b>Casing Setting Depth</b> — kedalaman pemasangan tiap casing.</li>
+      </ul>
+      <p>Data kunci yang dibutuhkan untuk casing design:</p>
+      <ul>
+        <li>Lokasi sumur — onshore, offshore, swamp, deep water.</li>
+        <li>Tipe dan perilaku formasi.</li>
+        <li>Pore Pressure &amp; Fracture Pressure.</li>
+        <li>Profil temperatur.</li>
+      </ul>
+      <p style="color:var(--text-muted); font-size:13px;">Alur proses: Data Collection &rarr; Casing Scheme Selection &rarr; Detailed Design (dan bisa berulang/iteratif).</p>
+    </div>
+
+    <h2 class="section-title">3. Alasan Penentuan Casing-Shoe Setting Depth <span class="tag">shoe depth</span></h2>
+    <div class="card">
+      <ul>
+        <li>Mengisolasi formasi tidak stabil di atasnya (overlying unstable formations).</li>
+        <li>Mengisolasi zona hidrokarbon dangkal (shallow hydrocarbons).</li>
+        <li>Mengisolasi zona lost-circulation di atasnya.</li>
+        <li>Mengisolasi horizon air tawar (freshwater horizons).</li>
+        <li>Mencegah kegagalan lubang bor akibat ketidakstabilan kimia yang bergantung waktu (time-dependent chemical instability) dari paparan lumpur bor yang lama.</li>
+        <li>Mencegah kegagalan formasi akibat tekanan sirkulasi terinduksi selama operasi pengeboran (sirkulasi, pengeboran, tripping).</li>
+        <li>Mencegah kegagalan formasi akibat tekanan sirkulasi terinduksi selama operasi well control (saat menutup sumur/closing-in dan mensirkulasikan keluar influx).</li>
+      </ul>
+    </div>
+
+    <h2 class="section-title">4. Tipe &amp; Fungsi Casing <span class="tag">jenis casing</span></h2>
+    <div class="grid2">
+      <div class="card compact"><h3>Conductor / Foundation</h3><p>Casing paling luar &amp; dangkal; menopang struktur awal dan mencegah runtuhnya formasi permukaan yang lunak.</p></div>
+      <div class="card compact"><h3>Surface Casing</h3><p>Mengisolasi freshwater horizon &amp; formasi dangkal, menjadi dudukan BOP pertama.</p></div>
+      <div class="card compact"><h3>Intermediate Casing</h3><p>Mengisolasi zona bermasalah (unstable formation, lost circulation, tekanan abnormal) sebelum mencapai target lebih dalam; bisa lebih dari satu string.</p></div>
+      <div class="card compact"><h3>Production Casing</h3><p>Casing terakhir yang melindungi/mengisolasi zona reservoir untuk produksi.</p></div>
+      <div class="card compact"><h3>Production Liner</h3><p>Casing pendek yang tidak sampai ke permukaan, digantung dari casing di atasnya (liner hanger), sering digunakan di zona reservoir.</p></div>
+      <div class="card compact"><h3>Production String / Tubing</h3><p>Jalur produksi fluida dari reservoir ke permukaan, dipasang di dalam casing/liner produksi.</p></div>
+    </div>
+
+    <h2 class="section-title">5. Casing Design Process <span class="tag">proses</span></h2>
+    <div class="card">
+      <p>Proses desain utama mempertimbangkan empat elemen kunci yang saling terkait:</p>
+      <ul>
+        <li><b>Design Parameter</b> — batasan teknis desain casing.</li>
+        <li><b>Load Case</b> — skenario beban yang harus ditahan casing (tekanan, tarik, dsb).</li>
+        <li><b>Wellbore Strength</b> — kekuatan lubang bor/formasi terhadap beban tersebut.</li>
+        <li><b>Development Plan</b> — tujuan sumur, kebutuhan logging/testing/produksi, dan rencana kontingensi.</li>
+      </ul>
+      <p style="color:var(--text-muted); font-size:13px;">Alur: Wellbore Strength + Load Case &rarr; dibandingkan &rarr; Minimum Casing Shoe Setting Depth &rarr; dibandingkan dengan pertimbangan geologi umum &rarr; Casing Shoe Setting Depth final &rarr; digabung dengan Minimum Casing Size (dari Development Plan) &rarr; Preliminary Casing Design.</p>
+    </div>
+
+    <h2 class="section-title">6. Casing Scheme Selection <span class="tag">skema</span></h2>
+    <div class="card">
+      <ul>
+        <li>Tentukan ukuran lubang akhir (final hole size) atau ukuran casing akhir untuk komplesi terlebih dahulu.</li>
+        <li>Dari tiap ukuran casing &amp; hole, ikuti garis solid untuk ukuran konvensional, atau garis putus-putus untuk ukuran khusus (special size &amp; clearance).</li>
+        <li>Pastikan kebutuhan hole enlargement atau bi-center bit dipenuhi untuk clearance khusus agar kualitas annulus semen tetap terjaga.</li>
+      </ul>
+    </div>
+
+    <h2 class="section-title">7. Metode Penentuan Casing Seat <span class="tag">seat selection</span></h2>
+    <table class="spec">
+      <tr><th>Aspek</th><th>Top-Down Method</th><th>Bottom-Up / Unlimited Kick Method</th></tr>
+      <tr><td>Arah analisis</td><td class="oil">Dari permukaan menuju target (top ke bottom)</td><td class="geo">Dari kedalaman akhir/target menuju permukaan (bottom ke top)</td></tr>
+      <tr><td>Prinsip margin</td><td class="oil">Margin tetap di atas pore pressure &amp; di bawah formation strength (mis. 0.5 ppg &amp; 0.75 ppg)</td><td class="geo">Memperhitungkan kick tolerance penuh (unlimited kick) dengan margin tekanan (mis. 200 psi &amp; 100 psi)</td></tr>
+      <tr><td>Fokus</td><td class="oil">Mencegah loss/kick saat pengeboran berlangsung normal</td><td class="geo">Memastikan casing di atas mampu menahan kondisi kick terburuk (full evacuation) dari section di bawahnya</td></tr>
+    </table>
+    <div class="card">
+      <h3>Faktor Casing Seat Selection</h3>
+      <ul>
+        <li>Pressure plot — pore pressure &amp; fracture pressure vs kedalaman (TVD).</li>
+        <li>Full evacuation (kondisi kick).</li>
+        <li>Trip margin.</li>
+        <li>Tipe formasi.</li>
+        <li>Risiko bawah permukaan (subsurface risk).</li>
+        <li>Data sumur-sumur offset (offset wells).</li>
+      </ul>
+    </div>
+
+    <h2 class="section-title">8. Casing Expandable Application <span class="tag">expandable</span></h2>
+    <div class="card">
+      <p>Expandable/SET liner digunakan sebagai <b>contingency string</b> untuk menjaga ukuran hole/casing akhir tetap sesuai rencana meskipun ada tambahan casing kontingensi di tengah program.</p>
+      <ul>
+        <li>Menjaga ukuran hole/casing akhir sesuai rencana.</li>
+        <li>Toleransi ketat untuk seksi berikutnya.</li>
+        <li>Membutuhkan hole enlargement.</li>
+      </ul>
+    </div>
+
+    <h2 class="section-title">9. Data Latihan Perhitungan <span class="tag">calculation example</span></h2>
+    <div class="card">
+      <p>Soal latihan dari materi: gunakan tabel TVD vs. Pore Pressure vs. Fracture Pressure berikut untuk (1) menentukan casing setting depth metode top-down dengan margin 0.5 ppg di atas pore pressure dan 0.75 ppg di bawah formation strength; (2) menentukan casing setting depth metode bottom-up dengan margin 200 psi di atas pore pressure dan 100 psi di bawah formation strength; (3) menentukan skema casing bila seksi akhir di reservoir memakai 7" liner casing.</p>
+      <table class="data">
+        <tr><th>TVD (ft)</th><th>Pore Pressure (psi)</th><th>Fracture Pressure (psi)</th><th>Gradien Pore (ppg)</th><th>Gradien Frac (ppg)</th></tr>
+        <tr><td>1.000</td><td>442</td><td>530</td><td>8.50</td><td>10.19</td></tr>
+        <tr><td>1.300</td><td>588</td><td>693</td><td>8.70</td><td>10.25</td></tr>
+        <tr><td>2.200</td><td>1.030</td><td>1.236</td><td>9.00</td><td>10.80</td></tr>
+        <tr><td>3.000</td><td>1.420</td><td>1.700</td><td>9.10</td><td>10.90</td></tr>
+        <tr><td>3.300</td><td>1.579</td><td>1.973</td><td>9.20</td><td>11.49</td></tr>
+        <tr><td>4.500</td><td>2.176</td><td>2.995</td><td>9.30</td><td>12.80</td></tr>
+        <tr><td>6.200</td><td>3.063</td><td>4.352</td><td>9.50</td><td>13.50</td></tr>
+        <tr><td>7.000</td><td>3.822</td><td>4.732</td><td>10.50</td><td>13.00</td></tr>
+        <tr><td>8.200</td><td>4.477</td><td>6.396</td><td>10.50</td><td>15.00</td></tr>
+        <tr><td>8.200</td><td>5.202</td><td>6.396</td><td>12.20</td><td>15.00</td></tr>
+        <tr><td>12.000</td><td>7.675</td><td>9.984</td><td>12.30</td><td>16.00</td></tr>
+        <tr><td>12.000</td><td>8.798</td><td>9.984</td><td>14.10</td><td>16.00</td></tr>
+        <tr><td>12.800</td><td>9.452</td><td>10.783</td><td>14.20</td><td>16.20</td></tr>
+        <tr><td>13.000</td><td>9.667</td><td>11.019</td><td>14.30</td><td>16.30</td></tr>
+      </table>
+      <p style="color:var(--text-muted); font-size:13px; margin-top:8px;">Kolom gradien (ppg) dihitung dari <span class="formula">Gradien = Tekanan (psi) ÷ (0.052 × TVD ft)</span>. Perhatikan ada dua baris pada TVD 8.200 ft dan 12.000 ft — ini menandakan zona transisi tekanan (lompatan gradien) yang biasanya menjadi titik kritis penentuan casing seat. Cara mengerjakan soal ini dijelaskan langkah demi langkah di tab <b>Bagian Sulit</b>.</p>
+    </div>
+
+  </section>
+
+  <!-- ======================= TAB 2: LATIHAN SOAL ======================= -->
+  <section class="panel" id="latihan">
+    <h2 class="section-title" style="margin-top:4px;">Latihan Soal <span class="tag" id="quizTag">15 soal</span></h2>
+    <div class="quiz-progress">
+      <span id="quizCounter">Soal 1 / 15</span>
+      <div class="quiz-bar"><div class="quiz-bar-fill" id="quizBarFill"></div></div>
+      <span id="quizScoreLive">Skor: 0</span>
+    </div>
+
+    <div id="quizArea"></div>
+
+    <div id="quizResult" style="display:none;">
+      <div class="score" id="scoreText">0<span>/15</span></div>
+      <p id="scoreMsg" style="color:var(--text-muted);"></p>
+      <button class="btn" id="restartQuiz">Ulangi Latihan</button>
+    </div>
+  </section>
+
+  <!-- ======================= TAB 3: FLASHCARD ======================= -->
+  <section class="panel" id="flashcard">
+    <h2 class="section-title" style="margin-top:4px;">Flashcard Istilah Teknis <span class="tag">klik kartu untuk membalik</span></h2>
+    <div class="fc-wrap">
+      <div class="fc-meta">
+        <span id="fcCounter">Kartu 1 / 16</span>
+        <span id="fcCategory" class="pill">—</span>
+      </div>
+      <div class="fc-scene">
+        <div class="fc-card" id="fcCard">
+          <div class="fc-face fc-front">
+            <div class="fc-label">Istilah</div>
+            <div class="fc-term" id="fcTerm">—</div>
+            <div class="fc-hint">klik untuk lihat definisi</div>
+          </div>
+          <div class="fc-face fc-back">
+            <div class="fc-label">Definisi</div>
+            <div id="fcDef">—</div>
+          </div>
+        </div>
+      </div>
+      <div class="fc-controls">
+        <button class="btn secondary" id="fcPrev">&larr; Sebelumnya</button>
+        <button class="btn secondary" id="fcShuffle">🔀 Acak</button>
+        <button class="btn" id="fcNext">Selanjutnya &rarr;</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= TAB 4: BAGIAN SULIT ======================= -->
+  <section class="panel" id="sulit">
+    <h2 class="section-title" style="margin-top:4px;">Penjelasan Bagian yang Sering Membingungkan</h2>
+
+    <div class="card">
+      <h3>🧩 Beda Top-Down vs Bottom-Up (Unlimited Kick) Method</h3>
+      <p>Keduanya sama-sama menentukan casing seat dari pressure plot, tapi arah &amp; filosofi analisisnya berbeda:</p>
+      <ul>
+        <li><b>Top-Down</b> — dimulai dari permukaan, bergerak ke bawah. Untuk tiap kedalaman, mud weight yang dipakai harus tetap di atas pore pressure (+ margin, mis. 0.5 ppg) tapi di bawah formation strength (− margin, mis. 0.75 ppg). Casing dipasang di titik terdalam sebelum window ini "menutup" (mud weight yang aman untuk menahan pori sudah melebihi batas rekah formasi).</li>
+        <li><b>Bottom-Up / Unlimited Kick</b> — dimulai dari kedalaman target/akhir, bergerak ke atas. Metode ini mengasumsikan skenario kick terburuk (full evacuation) terjadi di dasar lubang, lalu menghitung tekanan yang akan dirasakan casing shoe di atasnya. Casing di atas harus cukup dalam ke formasi yang cukup kuat untuk menahan tekanan kick tersebut, dengan margin tambahan (mis. 200 psi di atas pore, 100 psi di bawah frac).</li>
+      </ul>
+      <p style="color:var(--text-muted);">Intinya: top-down menjaga kondisi <i>pengeboran normal</i>, sedangkan bottom-up menjaga kondisi <i>darurat/kick</i> — keduanya biasa dibandingkan, dan casing seat final dipilih dari kedalaman yang paling konservatif (aman) di antara keduanya.</p>
+    </div>
+
+    <div class="card">
+      <h3>🧩 Cara mengubah psi menjadi ppg (dan kenapa perlu)</h3>
+      <p>Data pore pressure &amp; fracture pressure sering diberikan dalam satuan psi (tekanan absolut pada kedalaman tertentu), tapi untuk membandingkan antar kedalaman, praktik umum industri mengubahnya ke <b>gradien mud weight (ppg)</b> supaya bisa dibandingkan langsung sebagai "berapa berat lumpur yang dibutuhkan".</p>
+      <p class="formula">Gradien (ppg) = Tekanan (psi) ÷ [0.052 × TVD (ft)]</p>
+      <p>Contoh: pada TVD 4.500 ft dengan pore pressure 2.176 psi &rarr; 2.176 ÷ (0.052 × 4.500) = 2.176 ÷ 234 ≈ <b>9.3 ppg</b>. Nilai 0.052 adalah konstanta konversi psi/ft per ppg (berasal dari berat jenis air x faktor konversi satuan).</p>
+    </div>
+
+    <div class="card">
+      <h3>🧩 Kenapa ada dua baris data di TVD yang sama (8.200 ft dan 12.000 ft)?</h3>
+      <p>Ini bukan kesalahan — dua baris pada kedalaman yang sama biasanya merepresentasikan <b>zona transisi tekanan</b> (pressure transition/ramp), yaitu titik di mana tekanan pori melompat tajam dalam jarak kedalaman yang sangat pendek (misalnya karena masuk ke formasi bertekanan abnormal/overpressured). Baris pertama mewakili kondisi tepat sebelum transisi, baris kedua tepat sesudahnya. Titik seperti ini sering menjadi <b>kandidat kuat untuk casing seat</b>, karena mud weight yang aman berubah drastis tepat di sana — casing perlu dipasang untuk mengisolasi zona di atas transisi sebelum melanjutkan pengeboran dengan mud weight yang lebih berat di bawahnya.</p>
+    </div>
+
+    <div class="card">
+      <h3>🧩 Langkah mengerjakan soal casing setting depth (metode top-down)</h3>
+      <ol>
+        <li>Ubah semua data pore pressure &amp; fracture pressure ke gradien ppg (lihat rumus di atas / tabel gradien pada tab Rangkuman).</li>
+        <li>Hitung <b>batas bawah mud weight</b> di tiap kedalaman = gradien pore + 0.5 ppg (margin trip/safety).</li>
+        <li>Hitung <b>batas atas mud weight</b> di tiap kedalaman = gradien frac − 0.75 ppg (margin agar tidak merekahkan formasi).</li>
+        <li>Mulai dari permukaan dengan satu mud weight acuan (biasanya dari titik teratas), lalu telusuri ke bawah selama mud weight tersebut masih berada di antara batas bawah dan batas atas di semua kedalaman yang dilewati.</li>
+        <li>Begitu mud weight acuan sudah melewati batas atas (mendekati/melebihi fracture window) di suatu kedalaman, maka casing shoe dipasang tepat SEBELUM kedalaman itu (di titik terdalam yang masih aman).</li>
+        <li>Dari titik casing tersebut, ulangi proses untuk seksi berikutnya dengan mud weight acuan baru (lebih berat), sampai mencapai target akhir.</li>
+      </ol>
+      <p style="color:var(--text-muted); font-size:13px;">Untuk metode bottom-up, arah penelusurannya dibalik: mulai dari kedalaman target, hitung tekanan kick (full evacuation) yang harus ditahan casing shoe di atasnya dengan margin 200 psi/100 psi, lalu tentukan kedalaman minimum casing shoe agar formasi di titik tersebut cukup kuat menahan tekanan itu.</p>
+    </div>
+
+    <div class="card">
+      <h3>🧩 Beda Casing, Liner, dan Tubing</h3>
+      <ul>
+        <li><b>Casing</b> — rangkaian pipa yang disemen dan menerus dari permukaan (atau dari casing sebelumnya) sampai kedalaman tertentu; menjadi struktur permanen sumur.</li>
+        <li><b>Liner</b> — mirip casing, tapi TIDAK sampai ke permukaan; digantung dari casing di atasnya menggunakan liner hanger, sehingga lebih hemat material &amp; waktu untuk seksi bawah.</li>
+        <li><b>Tubing (Production String)</b> — pipa yang dipasang di dalam casing/liner produksi, berfungsi sebagai jalur alir fluida dari reservoir ke permukaan, dan biasanya bisa dicabut/diganti tanpa membongkar casing.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>🧩 Kenapa Casing Scheme perlu "solid line" vs "dash line"?</h3>
+      <p>Pada chart casing scheme, garis solid menunjukkan kombinasi ukuran hole &amp; casing yang <b>konvensional</b> (paling umum dipakai, ketersediaan bit/casing luas). Garis putus-putus menunjukkan kombinasi <b>khusus (special size/clearance)</b> yang biasanya memerlukan hole enlargement atau bi-center bit untuk mendapatkan clearance ekstra — dipakai bila skema konvensional tidak cukup memberi ruang untuk semen yang berkualitas baik di annulus.</p>
+    </div>
+
+  </section>
+
+  <footer class="note">
+    Materi disusun ulang dari file presentasi "Casing Design — Casing Setting Depth and Well Sizing". Gunakan sebagai alat bantu belajar, bukan pengganti standar/prosedur resmi perusahaan.
+  </footer>
+</div>
+
+<script>
+/* ---------------- TAB SWITCHING ---------------- */
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+});
+
+/* ---------------- QUIZ DATA ---------------- */
+const quizData = [
+  {
+    q: "Apa dua deliverable utama dari preliminary casing design?",
+    opts: ["Casing sizes (OD) dan casing setting depth","Casing color dan casing thread type","Rig schedule dan mud program","Well name dan operator name"],
+    correct: 0,
+    explain: "Preliminary casing design memiliki dua deliverable utama: Casing Sizes (OD) dan Casing Setting Depths."
+  },
+  {
+    q: "Manakah yang TERMASUK data kunci yang dibutuhkan untuk casing design?",
+    opts: ["Nama kontraktor rig","Lokasi sumur, tipe & perilaku formasi, pore/fracture pressure, dan profil temperatur","Harga BBM saat ini","Jumlah pekerja di lokasi"],
+    correct: 1,
+    explain: "Data kunci meliputi lokasi (onshore/offshore/swamp/deep water), tipe & perilaku formasi, pore & fracture pressure, serta profil temperatur."
+  },
+  {
+    q: "Salah satu alasan penentuan casing-shoe setting depth adalah untuk...",
+    opts: ["Mempercepat proses logging saja","Mengisolasi formasi tidak stabil, shallow hydrocarbon, lost-circulation zone, dan freshwater horizon di atasnya","Mengurangi jumlah casing yang dibutuhkan","Meningkatkan tekanan pori formasi"],
+    correct: 1,
+    explain: "Casing-shoe setting depth ditentukan antara lain untuk mengisolasi formasi tidak stabil, shallow hydrocarbon, lost-circulation zone, dan freshwater horizon di atasnya."
+  },
+  {
+    q: "Casing yang TIDAK menerus sampai ke permukaan dan digantung dari casing di atasnya disebut...",
+    opts: ["Conductor Casing","Surface Casing","Production Liner","Intermediate Casing"],
+    correct: 2,
+    explain: "Production Liner adalah casing yang tidak sampai ke permukaan, digantung dari casing di atasnya menggunakan liner hanger."
+  },
+  {
+    q: "Fungsi utama Intermediate Casing adalah...",
+    opts: ["Menjadi jalur alir fluida produksi utama","Mengisolasi zona bermasalah (unstable formation, lost circulation, tekanan abnormal) sebelum mencapai target lebih dalam","Menggantikan fungsi conductor casing","Hanya dipakai pada sumur geothermal"],
+    correct: 1,
+    explain: "Intermediate casing berfungsi mengisolasi zona-zona bermasalah sebelum pengeboran mencapai target lebih dalam, dan bisa terdiri dari lebih dari satu string."
+  },
+  {
+    q: "Empat elemen kunci dalam Casing Design Process menurut materi adalah...",
+    opts: ["Design Parameter, Load Case, Wellbore Strength, Development Plan","Rig Type, Mud Type, Bit Type, Cement Type","Casing Grade, Casing Weight, Casing Connection, Casing Color","Onshore, Offshore, Swamp, Deepwater"],
+    correct: 0,
+    explain: "Casing design process melibatkan Design Parameter, Load Case, Wellbore Strength, dan Development Plan yang saling terkait dalam menentukan casing shoe setting depth & minimum casing size."
+  },
+  {
+    q: "Pada chart Casing Scheme Selection, garis putus-putus (dash line) menunjukkan...",
+    opts: ["Kombinasi ukuran hole & casing konvensional","Kombinasi ukuran khusus (special size/clearance) yang mungkin memerlukan hole enlargement atau bi-center","Ukuran casing yang sudah tidak diproduksi lagi","Batas kedalaman maksimum sumur"],
+    correct: 1,
+    explain: "Garis solid menunjukkan ukuran konvensional, sedangkan garis putus-putus menunjukkan kombinasi khusus yang memerlukan hole enlargement atau bi-center bit untuk clearance tambahan."
+  },
+  {
+    q: "Metode Top-Down dalam casing seat selection bergerak dari arah mana?",
+    opts: ["Dari kedalaman target menuju permukaan","Dari permukaan menuju kedalaman target","Dari tengah sumur ke dua arah sekaligus","Tidak memiliki arah tertentu"],
+    correct: 1,
+    explain: "Metode Top-Down bergerak dari permukaan (top) menuju kedalaman target (down), menjaga mud weight tetap di antara pore pressure dan formation strength di tiap kedalaman."
+  },
+  {
+    q: "Pada metode Bottom-Up / Unlimited Kick, skenario apa yang menjadi dasar perhitungan?",
+    opts: ["Kondisi pengeboran normal tanpa gangguan","Full evacuation / kondisi kick terburuk dari dasar lubang","Kondisi setelah semua casing terpasang","Kondisi sebelum sumur dibor"],
+    correct: 1,
+    explain: "Metode bottom-up/unlimited kick mengasumsikan skenario kick terburuk (full evacuation) di dasar lubang, lalu menghitung tekanan yang harus ditahan casing shoe di atasnya."
+  },
+  {
+    q: "Manakah yang TERMASUK faktor dalam Casing Seat Selection menurut materi?",
+    opts: ["Pressure plot, full evacuation, trip margin, tipe formasi, subsurface risk, offset wells","Warna cat casing dan logo perusahaan","Jarak ke bandara terdekat","Jumlah crew di rig"],
+    correct: 0,
+    explain: "Faktor casing seat selection meliputi pressure plot (pore & frac pressure vs depth), full evacuation (kick), trip margin, tipe formasi, subsurface risk, dan data offset wells."
+  },
+  {
+    q: "Apa fungsi utama penerapan Casing Expandable (SET liner) sebagai contingency string?",
+    opts: ["Mengganti seluruh program casing yang sudah direncanakan","Menjaga ukuran hole/casing akhir tetap sesuai rencana meskipun ada tambahan casing kontingensi","Menghilangkan kebutuhan hole enlargement","Mempercepat proses logging"],
+    correct: 1,
+    explain: "Expandable/SET liner digunakan sebagai contingency string agar ukuran hole/casing akhir tetap sesuai rencana walau ada penambahan casing kontingensi di tengah program."
+  },
+  {
+    q: "Rumus konversi tekanan (psi) menjadi gradien mud weight (ppg) yang digunakan dalam materi ini adalah...",
+    opts: ["Gradien = Tekanan (psi) × 0.052 × TVD (ft)","Gradien = Tekanan (psi) ÷ [0.052 × TVD (ft)]","Gradien = TVD (ft) ÷ Tekanan (psi)","Gradien = 0.052 ÷ Tekanan (psi)"],
+    correct: 1,
+    explain: "Gradien (ppg) = Tekanan (psi) ÷ [0.052 × TVD (ft)]. Konstanta 0.052 adalah faktor konversi standar psi/ft per ppg."
+  },
+  {
+    q: "Dalam soal latihan, margin top-down yang digunakan adalah 0.5 ppg di atas pore pressure dan 0.75 ppg di bawah formation strength. Apa tujuan margin ini?",
+    opts: ["Untuk mempercepat proses pengeboran","Sebagai batas aman agar mud weight tidak menyebabkan influx (terlalu ringan) maupun merekahkan formasi (terlalu berat)","Untuk menentukan warna lumpur bor","Untuk mengurangi biaya casing"],
+    correct: 1,
+    explain: "Margin di atas pore pressure mencegah influx/kick (mud terlalu ringan), sedangkan margin di bawah formation strength mencegah loss/rekah formasi (mud terlalu berat)."
+  },
+  {
+    q: "Dua baris data pada TVD yang sama (misalnya 8.200 ft) dalam tabel latihan biasanya menandakan...",
+    opts: ["Kesalahan input data yang harus diabaikan","Zona transisi tekanan (pressure ramp) yang sering menjadi kandidat titik casing seat","Kedalaman akhir sumur","Tidak ada makna khusus"],
+    correct: 1,
+    explain: "Dua nilai pada TVD yang sama umumnya menandakan zona transisi tekanan (pressure jump) sebelum dan sesudah lompatan gradien — titik ini sering menjadi kandidat kuat casing seat."
+  },
+  {
+    q: "Jika seksi akhir di reservoir memerlukan 7\" liner casing dan disemen, prinsip apa yang disarankan materi saat menyusun skema casing dari 7\" ke atas?",
+    opts: ["Menggunakan ukuran acak tanpa mengikuti chart","Menggunakan ukuran konvensional semaksimal mungkin mengikuti casing scheme chart","Selalu menggunakan ukuran khusus (dash line)","Mengabaikan ukuran hole di atasnya"],
+    correct: 1,
+    explain: "Materi menekankan penggunaan ukuran konvensional (solid line pada casing scheme chart) semaksimal mungkin saat menyusun skema casing dari ukuran akhir ke atas."
+  }
+];
+
+let currentQ = 0;
+let score = 0;
+let answered = [];
+
+function renderQuiz(){
+  const area = document.getElementById('quizArea');
+  const item = quizData[currentQ];
+  document.getElementById('quizCounter').textContent = `Soal ${currentQ+1} / ${quizData.length}`;
+  document.getElementById('quizBarFill').style.width = `${(currentQ/quizData.length)*100}%`;
+  document.getElementById('quizScoreLive').textContent = `Skor: ${score}`;
+
+  let html = `<div class="q-block">
+    <div class="q-num">Soal ${currentQ+1}</div>
+    <div class="q-text">${item.q}</div>`;
+  item.opts.forEach((opt, i)=>{
+    html += `<button class="opt" data-idx="${i}">${opt}</button>`;
+  });
+  html += `<div class="explain" id="explainBox">${item.explain}</div></div>
+    <div class="quiz-footer">
+      <button class="btn secondary" id="prevBtn" ${currentQ===0?'disabled':''}>&larr; Sebelumnya</button>
+      <button class="btn" id="nextBtn" disabled>${currentQ===quizData.length-1?'Lihat Hasil':'Soal Selanjutnya &rarr;'}</button>
+    </div>`;
+  area.innerHTML = html;
+
+  const already = answered[currentQ];
+  document.querySelectorAll('.opt').forEach(btn=>{
+    const idx = parseInt(btn.dataset.idx);
+    if(already !== undefined){
+      btn.disabled = true;
+      if(idx === item.correct) btn.classList.add('correct');
+      if(idx === already && already !== item.correct) btn.classList.add('wrong');
+      document.getElementById('explainBox').classList.add('show');
+      document.getElementById('nextBtn').disabled = false;
+    }
+    btn.addEventListener('click', ()=>{
+      if(answered[currentQ] !== undefined) return;
+      answered[currentQ] = idx;
+      if(idx === item.correct) score++;
+      document.querySelectorAll('.opt').forEach(b=>b.disabled = true);
+      btn.classList.add(idx === item.correct ? 'correct' : 'wrong');
+      if(idx !== item.correct){
+        document.querySelector(`.opt[data-idx="${item.correct}"]`).classList.add('correct');
+      }
+      document.getElementById('explainBox').classList.add('show');
+      document.getElementById('nextBtn').disabled = false;
+      document.getElementById('quizScoreLive').textContent = `Skor: ${score}`;
+    });
+  });
+
+  document.getElementById('prevBtn').addEventListener('click', ()=>{
+    if(currentQ>0){ currentQ--; renderQuiz(); }
+  });
+  document.getElementById('nextBtn').addEventListener('click', ()=>{
+    if(currentQ < quizData.length-1){
+      currentQ++;
+      renderQuiz();
+    } else {
+      showResult();
+    }
+  });
+}
+
+function showResult(){
+  document.getElementById('quizArea').style.display = 'none';
+  document.querySelector('.quiz-progress').style.display = 'none';
+  document.getElementById('quizResult').style.display = 'block';
+  document.getElementById('quizBarFill').style.width = '100%';
+  document.getElementById('scoreText').innerHTML = `${score}<span>/${quizData.length}</span>`;
+  let msg = "";
+  const pct = score/quizData.length;
+  if(pct === 1) msg = "Sempurna! Pemahaman kamu tentang casing design & setting depth sangat solid.";
+  else if(pct >= 0.7) msg = "Bagus! Sudah cukup kuat, coba tinjau lagi bagian yang salah di tab Rangkuman.";
+  else if(pct >= 0.4) msg = "Lumayan, tapi masih perlu review — cek tab Bagian Sulit untuk topik yang sering keliru.";
+  else msg = "Perlu banyak review. Coba pelajari ulang tab Rangkuman & Flashcard sebelum mengulang latihan.";
+  document.getElementById('scoreMsg').textContent = msg;
+}
+
+document.getElementById('restartQuiz').addEventListener('click', ()=>{
+  currentQ = 0; score = 0; answered = [];
+  document.getElementById('quizArea').style.display = 'block';
+  document.querySelector('.quiz-progress').style.display = 'flex';
+  document.getElementById('quizResult').style.display = 'none';
+  renderQuiz();
+});
+
+renderQuiz();
+
+/* ---------------- FLASHCARD DATA ---------------- */
+const flashcards = [
+  {term:"Casing", def:"Rangkaian pipa yang disemen dan menerus dari permukaan (atau dari casing sebelumnya) sampai kedalaman tertentu, menjadi struktur permanen sumur.", cat:"Dasar"},
+  {term:"Conductor Casing", def:"Casing paling luar & dangkal yang menopang struktur awal dan mencegah runtuhnya formasi permukaan yang lunak.", cat:"Jenis Casing"},
+  {term:"Surface Casing", def:"Mengisolasi freshwater horizon & formasi dangkal, menjadi dudukan BOP pertama.", cat:"Jenis Casing"},
+  {term:"Intermediate Casing", def:"Mengisolasi zona bermasalah (unstable, lost circulation, tekanan abnormal) sebelum mencapai target lebih dalam.", cat:"Jenis Casing"},
+  {term:"Production Casing", def:"Casing terakhir yang melindungi & mengisolasi zona reservoir untuk produksi.", cat:"Jenis Casing"},
+  {term:"Production Liner", def:"Casing pendek yang tidak sampai ke permukaan, digantung dari casing di atasnya via liner hanger.", cat:"Jenis Casing"},
+  {term:"Production String / Tubing", def:"Jalur alir fluida dari reservoir ke permukaan, dipasang di dalam casing/liner produksi.", cat:"Jenis Casing"},
+  {term:"Casing Setting Depth", def:"Kedalaman di mana casing shoe dipasang, ditentukan dari analisis pore pressure & formation strength.", cat:"Konsep"},
+  {term:"Top-Down Method", def:"Metode penentuan casing seat yang bergerak dari permukaan ke bawah, menjaga mud weight antara pore pressure & formation strength.", cat:"Metode"},
+  {term:"Bottom-Up / Unlimited Kick Method", def:"Metode penentuan casing seat berdasarkan skenario kick terburuk (full evacuation) dari dasar lubang, dianalisis dari bawah ke atas.", cat:"Metode"},
+  {term:"Trip Margin", def:"Margin tekanan tambahan pada mud weight untuk mengantisipasi swab pressure saat pipa ditarik (tripping out).", cat:"Konsep"},
+  {term:"Kick Tolerance", def:"Kapasitas maksimum sumur untuk menahan influx (kick) tanpa merekahkan formasi di casing shoe, dinyatakan dalam volume/tekanan.", cat:"Konsep"},
+  {term:"Pore Pressure", def:"Tekanan fluida yang terkandung dalam pori-pori batuan formasi pada kedalaman tertentu.", cat:"Konsep"},
+  {term:"Fracture Pressure", def:"Tekanan di mana formasi batuan akan retak/rekah jika tekanan di dalam lubang bor melebihinya.", cat:"Konsep"},
+  {term:"Casing Scheme", def:"Kombinasi ukuran hole & casing bertingkat dari permukaan sampai target, mengikuti chart konvensional atau khusus.", cat:"Perencanaan"},
+  {term:"Casing Expandable (SET Liner)", def:"Liner yang dapat diekspansi di lubang bor, digunakan sebagai contingency string agar ukuran akhir tetap sesuai rencana.", cat:"Perencanaan"}
+];
+
+let fcIndex = 0;
+let fcOrder = flashcards.map((_,i)=>i);
+
+function renderFlashcard(){
+  const idx = fcOrder[fcIndex];
+  const card = flashcards[idx];
+  document.getElementById('fcTerm').textContent = card.term;
+  document.getElementById('fcDef').textContent = card.def;
+  document.getElementById('fcCategory').textContent = card.cat;
+  document.getElementById('fcCounter').textContent = `Kartu ${fcIndex+1} / ${flashcards.length}`;
+  document.getElementById('fcCard').classList.remove('flipped');
+}
+
+document.getElementById('fcCard').addEventListener('click', ()=>{
+  document.getElementById('fcCard').classList.toggle('flipped');
+});
+document.getElementById('fcNext').addEventListener('click', ()=>{
+  fcIndex = (fcIndex+1) % flashcards.length;
+  renderFlashcard();
+});
+document.getElementById('fcPrev').addEventListener('click', ()=>{
+  fcIndex = (fcIndex-1 + flashcards.length) % flashcards.length;
+  renderFlashcard();
+});
+document.getElementById('fcShuffle').addEventListener('click', ()=>{
+  for(let i=fcOrder.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [fcOrder[i],fcOrder[j]] = [fcOrder[j],fcOrder[i]];
+  }
+  fcIndex = 0;
+  renderFlashcard();
+});
+
+renderFlashcard();
+</script>
+</body>
+</html>

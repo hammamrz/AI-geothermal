@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Petroleum Geology for Drillers — Paket Belajar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@500;700;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#15110d;
+  --bg-panel:#1c1712;
+  --bg-card:#231c15;
+  --line:#3a3128;
+  --sandstone:#c9974f;
+  --sandstone-dim:#8a6b3c;
+  --shale:#7c8791;
+  --teal:#3a8b84;
+  --teal-dim:#28524e;
+  --rust:#bd5033;
+  --cream:#ece4d3;
+  --muted:#a8977f;
+  --good:#4f9b6a;
+  --bad:#c25c4a;
+  --radius:10px;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:
+    radial-gradient(ellipse at 20% -10%, #241d15 0%, transparent 55%),
+    radial-gradient(ellipse at 90% 10%, #1a2422 0%, transparent 45%),
+    var(--bg);
+  color:var(--cream);
+  font-family:'Inter',sans-serif;
+  line-height:1.6;
+  min-height:100vh;
+}
+.wrap{max-width:960px;margin:0 auto;padding:28px 20px 80px;}
+
+/* ---------- HEADER / SIGNATURE STRATA BAND ---------- */
+header{margin-bottom:28px;}
+.eyebrow{
+  font-family:'JetBrains Mono',monospace;
+  font-size:12px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--teal);
+  margin-bottom:10px;
+}
+h1{
+  font-family:'Roboto Slab',serif;
+  font-weight:900;
+  font-size:clamp(28px,5vw,42px);
+  line-height:1.08;
+  margin:0 0 6px;
+  color:var(--cream);
+}
+.subtitle{color:var(--muted);font-size:15px;margin-bottom:18px;}
+.strata{
+  display:flex;
+  height:22px;
+  border-radius:6px;
+  overflow:hidden;
+  box-shadow:0 2px 10px rgba(0,0,0,.4) inset;
+  margin-bottom:6px;
+}
+.strata span{flex:1;}
+.strata .l1{background:#c9974f;}
+.strata .l2{background:#7c8791;}
+.strata .l3{background:#3a8b84;}
+.strata .l4{background:#bd5033;}
+.strata .l5{background:#5a4a34;}
+.strata .l6{background:#8a6b3c;}
+.strata-label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10.5px;
+  color:var(--muted);
+  display:flex;
+  justify-content:space-between;
+  letter-spacing:.03em;
+}
+
+/* ---------- TABS ---------- */
+.tabbar{
+  display:flex;
+  gap:6px;
+  margin:26px 0 22px;
+  border-bottom:1px solid var(--line);
+  flex-wrap:wrap;
+}
+.tab-btn{
+  font-family:'JetBrains Mono',monospace;
+  background:none;
+  border:none;
+  color:var(--muted);
+  font-size:13px;
+  letter-spacing:.05em;
+  padding:12px 16px 14px;
+  cursor:pointer;
+  position:relative;
+  transition:color .15s ease;
+}
+.tab-btn .num{color:var(--sandstone-dim);margin-right:8px;}
+.tab-btn:hover{color:var(--cream);}
+.tab-btn.active{color:var(--cream);}
+.tab-btn.active::after{
+  content:"";
+  position:absolute;
+  left:0;right:0;bottom:-1px;
+  height:3px;
+  border-radius:2px;
+}
+.tab-btn[data-tab="ringkasan"].active::after{background:var(--sandstone);}
+.tab-btn[data-tab="latihan"].active::after{background:var(--teal);}
+.tab-btn[data-tab="flashcard"].active::after{background:var(--rust);}
+.tab-btn[data-tab="sulit"].active::after{background:var(--shale);}
+
+.panel{display:none;animation:fade .25s ease;}
+.panel.active{display:block;}
+@keyframes fade{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+
+/* ---------- GENERIC CARD ---------- */
+.card{
+  background:var(--bg-card);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:20px 22px;
+  margin-bottom:16px;
+}
+.card h3{
+  font-family:'Roboto Slab',serif;
+  font-size:18px;
+  margin:0 0 10px;
+  color:var(--sandstone);
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.card h3 .chip{
+  width:8px;height:8px;border-radius:50%;background:var(--teal);flex:none;
+}
+.card p{margin:0 0 8px;color:var(--cream);font-size:14.5px;}
+.card ul{margin:6px 0 0;padding-left:20px;}
+.card li{margin-bottom:5px;font-size:14.5px;}
+.card .src{
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;color:var(--muted);margin-top:10px;
+}
+.formula{
+  font-family:'JetBrains Mono',monospace;
+  background:var(--bg-panel);
+  border:1px dashed var(--line);
+  border-radius:8px;
+  padding:10px 14px;
+  margin:10px 0;
+  font-size:13.5px;
+  color:var(--teal);
+  overflow-x:auto;
+}
+mark.hl{background:none;color:var(--rust);font-weight:600;}
+
+/* section intro text */
+.section-intro{color:var(--muted);font-size:14px;margin-bottom:18px;max-width:640px;}
+
+/* ---------- RINGKASAN grid ---------- */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+@media(max-width:680px){.grid2{grid-template-columns:1fr;}}
+
+/* ---------- LATIHAN SOAL ---------- */
+.quiz-score{
+  display:flex;justify-content:space-between;align-items:center;
+  font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);
+  margin-bottom:16px;border:1px solid var(--line);border-radius:8px;padding:10px 14px;
+  background:var(--bg-panel);
+}
+#scoreVal{color:var(--teal);font-weight:600;}
+.q-card{background:var(--bg-card);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;margin-bottom:14px;}
+.q-num{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--sandstone-dim);margin-bottom:6px;}
+.q-text{font-size:15px;font-weight:600;margin-bottom:12px;color:var(--cream);}
+.opts{display:flex;flex-direction:column;gap:8px;}
+.opt{
+  text-align:left;
+  background:var(--bg-panel);
+  border:1px solid var(--line);
+  color:var(--cream);
+  padding:10px 14px;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:14px;
+  font-family:'Inter',sans-serif;
+  transition:border-color .15s, background .15s;
+}
+.opt:hover{border-color:var(--sandstone-dim);}
+.opt.correct{border-color:var(--good);background:#1c2a20;color:#bfe7cd;}
+.opt.wrong{border-color:var(--bad);background:#2a1c19;color:#f0c3b8;}
+.opt[disabled]{cursor:default;}
+.explain{
+  margin-top:12px;font-size:13.5px;color:var(--muted);
+  background:var(--bg-panel);border-left:3px solid var(--teal);
+  padding:10px 14px;border-radius:6px;display:none;
+}
+.explain.show{display:block;}
+.reset-btn{
+  font-family:'JetBrains Mono',monospace;
+  background:var(--teal-dim);color:var(--cream);border:1px solid var(--teal);
+  border-radius:8px;padding:9px 16px;cursor:pointer;font-size:12px;
+  margin-top:6px;
+}
+.reset-btn:hover{background:var(--teal);}
+
+/* ---------- FLASHCARD ---------- */
+.fc-wrap{display:flex;flex-direction:column;align-items:center;gap:16px;}
+.fc-progress{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);}
+.fc-stage{
+  width:100%;max-width:520px;height:260px;
+  perspective:1200px;
+}
+.fc-card{
+  width:100%;height:100%;position:relative;
+  transform-style:preserve-3d;
+  transition:transform .5s cubic-bezier(.4,.2,.2,1);
+  cursor:pointer;
+}
+.fc-card.flipped{transform:rotateY(180deg);}
+.fc-face{
+  position:absolute;inset:0;
+  backface-visibility:hidden;
+  border-radius:14px;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  padding:30px;text-align:center;
+  border:1px solid var(--line);
+}
+.fc-front{
+  background:linear-gradient(160deg,#231c15,#1a150f);
+}
+.fc-back{
+  background:linear-gradient(160deg,#1c2a28,#152220);
+  transform:rotateY(180deg);
+  border-color:var(--teal-dim);
+}
+.fc-tag{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--sandstone-dim);letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px;}
+.fc-back .fc-tag{color:var(--teal);}
+.fc-term{font-family:'Roboto Slab',serif;font-size:22px;font-weight:700;color:var(--cream);}
+.fc-def{font-size:15px;color:var(--cream);line-height:1.55;}
+.fc-hint{font-size:11px;color:var(--muted);margin-top:16px;}
+.fc-controls{display:flex;gap:10px;align-items:center;}
+.fc-btn{
+  font-family:'JetBrains Mono',monospace;
+  background:var(--bg-panel);border:1px solid var(--line);color:var(--cream);
+  padding:9px 16px;border-radius:8px;cursor:pointer;font-size:13px;
+}
+.fc-btn:hover{border-color:var(--sandstone-dim);}
+.fc-btn.primary{background:var(--rust);border-color:var(--rust);color:#fff;}
+
+/* ---------- KONSEP SULIT ---------- */
+.diff-card{background:var(--bg-card);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:14px;overflow:hidden;}
+.diff-head{
+  padding:16px 20px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;
+}
+.diff-head h4{
+  font-family:'Roboto Slab',serif;font-size:16.5px;margin:0;color:var(--cream);
+  display:flex;gap:10px;align-items:baseline;
+}
+.diff-head .tagnum{font-family:'JetBrains Mono',monospace;color:var(--rust);font-size:13px;}
+.diff-arrow{color:var(--muted);transition:transform .2s;font-size:14px;flex:none;}
+.diff-card.open .diff-arrow{transform:rotate(180deg);}
+.diff-body{max-height:0;overflow:hidden;transition:max-height .3s ease;padding:0 20px;}
+.diff-card.open .diff-body{max-height:600px;padding-bottom:18px;}
+.diff-body p{font-size:14.5px;color:var(--cream);margin:0 0 10px;}
+.diff-body .why{
+  background:var(--bg-panel);border-left:3px solid var(--rust);border-radius:6px;
+  padding:10px 14px;font-size:13.5px;color:var(--muted);margin-top:8px;
+}
+
+footer{
+  margin-top:40px;padding-top:18px;border-top:1px solid var(--line);
+  font-size:12px;color:var(--muted);font-family:'JetBrains Mono',monospace;
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">Jakarta Drilling Society × Paket Belajar Interaktif</div>
+    <h1>Introduction to Petroleum Geology for Drillers</h1>
+    <div class="subtitle">Berdasarkan materi Dr. Sena W. Reksalegora — Independent Consultant, Visiting Lecturer FTG UNPAD</div>
+    <div class="strata">
+      <span class="l1"></span><span class="l2"></span><span class="l3"></span><span class="l4"></span><span class="l5"></span><span class="l6"></span>
+    </div>
+    <div class="strata-label"><span>Permukaan</span><span>Kolom stratigrafi ilustratif</span><span>Batuan dasar</span></div>
+  </header>
+
+  <nav class="tabbar">
+    <button class="tab-btn active" data-tab="ringkasan"><span class="num">01</span>Ringkasan</button>
+    <button class="tab-btn" data-tab="latihan"><span class="num">02</span>Latihan Soal</button>
+    <button class="tab-btn" data-tab="flashcard"><span class="num">03</span>Flashcard</button>
+    <button class="tab-btn" data-tab="sulit"><span class="num">04</span>Konsep Sulit</button>
+  </nav>
+
+  <!-- =================== TAB 1: RINGKASAN =================== -->
+  <section class="panel active" id="panel-ringkasan">
+    <p class="section-intro">Rangkuman inti dari seluruh materi: sistem petroleum, tekanan pori & in-situ stress, prospek dan lead, hingga penilaian risiko pengeboran.</p>
+
+    <div class="card">
+      <h3><span class="chip"></span>1. Cekungan Sedimen & Tektonik</h3>
+      <p>Cekungan sedimen adalah <mark class="hl">depresi di kerak bumi</mark> yang terisi sedimen. Tektonik mengontrol pembentukan <em>accommodation space</em> (lewat subsidence & uplift) dan pasokan sedimen (lewat uplift area sumber, erosi, dan provenance).</p>
+      <ul>
+        <li><strong>Rift basin</strong> — terbentuk oleh tektonik ekstensional (mis. East African Rift).</li>
+        <li>Di kawasan Indonesia dikenal empat setting utama: <strong>Forearc</strong>, <strong>Backarc</strong>, <strong>Rift</strong>, dan <strong>Foreland Basin</strong> — semuanya terkait sistem subduksi/tumbukan lempeng.</li>
+        <li>Peta cekungan Tersier Indonesia (ESDM, 2022) membagi cekungan menjadi: berproduksi, ada penemuan, prospek, dan belum dieksplorasi.</li>
+      </ul>
+      <div class="src">Sumber: slide "Sedimentary Basin Definition", "Tectonic Setting and Basin Types", "Tectonics of Indonesian Region".</div>
+    </div>
+
+    <div class="card">
+      <h3><span class="chip"></span>2. Sistem Petroleum (Petroleum System)</h3>
+      <p>Sistem petroleum terdiri dari dua sub-sistem besar:</p>
+      <ul>
+        <li><strong>Generative sub-system</strong> — elemen: source rock; proses: pematangan termal (thermal maturation).</li>
+        <li><strong>Migration & Entrapment sub-system</strong> — migrasi primer (ekspulsi dari source rock ke carrier bed) dan migrasi sekunder (dalam carrier bed menuju trap); elemen entrapment: hidrokarbon bermigrasi, geometri trap, batuan reservoir, dan batuan seal.</li>
+      </ul>
+      <div class="grid2">
+        <div>
+          <p><strong>Source Rock</strong></p>
+          <p>Teori organik menyatakan ada korelasi genetik antara minyak/gas dengan sedimen kaya organik. Lingkungan pengendapan menentukan tipe kerogen: rawa gambut → gas; delta pasang surut → minyak berlilin; laut terbuka anoksik (fitoplankton) → minyak non-lilin hingga berlilin.</p>
+        </div>
+        <div>
+          <p><strong>Pematangan (Maturation)</strong></p>
+          <p>Seiring kedalaman & suhu naik: <em>immature</em> (diagenesis) → <em>oil window</em> (katagenesis) → <em>wet/dry gas</em> (metagenesis) → metamorf. Diukur dengan Vitrinite Reflectance (VR) dan Spore Colour Index.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="chip"></span>3. Reservoir</h3>
+      <p>Batuan reservoir dibedakan menurut asal sedimen: <strong>siliciclastic</strong> (sandstone, konglomerat, shale — dari rombakan batuan lama), <strong>biologis</strong> (limestone, chalk, chert, coal), dan <strong>kimiawi</strong> (rock salt/evaporit).</p>
+      <p>Lingkungan pengendapan reservoir sangat beragam — aeolian, fluvial, delta, submarine fan, hingga carbonate platform/reef — masing-masing menghasilkan geometri dan kualitas reservoir berbeda. Contoh nyata di Indonesia: <strong>Sihapas Sandstone</strong> (Cekungan Sumatra Tengah, delta pasang surut, >90% cadangan Lapangan Minas & Duri) dan <strong>Carbonate Build-up Kujung Formation</strong> (reef complex, Jawa Timur Utara).</p>
+    </div>
+
+    <div class="card">
+      <h3><span class="chip"></span>4. Trap & Seal</h3>
+      <p>Trap dibagi menjadi <strong>struktural</strong> (antiklin, fault trap) dan <strong>stratigrafi</strong> (perubahan fasies/facies change). Seal adalah lapisan batuan impermeabel (shale, chalk, clay, anhidrit, salt) yang menutup reservoir agar hidrokarbon tidak lolos.</p>
+      <p>Efektivitas seal ditentukan oleh permeabilitas rendah, sifat ductile, kontinuitas lateral, dan tekanan capillary entry yang tinggi — bukan semata ketebalan.</p>
+    </div>
+
+    <div class="card">
+      <h3><span class="chip"></span>5. Tekanan Pori & In-situ Stress</h3>
+      <p><strong>Pore pressure (Pp)</strong> adalah tekanan fluida dalam pori batuan; secara normal mengikuti tekanan hidrostatik: <code>Pp = ρw·g·z</code>. <strong>Vertical stress / overburden (Sv)</strong> dihasilkan oleh berat kolom batuan di atasnya: <code>Sv = ρb·g·z</code>.</p>
+      <p><strong>Effective stress</strong> (prinsip Terzaghi, 1936): <code>σ' = σ − Pp</code> — inilah yang sebenarnya menahan/mengontrol kekuatan dan deformasi batuan.</p>
+      <p><strong>Mekanisme overpressure</strong> utama:</p>
+      <ul>
+        <li><em>Loading/disequilibrium compaction</em> — laju pengendapan terlalu cepat sehingga fluida tak sempat keluar dari pori shale.</li>
+        <li><em>Unloading/non-loading/fluid expansion</em> — akibat hydraulic head, generasi hidrokarbon, transfer tekanan lateral/vertikal, diagenesis mineral lempung, atau kenaikan suhu fluida.</li>
+        <li><em>Tektonik</em> — kompresi bisa menyebabkan overpressure baik saat loading (deposisi bersamaan aktivitas tektonik) maupun non-loading (uplift diikuti erosi).</li>
+      </ul>
+      <p>In-situ stress punya tiga komponen utama: <strong>Sv</strong>, <strong>SHmax</strong> (horizontal maksimum), <strong>Shmin</strong> (horizontal minimum) — kombinasinya menentukan rezim sesar (normal, strike-slip, thrust).</p>
+    </div>
+
+    <div class="card">
+      <h3><span class="chip"></span>6. Prospek, Lead & Volumetrik</h3>
+      <p>Sebelum pengeboran, evaluasi risiko geologi menggunakan <strong>Geological Chance Factor (POSg)</strong>:</p>
+      <div class="formula">POSg = P<sub>source</sub> × P<sub>generation</sub> × P<sub>migration</sub> × P<sub>reservoir</sub> × P<sub>trap</sub> × P<sub>seal</sub></div>
+      <p>Volumetrik cadangan dihitung dengan rumus OOIP (Original Oil in Place) dan OGIP (Original Gas in Place):</p>
+      <div class="formula">OOIP = 7758 × A × h × φ × (1 − Sw) / Boi</div>
+      <div class="formula">OGIP = 43560 × A × h × φ × (1 − Sw) / Bgi</div>
+      <p>di mana A = luas reservoir (acre), h = net pay thickness (ft), φ = porositas, Sw = saturasi air, Boi/Bgi = faktor volume formasi minyak/gas.</p>
+    </div>
+
+    <div class="card">
+      <h3><span class="chip"></span>7. Studi Kasus & Pelajaran Praktis</h3>
+      <ul>
+        <li><strong>Sumur eksplorasi Indonesia Timur (2006):</strong> tektonik stress dan overpressure tidak diprognosis sebelumnya, menyebabkan banyak <em>lost time</em>, mud weight dan casing seat harus melebihi data sumur offset — menekankan pentingnya integrasi geologi-engineering sebelum spud.</li>
+        <li><strong>Safe Mud Window:</strong> jendela lumpur aman dibatasi oleh <em>lower limit = pore pressure</em> dan <em>upper limit = Shmin</em> — di luar rentang ini berisiko kick (terlalu rendah) atau fracture/lost circulation (terlalu tinggi).</li>
+        <li><strong>Analisis kegagalan (failure analysis):</strong> penurunan kohesi & sudut friksi akibat produksi memperbesar lingkaran Mohr dan risiko kegagalan formasi/casing.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- =================== TAB 2: LATIHAN SOAL =================== -->
+  <section class="panel" id="panel-latihan">
+    <p class="section-intro">Pilih satu jawaban untuk tiap soal. Jawaban benar/salah beserta penjelasan akan langsung muncul.</p>
+    <div class="quiz-score">
+      <span>Progress kuis</span>
+      <span><span id="scoreVal">0</span> / <span id="scoreTotal">0</span> benar dijawab</span>
+    </div>
+    <div id="quizContainer"></div>
+    <button class="reset-btn" id="resetQuiz">↺ Ulangi Kuis</button>
+  </section>
+
+  <!-- =================== TAB 3: FLASHCARD =================== -->
+  <section class="panel" id="panel-flashcard">
+    <p class="section-intro">Klik kartu untuk membalik antara istilah dan definisi. Gunakan tombol untuk berpindah kartu.</p>
+    <div class="fc-wrap">
+      <div class="fc-progress"><span id="fcIndex">1</span> / <span id="fcTotal">1</span></div>
+      <div class="fc-stage">
+        <div class="fc-card" id="fcCard">
+          <div class="fc-face fc-front">
+            <div class="fc-tag">Istilah</div>
+            <div class="fc-term" id="fcTerm">—</div>
+            <div class="fc-hint">klik untuk lihat definisi</div>
+          </div>
+          <div class="fc-face fc-back">
+            <div class="fc-tag">Definisi</div>
+            <div class="fc-def" id="fcDef">—</div>
+          </div>
+        </div>
+      </div>
+      <div class="fc-controls">
+        <button class="fc-btn" id="fcPrev">← Sebelumnya</button>
+        <button class="fc-btn primary" id="fcShuffle">Acak</button>
+        <button class="fc-btn" id="fcNext">Berikutnya →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== TAB 4: KONSEP SULIT =================== -->
+  <section class="panel" id="panel-sulit">
+    <p class="section-intro">Bagian-bagian yang sering membingungkan pemula, dijelaskan ulang dengan bahasa lebih sederhana. Klik judul untuk membuka penjelasan.</p>
+    <div id="diffContainer"></div>
+  </section>
+
+  <footer>
+    <span>Disusun ulang dari slide "Introduction to Petroleum Geology for Drillers" — Dr. Sena W. Reksalegora</span>
+    <span>Referensi utama: Magoon &amp; Dow (1994), The Petroleum System — AAPG Memoir 60</span>
+  </footer>
+</div>
+
+<script>
+/* ---------------- TAB SWITCHING ---------------- */
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-'+btn.dataset.tab).classList.add('active');
+  });
+});
+
+/* ---------------- QUIZ DATA ---------------- */
+const quiz = [
+  {
+    q:"Apa perbedaan utama migrasi primer dan migrasi sekunder hidrokarbon?",
+    opts:[
+      "Primer terjadi dari source rock ke carrier bed (ekspulsi); sekunder terjadi dalam carrier bed menuju trap",
+      "Primer terjadi di dalam trap; sekunder terjadi dari trap ke permukaan",
+      "Primer hanya untuk gas; sekunder hanya untuk minyak",
+      "Keduanya sama, hanya beda istilah"
+    ],
+    correct:0,
+    explain:"Migrasi primer (ekspulsi) adalah perpindahan hidrokarbon dari source rock ke carrier bed. Migrasi sekunder adalah perpindahan di dalam carrier bed menuju trap."
+  },
+  {
+    q:"Menurut prinsip Terzaghi (1936), effective stress (σ') dihitung dengan rumus…",
+    opts:["σ' = σ + Pp","σ' = σ − Pp","σ' = Pp − σ","σ' = σ × Pp"],
+    correct:1,
+    explain:"σ' = σ − Pp. Effective stress adalah selisih antara total stress (overburden) dan tekanan pori, dan inilah yang menentukan kekuatan/deformasi batuan."
+  },
+  {
+    q:"Mekanisme overpressure yang disebabkan laju pengendapan sangat cepat sehingga fluida tak sempat keluar dari pori shale disebut…",
+    opts:["Unloading","Fluid expansion","Loading/Disequilibrium compaction","Tectonic uplift"],
+    correct:2,
+    explain:"Loading/disequilibrium compaction terjadi karena kegagalan proses kompaksi akibat fluida tidak bisa mengalir keluar saat stress meningkat cepat."
+  },
+  {
+    q:"Pada rezim sesar normal (normal faulting regime), urutan besaran tegangan utamanya adalah…",
+    opts:["Shmin > SHmax > Sv","SHmax > Sv > Shmin","Sv > SHmax > Shmin","SHmax > Shmin > Sv"],
+    correct:2,
+    explain:"Normal faulting regime: Sv > SHmax > Shmin (Sv = S1, tegangan vertikal paling dominan)."
+  },
+  {
+    q:"Apa fungsi utama batuan seal dalam sistem petroleum?",
+    opts:[
+      "Menyediakan porositas untuk hidrokarbon mengalir",
+      "Menjadi barrier/cap yang mencegah migrasi hidrokarbon keluar dari reservoir",
+      "Menghasilkan hidrokarbon melalui pematangan termal",
+      "Meningkatkan tekanan hidrostatik"
+    ],
+    correct:1,
+    explain:"Seal adalah lapisan relatif impermeabel yang menjadi barrier/cap di atas dan sekitar reservoir agar fluida tidak lolos."
+  },
+  {
+    q:"Dalam rumus OOIP, angka konstanta 7758 berfungsi sebagai…",
+    opts:[
+      "Konversi dari acre-ft ke barrel (bbl)",
+      "Konversi dari feet ke meter",
+      "Faktor volume formasi minyak",
+      "Konversi dari psi ke MPa"
+    ],
+    correct:0,
+    explain:"7758 adalah faktor konversi dari acre-feet ke barrel (bbl) dalam rumus volumetrik OOIP."
+  },
+  {
+    q:"Manakah yang BUKAN termasuk komponen Geological Chance Factor (POSg)?",
+    opts:["Psource","Pmigration","Pdrilling","Pseal"],
+    correct:2,
+    explain:"POSg = Psource × Pgeneration × Pmigration × Preservoir × Ptrap × Pseal. 'Pdrilling' bukan bagian dari faktor risiko geologi ini."
+  },
+  {
+    q:"Pada Safe Mud Window, batas bawah (lower limit) mud weight ditentukan oleh…",
+    opts:["Vertical stress (Sv)","Pore pressure (Pp)","Shmin","SHmax"],
+    correct:1,
+    explain:"Lower mud limit = pore pressure. Jika mud weight lebih rendah dari Pp, sumur berisiko kick. Upper limit ditentukan oleh Shmin."
+  },
+  {
+    q:"Lingkungan pengendapan 'peat swamp' menurut diagram Cooper (1990) umumnya menghasilkan source rock bertipe…",
+    opts:["High wax oil","Gas (true coals)","Non-waxy oil","Waxy to non-waxy oil"],
+    correct:1,
+    explain:"Peat swamp menghasilkan 'true coals' yang cenderung menghasilkan gas."
+  },
+  {
+    q:"Apa yang dimaksud dengan 'accommodation space' dalam pembentukan cekungan sedimen?",
+    opts:[
+      "Ruang tempat rig pengeboran didirikan",
+      "Ruang yang tersedia untuk akumulasi sedimen, dikontrol oleh subsidence dan uplift",
+      "Jarak antar sumur eksplorasi",
+      "Volume reservoir yang sudah terisi hidrokarbon"
+    ],
+    correct:1,
+    explain:"Accommodation space adalah ruang yang tersedia untuk akumulasi sedimen, dikendalikan oleh proses subsidence (penciptaan ruang) dan uplift area sumber (pasokan sedimen)."
+  },
+  {
+    q:"Contoh trap stratigrafi yang disebutkan dalam materi adalah…",
+    opts:["Anticline","Fault trap","Facies change","Salt dome"],
+    correct:2,
+    explain:"Trap struktural meliputi anticline dan fault trap; trap stratigrafi ditunjukkan oleh perubahan fasies (facies change), misalnya batu gamping tak permeabel yang menutup reservoir."
+  },
+  {
+    q:"Fenomena 'borehole breakout' pada citra sumur digunakan untuk menentukan…",
+    opts:[
+      "Kualitas reservoir",
+      "Arah tegangan horizontal (orientasi SHmax/Shmin)",
+      "Porositas batuan",
+      "Umur batuan"
+    ],
+    correct:1,
+    explain:"Breakout azimuth tegak lurus terhadap SHmax, sehingga digunakan untuk menentukan arah tegangan horizontal maksimum regional."
+  },
+  {
+    q:"Berdasarkan studi kasus sumur eksplorasi Indonesia Timur (2006), penyebab utama 'lost time' yang signifikan adalah…",
+    opts:[
+      "Kesalahan pemilihan lokasi rig",
+      "Tektonik stress dan overpressure yang tidak diprognosis sebelumnya",
+      "Kekurangan tenaga kerja",
+      "Cuaca buruk berkepanjangan"
+    ],
+    correct:1,
+    explain:"Laporan akhir pengeboran mencatat tectonic stress/overpressure tidak diprognosis, menyebabkan mud weight dan casing seat strength harus melebihi data offset well."
+  },
+  {
+    q:"Rumus maksimum tinggi kolom hidrokarbon (h_hc) yang dapat ditahan suatu trap bergantung pada…",
+    opts:[
+      "Porositas reservoir saja",
+      "Vertical effective stress dan selisih densitas air-hidrokarbon",
+      "Jumlah sumur di sekitar area",
+      "Suhu permukaan"
+    ],
+    correct:1,
+    explain:"h_hc = σv' / [(ρw − ρhc) × g] — bergantung pada vertical effective stress (kapasitas seal) serta selisih densitas air dan hidrokarbon."
+  },
+  {
+    q:"Manakah pernyataan yang paling tepat tentang hubungan overpressure dan effective stress?",
+    opts:[
+      "Pada zona overpressure, effective stress meningkat tajam",
+      "Pada zona overpressure, tekanan pori melebihi hidrostatik sehingga effective stress cenderung konstan atau menurun",
+      "Overpressure tidak memengaruhi effective stress",
+      "Effective stress selalu sama dengan vertical stress"
+    ],
+    correct:1,
+    explain:"Di lingkungan overpressure, pore pressure melebihi hidrostatik sehingga effective stress menjadi konstan atau berkurang — inilah yang membuat drilling ke zona ini berisiko tinggi."
+  }
+];
+
+let userAnswers = new Array(quiz.length).fill(null);
+
+function renderQuiz(){
+  const container = document.getElementById('quizContainer');
+  container.innerHTML = '';
+  document.getElementById('scoreTotal').textContent = quiz.length;
+  quiz.forEach((item,qi)=>{
+    const card = document.createElement('div');
+    card.className='q-card';
+    card.innerHTML = `
+      <div class="q-num">Soal ${qi+1} dari ${quiz.length}</div>
+      <div class="q-text">${item.q}</div>
+      <div class="opts" id="opts-${qi}"></div>
+      <div class="explain" id="explain-${qi}">${item.explain}</div>
+    `;
+    container.appendChild(card);
+    const optsWrap = card.querySelector(`#opts-${qi}`);
+    item.opts.forEach((optText,oi)=>{
+      const b = document.createElement('button');
+      b.className='opt';
+      b.textContent = optText;
+      b.addEventListener('click',()=>answerQuiz(qi,oi));
+      optsWrap.appendChild(b);
+    });
+  });
+  updateScore();
+}
+
+function answerQuiz(qi,oi){
+  if(userAnswers[qi] !== null) return; // already answered
+  userAnswers[qi] = oi;
+  const optsWrap = document.getElementById(`opts-${qi}`);
+  const buttons = optsWrap.querySelectorAll('.opt');
+  buttons.forEach((btn,idx)=>{
+    btn.disabled = true;
+    if(idx === quiz[qi].correct) btn.classList.add('correct');
+    else if(idx === oi) btn.classList.add('wrong');
+  });
+  document.getElementById(`explain-${qi}`).classList.add('show');
+  updateScore();
+}
+
+function updateScore(){
+  let correctCount = 0;
+  userAnswers.forEach((ans,qi)=>{ if(ans === quiz[qi].correct) correctCount++; });
+  document.getElementById('scoreVal').textContent = correctCount;
+}
+
+document.getElementById('resetQuiz').addEventListener('click',()=>{
+  userAnswers = new Array(quiz.length).fill(null);
+  renderQuiz();
+});
+
+renderQuiz();
+
+/* ---------------- FLASHCARD DATA ---------------- */
+const flashcards = [
+  {term:"Petroleum System", def:"Sistem yang mencakup semua elemen geologi dan proses yang diperlukan untuk membentuk akumulasi hidrokarbon: source rock, migrasi, reservoir, trap, dan seal."},
+  {term:"Source Rock", def:"Batuan sedimen kaya materi organik yang, melalui pematangan termal, menghasilkan minyak dan/atau gas."},
+  {term:"Migrasi Primer (Ekspulsi)", def:"Perpindahan hidrokarbon yang baru terbentuk dari source rock menuju carrier bed."},
+  {term:"Migrasi Sekunder", def:"Perpindahan hidrokarbon di dalam carrier bed menuju lokasi trap."},
+  {term:"Reservoir Rock", def:"Batuan berpori dan permeabel yang mampu menyimpan dan mengalirkan hidrokarbon, misalnya sandstone atau limestone."},
+  {term:"Seal (Cap Rock)", def:"Lapisan batuan relatif impermeabel (shale, chalk, anhidrit, salt) yang mencegah hidrokarbon bermigrasi keluar dari reservoir."},
+  {term:"Trap Struktural", def:"Perangkap hidrokarbon yang terbentuk akibat deformasi struktur, misalnya antiklin atau fault trap."},
+  {term:"Trap Stratigrafi", def:"Perangkap hidrokarbon yang terbentuk akibat perubahan lateral litologi/fasies, bukan deformasi struktur."},
+  {term:"Pore Pressure (Pp)", def:"Tekanan yang dihasilkan fluida (air, minyak, gas) di dalam ruang pori batuan bawah permukaan."},
+  {term:"Vertical Stress / Overburden (Sv)", def:"Tegangan yang dihasilkan oleh berat kolom batuan di atas suatu titik kedalaman; Sv = ρb·g·z."},
+  {term:"Effective Stress (σ')", def:"Selisih antara total stress dan pore pressure (σ' = σ − Pp); menentukan kekuatan dan deformasi kerangka butir batuan (prinsip Terzaghi, 1936)."},
+  {term:"Overpressure", def:"Kondisi tekanan pori melebihi tekanan hidrostatik normal pada kedalaman tersebut."},
+  {term:"Loading/Disequilibrium Compaction", def:"Mekanisme overpressure akibat laju pengendapan yang terlalu cepat sehingga fluida tidak sempat keluar dari pori shale."},
+  {term:"Unloading/Fluid Expansion", def:"Mekanisme overpressure akibat transfer tekanan dari kontak butir ke fluida — bisa dipicu hydraulic head, generasi hidrokarbon, atau kenaikan suhu fluida."},
+  {term:"In-situ Stress", def:"Kondisi tegangan alami dalam kerak bumi sebelum ada aktivitas manusia (pengeboran, produksi, injeksi fluida) yang mengubahnya."},
+  {term:"Stress Regime", def:"Klasifikasi berdasarkan urutan besaran tiga tegangan utama (Sv, SHmax, Shmin): normal, strike-slip, atau thrust faulting regime."},
+  {term:"Borehole Breakout", def:"Kerusakan/pelebaran bentuk lubang bor akibat konsentrasi tegangan, digunakan untuk menentukan arah SHmax/Shmin."},
+  {term:"Safe Mud Window", def:"Rentang berat lumpur aman antara batas bawah (pore pressure) dan batas atas (Shmin) agar tidak terjadi kick atau lost circulation."},
+  {term:"Sealing Capacity", def:"Kemampuan cap rock menahan migrasi hidrokarbon, dipengaruhi permeabilitas, integritas batuan, dan capillary entry pressure."},
+  {term:"Geological Chance Factor (POSg)", def:"Perkalian probabilitas semua elemen sistem petroleum: Psource × Pgeneration × Pmigration × Preservoir × Ptrap × Pseal."},
+  {term:"OOIP", def:"Original Oil in Place — estimasi volume minyak awal di reservoir; OOIP = 7758 × A × h × φ × (1−Sw) / Boi."},
+  {term:"OGIP", def:"Original Gas in Place — estimasi volume gas awal di reservoir; OGIP = 43560 × A × h × φ × (1−Sw) / Bgi."}
+];
+
+let fcOrder = flashcards.map((_,i)=>i);
+let fcIdx = 0;
+
+function renderFlashcard(){
+  const item = flashcards[fcOrder[fcIdx]];
+  document.getElementById('fcTerm').textContent = item.term;
+  document.getElementById('fcDef').textContent = item.def;
+  document.getElementById('fcIndex').textContent = fcIdx+1;
+  document.getElementById('fcTotal').textContent = flashcards.length;
+  document.getElementById('fcCard').classList.remove('flipped');
+}
+
+document.getElementById('fcCard').addEventListener('click',function(){
+  this.classList.toggle('flipped');
+});
+document.getElementById('fcNext').addEventListener('click',()=>{
+  fcIdx = (fcIdx+1) % fcOrder.length;
+  renderFlashcard();
+});
+document.getElementById('fcPrev').addEventListener('click',()=>{
+  fcIdx = (fcIdx-1+fcOrder.length) % fcOrder.length;
+  renderFlashcard();
+});
+document.getElementById('fcShuffle').addEventListener('click',()=>{
+  for(let i=fcOrder.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [fcOrder[i],fcOrder[j]] = [fcOrder[j],fcOrder[i]];
+  }
+  fcIdx = 0;
+  renderFlashcard();
+});
+renderFlashcard();
+
+/* ---------------- KONSEP SULIT DATA ---------------- */
+const difficult = [
+  {
+    title:"Kenapa Effective Stress berbeda dari Total Stress?",
+    body:`<p>Total stress (σ) adalah beban total dari berat batuan di atasnya. Tapi sebagian beban itu "ditopang" oleh fluida dalam pori (pore pressure), bukan oleh kerangka butir batuan. Yang benar-benar memampatkan dan mengontrol kekuatan butir batuan hanyalah <strong>sisa</strong> beban setelah dikurangi pore pressure — itulah effective stress: σ' = σ − Pp.</p>
+    <p>Analoginya: bayangkan menumpuk beban di atas spons basah. Sebagian beban ditopang oleh air di dalam spons (pore pressure), sisanya baru menekan serat spons itu sendiri (effective stress).</p>`,
+    why:"Kenapa ini penting: effective stress menentukan kestabilan lubang bor, kompaksi, dan kapan formasi bisa 'gagal' (fracture atau collapse)."
+  },
+  {
+    title:"Loading vs Unloading — Dua Jalan Berbeda Menuju Overpressure",
+    body:`<p><strong>Loading (disequilibrium compaction):</strong> terjadi ketika sedimen ditumpuk sangat cepat sehingga air di dalam pori shale tidak sempat "kabur" sebelum pori-pori tertutup rapat. Airnya jadi "terjebak" dan menahan sebagian beban — pore pressure naik di atas hidrostatik.</p>
+    <p><strong>Unloading (fluid expansion):</strong> terjadi tanpa penambahan beban baru. Sumbernya justru dari dalam: generasi hidrokarbon menambah volume fluida, kenaikan suhu membuat fluida memuai, atau tekanan ditransfer dari arah lain (lateral/vertikal). Semua ini membuat fluida "mendorong balik" meski beban di atasnya tidak bertambah.</p>`,
+    why:"Perbedaan mekanisme ini penting karena metode prediksi tekanan pori (misalnya dari data sonic/density) bisa memberi hasil berbeda tergantung mekanisme yang dominan — inilah salah satu sumber ketidakpastian terbesar dalam perencanaan mud weight."
+  },
+  {
+    title:"Membaca Diagram Stress Regime (Normal / Strike-slip / Thrust)",
+    body:`<p>Tiga rezim ini hanya soal <strong>urutan besar-kecil</strong> dari tiga tegangan utama: Sv (vertikal), SHmax (horizontal maksimum), Shmin (horizontal minimum).</p>
+    <ul>
+      <li><strong>Normal faulting:</strong> Sv > SHmax > Shmin — bumi "diregangkan", blok turun sepanjang bidang sesar.</li>
+      <li><strong>Strike-slip:</strong> SHmax > Sv > Shmin — blok bergeser mendatar, bumi tidak terlalu tertekan vertikal maupun tergeser total ke atas/bawah.</li>
+      <li><strong>Thrust/reverse faulting:</strong> SHmax > Shmin > Sv — bumi terkompresi kuat secara horizontal sehingga blok terdorong naik.</li>
+    </ul>`,
+    why:"Regime ini menentukan arah rekahan alami, orientasi breakout pada citra sumur, dan desain arah pengeboran yang paling stabil."
+  },
+  {
+    title:"Kapasitas Seal Bukan Cuma Soal Tebal",
+    body:`<p>Intuisi umum: seal makin tebal, makin bagus. Tapi materi ini menegaskan bahwa seal yang tipis pun bisa sangat efektif <em>jika</em> punya permeabilitas rendah, sifat ductile (tidak mudah retak), menerus secara lateral, dan capillary entry pressure tinggi.</p>
+    <p>Capillary entry pressure adalah tekanan minimum yang dibutuhkan hidrokarbon untuk "memaksa masuk" ke pori-pori kecil pada seal. Semakin kecil pori seal, semakin besar tekanan yang dibutuhkan hidrokarbon untuk menembusnya — inilah yang menentukan berapa tinggi kolom hidrokarbon (h_hc) yang bisa ditahan trap, sesuai rumus h_hc = σv' / [(ρw−ρhc)·g].</p>`,
+    why:"Ini menjelaskan mengapa dua lapisan shale dengan ketebalan sama bisa punya kemampuan menahan kolom hidrokarbon yang jauh berbeda."
+  },
+  {
+    title:"Safe Mud Window: Kenapa Ada Batas Atas dan Bawah?",
+    body:`<p>Berat lumpur (mud weight) bekerja seperti "penahan" tekanan di lubang bor. Jika terlalu ringan (di bawah pore pressure), fluida formasi bisa masuk ke lubang bor — inilah <strong>kick</strong>, berpotensi jadi blowout. Jika terlalu berat (melebihi Shmin), tekanan lumpur bisa merekahkan formasi — inilah <strong>lost circulation</strong>.</p>
+    <p>Jadi mud weight harus berada di antara dua batas ini sepanjang lintasan sumur — dan batas ini bisa berubah-ubah seiring kedalaman, terutama saat menembus zona overpressure.</p>`,
+    why:"Inilah alasan utama mengapa prediksi pore pressure & Shmin yang akurat sebelum spud (pre-spud) sangat krusial, seperti dicontohkan pada studi kasus sumur Indonesia Timur 2006."
+  },
+  {
+    title:"POSg: Kenapa Dikalikan, Bukan Dijumlah?",
+    body:`<p>Geological Chance Factor (POSg) mengalikan probabilitas tiap elemen sistem petroleum (source, generation, migration, reservoir, trap, seal) karena <strong>semua elemen harus hadir bersamaan</strong> agar prospek berhasil — mirip rantai yang kekuatannya ditentukan oleh mata rantai terlemah.</p>
+    <p>Jika salah satu probabilitas sangat rendah (misalnya Pseal = 0.2), walau elemen lain semuanya tinggi (0.9), POSg keseluruhan akan tetap rendah karena perkalian, bukan rata-rata.</p>`,
+    why:"Konsep ini mengajarkan bahwa investasi mitigasi risiko sebaiknya difokuskan pada elemen dengan probabilitas terendah, karena itulah yang paling menentukan POSg akhir."
+  }
+];
+
+function renderDifficult(){
+  const container = document.getElementById('diffContainer');
+  container.innerHTML='';
+  difficult.forEach((item,i)=>{
+    const card = document.createElement('div');
+    card.className='diff-card';
+    card.innerHTML = `
+      <div class="diff-head">
+        <h4><span class="tagnum">${String(i+1).padStart(2,'0')}</span> ${item.title}</h4>
+        <span class="diff-arrow">▾</span>
+      </div>
+      <div class="diff-body">
+        ${item.body}
+        <div class="why">${item.why}</div>
+      </div>
+    `;
+    card.querySelector('.diff-head').addEventListener('click',()=>{
+      card.classList.toggle('open');
+    });
+    container.appendChild(card);
+  });
+  // open first by default
+  container.firstElementChild.classList.add('open');
+}
+renderDifficult();
+</script>
+</body>
+</html>

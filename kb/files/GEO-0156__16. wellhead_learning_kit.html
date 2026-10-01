@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wellhead & X-Mas Tree — Paket Belajar</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  :root{
+    --bg: #12161b;
+    --bg-panel: #1b2229;
+    --bg-panel-2: #212a33;
+    --border: #2c363f;
+    --text: #e7ebee;
+    --text-muted: #93a1ac;
+    --amber: #e2872a;
+    --amber-dim: #7a5528;
+    --steel: #4f92a8;
+    --green: #4caf7d;
+    --red: #d16a6a;
+  }
+  *{ box-sizing: border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background:
+      radial-gradient(1200px 600px at 10% -10%, #1a2129 0%, transparent 60%),
+      var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', sans-serif;
+    line-height: 1.55;
+    min-height: 100vh;
+  }
+  ::selection{ background: var(--amber-dim); color: #fff; }
+
+  .app{ max-width: 980px; margin: 0 auto; padding: 28px 20px 80px; }
+
+  /* ---------- HEADER ---------- */
+  header.hero{
+    position: relative;
+    border: 1px solid var(--border);
+    background:
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 28px),
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 28px),
+      linear-gradient(160deg, #1c242c, #151a1f);
+    border-radius: 4px;
+    padding: 30px 26px 24px;
+    margin-bottom: 22px;
+    overflow: hidden;
+  }
+  .eyebrow{
+    font-family: 'IBM Plex Mono', monospace;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-size: 11px;
+    color: var(--amber);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .eyebrow .dot{ width:7px; height:7px; border-radius:50%; background: var(--amber); box-shadow: 0 0 8px var(--amber); }
+  h1.title{
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    font-size: clamp(26px, 4.4vw, 38px);
+    margin: 0 0 8px;
+    color: #f3f5f7;
+  }
+  .title .thin{ font-weight: 400; color: var(--steel); }
+  .subtitle{ color: var(--text-muted); font-size: 14.5px; max-width: 640px; }
+  .gauge-row{
+    display:flex; gap:18px; margin-top:18px; flex-wrap: wrap;
+    font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: var(--text-muted);
+  }
+  .gauge-row span b{ color: var(--text); font-weight: 600;}
+
+  /* ---------- TABS ---------- */
+  nav.tabs{
+    display:flex;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 22px;
+    background: var(--bg-panel);
+  }
+  nav.tabs button{
+    flex: 1 1 0;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 14px 8px;
+    cursor: pointer;
+    border-right: 1px solid var(--border);
+    display:flex; flex-direction:column; align-items:center; gap:4px;
+    transition: background .15s, color .15s;
+  }
+  nav.tabs button:last-child{ border-right:none; }
+  nav.tabs button .num{ font-size:10px; opacity:.6; }
+  nav.tabs button:hover{ background: var(--bg-panel-2); color: var(--text); }
+  nav.tabs button.active{
+    color: #fff;
+    background: linear-gradient(180deg, #26313b, #1b232b);
+    box-shadow: inset 0 -2px 0 var(--amber);
+  }
+
+  section.panel{ display:none; animation: fade .25s ease; }
+  section.panel.active{ display:block; }
+  @keyframes fade{ from{ opacity:0; transform: translateY(4px);} to{opacity:1; transform:none;} }
+
+  h2.section-title{
+    font-family: 'Oswald', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    font-size: 20px;
+    color: var(--amber);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 10px;
+    margin: 34px 0 14px;
+    display:flex; align-items:center; gap:10px;
+  }
+  h2.section-title:first-of-type{ margin-top: 4px; }
+  h2.section-title .tag{
+    font-family:'IBM Plex Mono', monospace; font-size:10.5px; color: var(--steel);
+    border: 1px solid var(--steel); padding: 2px 7px; border-radius: 3px; text-transform: none; letter-spacing: 0;
+  }
+
+  .card{
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px 18px;
+    margin-bottom: 12px;
+  }
+  .card h3{ margin: 0 0 8px; font-size: 15.5px; color: #fff; font-weight:600; }
+  .card p{ margin: 0 0 8px; color: var(--text); font-size: 14.5px; }
+  .card p:last-child{ margin-bottom:0; }
+  .card ul{ margin: 6px 0 0; padding-left: 20px; color: var(--text); font-size: 14.5px;}
+  .card ul li{ margin-bottom: 4px; }
+  .card.compact{ padding: 12px 16px; }
+
+  .grid2{ display:grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 640px){ .grid2{ grid-template-columns: 1fr; } }
+
+  table.spec{
+    width:100%; border-collapse: collapse; font-size: 13.5px; margin-top: 6px;
+  }
+  table.spec th, table.spec td{
+    border: 1px solid var(--border); padding: 8px 10px; text-align: left; vertical-align: top;
+  }
+  table.spec th{
+    background: var(--bg-panel-2); font-family:'IBM Plex Mono', monospace; font-size: 11.5px;
+    text-transform: uppercase; letter-spacing: .04em; color: var(--amber);
+  }
+  table.spec td.oil{ color: var(--steel); }
+  table.spec td.geo{ color: var(--amber); }
+
+  .pill{
+    display:inline-block; font-family:'IBM Plex Mono', monospace; font-size: 10.5px;
+    padding: 2px 8px; border-radius: 20px; border: 1px solid var(--border); color: var(--text-muted);
+    margin-right: 6px;
+  }
+
+  /* ---------- QUIZ ---------- */
+  .quiz-progress{
+    display:flex; align-items:center; gap:12px; margin-bottom: 16px;
+    font-family:'IBM Plex Mono', monospace; font-size: 12px; color: var(--text-muted);
+  }
+  .quiz-bar{ flex:1; height:6px; background: var(--bg-panel-2); border-radius:3px; overflow:hidden; border:1px solid var(--border);}
+  .quiz-bar-fill{ height:100%; background: linear-gradient(90deg, var(--steel), var(--amber)); width:0%; transition: width .3s; }
+  .q-block{
+    background: var(--bg-panel); border:1px solid var(--border); border-radius:4px; padding:18px; margin-bottom:14px;
+  }
+  .q-num{ font-family:'IBM Plex Mono', monospace; color: var(--amber); font-size:11px; text-transform:uppercase; letter-spacing:.08em; margin-bottom:6px;}
+  .q-text{ font-size: 15px; color:#fff; font-weight:500; margin-bottom:12px; }
+  .opt{
+    display:block; width:100%; text-align:left; background: var(--bg-panel-2); border:1px solid var(--border);
+    color: var(--text); padding: 10px 12px; border-radius:4px; margin-bottom:8px; cursor:pointer; font-size:14px;
+    font-family:'IBM Plex Sans', sans-serif; transition: border-color .12s, background .12s;
+  }
+  .opt:hover{ border-color: var(--steel); }
+  .opt.correct{ border-color: var(--green); background: rgba(76,175,125,0.12); color:#fff; }
+  .opt.wrong{ border-color: var(--red); background: rgba(209,106,106,0.12); color:#fff; }
+  .opt[disabled]{ cursor: default; }
+  .explain{
+    margin-top: 10px; padding: 10px 12px; background: var(--bg); border-left: 3px solid var(--steel);
+    font-size: 13.5px; color: var(--text-muted); display:none; border-radius: 0 3px 3px 0;
+  }
+  .explain.show{ display:block; }
+  .quiz-footer{ display:flex; justify-content: space-between; align-items:center; margin-top: 18px; }
+  .btn{
+    font-family:'IBM Plex Mono', monospace; font-size:12.5px; text-transform:uppercase; letter-spacing:.05em;
+    background: var(--amber); color:#1a1408; border:none; padding: 10px 18px; border-radius:4px; cursor:pointer; font-weight:600;
+  }
+  .btn:hover{ filter: brightness(1.08); }
+  .btn.secondary{ background: transparent; border: 1px solid var(--border); color: var(--text-muted); }
+  .btn.secondary:hover{ color: var(--text); border-color: var(--steel); }
+  .btn[disabled]{ opacity:.4; cursor:not-allowed; }
+  #quizResult{ text-align:center; padding: 30px 10px; }
+  #quizResult .score{ font-family:'Oswald', sans-serif; font-size: 44px; color: var(--amber); }
+  #quizResult .score span{ font-size: 20px; color: var(--text-muted); }
+
+  /* ---------- FLASHCARDS ---------- */
+  .fc-wrap{ display:flex; flex-direction:column; align-items:center; }
+  .fc-meta{
+    font-family:'IBM Plex Mono', monospace; font-size: 12px; color: var(--text-muted); margin-bottom: 12px;
+    display:flex; gap: 14px; align-items:center;
+  }
+  .fc-scene{ perspective: 1400px; width:100%; max-width: 560px; height: 250px; margin-bottom: 18px; }
+  .fc-card{
+    width:100%; height:100%; position:relative; transform-style: preserve-3d; transition: transform .5s;
+    cursor:pointer;
+  }
+  .fc-card.flipped{ transform: rotateY(180deg); }
+  .fc-face{
+    position:absolute; inset:0; backface-visibility:hidden; border-radius:6px; border:1px solid var(--border);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding: 24px;
+  }
+  .fc-front{
+    background: linear-gradient(160deg, #212a33, #171d23);
+  }
+  .fc-front .fc-label{ font-family:'IBM Plex Mono', monospace; font-size:10.5px; color:var(--amber); text-transform:uppercase; letter-spacing:.1em; margin-bottom:12px;}
+  .fc-front .fc-term{ font-family:'Oswald', sans-serif; font-size: 26px; color:#fff; text-transform:uppercase; }
+  .fc-front .fc-hint{ margin-top:14px; font-size:11.5px; color: var(--text-muted); font-family:'IBM Plex Mono', monospace;}
+  .fc-back{
+    background: linear-gradient(160deg, #24333a, #182229);
+    transform: rotateY(180deg);
+    color: var(--text); font-size: 14.5px;
+  }
+  .fc-back .fc-label{ font-family:'IBM Plex Mono', monospace; font-size:10.5px; color:var(--steel); text-transform:uppercase; letter-spacing:.1em; margin-bottom:10px;}
+  .fc-controls{ display:flex; gap: 10px; }
+
+  footer.note{
+    margin-top: 44px; padding-top: 16px; border-top: 1px dashed var(--border);
+    font-size: 12px; color: var(--text-muted); font-family: 'IBM Plex Mono', monospace;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .fc-card, section.panel, .quiz-bar-fill{ transition: none !important; animation: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="hero">
+    <div class="eyebrow"><span class="dot"></span>MODUL PELATIHAN &middot; API 6A</div>
+    <h1 class="title">Wellhead &amp; X-Mas Tree <span class="thin">Selection</span></h1>
+    <p class="subtitle">Paket belajar interaktif dari materi training "Wellhead & X-Mas Tree Selection" — rangkuman, latihan soal, flashcard istilah teknis, dan penjelasan bagian yang sering membingungkan.</p>
+    <div class="gauge-row">
+      <span>SUMBER: <b>API 6A Spec. for Wellhead & Tree Equipment</b></span>
+      <span>CAKUPAN: <b>9 topik</b></span>
+      <span>TOTAL SOAL: <b>15</b></span>
+      <span>TOTAL FLASHCARD: <b>18</b></span>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab-btn active" data-tab="ringkasan"><span>📘 Rangkuman</span><span class="num">TAB 1</span></button>
+    <button class="tab-btn" data-tab="latihan"><span>📝 Latihan Soal</span><span class="num">TAB 2</span></button>
+    <button class="tab-btn" data-tab="flashcard"><span>🔁 Flashcard</span><span class="num">TAB 3</span></button>
+    <button class="tab-btn" data-tab="sulit"><span>🧩 Bagian Sulit</span><span class="num">TAB 4</span></button>
+  </nav>
+
+  <!-- ======================= TAB 1: RINGKASAN ======================= -->
+  <section class="panel active" id="ringkasan">
+
+    <h2 class="section-title">1. Apa itu Wellhead &amp; X-Mas Tree <span class="tag">overview</span></h2>
+    <div class="card">
+      <h3>Wellhead</h3>
+      <p>Peralatan penahan tekanan (pressure-containing equipment) yang dipasang di permukaan untuk menggantung rangkaian casing, menyegel tekanan annulus, dan menyediakan kontrol tekanan sepanjang umur sumur.</p>
+      <ul>
+        <li>Fungsi utama: dukungan struktural, penahan tekanan, penggantung casing, integritas sumur, dan akses untuk pengeboran/intervensi.</li>
+        <li>Wellhead adalah interface (penghubung) ke Christmas Tree.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>X-Mas Tree (Christmas Tree)</h3>
+      <p>Peralatan kontrol tekanan yang dipasang di atas wellhead, berfungsi mengatur, mengisolasi, dan memonitor produksi minyak, gas, atau fluida injeksi dari sumur.</p>
+      <ul>
+        <li>Komponen: Master Valve, Wing Valve, Swab Valve, Tree Cap, Choke.</li>
+      </ul>
+    </div>
+
+    <h2 class="section-title">2. Komponen Wellhead Oil &amp; Gas <span class="tag">komponen</span></h2>
+    <div class="grid2">
+      <div class="card compact"><h3>Casing Head</h3><p>Menggantung casing, menyegel annulus, menyediakan outlet, menahan tekanan, dan menyambungkan komponen wellhead di atasnya.</p></div>
+      <div class="card compact"><h3>Casing Spool</h3><p>Bagian penyambung antar-casing head/hanger yang memungkinkan penambahan tingkat casing berikutnya.</p></div>
+      <div class="card compact"><h3>Casing Hanger</h3><p>Menggantung beban casing string dari casing head/spool, menyentralkan casing, dan menyegel annulus. Tipe: <b>Slip Type</b> &amp; <b>Mandrel Type</b>.</p></div>
+      <div class="card compact"><h3>Tubing Head</h3><p>Menopang tubing, menyegel annulus tubing, menyediakan outlet produksi, dan memberi akses ke tubing hanger.</p></div>
+      <div class="card compact"><h3>Tubing Hanger</h3><p>Tipe: Mandrel, Wrap Around, Dual Completion, ESP Completion — disesuaikan dengan jenis komplesi sumur.</p></div>
+      <div class="card compact"><h3>Tubing Head Adapter</h3><p>Komponen penyambung antara tubing head dan X-mas tree di atasnya.</p></div>
+    </div>
+
+    <h2 class="section-title">3. Aksesori &amp; Peralatan Khusus <span class="tag">aksesori</span></h2>
+    <div class="card">
+      <h3>Wear Bushing</h3>
+      <p>Melindungi seal bore pada casing spool dan tubing spool selama proses pengeboran. Dipasang menggunakan drill pipe tool dengan sistem J-lug/J-slot, lalu dilepas setelah pengeboran selesai.</p>
+    </div>
+    <div class="card">
+      <h3>BPV (Back Pressure Valve) &amp; TWCV</h3>
+      <p>Tubing hanger dapat dilengkapi profil ulir back pressure yang memungkinkan operator memasang isolation plug ke dalam tubing hanger — berguna sebagai barrier tekanan tambahan saat instalasi X-mas tree.</p>
+    </div>
+    <div class="card">
+      <h3>Unihead / Compact / Integrated Wellhead</h3>
+      <p>Sistem wellhead terintegrasi yang menyatukan beberapa fungsi dalam satu unit, sehingga menghemat waktu rig (2–3 hari), mengurangi biaya standby equipment/personel, dan meniadakan langkah nipple-up/nipple-down BOP berulang — sehingga lebih aman (mengurangi manhours di area cellar).</p>
+      <p style="color:var(--text-muted); font-size:13px;">Contoh dari materi: total waktu wellhead konvensional ≈116 jam vs. integrated wellhead ≈40 jam untuk rangkaian pekerjaan yang sama.</p>
+    </div>
+
+    <h2 class="section-title">4. Wellhead Geothermal <span class="tag">geothermal</span></h2>
+    <div class="card">
+      <p>Wellhead geothermal berbeda dari wellhead oil &amp; gas karena harus menangani steam, suhu tinggi, ekspansi termal, scaling, korosi, dan siklus panas-dingin berulang.</p>
+      <p>Komponen khas: Master Valve, Expansion Spool, Steam Cross, Production Valve.</p>
+    </div>
+    <table class="spec">
+      <tr><th>Aspek</th><th>Oil &amp; Gas</th><th>Geothermal</th></tr>
+      <tr><td>Fluida</td><td class="oil">Minyak, gas, hidrokarbon multiphase</td><td class="geo">Steam kering/basah &amp; brine panas (two-phase)</td></tr>
+      <tr><td>Suhu</td><td class="oil">Umumnya sampai ~120°C</td><td class="geo">Umumnya 180–350°C atau lebih</td></tr>
+      <tr><td>Desain</td><td class="oil">Full-bore flow path, katup tahan erosi</td><td class="geo">Material suhu tinggi, metal-to-metal seal</td></tr>
+      <tr><td>Ekspansi termal</td><td class="oil">Relatif terbatas</td><td class="geo">Signifikan &rarr; perlu expansion spool</td></tr>
+      <tr><td>Scaling</td><td class="oil">Umumnya minimal</td><td class="geo">Silika, kalsium karbonat &rarr; perlu akses perawatan mudah</td></tr>
+      <tr><td>Korosi</td><td class="oil">Tergantung fluida produksi</td><td class="geo">Lingkungan korosif suhu tinggi (H₂S, CO₂, klorida)</td></tr>
+      <tr><td>Thermal cycling</td><td class="oil">Fluktuasi suhu jarang</td><td class="geo">Siklus start-up/shut-down berulang &rarr; desain tahan fatik</td></tr>
+    </table>
+
+    <h2 class="section-title">5. Sizing, Rating &amp; Standar <span class="tag">standar</span></h2>
+    <div class="grid2">
+      <div class="card compact"><h3>Factory Testing</h3><ul><li>Hydrostatic Test</li><li>Gas Test</li><li>Shell Test</li><li>Seat Test</li><li>Function Test</li></ul></div>
+      <div class="card compact"><h3>Dokumentasi Kualitas</h3><ul><li>Inspection &amp; Test Plan (ITP)</li><li>Inspection Record</li><li>Pressure Test Chart</li><li>Dimensional Report</li><li>Material Certificate</li><li>Certificate of Conformance (COC)</li></ul></div>
+    </div>
+    <div class="card">
+      <h3>Material Class (Sour Service)</h3>
+      <p>Untuk material class <b>DD, EE, FF, dan HH</b>, manufaktur wajib memenuhi persyaratan <b>NACE MR0175 / ISO 15156</b> untuk proses material dan sifat material (misalnya kekerasan/hardness) — ini berlaku untuk layanan sour (mengandung H₂S).</p>
+    </div>
+    <div class="card">
+      <h3>Product Specification Level (PSL)</h3>
+      <p>PSL menetapkan tingkat persyaratan kualitas teknis (material, welding, quality, testing). Ada 4 level: <b>PSL 1, PSL 2, PSL 3, PSL 4</b>, diterapkan sesuai tabel spesifikasi produk (Table 4 API 6A).</p>
+    </div>
+    <div class="card">
+      <h3>Performance Requirement (PR)</h3>
+      <ul>
+        <li><b>PR1</b> — Level validasi standar; memastikan peralatan memenuhi syarat dasar material, suhu, dan tekanan.</li>
+        <li><b>PR2</b> — Validasi lebih ketat, termasuk pengujian siklus tekanan &amp; suhu (pressure &amp; temperature cycling).</li>
+        <li><b>PR2F</b> — PR2 dengan validasi tambahan sesuai <b>Annex F</b>, pengujian paling ekstensif.</li>
+      </ul>
+    </div>
+
+    <h2 class="section-title">6. Wellhead Selection <span class="tag">seleksi</span></h2>
+    <div class="grid2">
+      <div class="card compact"><h3>Parameter Seleksi</h3><ul><li>Tekanan maksimum</li><li>Suhu maksimum</li><li>Kandungan H₂S</li><li>Kandungan CO₂</li><li>Kandungan pasir (sand)</li><li>Metode produksi</li><li>Tipe komplesi</li></ul></div>
+      <div class="card compact"><h3>Checklist Engineering</h3><ul><li>Casing size</li><li>Weight</li><li>Grade</li><li>Connection</li><li>Load</li><li>Burst</li><li>Collapse</li><li>Tension</li></ul></div>
+    </div>
+    <div class="card">
+      <h3>Kesalahan Umum &amp; Contoh Kegagalan</h3>
+      <div class="grid2">
+        <div>
+          <p style="color:var(--red); font-weight:600; margin-bottom:4px;">Kesalahan umum</p>
+          <ul><li>Salah pressure rating</li><li>Salah material class</li><li>Salah bore</li><li>Salah seal</li><li>Adapter tidak tepat</li><li>Mengabaikan efek termal</li></ul>
+        </div>
+        <div>
+          <p style="color:var(--red); font-weight:600; margin-bottom:4px;">Contoh kegagalan</p>
+          <ul><li>Seal leakage</li><li>Korosi</li><li>Instalasi tidak tepat</li><li>Collapsed hanger</li><li>Washout</li></ul>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="section-title">7. Studi Kasus <span class="tag">case study</span></h2>
+    <div class="card">
+      <h3>Case Study 1 — Land Well</h3>
+      <p>Casing: 20" &rarr; 13-3/8" &rarr; 9-5/8" &rarr; 7", Tubing 2-7/8", Tubing pressure 3.500 psi. Tugas: pilih wellhead &amp; X-mas tree yang sesuai rangkaian casing dan tekanan tersebut.</p>
+    </div>
+    <div class="card">
+      <h3>Case Study 2 — HPHT Well</h3>
+      <p>Tekanan 12.500 psi, suhu 180°C, sour gas. Tugas: tentukan material class, temperature class, dan pressure rating yang sesuai.</p>
+    </div>
+
+    <h2 class="section-title">8. Kesimpulan Materi <span class="tag">summary</span></h2>
+    <div class="card">
+      <p>Pemilihan wellhead yang baik harus mempertimbangkan: desain casing, tekanan sumur, suhu, jenis fluida produksi, potensi korosi, metode komplesi, standar yang berlaku (API 6A), dan kebutuhan intervensi di masa depan.</p>
+    </div>
+
+  </section>
+
+  <!-- ======================= TAB 2: LATIHAN SOAL ======================= -->
+  <section class="panel" id="latihan">
+    <h2 class="section-title" style="margin-top:4px;">Latihan Soal <span class="tag" id="quizTag">15 soal</span></h2>
+    <div class="quiz-progress">
+      <span id="quizCounter">Soal 1 / 15</span>
+      <div class="quiz-bar"><div class="quiz-bar-fill" id="quizBarFill"></div></div>
+      <span id="quizScoreLive">Skor: 0</span>
+    </div>
+
+    <div id="quizArea"></div>
+
+    <div id="quizResult" style="display:none;">
+      <div class="score" id="scoreText">0<span>/15</span></div>
+      <p id="scoreMsg" style="color:var(--text-muted);"></p>
+      <button class="btn" id="restartQuiz">Ulangi Latihan</button>
+    </div>
+  </section>
+
+  <!-- ======================= TAB 3: FLASHCARD ======================= -->
+  <section class="panel" id="flashcard">
+    <h2 class="section-title" style="margin-top:4px;">Flashcard Istilah Teknis <span class="tag">klik kartu untuk membalik</span></h2>
+    <div class="fc-wrap">
+      <div class="fc-meta">
+        <span id="fcCounter">Kartu 1 / 18</span>
+        <span id="fcCategory" class="pill">—</span>
+      </div>
+      <div class="fc-scene">
+        <div class="fc-card" id="fcCard">
+          <div class="fc-face fc-front">
+            <div class="fc-label">Istilah</div>
+            <div class="fc-term" id="fcTerm">—</div>
+            <div class="fc-hint">klik untuk lihat definisi</div>
+          </div>
+          <div class="fc-face fc-back">
+            <div class="fc-label">Definisi</div>
+            <div id="fcDef">—</div>
+          </div>
+        </div>
+      </div>
+      <div class="fc-controls">
+        <button class="btn secondary" id="fcPrev">&larr; Sebelumnya</button>
+        <button class="btn secondary" id="fcShuffle">🔀 Acak</button>
+        <button class="btn" id="fcNext">Selanjutnya &rarr;</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= TAB 4: BAGIAN SULIT ======================= -->
+  <section class="panel" id="sulit">
+    <h2 class="section-title" style="margin-top:4px;">Penjelasan Bagian yang Sering Membingungkan</h2>
+
+    <div class="card">
+      <h3>🧩 Beda Casing Head, Casing Spool, dan Tubing Head</h3>
+      <p>Ketiganya sering tertukar karena bentuknya mirip (sama-sama "flange bertingkat"). Cara mudah membedakannya:</p>
+      <ul>
+        <li><b>Casing Head</b> — komponen paling bawah, langsung menggantung casing pertama (terluar) dan menempel di casing itu sendiri (biasanya dilas atau di-thread).</li>
+        <li><b>Casing Spool</b> — komponen "penyambung" di antara casing head dan komponen di atasnya, dipasang setiap kali ada casing string baru yang perlu digantung (misalnya setelah casing 13-3/8" masuk).</li>
+        <li><b>Tubing Head</b> — komponen paling atas dari susunan wellhead, tempat tubing (bukan casing) digantung, dan menjadi dasar dudukan X-mas tree.</li>
+      </ul>
+      <p style="color:var(--text-muted);">Ingat urutan dari bawah ke atas: <b>Casing Head &rarr; Casing Spool (bisa berulang) &rarr; Tubing Head &rarr; Tubing Head Adapter &rarr; X-mas Tree.</b></p>
+    </div>
+
+    <div class="card">
+      <h3>🧩 PSL vs PR — dua sistem klasifikasi yang berbeda tujuan</h3>
+      <p>Banyak yang mengira PSL dan PR adalah hal yang sama karena sama-sama "level" di API 6A. Padahal keduanya mengukur hal berbeda:</p>
+      <ul>
+        <li><b>PSL (Product Specification Level)</b> mengatur <i>tingkat ketatnya kontrol kualitas produksi</i> — mulai dari dokumentasi, material, welding, sampai testing (PSL 1 paling dasar, PSL 4 paling ketat).</li>
+        <li><b>PR (Performance Requirement)</b> mengatur <i>tingkat validasi kinerja</i> peralatan terhadap kondisi operasi — PR1 validasi dasar, PR2 dengan uji siklus tekanan/suhu, PR2F dengan uji tambahan Annex F.</li>
+      </ul>
+      <p>Analoginya: PSL itu seperti "seberapa ketat proses pembuatan &amp; dokumentasinya diperiksa", sedangkan PR itu "seberapa keras produk jadi diuji sebelum dinyatakan layak pakai".</p>
+    </div>
+
+    <div class="card">
+      <h3>🧩 Kenapa Material Class DD/EE/FF/HH perlu NACE MR0175?</h3>
+      <p>Material class ini dikhususkan untuk <b>sour service</b>, yaitu lingkungan yang mengandung H₂S (hidrogen sulfida). H₂S dapat menyebabkan <i>sulfide stress cracking</i> pada logam tertentu, sehingga material harus lolos standar tambahan NACE MR0175/ISO 15156 yang mengatur batas kekerasan (hardness) dan proses material — bukan sekadar memenuhi tekanan/suhu kerja seperti material class lain.</p>
+    </div>
+
+    <div class="card">
+      <h3>🧩 Kenapa wellhead geothermal butuh "Expansion Spool"?</h3>
+      <p>Perbedaan mendasar geothermal vs oil &amp; gas adalah suhu operasi yang jauh lebih tinggi (180–350°C dibanding ~120°C). Logam yang dipanaskan akan memuai (thermal expansion). Jika wellhead geothermal dibuat kaku seperti wellhead oil &amp; gas biasa, pemuaian ini bisa merusak sambungan atau menimbulkan tegangan berlebih. <b>Expansion spool</b> berfungsi seperti "ruang gerak" yang menyerap pemuaian tersebut, sehingga sambungan tidak retak akibat siklus panas-dingin berulang.</p>
+    </div>
+
+    <div class="card">
+      <h3>🧩 Kenapa Unihead bisa menghemat waktu sampai puluhan jam?</h3>
+      <p>Pada wellhead konvensional, setiap kali casing string baru dipasang, BOP (Blow-Out Preventer) harus dilepas (nipple-down), dipasang casing spool baru, lalu BOP dipasang kembali (nipple-up) — proses ini berulang untuk tiap ukuran casing (20", 13-3/8", 9-5/8", 7"). Setiap siklus nipple-up/down memakan waktu tunggu semen (wait on cement) dan risiko keselamatan di area cellar. <b>Unihead/Integrated Wellhead</b> menggabungkan fungsi beberapa spool menjadi satu unit terintegrasi, sehingga BOP tidak perlu dilepas-pasang berulang kali — inilah sumber utama penghematan waktu (dari materi: ±116 jam menjadi ±40 jam).</p>
+    </div>
+
+    <div class="card">
+      <h3>🧩 Wear Bushing itu fungsinya melindungi apa, dari apa?</h3>
+      <p>Selama proses pengeboran berlangsung, mata bor dan rangkaian drill string bergesekan di dalam wellhead. Permukaan <i>seal bore</i> (area tempat seal akan duduk nantinya) bisa tergores atau aus oleh gesekan ini. <b>Wear bushing</b> dipasang sementara di dalam seal bore sebagai "pelindung korban" (sacrificial protector) selama pengeboran, lalu dicabut kembali sebelum seal permanen dipasang — sehingga permukaan seal bore tetap presisi dan tidak bocor saat X-mas tree/tubing hanger dipasang.</p>
+    </div>
+
+    <div class="card">
+      <h3>🧩 Slip Type vs Mandrel Type Casing Hanger</h3>
+      <p>Keduanya sama-sama menggantung casing, tapi mekanismenya berbeda:</p>
+      <ul>
+        <li><b>Slip Type</b> — menggunakan "slip" (baji/wedge bergerigi) yang mencengkeram badan casing dari luar; umumnya lebih fleksibel untuk berbagai ukuran casing dan biasa dipasang belakangan (setelah casing diturunkan).</li>
+        <li><b>Mandrel Type</b> — casing sudah dilengkapi profil khusus (mandrel) yang duduk langsung/pas pada dudukan hanger; memberikan dukungan beban yang lebih pasti tapi harus direncanakan sejak awal desain casing string.</li>
+      </ul>
+    </div>
+
+  </section>
+
+  <footer class="note">
+    Materi disusun ulang dari file presentasi "Wellhead &amp; X-Mas Tree Selection" (referensi: API 6A Specification for Wellhead and Tree Equipment). Gunakan sebagai alat bantu belajar, bukan pengganti standar resmi.
+  </footer>
+</div>
+
+<script>
+/* ---------------- TAB SWITCHING ---------------- */
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+});
+
+/* ---------------- QUIZ DATA ---------------- */
+const quizData = [
+  {
+    q: "Apa fungsi utama Wellhead pada sebuah sumur?",
+    opts: ["Mengukur laju alir produksi harian","Menahan tekanan, menggantung casing, dan menjaga integritas sumur","Menyimpan cadangan minyak sementara","Mengganti fungsi rig pengeboran"],
+    correct: 1,
+    explain: "Wellhead adalah pressure-containing equipment yang berfungsi menggantung casing string, menyegel tekanan annulus, dan menjaga integritas sumur sepanjang umurnya."
+  },
+  {
+    q: "Komponen X-mas Tree berikut ini BUKAN bagian dari X-mas Tree, kecuali:",
+    opts: ["Casing Hanger","Wear Bushing","Master Valve","Tubing Head Adapter"],
+    correct: 2,
+    explain: "Komponen X-mas Tree meliputi Master Valve, Wing Valve, Swab Valve, Tree Cap, dan Choke. Casing Hanger, Wear Bushing, dan Tubing Head Adapter adalah bagian dari wellhead, bukan X-mas tree."
+  },
+  {
+    q: "Apa perbedaan utama fungsi Casing Spool dibanding Casing Head?",
+    opts: ["Casing Spool hanya digunakan pada sumur geothermal","Casing Spool berfungsi sebagai penyambung antar tingkatan casing berikutnya, sedangkan Casing Head menggantung casing pertama","Casing Spool tidak menahan tekanan sama sekali","Casing Head dipasang di atas X-mas tree"],
+    correct: 1,
+    explain: "Casing Head menggantung casing pertama (terluar), sedangkan Casing Spool menjadi penyambung setiap kali casing string baru ditambahkan."
+  },
+  {
+    q: "Dua tipe utama Casing Hanger adalah...",
+    opts: ["Slip Type dan Mandrel Type","Wraparound Type dan ESP Type","Master Type dan Wing Type","Compact Type dan Expansion Type"],
+    correct: 0,
+    explain: "Casing Hanger memiliki dua tipe utama: Slip Type dan Mandrel Type."
+  },
+  {
+    q: "Apa tujuan utama pemasangan Wear Bushing?",
+    opts: ["Menambah tekanan kerja wellhead","Melindungi seal bore dari kerusakan selama pengeboran","Menggantikan fungsi tubing hanger","Menahan beban casing utama"],
+    correct: 1,
+    explain: "Wear bushing melindungi seal bore di casing spool dan tubing spool selama operasi pengeboran, lalu dilepas setelahnya."
+  },
+  {
+    q: "Mengapa wellhead geothermal memerlukan Expansion Spool sedangkan wellhead oil & gas umumnya tidak?",
+    opts: ["Karena tekanan geothermal selalu lebih rendah","Karena suhu operasi geothermal jauh lebih tinggi sehingga ekspansi termalnya signifikan","Karena geothermal tidak memerlukan casing","Karena expansion spool hanya untuk keperluan estetika"],
+    correct: 1,
+    explain: "Suhu geothermal (180–350°C) jauh lebih tinggi dari oil & gas (~120°C), menyebabkan ekspansi termal signifikan yang perlu diakomodasi oleh expansion spool."
+  },
+  {
+    q: "Manakah yang termasuk uji pabrikan (factory testing) pada wellhead menurut materi ini?",
+    opts: ["Hydrostatic Test, Gas Test, Shell Test, Seat Test, Function Test","Slip Test, Mandrel Test, Wraparound Test","PSL Test, PR Test, NACE Test","Casing Test, Tubing Test, Tree Test"],
+    correct: 0,
+    explain: "Factory testing meliputi Hydrostatic Test, Gas Test, Shell Test, Seat Test, dan Function Test."
+  },
+  {
+    q: "Apa perbedaan mendasar antara PSL dan PR pada API 6A?",
+    opts: ["PSL dan PR adalah istilah yang sama persis","PSL mengatur tingkat kontrol kualitas produksi, PR mengatur tingkat validasi kinerja terhadap kondisi operasi","PSL hanya berlaku untuk geothermal, PR hanya untuk oil & gas","PR selalu lebih rendah levelnya dibanding PSL"],
+    correct: 1,
+    explain: "PSL (Product Specification Level) mengatur ketatnya kontrol kualitas produksi (material, welding, testing, dokumentasi), sedangkan PR (Performance Requirement) mengatur validasi kinerja peralatan terhadap kondisi operasi."
+  },
+  {
+    q: "Level Performance Requirement (PR) mana yang melibatkan pengujian siklus tekanan dan suhu tambahan dibanding validasi standar?",
+    opts: ["PR1","PR2","PSL 1","PSL 2"],
+    correct: 1,
+    explain: "PR2 merupakan validasi lebih ketat dari PR1, mencakup pressure and temperature cycling test."
+  },
+  {
+    q: "PR2F berbeda dari PR2 karena PR2F...",
+    opts: ["Tidak memerlukan pengujian tekanan","Divalidasi lebih lanjut sesuai Annex F dengan pengujian yang lebih ekstensif","Hanya berlaku untuk wellhead geothermal","Menggantikan sistem PSL sepenuhnya"],
+    correct: 1,
+    explain: "PR2F adalah level PR2 yang divalidasi lebih lanjut sesuai Annex F, dengan pengujian dan validasi yang lebih ekstensif."
+  },
+  {
+    q: "Material class DD, EE, FF, dan HH mewajibkan pemenuhan standar tambahan apa?",
+    opts: ["ISO 9001","NACE MR0175 / ISO 15156","API 6A Annex F","ASME B16.5"],
+    correct: 1,
+    explain: "Material class DD, EE, FF, dan HH untuk sour service wajib memenuhi NACE MR0175/ISO 15156 terkait proses dan sifat material seperti hardness."
+  },
+  {
+    q: "Berikut ini yang TERMASUK parameter seleksi wellhead menurut materi adalah...",
+    opts: ["Warna cat wellhead","Tekanan maksimum, suhu maksimum, kandungan H₂S/CO₂/pasir, metode produksi, tipe komplesi","Merek dagang manufaktur","Jarak wellhead ke kantor pusat"],
+    correct: 1,
+    explain: "Parameter seleksi wellhead meliputi tekanan & suhu maksimum, kandungan H₂S, CO₂, sand, metode produksi, dan tipe komplesi."
+  },
+  {
+    q: "Manakah yang merupakan contoh kegagalan (failure example) akibat kesalahan pemilihan wellhead?",
+    opts: ["Peningkatan efisiensi produksi","Seal leakage, korosi, collapsed hanger, washout","Penurunan biaya operasional","Percepatan waktu instalasi"],
+    correct: 1,
+    explain: "Contoh kegagalan akibat kesalahan seleksi wellhead meliputi seal leakage, korosi, instalasi tidak tepat, collapsed hanger, dan washout."
+  },
+  {
+    q: "Pada Case Study 2 (HPHT Well: 12.500 psi, 180°C, sour gas), aspek apa saja yang perlu ditentukan?",
+    opts: ["Warna tree cap dan ukuran baut","Material class, temperature class, dan pressure rating","Jumlah pekerja rig dan jadwal shift","Merek casing yang digunakan"],
+    correct: 1,
+    explain: "Untuk HPHT sour well, hal yang harus ditentukan adalah material class (karena sour service), temperature class (karena suhu tinggi), dan pressure rating (karena tekanan tinggi)."
+  },
+  {
+    q: "Manfaat utama Unihead/Integrated Wellhead System dibanding wellhead konvensional adalah...",
+    opts: ["Mengurangi waktu rig dengan meniadakan nipple-up/nipple-down BOP berulang","Menghilangkan kebutuhan casing sama sekali","Meningkatkan tekanan kerja tanpa batas","Menghilangkan kebutuhan uji pabrikan"],
+    correct: 0,
+    explain: "Unihead menghemat waktu rig 2-3 hari dengan meniadakan langkah nipple-up/nipple-down BOP berulang untuk tiap casing string, sekaligus mengurangi risiko di area cellar."
+  }
+];
+
+let currentQ = 0;
+let score = 0;
+let answered = [];
+
+function renderQuiz(){
+  const area = document.getElementById('quizArea');
+  const item = quizData[currentQ];
+  document.getElementById('quizCounter').textContent = `Soal ${currentQ+1} / ${quizData.length}`;
+  document.getElementById('quizBarFill').style.width = `${(currentQ/quizData.length)*100}%`;
+  document.getElementById('quizScoreLive').textContent = `Skor: ${score}`;
+
+  let html = `<div class="q-block">
+    <div class="q-num">Soal ${currentQ+1}</div>
+    <div class="q-text">${item.q}</div>`;
+  item.opts.forEach((opt, i)=>{
+    html += `<button class="opt" data-idx="${i}">${opt}</button>`;
+  });
+  html += `<div class="explain" id="explainBox">${item.explain}</div></div>
+    <div class="quiz-footer">
+      <button class="btn secondary" id="prevBtn" ${currentQ===0?'disabled':''}>&larr; Sebelumnya</button>
+      <button class="btn" id="nextBtn" disabled>${currentQ===quizData.length-1?'Lihat Hasil':'Soal Selanjutnya &rarr;'}</button>
+    </div>`;
+  area.innerHTML = html;
+
+  const already = answered[currentQ];
+  document.querySelectorAll('.opt').forEach(btn=>{
+    const idx = parseInt(btn.dataset.idx);
+    if(already !== undefined){
+      btn.disabled = true;
+      if(idx === item.correct) btn.classList.add('correct');
+      if(idx === already && already !== item.correct) btn.classList.add('wrong');
+      document.getElementById('explainBox').classList.add('show');
+      document.getElementById('nextBtn').disabled = false;
+    }
+    btn.addEventListener('click', ()=>{
+      if(answered[currentQ] !== undefined) return;
+      answered[currentQ] = idx;
+      if(idx === item.correct) score++;
+      document.querySelectorAll('.opt').forEach(b=>b.disabled = true);
+      btn.classList.add(idx === item.correct ? 'correct' : 'wrong');
+      if(idx !== item.correct){
+        document.querySelector(`.opt[data-idx="${item.correct}"]`).classList.add('correct');
+      }
+      document.getElementById('explainBox').classList.add('show');
+      document.getElementById('nextBtn').disabled = false;
+      document.getElementById('quizScoreLive').textContent = `Skor: ${score}`;
+    });
+  });
+
+  document.getElementById('prevBtn').addEventListener('click', ()=>{
+    if(currentQ>0){ currentQ--; renderQuiz(); }
+  });
+  document.getElementById('nextBtn').addEventListener('click', ()=>{
+    if(currentQ < quizData.length-1){
+      currentQ++;
+      renderQuiz();
+    } else {
+      showResult();
+    }
+  });
+}
+
+function showResult(){
+  document.getElementById('quizArea').style.display = 'none';
+  document.querySelector('.quiz-progress').style.display = 'none';
+  document.getElementById('quizResult').style.display = 'block';
+  document.getElementById('quizBarFill').style.width = '100%';
+  document.getElementById('scoreText').innerHTML = `${score}<span>/${quizData.length}</span>`;
+  let msg = "";
+  const pct = score/quizData.length;
+  if(pct === 1) msg = "Sempurna! Pemahaman kamu tentang wellhead & X-mas tree sangat solid.";
+  else if(pct >= 0.7) msg = "Bagus! Sudah cukup kuat, coba tinjau lagi bagian yang salah di tab Rangkuman.";
+  else if(pct >= 0.4) msg = "Lumayan, tapi masih perlu review — cek tab Bagian Sulit untuk topik yang sering keliru.";
+  else msg = "Perlu banyak review. Coba pelajari ulang tab Rangkuman & Flashcard sebelum mengulang latihan.";
+  document.getElementById('scoreMsg').textContent = msg;
+}
+
+document.getElementById('restartQuiz').addEventListener('click', ()=>{
+  currentQ = 0; score = 0; answered = [];
+  document.getElementById('quizArea').style.display = 'block';
+  document.querySelector('.quiz-progress').style.display = 'flex';
+  document.getElementById('quizResult').style.display = 'none';
+  renderQuiz();
+});
+
+renderQuiz();
+
+/* ---------------- FLASHCARD DATA ---------------- */
+const flashcards = [
+  {term:"Wellhead", def:"Peralatan penahan tekanan di permukaan yang menggantung casing, menyegel annulus, dan menjaga integritas sumur.", cat:"Overview"},
+  {term:"X-Mas Tree", def:"Peralatan kontrol tekanan di atas wellhead untuk mengatur, mengisolasi, dan memonitor produksi sumur.", cat:"Overview"},
+  {term:"Casing Head", def:"Menggantung casing pertama, menyegel annulus, menyediakan outlet, dan menyambungkan komponen wellhead di atasnya.", cat:"Komponen"},
+  {term:"Casing Spool", def:"Komponen penyambung antar tingkatan casing berikutnya di atas casing head.", cat:"Komponen"},
+  {term:"Casing Hanger", def:"Menggantung beban casing string, menyentralkan casing, dan menyegel annulus. Tipe: Slip & Mandrel.", cat:"Komponen"},
+  {term:"Tubing Head", def:"Menopang tubing, menyegel annulus tubing, dan menyediakan akses ke tubing hanger.", cat:"Komponen"},
+  {term:"Tubing Hanger", def:"Menggantung tubing string. Tipe: Mandrel, Wrap Around, Dual Completion, ESP Completion.", cat:"Komponen"},
+  {term:"Tubing Head Adapter", def:"Komponen penyambung antara tubing head dan X-mas tree.", cat:"Komponen"},
+  {term:"Wear Bushing", def:"Melindungi seal bore casing/tubing spool selama pengeboran, dipasang & dilepas via drill pipe tool.", cat:"Aksesori"},
+  {term:"BPV / TWCV", def:"Isolation plug yang dipasang ke profil ulir back pressure pada tubing hanger sebagai barrier tekanan.", cat:"Aksesori"},
+  {term:"Unihead Wellhead", def:"Sistem wellhead terintegrasi yang menghemat waktu rig & mengurangi risiko dengan meniadakan nipple-up/down BOP berulang.", cat:"Aksesori"},
+  {term:"Expansion Spool", def:"Komponen wellhead geothermal yang menyerap ekspansi termal akibat suhu operasi tinggi.", cat:"Geothermal"},
+  {term:"Steam Cross", def:"Komponen khas wellhead geothermal untuk mengalirkan/mendistribusikan steam.", cat:"Geothermal"},
+  {term:"PSL (Product Specification Level)", def:"Level 1–4 yang menetapkan tingkat persyaratan kualitas teknis: material, welding, quality, testing.", cat:"Standar"},
+  {term:"PR1", def:"Level validasi standar API 6A — memastikan peralatan memenuhi syarat dasar material, suhu, dan tekanan.", cat:"Standar"},
+  {term:"PR2", def:"Validasi lebih ketat dari PR1, termasuk pengujian siklus tekanan & suhu (pressure & temperature cycling).", cat:"Standar"},
+  {term:"PR2F", def:"PR2 dengan validasi tambahan sesuai Annex F — pengujian paling ekstensif.", cat:"Standar"},
+  {term:"NACE MR0175 / ISO 15156", def:"Standar wajib untuk material class DD/EE/FF/HH pada layanan sour (H₂S) — mengatur proses & sifat material.", cat:"Standar"}
+];
+
+let fcIndex = 0;
+let fcOrder = flashcards.map((_,i)=>i);
+
+function renderFlashcard(){
+  const idx = fcOrder[fcIndex];
+  const card = flashcards[idx];
+  document.getElementById('fcTerm').textContent = card.term;
+  document.getElementById('fcDef').textContent = card.def;
+  document.getElementById('fcCategory').textContent = card.cat;
+  document.getElementById('fcCounter').textContent = `Kartu ${fcIndex+1} / ${flashcards.length}`;
+  document.getElementById('fcCard').classList.remove('flipped');
+}
+
+document.getElementById('fcCard').addEventListener('click', ()=>{
+  document.getElementById('fcCard').classList.toggle('flipped');
+});
+document.getElementById('fcNext').addEventListener('click', ()=>{
+  fcIndex = (fcIndex+1) % flashcards.length;
+  renderFlashcard();
+});
+document.getElementById('fcPrev').addEventListener('click', ()=>{
+  fcIndex = (fcIndex-1 + flashcards.length) % flashcards.length;
+  renderFlashcard();
+});
+document.getElementById('fcShuffle').addEventListener('click', ()=>{
+  for(let i=fcOrder.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [fcOrder[i],fcOrder[j]] = [fcOrder[j],fcOrder[i]];
+  }
+  fcIndex = 0;
+  renderFlashcard();
+});
+
+renderFlashcard();
+</script>
+</body>
+</html>

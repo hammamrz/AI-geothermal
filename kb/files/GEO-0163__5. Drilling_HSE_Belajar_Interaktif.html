@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Drilling HSE — Paket Belajar Interaktif (JDS)</title>
+<style>
+:root{
+  --bg:#14181A;
+  --bg-panel:#1C2124;
+  --bg-panel-2:#22282B;
+  --bg-raised:#272E31;
+  --line:#3A3530;
+  --line-soft:#2A2726;
+  --safety:#C1542E;
+  --safety-soft:#E07A46;
+  --teal:#3E9188;
+  --amber:#E3B02F;
+  --danger:#B23A2E;
+  --text:#EDE6D8;
+  --text-dim:#B3ADA2;
+  --text-faint:#7A756B;
+  --serif: Georgia, 'Iowan Old Style', 'Times New Roman', serif;
+  --mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:
+    radial-gradient(ellipse at top left, #2E1E14 0%, transparent 45%),
+    radial-gradient(ellipse at bottom right, #142A28 0%, transparent 50%),
+    var(--bg);
+  color:var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+::selection{background:var(--safety);color:#14181A;}
+
+.wrap{max-width:920px;margin:0 auto;padding:28px 18px 80px;}
+
+header.hero{
+  display:flex;
+  gap:18px;
+  align-items:stretch;
+  border:1px solid var(--line);
+  background:var(--bg-panel);
+  border-radius:6px;
+  overflow:hidden;
+  margin-bottom:22px;
+}
+.hazard-strip{
+  width:16px;
+  flex-shrink:0;
+  background: repeating-linear-gradient(135deg,
+      #E3B02F 0px, #E3B02F 14px,
+      #14181A 14px, #14181A 28px
+    );
+}
+.hero-body{padding:22px 24px 22px 6px;flex:1;}
+.eyebrow{
+  font-family:var(--mono);
+  font-size:11px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--safety-soft);
+  margin:0 0 6px;
+}
+h1.title{
+  font-family:var(--serif);
+  font-weight:700;
+  font-size:28px;
+  line-height:1.15;
+  margin:0 0 6px;
+  color:var(--text);
+}
+.tagline{
+  font-family:var(--serif);
+  font-style:italic;
+  color:var(--teal);
+  font-size:15px;
+  margin:0 0 12px;
+}
+.hero-meta{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  font-family:var(--mono);
+  font-size:11px;
+  color:var(--text-dim);
+}
+.chip{
+  border:1px solid var(--line);
+  padding:3px 9px;
+  border-radius:3px;
+  background:var(--bg-panel-2);
+}
+
+nav.tabs{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:2px;
+  background:var(--line);
+  border-radius:6px;
+  overflow:hidden;
+  margin-bottom:22px;
+  border:1px solid var(--line);
+}
+nav.tabs button{
+  font-family:var(--mono);
+  font-size:12.5px;
+  letter-spacing:.03em;
+  text-transform:uppercase;
+  padding:13px 6px;
+  background:var(--bg-panel);
+  color:var(--text-dim);
+  border:none;
+  cursor:pointer;
+  transition:background .15s, color .15s;
+}
+nav.tabs button:hover{background:var(--bg-raised);color:var(--text);}
+nav.tabs button.active{background:var(--safety);color:#14181A;font-weight:700;}
+
+section.panel{display:none;}
+section.panel.active{display:block;animation:fade .25s ease;}
+@keyframes fade{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+
+.card{
+  background:var(--bg-panel);
+  border:1px solid var(--line);
+  border-radius:6px;
+  padding:18px 20px;
+  margin-bottom:14px;
+}
+.card h2{
+  font-family:var(--serif);
+  font-size:19px;
+  margin:0 0 10px;
+  color:var(--safety-soft);
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.card h2 .num{
+  font-family:var(--mono);
+  font-size:12px;
+  color:var(--bg);
+  background:var(--teal);
+  padding:2px 7px;
+  border-radius:3px;
+}
+.card p, .card li{font-size:14.5px;line-height:1.6;color:var(--text-dim);}
+.card ul{margin:6px 0;padding-left:20px;}
+.card strong{color:var(--text);}
+
+.accordion{border:1px solid var(--line);border-radius:6px;overflow:hidden;margin-bottom:12px;}
+.acc-head{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:13px 16px;cursor:pointer;background:var(--bg-panel-2);
+  font-family:var(--serif);font-size:16px;color:var(--text);
+  transition:background .15s;
+}
+.acc-head:hover{background:var(--bg-raised);}
+.acc-head .arrow{font-family:var(--mono);color:var(--safety-soft);transition:transform .2s;font-size:13px;}
+.acc-head.open .arrow{transform:rotate(90deg);}
+.acc-body{max-height:0;overflow:hidden;transition:max-height .3s ease;background:var(--bg-panel);}
+.acc-body-inner{padding:4px 18px 16px;}
+
+table{width:100%;border-collapse:collapse;margin:8px 0;font-size:13px;}
+th,td{border:1px solid var(--line-soft);padding:7px 9px;text-align:left;vertical-align:top;}
+th{background:var(--bg-panel-2);color:var(--safety-soft);font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.04em;}
+td{color:var(--text-dim);}
+td strong{color:var(--text);}
+tr:nth-child(even) td{background:rgba(255,255,255,0.015);}
+
+.tag{display:inline-block;font-family:var(--mono);font-size:10.5px;padding:2px 7px;border-radius:3px;border:1px solid var(--line);color:var(--text-dim);margin:1px 3px 1px 0;}
+.tag.teal{border-color:var(--teal);color:var(--teal);}
+.tag.amber{border-color:var(--amber);color:var(--amber);}
+.tag.safety{border-color:var(--safety-soft);color:var(--safety-soft);}
+
+#quiz-score-bar{
+  display:flex;justify-content:space-between;align-items:center;
+  font-family:var(--mono);font-size:12px;color:var(--text-dim);
+  margin-bottom:14px;padding:10px 14px;border:1px solid var(--line);border-radius:6px;background:var(--bg-panel);
+}
+#quiz-score-bar #score{color:var(--amber);font-weight:700;}
+.progressbar{flex:1;height:6px;background:var(--bg-panel-2);border-radius:3px;margin:0 14px;overflow:hidden;}
+.progressbar-fill{height:100%;background:var(--teal);width:0%;transition:width .3s;}
+
+.qcard{background:var(--bg-panel);border:1px solid var(--line);border-radius:6px;padding:18px 20px;margin-bottom:14px;}
+.qcard .qnum{font-family:var(--mono);font-size:11px;color:var(--safety-soft);text-transform:uppercase;letter-spacing:.05em;}
+.qcard .qtext{font-family:var(--serif);font-size:16.5px;margin:8px 0 14px;line-height:1.4;}
+.opt{
+  display:block;width:100%;text-align:left;
+  background:var(--bg-panel-2);border:1px solid var(--line);color:var(--text);
+  padding:10px 14px;margin-bottom:8px;border-radius:5px;font-size:14px;cursor:pointer;
+  transition:border-color .15s, background .15s;
+}
+.opt:hover{border-color:var(--safety-soft);}
+.opt.correct{background:rgba(62,145,136,0.18);border-color:var(--teal);color:var(--teal);}
+.opt.wrong{background:rgba(178,58,46,0.18);border-color:var(--danger);color:#E8988A;}
+.opt[disabled]{cursor:default;}
+.explain{
+  display:none;margin-top:10px;padding:10px 14px;border-left:3px solid var(--amber);
+  background:var(--bg-panel-2);font-size:13.5px;color:var(--text-dim);line-height:1.55;border-radius:0 4px 4px 0;
+}
+.explain.show{display:block;}
+#quiz-actions{display:flex;gap:10px;margin-top:6px;}
+button.btn{
+  font-family:var(--mono);font-size:12.5px;text-transform:uppercase;letter-spacing:.04em;
+  background:var(--safety);color:#14181A;border:none;padding:10px 18px;border-radius:5px;cursor:pointer;font-weight:700;
+}
+button.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--text-dim);}
+button.btn:hover{filter:brightness(1.1);}
+#quiz-result{display:none;text-align:center;padding:30px 20px;}
+#quiz-result h3{font-family:var(--serif);font-size:24px;color:var(--amber);}
+
+#fc-controls{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;font-family:var(--mono);font-size:12px;color:var(--text-dim);flex-wrap:wrap;gap:8px;}
+#fc-deck{display:flex;gap:10px;}
+.scene{perspective:1200px;height:230px;margin-bottom:16px;}
+.flashcard{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .5s;cursor:pointer;}
+.flashcard.flipped{transform:rotateY(180deg);}
+.face{
+  position:absolute;inset:0;backface-visibility:hidden;
+  border-radius:8px;border:1px solid var(--line);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:24px;text-align:center;
+}
+.face.front{background:var(--bg-panel);}
+.face.front .cat{font-family:var(--mono);font-size:10.5px;color:var(--safety-soft);text-transform:uppercase;letter-spacing:.08em;position:absolute;top:14px;left:16px;}
+.face.front .term{font-family:var(--serif);font-size:22px;line-height:1.3;color:var(--text);}
+.face.front .hint{position:absolute;bottom:14px;font-family:var(--mono);font-size:10.5px;color:var(--text-faint);}
+.face.back{background:var(--bg-raised);transform:rotateY(180deg);}
+.face.back .def{font-size:14.5px;line-height:1.6;color:var(--text-dim);}
+.face.back .def strong{color:var(--teal);}
+.fc-nav{display:flex;justify-content:center;gap:12px;align-items:center;}
+.fc-counter{font-family:var(--mono);font-size:12px;color:var(--text-dim);min-width:60px;text-align:center;}
+.fc-status{display:flex;justify-content:center;gap:20px;margin-top:12px;font-family:var(--mono);font-size:11px;color:var(--text-faint);}
+.fc-status span b{color:var(--teal);}
+.fc-status span.dk b{color:var(--danger);}
+
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0;}
+.compare-cell{background:var(--bg-panel-2);border:1px solid var(--line);border-radius:5px;padding:12px 14px;}
+.compare-cell h4{margin:0 0 6px;font-family:var(--mono);font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--amber);}
+.compare-cell p{margin:0;font-size:13.5px;}
+@media(max-width:640px){.compare-grid{grid-template-columns:1fr;}}
+
+.ladder{display:flex;flex-direction:column;gap:6px;margin:12px 0;}
+.ladder-row{display:flex;align-items:center;gap:10px;background:var(--bg-panel-2);border:1px solid var(--line);border-radius:5px;padding:9px 12px;}
+.ladder-badge{font-family:var(--mono);font-size:11px;font-weight:700;padding:3px 9px;border-radius:3px;min-width:56px;text-align:center;}
+.ladder-row p{margin:0;font-size:13.5px;}
+
+.calc-box{background:var(--bg-panel-2);border:1px dashed var(--line);border-radius:6px;padding:16px;margin-top:10px;}
+.calc-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;}
+.calc-row label{font-family:var(--mono);font-size:11px;color:var(--text-dim);display:block;margin-bottom:4px;}
+.calc-row input, .calc-row select{
+  background:var(--bg);border:1px solid var(--line);color:var(--text);
+  padding:7px 9px;border-radius:4px;font-family:var(--mono);font-size:13px;
+}
+.calc-row input{width:120px;}
+.calc-out{font-family:var(--mono);font-size:13.5px;color:var(--teal);margin-top:6px;padding-top:10px;border-top:1px solid var(--line-soft);}
+.calc-out b{color:var(--amber);}
+.rpc-box{display:inline-block;font-family:var(--mono);font-weight:700;font-size:13px;padding:6px 14px;border-radius:4px;margin-top:6px;}
+
+footer.foot{text-align:center;font-family:var(--mono);font-size:11px;color:var(--text-faint);margin-top:30px;padding-top:18px;border-top:1px solid var(--line-soft);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <div class="hazard-strip"></div>
+    <div class="hero-body">
+      <p class="eyebrow">JDS Training · 09 Mei 2026</p>
+      <h1 class="title">Drilling Health, Safety, and Environment (HSE)</h1>
+      <p class="tagline">By Sari Nurlita Bahri — Jakarta Drilling Society</p>
+      <div class="hero-meta">
+        <span class="chip">6 Topik Utama</span>
+        <span class="chip">HIRA/JSA · PPE · Emergency Response · Environment · Community</span>
+        <span class="chip">Rangkuman · Soal · Flashcard · Penjelasan Sulit</span>
+      </div>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab-btn active" data-tab="rangkuman">1 · Rangkuman</button>
+    <button class="tab-btn" data-tab="soal">2 · Latihan Soal</button>
+    <button class="tab-btn" data-tab="flashcard">3 · Flashcard</button>
+    <button class="tab-btn" data-tab="sulit">4 · Bagian Sulit</button>
+  </nav>
+
+  <!-- ============================================================ -->
+  <!-- TAB 1: RANGKUMAN -->
+  <!-- ============================================================ -->
+  <section class="panel active" id="tab-rangkuman">
+
+    <div class="card">
+      <h2>Isi Materi</h2>
+      <ol>
+        <li>HSE Awareness &amp; Safety Culture in Drilling</li>
+        <li>Hazard Identification &amp; Risk Assessment (HIRA/JSA)</li>
+        <li>Personal Protective Equipment &amp; Safe Work Practices</li>
+        <li>Emergency Response &amp; Incident Handling</li>
+        <li>Environmental Protection in Drilling Operations</li>
+        <li>Community Safety &amp; Responsibility</li>
+      </ol>
+    </div>
+
+    <div class="accordion" data-acc>
+      <div class="acc-head open"><span>1 — HSE Awareness &amp; Safety Culture</span><span class="arrow">▶</span></div>
+      <div class="acc-body" style="max-height:2200px;">
+        <div class="acc-body-inner">
+          <p><strong>HSE Awareness</strong> berarti: memahami bahaya di tempat kerja, mengenali tindakan &amp; kondisi tidak aman, mengikuti prosedur &amp; kontrol, dan bertanggung jawab atas keselamatan diri &amp; tim. Setiap orang punya tanggung jawab: menghentikan pekerjaan tidak aman, melaporkan bahaya segera, menggunakan PPE yang tepat, dan mengikuti Permit to Work (PTW).</p>
+          <p><strong>Kenapa HSE kritikal di drilling:</strong> lingkungan kerja berisiko tinggi, peralatan berat &amp; sistem bertekanan tinggi, adanya Simultaneous Operations (SIMOPS), serta potensi dampak terhadap personel, lingkungan, aset, dan reputasi perusahaan.</p>
+          <p><strong>Potensi bahaya (Hazard Potential)</strong> di area drilling mencakup: Gravity, Mekanikal, Elektrikal, Tekanan, Kimia, Gerakan, Suara, Biologi, Radiasi, dan Temperature.</p>
+          <p><strong>Bahaya umum aktivitas drilling:</strong> dropped objects, high pressure release, rotating equipment, line of fire, working at height, confined space, lifting operations, chemical exposure.</p>
+          <p><strong>Life Saving Rules (9 aturan):</strong> Bypassing Safety Controls, Confined Space, Driving, Energy Isolation, Hot Work, Line of Fire, Safe Mechanical Lifting, Work Authorization, Working at Height. Cara penerapannya: pre-job planning → toolbox talk/safety meeting → doing the job → intervention → observations.</p>
+
+          <p><strong>Leading vs Lagging Indicator:</strong></p>
+          <table>
+            <tr><th>Leading Indicator</th><th>Lagging Indicator</th></tr>
+            <tr><td>Mengukur efektivitas aktivitas &amp; program proaktif pencegahan (mis. Training Completion Rate, PPE Compliance Rate, Safety Audit Completion Rate, Safety Meeting Participation, Unsafe Act/Condition Reporting Rate, Corrective Action Closure Rate)</td><td>Mengukur apa yang sudah terjadi — kecelakaan &amp; cedera — dan dapat diukur dengan jelas (mis. TRIR, LTIFR, First Aid Cases, Reportable Incidents, DART, HPIF)</td></tr>
+          </table>
+
+          <p><strong>Klasifikasi cedera (Understanding the Meaning):</strong></p>
+          <table>
+            <tr><th>Istilah</th><th>Definisi</th><th>Dampak</th></tr>
+            <tr><td><strong>FAC</strong> (First Aid Case)</td><td>Cedera ringan, hanya perlu penanganan dasar sekali</td><td>Karyawan langsung kembali bekerja</td></tr>
+            <tr><td><strong>MTC</strong> (Medical Treatment Case)</td><td>Cedera perlu perawatan profesional dari dokter berlisensi</td><td>Melebihi first aid, tapi karyawan tetap fit untuk tugas rutin</td></tr>
+            <tr><td><strong>RWC</strong> (Restricted Work Case)</td><td>Cedera membuat karyawan tak bisa jalankan fungsi kerja normal</td><td>Ditugaskan "light duty"/tugas modifikasi</td></tr>
+            <tr><td><strong>LTI</strong> (Lost Time Injury)</td><td>Cedera parah yang membuat karyawan tak bisa kembali kerja di hari kerja terjadwal berikutnya</td><td>Hari kerja hilang &amp; downtime operasional signifikan</td></tr>
+            <tr><td><strong>NMTC</strong> (Non-Medical Treatment Case)</td><td>Ketidaknyamanan/observasi ringan yang tak butuh perawatan medis formal</td><td>Tanpa perawatan; karyawan lanjut bekerja</td></tr>
+            <tr><td><strong>Near Miss</strong></td><td>Kejadian tak terencana yang tidak menyebabkan cedera/penyakit/kerusakan, tapi berpotensi</td><td>Tanpa kerugian, tapi sinyal peringatan kuat</td></tr>
+            <tr><td><strong>Fatality</strong></td><td>Insiden kerja yang berujung kematian</td><td>Dampak paling parah; memicu investigasi hukum &amp; pelaporan</td></tr>
+            <tr><td><strong>DAFWC</strong> (Days Away From Work Case)</td><td>Cedera/penyakit menyebabkan satu hari kerja atau lebih tidak masuk kerja (tidak termasuk hari kejadian)</td><td>Karyawan tak bisa bekerja untuk periode tertentu</td></tr>
+          </table>
+
+          <p><strong>Incident vs Accident vs Near Miss:</strong> Incident = kejadian tak terencana yang mengganggu operasi normal tapi tidak menyebabkan cedera/kerusakan. Accident = kejadian tak terencana yang menghasilkan cedera, penyakit, atau kerusakan properti. Near Miss = situasi tidak aman di mana seseorang nyaris menghindari bahaya/kerusakan.</p>
+          <p><strong>Unsafe Acts vs Unsafe Conditions:</strong> Unsafe Acts (tindakan yang meningkatkan risiko, mis. tanpa PPE, ambil jalan pintas) menyumbang <strong>80–90%</strong> penyebab kecelakaan; Unsafe Conditions (kondisi fisik berbahaya, mis. tumpahan oli, pencahayaan buruk, kabel terbuka) menyumbang <strong>10–20%</strong>. Solusinya: latih orang untuk perilaku aman (Train People) &amp; perbaiki tempat kerja untuk kondisi aman (Fix Workplace).</p>
+          <p><strong>HOC (Hazard Observation Card):</strong> aktivitas mengamati &amp; mencatat tindakan aman, kondisi tidak aman, tindakan tidak aman, dan near miss di lingkungan kerja. HOC adalah langkah awal menghilangkan/mengendalikan bahaya — sejalan dengan fakta bahwa 80% kecelakaan disebabkan tindakan tidak aman dan 20% oleh kondisi tidak aman.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion" data-acc>
+      <div class="acc-head"><span>2 — Hazard Identification &amp; Risk Assessment (HIRA/JSA)</span><span class="arrow">▶</span></div>
+      <div class="acc-body">
+        <div class="acc-body-inner">
+          <p><strong>Hazard:</strong> segala kondisi nyata atau potensial yang dapat menyebabkan cedera, penyakit, atau kematian personel; kerusakan/kehilangan sistem, peralatan, atau properti; atau kerusakan lingkungan.</p>
+          <p><strong>Risk:</strong> situasi/keadaan tidak diinginkan yang berpotensi terjadi dan menimbulkan konsekuensi negatif — termasuk cedera, kehilangan pendapatan, aset, pangsa pasar, atau kerusakan citra perusahaan.</p>
+          <p><strong>Hazard vs Risk:</strong> Hazard = sesuatu yang berpotensi mencelakai. Risk = kemungkinan (likelihood) bahwa hazard tersebut benar-benar mencelakai. Rumus sederhana: <strong>Risk = Hazard × Exposure</strong>.</p>
+          <p><strong>Identifikasi Bahaya:</strong> proses mengenali adanya bahaya terhadap suatu proses pekerjaan, lalu mengenali karakteristiknya.</p>
+          <p><strong>Risk Assessment:</strong> proses evaluasi probability (kemungkinan) dan severity (keparahan) dari kejadian berbahaya/paparan tertentu, untuk memutuskan apakah risiko dapat diterima. Metode identifikasi bahaya: Inspection, Survey, Audit, Questionnaire, dll.</p>
+
+          <p><strong>Alur Risk Management Process (HIRA/HIRARC/HIRADC):</strong></p>
+          <ol>
+            <li><strong>Phase Screening</strong> — teknik: Brainstorming, PHA (Preliminary Hazards Analysis)</li>
+            <li><strong>Phase Analysis</strong> — JSA/TRA (job/task/activity), FMEA/What If (equipment/instalasi), HAZID/HAZOP (proses/instalasi), FTA/ETA (incident/root causes), Bow Tie (semua aktivitas &amp; bahaya), QRA/SIL/LOPA/FERA (kuantitatif/modeling/tren)</li>
+            <li><strong>Phase Documentation</strong> — hasil analisis dituangkan ke Risk Register/Dokumen Risiko</li>
+            <li><strong>Phase Implementation</strong> — Pengendalian risiko melalui Engineering, Procedures/System, dan Human intervention</li>
+          </ol>
+
+          <p><strong>Risk Matrix (Likelihood × Consequences):</strong> semakin tinggi likelihood (Almost certain → Rare) dan semakin besar consequence (Insignificant → Catastrophic), semakin tinggi tingkat risiko: Low → Moderate → High → Critical Risk.</p>
+          <p><strong>Hazard Severity × Probability Rating → Risk Priority Code (RPC):</strong> Severity dari Catastrophic (I) hingga Negligible (IV); Probability dari Frequent (A) hingga Impossible (F). Kombinasi keduanya menghasilkan RPC: <strong>1 = High Risk</strong> (wajib ditekan ke level lebih rendah), <strong>2 = Medium Risk</strong> (butuh waiver manajemen), <strong>3 = Operation Permissible</strong>. Catatan penting: RPC kurang dari 3 tidak dapat diterima untuk bahaya yang mengincar personel.</p>
+
+          <p><strong>Hierarchy of Control (paling efektif → paling tidak efektif):</strong></p>
+          <ol>
+            <li><strong>Elimination</strong> — menghilangkan bahaya secara fisik</li>
+            <li><strong>Substitution</strong> — mengganti bahaya dengan yang lebih rendah risikonya</li>
+            <li><strong>Engineering Controls</strong> — mengisolasi orang dari bahaya</li>
+            <li><strong>Administrative Controls</strong> — mengubah cara orang bekerja</li>
+            <li><strong>PPE</strong> — melindungi pekerja dengan alat pelindung diri</li>
+          </ol>
+
+          <p><strong>Job Safety Analysis (JSA):</strong> disiapkan untuk pekerjaan yang kritikal, baru, atau jarang dikerjakan, agar aplikasinya memenuhi standar mutu. Ketentuan JSA: pendekatan struktural mengidentifikasi potensi bahaya &amp; memberi langkah perbaikan; identifikasi bahaya mencakup cedera, kebakaran/peledakan, kerusakan properti, gangguan proses, pencemaran lingkungan; formulir JSA minimal memuat informasi pekerjaan, pihak terlibat, langkah dasar pekerjaan, potensi bahaya, dan rekomendasi prosedur kerja aman.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion" data-acc>
+      <div class="acc-head"><span>3 — Personal Protective Equipment &amp; Safe Work Practices</span><span class="arrow">▶</span></div>
+      <div class="acc-body">
+        <div class="acc-body-inner">
+          <p><strong>APD/PPE:</strong> alat/perlengkapan wajib untuk melindungi &amp; menjaga keselamatan pekerja saat melakukan pekerjaan berpotensi bahaya. APD harus sesuai dengan potensi bahaya &amp; risiko pekerjaan agar efektif, serta berfungsi mengisolasi sebagian/seluruh tubuh dari bahaya.</p>
+          <p><strong>Kapan &amp; di mana PPE dibutuhkan:</strong> Process Hazards, Environmental Hazards, Chemical Hazards, Non-Ionizing Radiation, Mechanical Irritants, Extreme Temperatures, Biological Hazards.</p>
+          <p><strong>Jenis PPE:</strong> Eye and Face protection, Respiratory protection, Head protection, Hand protection, Foot protection, Electrical protective equipment, Flash Fire protection, Hearing protection.</p>
+          <p><strong>Persyaratan tambahan PPE:</strong> pastikan training cara memakai/melepas/menyesuaikan PPE, PPE harus pas (fit) di badan pemakai, respirator &amp; PPE tertentu butuh fit test tahunan, PPE harus selalu dipakai dengan benar (tidak terbalik), dan PPE tidak boleh dipakai bergantian antar pekerja. APD digunakan sesuai penilaian APD, Penilaian Risiko, JSA, atau dokumen kerja terkait.</p>
+
+          <p><strong>Stop Work Authority (SWA):</strong> kebijakan yang memberi seluruh karyawan &amp; kontraktor wewenang &amp; tanggung jawab untuk melakukan intervensi dan menghentikan pekerjaan tanpa rasa takut terhadap tindakan balasan, bila melihat tindakan/kondisi tidak aman atau khawatir soal risiko HSE. Langkah intervensi: HENTIKAN pekerjaan jika ada bahaya segera (imminent danger) → komunikasikan kekhawatiran → tangani risiko sebelum lanjut → eskalasi ke supervisor bila belum tertangani. Intimidasi terhadap pelaksana SWA tidak akan ditoleransi.</p>
+
+          <p><strong>Permit to Work (PTW):</strong> sistem kontrol &amp; perencanaan kerja untuk membantu personel bekerja sesuai praktik kerja aman. Dibutuhkan untuk: Hot Work, Pressure System Work, Electrical Work, Explosive/Radioactive Work, Working at Heights, Confined Space Entry, Heavy Lift, dan General Work non-rutin (risiko lebih dari rendah &amp; tidak rutin dilakukan). Manfaat PTW: mencegah kecelakaan/cedera, komunikasi jelas, penilaian &amp; kontrol risiko, otorisasi yang tepat, kepatuhan &amp; dokumentasi. Elemen kunci: Risk Assessment (JSA/JHA), Permit Approval (tanda tangan otorisasi), Safe Work Procedures (persyaratan PPE).</p>
+
+          <p><strong>LOTO (Lock Out Tag Out):</strong> prosedur keselamatan kritikal untuk memastikan mesin berbahaya benar-benar dimatikan, terisolasi dari sumber energi, dan tidak dapat dinyalakan ulang selama maintenance/perbaikan.</p>
+          <p><strong>Line of Fire:</strong> situasi di mana tubuh/bagian tubuh karyawan berada dalam posisi yang berisiko cedera akibat kontak dengan mesin, peralatan, tools, atau bahaya serupa. Kesadaran diperlukan pada level tugas/tools, operasi, dan peralatan — gunakan "5 Checks to Go" dan hindari Red Zone di sekitar peralatan bertekanan/kabel tegang.</p>
+          <p><strong>Journey Management Program:</strong> semua perjalanan harus dibuat &amp; didokumentasikan; tidak ada perjalanan tanpa trip yang disetujui; semua pengemudi harus paham prosedur tanggap darurat lokal; pengemudi wajib update detail perjalanan bila ada perubahan (penumpang, rute); semua insiden segera dilaporkan ke supervisor untuk lesson learned.</p>
+          <p><strong>Housekeeping / 5S Program:</strong> <strong>Sort</strong> (pisahkan &amp; buang barang tak perlu, gunakan area "Red Tag"), <strong>Set in Order</strong> (susun sesuai frekuensi pemakaian, barang dapat diambil &lt;5 detik), <strong>Shine</strong> (bersihkan secara rutin — kebersihan sekaligus bentuk inspeksi dini), <strong>Standardize</strong> (jadikan 5S kebiasaan &amp; tanggung jawab jelas), <strong>Sustain</strong> (bangun disiplin 5S jadi budaya harian, perlu keterlibatan &amp; dukungan manajemen).</p>
+          <p><strong>Communication &amp; Toolbox Meeting:</strong> lakukan pre-job briefing sebelum kerja, pastikan komunikasi jelas antar kru, bahas bahaya/kontrol/tanggap darurat — didukung komunikasi dua arah, kerja tim efektif, dan lingkungan kerja yang baik.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion" data-acc>
+      <div class="acc-head"><span>4 — Emergency Response &amp; Incident Handling</span><span class="arrow">▶</span></div>
+      <div class="acc-body">
+        <div class="acc-body-inner">
+          <p><strong>Potensi keadaan darurat:</strong> kebakaran, tumpahan, kebocoran gas beracun/flammable, blow-out, cidera personel, keadaan darurat aspek security.</p>
+          <p><strong>Emergency Preparedness</strong> terdiri dari dua dokumen:</p>
+          <ul>
+            <li><strong>Job Site Emergency Response Plan</strong> — merinci tindakan tanggap darurat untuk keadaan darurat selama pekerjaan berlangsung di lokasi, memastikan personel tahu bereaksi cepat &amp; efektif.</li>
+            <li><strong>Local Emergency Response Plan</strong> — merinci tindakan melindungi personel &amp; mengurangi kerusakan dari keadaan darurat yang dapat diperkirakan; fokus pada perlindungan karyawan &amp; minimalkan dampak pada fasilitas.</li>
+          </ul>
+          <p><strong>Assembly Point:</strong> lokasi aman yang ditetapkan sebagai tempat berkumpul seluruh personel selama evakuasi darurat — memastikan semua personel aman, terhitung, dan mencegah kebingungan/risiko lanjutan.</p>
+          <p><strong>5 langkah saat keadaan darurat:</strong></p>
+          <ol>
+            <li>Saat mendengar alarm, hentikan pekerjaan segera</li>
+            <li>Evakuasi lewat exit terdekat yang aman</li>
+            <li>Menuju assembly point terdekat</li>
+            <li>Lapor ke supervisor/marshal untuk headcount</li>
+            <li>Jangan kembali ke area kerja sampai diizinkan</li>
+          </ol>
+          <p><strong>Peran dalam keadaan darurat:</strong> Emergency Controller (penanggung jawab keseluruhan), Fire Warden (memimpin evakuasi &amp; cek area), First Aider (memberi pertolongan pertama), Assembly Marshal (mengelola headcount &amp; pelaporan).</p>
+          <p><strong>Kesiapsiagaan Tanggap Darurat</strong> mencakup 4 elemen: Prosedur Penanggulangan Keadaan Darurat, Alat Penanggulangan Keadaan Darurat, Tim Penanggulangan Keadaan Darurat, dan Latihan Penanggulangan Keadaan Darurat.</p>
+          <p><strong>Alur Investigasi &amp; Pelaporan:</strong> Report Incident → Establish Investigation Team → Investigate, Identify Root Cause → Determine Corrective and Preventive Action → Incident Review and Closure. Jalur pelaporan cedera: Saksi mata/operator/pengawas kontraktor → Pengawas pekerjaan → Tim SERT → Ketua Tim SERT → Aktivasi Tim ERT.</p>
+          <p><strong>MERP (Medical Emergency Response Plan) — tingkatan rujukan medis:</strong></p>
+          <table>
+            <tr><th>Level</th><th>Fasilitas rujukan</th></tr>
+            <tr><td>MERP Level I</td><td>First Aider</td></tr>
+            <tr><td>MERP Level II</td><td>Ambulance → On Site Clinic / Puskesmas</td></tr>
+            <tr><td>MERP Level III</td><td>RS Rujukan Regional</td></tr>
+            <tr><td>MERP Level IV</td><td>RS Rujukan Utama</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion" data-acc>
+      <div class="acc-head"><span>5 — Environmental Protection in Drilling Operations</span><span class="arrow">▶</span></div>
+      <div class="acc-body">
+        <div class="acc-body-inner">
+          <p><strong>Hazard Communication Program</strong> mencakup 8 elemen inti: SDS (means of providing SDS), List of Chemicals (produk kimia &amp; substansi berbahaya), Controlled Document (dokumen disetujui), Activities (memastikan karyawan paham bahaya aktivitas mereka), Protection (langkah melindungi karyawan), Safe Handling Procedures (prosedur penanganan aman disesuaikan fasilitas), Training (pelatihan wajib untuk karyawan terdampak), dan Labels (kontainer harus diberi label).</p>
+          <p><strong>Hazardous Chemical Product Handling and Storage ("Safe Storage")</strong> mencakup 4 pilar: Compliance (otorisasi lingkungan &amp; kepatuhan hukum lokal), Segregation (pemisahan sesuai matriks &amp; kondisi tepat), Containment (penyimpanan meminimalkan pelepasan ke udara/tanah/air), dan Emergency Response (kesiapan &amp; respons tumpahan).</p>
+          <p><strong>Waste Management:</strong> waste adalah segala sampah/sisa material/scrap/sludge hasil dari operasi industri, komersial, mining, pertanian, dan aktivitas komunitas. Terbagi dua: <strong>Hazardous Waste</strong> (toxic, explosive, radiation, acid, flammable, biohazard) dan <strong>Non-hazardous Waste</strong> (glass, plastic, organic, paper, metal, e-waste).</p>
+          <p><strong>Waste Storage Area</strong> harus: memiliki area penyimpanan khusus, terawat &amp; bebas dari debris, limbah tak kompatibel dipisahkan, tersedia kontak &amp; prosedur alat darurat, dan disimpan kurang dari 1 tahun. Siklus penyimpanan wadah limbah: Proper Labeling → In good condition → Compatible → Securely closed → Secondary containment.</p>
+          <p><strong>Spill:</strong> pelepasan cairan, gas, atau padatan yang tidak direncanakan/tidak terkendali, yang berdampak buruk (atau berpotensi) pada tanah, air, atau udara di luar tujuan penggunaannya — termasuk venting baterai lithium primer, pelepasan ke secondary containment/permukaan kedap air, dan pelepasan tak berizin ke saluran air/pengolahan kota.</p>
+          <p><strong>Spill Response Equipment:</strong> Absorbents, Neutralizers, Personal Protective Equipment (PPE), Tools for clean-up, dan Other. Memahami Safety Data Sheet (SDS) bagian 6 penting untuk memastikan peralatan yang tepat digunakan secara efisien &amp; aman saat keadaan darurat.</p>
+          <p><strong>Safety Data Sheet (SDS):</strong> menjamin bahaya bahan kimia/fisik di tempat kerja dan cara penanganannya dikomunikasikan dengan baik &amp; selamat. Manfaat: menjelaskan karakteristik zat kimia, memberi prosedur keamanan, menghindari kecelakaan akibat zat kimia. <strong>16 item SDS (selaras GHS):</strong> Identification, Hazard Identification, Composition, First Aid Measures, Fire-Fighting Measures, Accidental Release Measures, Handling and Storage, Exposure Control, Physical and Chemical Properties, Stability and Reactivity, Toxicological Information, Ecological Information, Disposal Consideration, Transport Information, Regulatory Information, Other Information.</p>
+          <p><strong>Klasifikasi &amp; Karakteristik B3 (GHS — Global Harmonized System):</strong> klasifikasi bahaya terbagi 3: <strong>Bahaya Fisik (16 kelas)</strong> — mis. mudah meledak, gas mudah menyala, cairan mudah menyala, korosif terhadap logam; <strong>Bahaya Kesehatan (10 kelas)</strong> — mis. toksisitas akut, korosi/iritasi kulit &amp; mata, karsinogenisitas, bahaya hirupan; <strong>Bahaya Lingkungan (2 kelas)</strong> — berbahaya bagi lingkungan perairan &amp; berbahaya bagi lapisan ozon. Setiap kelas dibagi lagi jadi divisi/kategori/tipe sesuai tingkat bahaya, masing-masing memiliki label elemen (simbol, kata peringatan, pernyataan bahaya) tersendiri.</p>
+          <p><strong>Label Elemen (GHS):</strong> terdiri dari Hazard pictograms, Product identifiers, Supplier identity, Signal word (mis. "Danger"), Hazard statements, dan Precautionary statements. 9 piktogram GHS: Health Hazard, Flame, Exclamation Mark, Gas Cylinder, Corrosion, Exploding Bomb, Flame Over Circle, Environment, Skull and Crossbones. Label limbah B3 versi Indonesia menggunakan warna kuning (peringatan) &amp; merah, dengan simbol seperti Beracun, Infeksius, Cairan Mudah Menyala, Reaktif, Mudah Meledak, Korosif, Berbahaya Terhadap Lingkungan, Padatan Mudah Menyala, dan Campuran.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion" data-acc>
+      <div class="acc-head"><span>6 — Community Safety &amp; Responsibility</span><span class="arrow">▶</span></div>
+      <div class="acc-body">
+        <div class="acc-body-inner">
+          <p><strong>Community, Health, Safety and Security (CHSS):</strong> standar yang mengatur tanggung jawab pemrakarsa proyek &amp; kontraktor untuk menghindari/meminimalkan risiko dan dampak terhadap kesehatan, keselamatan, dan keamanan publik yang mungkin timbul dari aktivitas terkait proyek, dengan perhatian khusus pada kelompok rentan.</p>
+          <p><strong>CHSS Framework</strong> diselaraskan dengan tiga standar internasional: <strong>IFC-PS No.4</strong>, <strong>UNDP-SES No.3</strong>, dan <strong>WB-ESS No.4</strong>. Cakupan umumnya meliputi: Community Health and Safety, Community Exposure to Health Issue, Infrastructure and Equipment Design and Safety (termasuk Traffic and Road Safety), Hazardous Material Management and Safety, Emergency Preparedness and Response, Ecosystem Service, dan Security Personnel/Safety Service.</p>
+          <p><strong>Stakeholder Engagement</strong> yang baik mencakup 7 fungsi: Information Disclosure (komunikasi informasi sejak awal, mudah diakses), Stakeholder Consultation (rencanakan &amp; dokumentasikan proses konsultasi), Negotiation and Partnerships (negosiasi itikad baik untuk isu kompleks/kontroversial), Grievance Management (sarana menyampaikan keluhan yang mudah diakses), Stakeholder Involvement in Project Monitoring (libatkan pihak terdampak dalam pemantauan dampak proyek), Reporting to Stakeholders (laporkan kinerja lingkungan, sosial, ekonomi), dan Management Functions (bangun kapasitas internal mengelola proses engagement).</p>
+          <p><strong>Peran perusahaan/kru drilling terhadap komunitas:</strong></p>
+          <ol>
+            <li><strong>Protecting the Community</strong> — mencegah insiden yang berdampak pada warga sekitar, mengontrol kebisingan/debu/lalu lintas/emisi, memastikan transportasi &amp; logistik yang aman.</li>
+            <li><strong>Respecting Local Communities</strong> — menjaga komunikasi baik dengan stakeholder lokal, menghormati budaya &amp; aktivitas komunitas setempat, merespons cepat terhadap keluhan.</li>
+            <li><strong>Safe Behavior at All Times</strong> — berkendara aman di dalam &amp; luar lokasi kerja, mengikuti aturan HSE perusahaan di mana pun, dan bertindak bertanggung jawab sebagai perwakilan perusahaan.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- TAB 2: LATIHAN SOAL -->
+  <!-- ============================================================ -->
+  <section class="panel" id="tab-soal">
+    <div id="quiz-score-bar">
+      <span>Progress</span>
+      <div class="progressbar"><div class="progressbar-fill" id="progress-fill"></div></div>
+      <span>Skor: <span id="score">0</span>/<span id="total">0</span></span>
+    </div>
+    <div id="quiz-container"></div>
+    <div id="quiz-actions">
+      <button class="btn" id="btn-check" disabled>Periksa Semua Jawaban</button>
+      <button class="btn ghost" id="btn-reset">Ulangi Kuis</button>
+    </div>
+    <div id="quiz-result">
+      <h3 id="result-title"></h3>
+      <p id="result-desc" style="color:var(--text-dim);"></p>
+      <button class="btn" onclick="resetQuiz()">Coba Lagi</button>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- TAB 3: FLASHCARD -->
+  <!-- ============================================================ -->
+  <section class="panel" id="tab-flashcard">
+    <div id="fc-controls">
+      <span id="fc-counter-top">Kartu 1 / 1</span>
+      <div id="fc-deck">
+        <button class="btn ghost" id="fc-shuffle">🔀 Acak</button>
+        <button class="btn ghost" id="fc-restart">↺ Ulangi</button>
+      </div>
+    </div>
+    <div class="scene">
+      <div class="flashcard" id="flashcard">
+        <div class="face front">
+          <span class="cat" id="fc-cat">KATEGORI</span>
+          <div class="term" id="fc-term">Term</div>
+          <span class="hint">klik kartu untuk lihat jawaban</span>
+        </div>
+        <div class="face back">
+          <div class="def" id="fc-def">Definisi</div>
+        </div>
+      </div>
+    </div>
+    <div class="fc-nav">
+      <button class="btn ghost" id="fc-know">✗ Belum Hafal</button>
+      <button class="btn ghost" id="fc-prev">‹ Prev</button>
+      <span class="fc-counter" id="fc-counter">1 / 1</span>
+      <button class="btn ghost" id="fc-next">Next ›</button>
+      <button class="btn" id="fc-got-it">✓ Sudah Hafal</button>
+    </div>
+    <div class="fc-status">
+      <span>Sudah hafal: <b id="fc-known-count">0</b></span>
+      <span class="dk">Belum hafal: <b id="fc-unknown-count">0</b></span>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- TAB 4: PENJELASAN BAGIAN SULIT -->
+  <!-- ============================================================ -->
+  <section class="panel" id="tab-sulit">
+
+    <div class="card">
+      <h2><span class="num">!</span>Kenapa bagian ini sering membingungkan?</h2>
+      <p>Materi HSE penuh istilah yang mirip tapi maknanya berbeda tipis — FAC vs MTC vs RWC vs LTI, Incident vs Accident vs Near Miss, Leading vs Lagging indicator, dan angka 80/20 unsafe acts vs conditions. Bagian ini menata istilah-istilah tersebut secara berjenjang, plus dua kalkulator kecil (rate cedera &amp; pembacaan matriks risiko) supaya logikanya "kepegang".</p>
+    </div>
+
+    <div class="accordion" data-acc>
+      <div class="acc-head open"><span>1 — Tangga Keparahan Cedera: FAC → MTC → RWC → LTI</span><span class="arrow">▶</span></div>
+      <div class="acc-body" style="max-height:900px;">
+        <div class="acc-body-inner">
+          <p>Empat istilah ini sering tertukar karena semuanya "cedera kerja" — bedanya ada di <strong>siapa yang menangani</strong> dan <strong>berapa lama dampaknya</strong>. Urutkan dari paling ringan ke paling berat:</p>
+          <div class="ladder">
+            <div class="ladder-row"><span class="ladder-badge" style="background:rgba(62,145,136,.25);color:var(--teal);">FAC</span><p>Cedera ringan, cukup penanganan dasar sekali pakai (mis. luka kecil) — karyawan langsung kembali kerja.</p></div>
+            <div class="ladder-row"><span class="ladder-badge" style="background:rgba(227,176,47,.25);color:var(--amber);">MTC</span><p>Butuh perawatan dari dokter berlisensi (mis. jahitan, obat resep) — tapi karyawan tetap fit untuk tugas normal.</p></div>
+            <div class="ladder-row"><span class="ladder-badge" style="background:rgba(224,122,70,.25);color:var(--safety-soft);">RWC</span><p>Cedera mencegah karyawan menjalankan fungsi kerja normalnya — ditugaskan "light duty"/modifikasi tugas.</p></div>
+            <div class="ladder-row"><span class="ladder-badge" style="background:rgba(178,58,46,.3);color:var(--danger);">LTI</span><p>Cedera parah — karyawan tak bisa kembali kerja di hari kerja terjadwal berikutnya; ada hari kerja hilang.</p></div>
+          </div>
+          <p>Sementara itu tiga istilah lain berada di luar tangga ini: <strong>NMTC</strong> lebih ringan dari FAC (cuma observasi, tanpa penanganan formal sama sekali); <strong>DAFWC</strong> mirip LTI tapi framing-nya "jumlah hari absen dari kerja"; dan <strong>Near Miss</strong> serta <strong>Fatality</strong> bukan bagian dari tangga keparahan cedera — Near Miss adalah kejadian TANPA cedera sama sekali (hanya berpotensi), sedangkan Fatality adalah titik paling ekstrem (kematian).</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion" data-acc>
+      <div class="acc-head"><span>2 — Incident vs Accident vs Near Miss</span><span class="arrow">▶</span></div>
+      <div class="acc-body">
+        <div class="acc-body-inner">
+          <p>Kuncinya: semua bermula dari kejadian tak terencana (unplanned event) — yang membedakan adalah <strong>apakah ada kerugian nyata</strong>.</p>
+          <div class="compare-grid">
+            <div class="compare-cell"><h4>Incident</h4><p>Kejadian tak terencana yang mengganggu operasi normal, TAPI <strong>tidak</strong> menyebabkan cedera atau kerusakan. Istilah paling luas — sering dipakai sebagai payung untuk semua kejadian tak diinginkan, termasuk Accident &amp; Near Miss di dalamnya.</p></div>
+            <div class="compare-cell"><h4>Accident</h4><p>Kejadian tak terencana yang benar-benar <strong>menghasilkan</strong> cedera, penyakit, atau kerusakan properti. Ini adalah incident yang "jadi kenyataan".</p></div>
+            <div class="compare-cell"><h4>Near Miss</h4><p>Situasi tidak aman di mana seseorang <strong>nyaris</strong> menghindari cedera/kerusakan. Tidak ada kerugian sama sekali — tapi justru karena itu Near Miss adalah data paling berharga untuk mencegah Accident di masa depan (belajar sebelum ada korban).</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion" data-acc>
+      <div class="acc-head"><span>3 — Unsafe Acts (80–90%) vs Unsafe Conditions (10–20%)</span><span class="arrow">▶</span></div>
+      <div class="acc-body">
+        <div class="acc-body-inner">
+          <p>Materi menyebut dua angka yang mirip tapi sumbernya berbeda konteks — 80-90%/10-20% (grafik Unsafe Acts vs Conditions) dan 80%/20% (statistik HOC). Intinya sama: <strong>mayoritas kecelakaan berasal dari perilaku manusia, bukan dari kondisi fisik tempat kerja.</strong></p>
+          <div class="compare-grid">
+            <div class="compare-cell"><h4>Unsafe Acts (perilaku)</h4><p>Tindakan yang meningkatkan risiko: tidak pakai PPE, ambil jalan pintas, operasi tanpa izin, salah pakai alat. Solusinya: <strong>Train People</strong> — latih perilaku aman.</p></div>
+            <div class="compare-cell"><h4>Unsafe Conditions (fisik)</h4><p>Kondisi fisik berbahaya: tumpahan oli, pencahayaan buruk, peralatan rusak, kabel terbuka. Solusinya: <strong>Fix Workplace</strong> — perbaiki kondisi tempat kerja.</p></div>
+          </div>
+          <p>Implikasinya: program HSE yang hanya fokus memperbaiki peralatan/fasilitas (unsafe conditions) hanya menyentuh 10-20% penyebab kecelakaan. Sebagian besar upaya justru harus diarahkan ke observasi &amp; koreksi perilaku — inilah alasan HOC (Hazard Observation Card) dan Life Saving Rules jadi begitu ditekankan dalam budaya HSE drilling.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion" data-acc>
+      <div class="acc-head"><span>4 — Leading vs Lagging Indicator, dan Menghitung Rate Cedera</span><span class="arrow">▶</span></div>
+      <div class="acc-body">
+        <div class="acc-body-inner">
+          <p><strong>Lagging indicator</strong> mengukur apa yang SUDAH terjadi (kecelakaan, cedera) — sifatnya reaktif, hasil akhir. <strong>Leading indicator</strong> mengukur efektivitas aktivitas PENCEGAHAN sebelum kecelakaan terjadi — sifatnya proaktif. Cara mudah membedakan: jika indikatornya baru bisa dihitung SETELAH ada insiden → lagging (TRIR, LTIFR, DART). Jika bisa dihitung SEBELUM ada insiden apa pun terjadi, dari data rutin seperti training/audit/meeting → leading.</p>
+          <p>Rumus umum rate lagging indicator: <strong>Rate = (Jumlah kejadian × 1.000.000) ÷ Total Man-Hours Worked</strong>. Coba hitung TRIR (Total Recordable Incident Rate) sendiri:</p>
+          <div class="calc-box">
+            <div class="calc-row">
+              <div><label>Jumlah Recordable Incidents</label><input type="number" id="incidents" value="3"></div>
+              <div><label>Total Man-Hours Worked</label><input type="number" id="manhours" value="500000"></div>
+            </div>
+            <div class="calc-out" id="trir-out">TRIR = 6.00</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion" data-acc>
+      <div class="acc-head"><span>5 — Membaca Risk Priority Code (RPC) dari Matriks Risiko</span><span class="arrow">▶</span></div>
+      <div class="acc-body">
+        <div class="acc-body-inner">
+          <p>Materi menampilkan tabel yang menyilangkan <strong>Hazard Severity Category</strong> (I Catastrophic → IV Negligible) dengan <strong>Probability Rating</strong> (A Frequent → E Extremely Improbable) untuk menghasilkan <strong>Risk Priority Code (RPC)</strong>. Yang sering membingungkan: angka 1 di tabel bukan berarti "risiko rendah" — justru sebaliknya, RPC 1 = risiko PALING TINGGI yang wajib ditekan turun sebelum kerja boleh dilanjutkan.</p>
+          <table>
+            <tr><th>RPC</th><th>Arti</th><th>Tindakan</th></tr>
+            <tr><td><strong>1</strong></td><td>High Risk</td><td>Wajib ditekan ke level lebih rendah sebelum kerja dimulai</td></tr>
+            <tr><td><strong>2</strong></td><td>Medium Risk</td><td>Operasi mungkin butuh waiver yang disahkan manajemen</td></tr>
+            <tr><td><strong>3</strong></td><td>Low / Permissible</td><td>Operasi diizinkan (permissible)</td></tr>
+          </table>
+          <p>Coba tentukan RPC sendiri dengan memilih kategori severity &amp; probability seperti pada tabel materi:</p>
+          <div class="calc-box">
+            <div class="calc-row">
+              <div><label>Hazard Severity</label>
+                <select id="sev-select">
+                  <option value="I">I — Catastrophic</option>
+                  <option value="II">II — Critical</option>
+                  <option value="III">III — Marginal</option>
+                  <option value="IV">IV — Negligible</option>
+                </select>
+              </div>
+              <div><label>Probability Rating</label>
+                <select id="prob-select">
+                  <option value="A">A — Frequent</option>
+                  <option value="B">B — Reasonably Probable</option>
+                  <option value="C">C — Occasional</option>
+                  <option value="D">D — Remote</option>
+                  <option value="E">E — Extremely Improbable</option>
+                </select>
+              </div>
+            </div>
+            <div id="rpc-out"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion" data-acc>
+      <div class="acc-head"><span>6 — Hierarchy of Control: kenapa PPE ada di paling bawah?</span><span class="arrow">▶</span></div>
+      <div class="acc-body">
+        <div class="acc-body-inner">
+          <p>Urutan Hierarchy of Control sering disalahpahami sebagai daftar pilihan setara — padahal ini adalah <strong>urutan prioritas</strong> dari yang paling efektif ke paling tidak efektif:</p>
+          <div class="compare-grid">
+            <div class="compare-cell"><h4>Elimination &amp; Substitution</h4><p>Menghilangkan atau mengganti bahaya secara total — paling efektif karena bahayanya sendiri tidak lagi ada.</p></div>
+            <div class="compare-cell"><h4>Engineering Controls</h4><p>Bahaya masih ada, tapi orang diisolasi darinya (mis. pagar, ventilasi) — efektif selama sistemnya berfungsi.</p></div>
+            <div class="compare-cell"><h4>Administrative Controls</h4><p>Mengubah cara/urutan orang bekerja (prosedur, rotasi, rambu) — bergantung pada kepatuhan manusia.</p></div>
+            <div class="compare-cell"><h4>PPE</h4><p>Paling tidak efektif karena bahaya tetap ada &amp; masih bisa mengenai pekerja bila PPE gagal, salah pakai, atau tidak digunakan — inilah kenapa PPE dianggap "lini pertahanan terakhir", bukan solusi utama.</p></div>
+          </div>
+          <p>Implikasi praktis: sebelum langsung mewajibkan PPE untuk suatu bahaya, tanyakan dulu apakah bahaya itu bisa dihilangkan, diganti, atau dikendalikan lewat rekayasa/prosedur terlebih dahulu.</p>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <footer class="foot">Disusun otomatis dari materi "Drilling Health, Safety, and Environment (HSE)" — JDS Training, oleh Sari Nurlita Bahri, 09 Mei 2026.</footer>
+</div>
+
+<script>
+/* ============ TAB SWITCHING ============ */
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+  });
+});
+
+/* ============ ACCORDION ============ */
+document.querySelectorAll('[data-acc]').forEach(acc=>{
+  const head = acc.querySelector('.acc-head');
+  const body = acc.querySelector('.acc-body');
+  head.addEventListener('click', ()=>{
+    const isOpen = head.classList.contains('open');
+    if(isOpen){
+      head.classList.remove('open');
+      body.style.maxHeight = '0px';
+    } else {
+      head.classList.add('open');
+      body.style.maxHeight = body.scrollHeight + 'px';
+    }
+  });
+});
+window.addEventListener('load', ()=>{
+  document.querySelectorAll('[data-acc]').forEach(acc=>{
+    const head = acc.querySelector('.acc-head');
+    const body = acc.querySelector('.acc-body');
+    if(head.classList.contains('open')) body.style.maxHeight = body.scrollHeight + 'px';
+  });
+});
+
+/* ============ QUIZ DATA ============ */
+const QUIZ = [
+  {q:"Menurut materi, apa saja yang termasuk dalam definisi HSE Awareness?",opts:["Hanya memakai PPE lengkap","Memahami bahaya, mengenali tindakan/kondisi tidak aman, mengikuti prosedur, dan bertanggung jawab atas keselamatan","Hanya mengikuti Permit to Work","Melapor ke supervisor setiap hari"],ans:1,exp:"HSE Awareness mencakup understanding hazards, recognizing unsafe acts & conditions, following procedures/controls, dan taking responsibility for personal & team safety."},
+  {q:"Berapa persentase kecelakaan yang disebabkan oleh Unsafe Acts menurut materi?",opts:["10-20%","30-40%","50-60%","80-90%"],ans:3,exp:"Unsafe Acts menyumbang 80-90% penyebab kecelakaan, sedangkan Unsafe Conditions hanya 10-20%."},
+  {q:"Cedera yang membuat karyawan tidak bisa kembali kerja pada hari kerja terjadwal berikutnya disebut...",opts:["FAC","MTC","RWC","LTI"],ans:3,exp:"LTI (Lost Time Injury) adalah cedera parah yang mencegah karyawan kembali kerja di hari kerja terjadwal berikutnya."},
+  {q:"Kejadian tak terencana yang TIDAK menghasilkan cedera, penyakit, atau kerusakan, tapi berpotensi untuk itu, disebut...",opts:["Accident","Incident","Near Miss","Fatality"],ans:2,exp:"Near Miss adalah kejadian tak terencana yang tidak menyebabkan cedera/kerusakan namun punya potensi untuk itu."},
+  {q:"Rumus sederhana hubungan Hazard dan Risk menurut materi adalah...",opts:["Risk = Hazard + Exposure","Risk = Hazard x Exposure","Risk = Hazard - Exposure","Risk = Hazard / Exposure"],ans:1,exp:"Materi menyebutkan Risk = Hazard x Exposure — risiko adalah kemungkinan bahaya benar-benar menyebabkan bahaya."},
+  {q:"Dalam alur Risk Management Process, teknik JSA/TRA digunakan untuk menganalisis...",opts:["Peralatan/instalasi","Proses/instalasi","Job, task, atau activity","Root cause insiden"],ans:2,exp:"JSA/TRA digunakan untuk menganalisis Job, Task, atau Activity dalam Phase Analysis HIRADC."},
+  {q:"Pada Risk Priority Code (RPC), kode berapa yang menandakan 'High Risk' dan wajib ditekan ke level lebih rendah?",opts:["1","2","3","4"],ans:0,exp:"RPC 1 = High Risk, imperative to suppress risk to lower level. RPC kurang dari 3 tidak dapat diterima untuk bahaya yang mengincar personel."},
+  {q:"Urutan Hierarchy of Control dari PALING efektif ke PALING TIDAK efektif adalah...",opts:["PPE > Administrative > Engineering > Substitution > Elimination","Elimination > Substitution > Engineering Controls > Administrative Controls > PPE","Engineering > Elimination > PPE > Substitution > Administrative","Substitution > Elimination > Administrative > Engineering > PPE"],ans:1,exp:"Urutan paling efektif ke paling tidak efektif: Elimination, Substitution, Engineering Controls, Administrative Controls, PPE."},
+  {q:"JSA (Job Safety Analysis) disiapkan khususnya untuk pekerjaan yang...",opts:["Rutin dan sudah sangat familiar","Kritikal, baru, atau jarang dikerjakan","Hanya dilakukan di kantor","Tidak melibatkan risiko sama sekali"],ans:1,exp:"JSA disiapkan untuk pekerjaan yang sifatnya kritikal, baru, ataupun jarang dikerjakan agar penerapannya memenuhi standar mutu."},
+  {q:"Berapa lama maksimal PPE boleh dipakai bergantian antar pekerja menurut Additional PPE Requirements?",opts:["Boleh dipakai bergantian asal dibersihkan","Tidak boleh dipakai bergantian untuk memastikan fit yang tepat","Boleh bergantian jika ukurannya sama","Boleh bergantian untuk shift yang sama"],ans:1,exp:"PPE should not be shared to ensure proper fit — PPE tidak boleh dipakai bergantian antar pekerja."},
+  {q:"Stop Work Authority (SWA) memberikan wewenang kepada...",opts:["Hanya supervisor dan manajer","Hanya HSE Officer","Seluruh karyawan dan kontraktor","Hanya pekerja senior"],ans:2,exp:"SWA memberikan seluruh karyawan dan kontraktor wewenang serta tanggung jawab untuk melakukan intervensi dan menghentikan pekerjaan."},
+  {q:"Pekerjaan mana di bawah ini yang TIDAK termasuk kategori yang membutuhkan Permit to Work (PTW)?",opts:["Hot Work","Confined Space Entry","Working at Heights","Pekerjaan administrasi rutin di kantor"],ans:3,exp:"PTW dibutuhkan untuk Hot Work, Electrical Work, Explosive/Radioactive Work, Working at Heights, Confined Space Entry, Heavy Lift, dan General Work non-rutin — bukan pekerjaan administrasi kantor rutin."},
+  {q:"LOTO (Lock Out Tag Out) adalah prosedur untuk...",opts:["Mengunci pintu ruang penyimpanan kimia","Memastikan mesin berbahaya benar-benar mati, terisolasi dari energi, dan tidak bisa dinyalakan ulang saat maintenance","Melacak jam kerja karyawan","Mengunci akses ke assembly point"],ans:1,exp:"LOTO memastikan dangerous machines properly shut off, isolated from energy sources, dan unable to be restarted during maintenance/repair."},
+  {q:"Menurut 5S Program, tahap yang bertujuan menyimpan barang sesuai frekuensi & sequence pemakaian adalah...",opts:["Sort","Set in Order","Shine","Sustain"],ans:1,exp:"Set in Order adalah tahap penataan barang agar sesuai frekuensi dan sequence penggunaan, dengan target ambil <5 detik."},
+  {q:"Apa fungsi Assembly Point dalam Emergency Response?",opts:["Tempat menyimpan APD","Lokasi aman untuk seluruh personel berkumpul saat evakuasi darurat","Ruang rapat toolbox meeting","Pos pemadam kebakaran utama"],ans:1,exp:"Assembly Point adalah lokasi aman yang ditetapkan untuk seluruh personel berkumpul selama evakuasi darurat, memastikan semua aman & terhitung."},
+  {q:"Dalam MERP (tingkatan rujukan medis), Level III merujuk ke...",opts:["First Aider","Ambulance dan On Site Clinic","RS Rujukan Regional","RS Rujukan Utama"],ans:2,exp:"MERP Level III merujuk ke RS Rujukan Regional, sedangkan Level IV ke RS Rujukan Utama."},
+  {q:"Item SDS yang menjelaskan langkah penanganan tumpahan/pelepasan tak terencana adalah bagian nomor...",opts:["3 - Composition","6 - Accidental release measures","9 - Physical and chemical properties","14 - Transport information"],ans:1,exp:"Bagian 6 SDS (Accidental release measures) menjelaskan langkah penanganan tumpahan/pelepasan tak terencana — penting untuk spill response."},
+  {q:"Menurut klasifikasi GHS pada materi, berapa jumlah kelas Bahaya Fisik dan Bahaya Kesehatan?",opts:["10 kelas fisik, 16 kelas kesehatan","16 kelas fisik, 10 kelas kesehatan","8 kelas fisik, 12 kelas kesehatan","2 kelas fisik, 16 kelas kesehatan"],ans:1,exp:"Menurut GHS pada materi: Bahaya fisik 16 kelas, bahaya kesehatan 10 kelas, dan bahaya lingkungan 2 kelas."},
+  {q:"CHSS Framework pada materi diselaraskan dengan standar internasional mana saja?",opts:["ISO 9001, ISO 14001, OHSAS 18001","IFC-PS No.4, UNDP-SES No.3, WB-ESS No.4","API 13B-1, API 13B-2","GHS dan REACH"],ans:1,exp:"CHSS Framework pada materi diselaraskan dengan IFC-PS No.4, UNDP-SES No.3, dan WB-ESS No.4."},
+  {q:"Manakah dari berikut ini yang termasuk contoh Leading Indicator, bukan Lagging Indicator?",opts:["Total Recordable Incident Rate (TRIR)","Lost Time Injury Frequency Rate (LTIFR)","Training Completion Rate (%)","Number of Reportable Incidents"],ans:2,exp:"Training Completion Rate adalah Leading Indicator (mengukur aktivitas proaktif pencegahan), sedangkan TRIR, LTIFR, dan Number of Reportable Incidents adalah Lagging Indicator."},
+];
+
+let selected = new Array(QUIZ.length).fill(null);
+let checked = false;
+
+function renderQuiz(){
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  document.getElementById('total').textContent = QUIZ.length;
+  QUIZ.forEach((item, qi)=>{
+    const card = document.createElement('div');
+    card.className='qcard';
+    card.innerHTML = `
+      <div class="qnum">Soal ${qi+1} / ${QUIZ.length}</div>
+      <div class="qtext">${item.q}</div>
+      <div class="opts" id="opts-${qi}"></div>
+      <div class="explain" id="exp-${qi}"><strong>Penjelasan:</strong> ${item.exp}</div>
+    `;
+    container.appendChild(card);
+    const optsDiv = card.querySelector(`#opts-${qi}`);
+    item.opts.forEach((optText, oi)=>{
+      const b = document.createElement('button');
+      b.className='opt';
+      b.textContent = optText;
+      b.addEventListener('click', ()=>{
+        if(checked) return;
+        selected[qi] = oi;
+        optsDiv.querySelectorAll('.opt').forEach(o=>o.style.borderColor='var(--line)');
+        b.style.borderColor='var(--safety-soft)';
+        updateProgress();
+      });
+      optsDiv.appendChild(b);
+    });
+  });
+}
+
+function updateProgress(){
+  const answered = selected.filter(s=>s!==null).length;
+  document.getElementById('progress-fill').style.width = (answered/QUIZ.length*100)+'%';
+  document.getElementById('btn-check').disabled = answered < QUIZ.length;
+}
+
+document.getElementById('btn-check').addEventListener('click', ()=>{
+  checked = true;
+  let score = 0;
+  QUIZ.forEach((item, qi)=>{
+    const optsDiv = document.getElementById(`opts-${qi}`);
+    const buttons = optsDiv.querySelectorAll('.opt');
+    buttons.forEach((b, oi)=>{
+      b.setAttribute('disabled','true');
+      if(oi === item.ans) b.classList.add('correct');
+      else if(oi === selected[qi]) b.classList.add('wrong');
+    });
+    if(selected[qi]===item.ans) score++;
+    document.getElementById(`exp-${qi}`).classList.add('show');
+  });
+  document.getElementById('score').textContent = score;
+  document.getElementById('btn-check').style.display='none';
+
+  const result = document.getElementById('quiz-result');
+  const pct = Math.round(score/QUIZ.length*100);
+  let title, desc;
+  if(pct>=85){title='Mantap! Pemahaman HSE kamu sangat kuat 🎯'; desc='Kamu sudah menguasai sebagian besar konsep HSE Drilling dari materi JDS ini.';}
+  else if(pct>=60){title='Bagus, tapi masih ada ruang belajar 📘'; desc='Coba review kembali bagian Rangkuman dan Penjelasan Bagian Sulit untuk topik yang salah.';}
+  else{title='Perlu belajar lagi ya 💪'; desc='Jangan khawatir — baca ulang tab Rangkuman & Flashcard, lalu coba kuis ini lagi.';}
+  document.getElementById('result-title').textContent = `Skor akhir: ${score}/${QUIZ.length} (${pct}%)`;
+  document.getElementById('result-desc').textContent = desc;
+  result.style.display='block';
+  result.scrollIntoView({behavior:'smooth', block:'center'});
+});
+
+function resetQuiz(){
+  selected = new Array(QUIZ.length).fill(null);
+  checked = false;
+  document.getElementById('score').textContent = '0';
+  document.getElementById('progress-fill').style.width='0%';
+  document.getElementById('btn-check').style.display='inline-block';
+  document.getElementById('btn-check').disabled = true;
+  document.getElementById('quiz-result').style.display='none';
+  renderQuiz();
+}
+document.getElementById('btn-reset').addEventListener('click', resetQuiz);
+renderQuiz();
+
+/* ============ FLASHCARDS ============ */
+const CARDS = [
+  {cat:"HSE Awareness", term:"HSE Awareness", def:"Memahami bahaya tempat kerja, mengenali tindakan/kondisi tidak aman, mengikuti prosedur, dan <strong>bertanggung jawab</strong> atas keselamatan diri & tim."},
+  {cat:"HSE Awareness", term:"SIMOPS", def:"Simultaneous Operations — beberapa aktivitas berisiko berjalan bersamaan, salah satu alasan HSE kritikal di drilling."},
+  {cat:"HSE Awareness", term:"Life Saving Rules", def:"9 aturan: Bypassing Safety Controls, Confined Space, Driving, Energy Isolation, Hot Work, Line of Fire, Safe Mechanical Lifting, Work Authorization, Working at Height."},
+  {cat:"Indikator", term:"Leading Indicator", def:"Mengukur <strong>efektivitas aktivitas proaktif</strong> pencegahan sebelum insiden terjadi (mis. Training Completion Rate, PPE Compliance Rate)."},
+  {cat:"Indikator", term:"Lagging Indicator", def:"Mengukur apa yang <strong>sudah terjadi</strong> — kecelakaan & cedera yang bisa diukur dengan jelas (mis. TRIR, LTIFR, DART)."},
+  {cat:"Klasifikasi Cedera", term:"FAC (First Aid Case)", def:"Cedera ringan, hanya perlu penanganan dasar sekali; karyawan langsung kembali bekerja."},
+  {cat:"Klasifikasi Cedera", term:"MTC (Medical Treatment Case)", def:"Cedera perlu perawatan profesional dari dokter berlisensi, tapi karyawan tetap fit untuk tugas rutin."},
+  {cat:"Klasifikasi Cedera", term:"RWC (Restricted Work Case)", def:"Cedera membuat karyawan tak bisa jalankan fungsi kerja normal; ditugaskan <strong>light duty</strong>."},
+  {cat:"Klasifikasi Cedera", term:"LTI (Lost Time Injury)", def:"Cedera parah, karyawan tak bisa kembali kerja di hari kerja terjadwal berikutnya; ada hari kerja hilang."},
+  {cat:"Klasifikasi Cedera", term:"NMTC", def:"Non-Medical Treatment Case — ketidaknyamanan/observasi ringan yang tak butuh perawatan medis formal."},
+  {cat:"Klasifikasi Cedera", term:"DAFWC", def:"Days Away From Work Case — cedera/penyakit yang menyebabkan satu hari kerja atau lebih tidak masuk kerja."},
+  {cat:"Klasifikasi Kejadian", term:"Incident", def:"Kejadian tak terencana yang mengganggu operasi normal tapi <strong>tidak</strong> menyebabkan cedera/kerusakan."},
+  {cat:"Klasifikasi Kejadian", term:"Accident", def:"Kejadian tak terencana yang <strong>menghasilkan</strong> cedera, penyakit, atau kerusakan properti."},
+  {cat:"Klasifikasi Kejadian", term:"Near Miss", def:"Situasi tidak aman di mana seseorang nyaris menghindari bahaya/kerusakan — tanpa kerugian."},
+  {cat:"Unsafe Acts/Cond.", term:"Unsafe Acts", def:"Tindakan yang meningkatkan risiko (tanpa PPE, jalan pintas); penyebab <strong>80-90%</strong> kecelakaan."},
+  {cat:"Unsafe Acts/Cond.", term:"Unsafe Conditions", def:"Kondisi fisik berbahaya (tumpahan, kabel terbuka); penyebab <strong>10-20%</strong> kecelakaan."},
+  {cat:"Unsafe Acts/Cond.", term:"HOC (Hazard Observation Card)", def:"Aktivitas mengamati & mencatat tindakan aman, kondisi tidak aman, tindakan tidak aman, dan near miss."},
+  {cat:"HIRA", term:"Hazard", def:"Kondisi nyata/potensial yang dapat menyebabkan cedera, kematian, kerusakan aset, atau kerusakan lingkungan."},
+  {cat:"HIRA", term:"Risk", def:"Situasi tidak diinginkan yang berpotensi terjadi & menimbulkan konsekuensi negatif."},
+  {cat:"HIRA", term:"Risk = Hazard × Exposure", def:"Rumus sederhana hubungan bahaya dan risiko — risiko naik seiring naiknya paparan terhadap bahaya."},
+  {cat:"HIRA", term:"HIRADC", def:"Hazard Identification, Risk Assessment and Determining Control — proses lengkap dari screening hingga implementasi pengendalian risiko."},
+  {cat:"HIRA", term:"Risk Priority Code (RPC)", def:"Kode hasil silang Severity × Probability: 1 = High Risk (wajib ditekan), 2 = Medium (butuh waiver), 3 = Permissible."},
+  {cat:"HIRA", term:"Hierarchy of Control", def:"Urutan efektivitas pengendalian: Elimination > Substitution > Engineering Control > Administrative Control > PPE."},
+  {cat:"HIRA", term:"JSA (Job Safety Analysis)", def:"Analisis terstruktur untuk pekerjaan kritikal, baru, atau jarang dikerjakan, guna identifikasi bahaya & langkah perbaikan."},
+  {cat:"PPE", term:"Stop Work Authority (SWA)", def:"Wewenang seluruh karyawan/kontraktor untuk menghentikan pekerjaan tanpa takut tindakan balasan bila melihat kondisi tidak aman."},
+  {cat:"PPE", term:"Permit to Work (PTW)", def:"Sistem kontrol & perencanaan kerja untuk memastikan pekerjaan sesuai praktik kerja aman; wajib untuk Hot Work, Confined Space, dll."},
+  {cat:"PPE", term:"LOTO (Lock Out Tag Out)", def:"Prosedur memastikan mesin berbahaya benar-benar mati, terisolasi energi, dan tak bisa dinyalakan ulang saat maintenance."},
+  {cat:"PPE", term:"5S Program", def:"Sort, Set in Order, Shine, Standardize, Sustain — program housekeeping untuk keselamatan & efisiensi kerja."},
+  {cat:"Emergency", term:"Assembly Point", def:"Lokasi aman yang ditetapkan sebagai tempat berkumpul seluruh personel selama evakuasi darurat."},
+  {cat:"Emergency", term:"MERP", def:"Medical Emergency Response Plan — tingkatan rujukan medis dari First Aider (Level I) hingga RS Rujukan Utama (Level IV)."},
+  {cat:"Environment", term:"SDS (Safety Data Sheet)", def:"Dokumen 16 bagian (selaras GHS) yang menjelaskan karakteristik & prosedur keamanan suatu zat kimia."},
+  {cat:"Environment", term:"GHS", def:"Global Harmonized System — sistem klasifikasi bahaya kimia: 16 kelas bahaya fisik, 10 kelas bahaya kesehatan, 2 kelas bahaya lingkungan."},
+  {cat:"Environment", term:"Spill", def:"Pelepasan cairan/gas/padatan yang tidak direncanakan/terkendali yang berdampak buruk pada tanah, air, atau udara."},
+  {cat:"Community", term:"CHSS", def:"Community, Health, Safety and Security — standar tanggung jawab proyek untuk meminimalkan risiko terhadap publik."},
+  {cat:"Community", term:"Stakeholder Engagement", def:"Proses melibatkan pihak terdampak: Information Disclosure, Consultation, Negotiation, Grievance Management, dll."},
+];
+
+let fcIndex = 0;
+let fcOrder = CARDS.map((_,i)=>i);
+let known = new Set();
+let unknown = new Set();
+
+function renderCard(){
+  const idx = fcOrder[fcIndex];
+  const c = CARDS[idx];
+  document.getElementById('fc-cat').textContent = c.cat;
+  document.getElementById('fc-term').textContent = c.term;
+  document.getElementById('fc-def').innerHTML = c.def;
+  document.getElementById('flashcard').classList.remove('flipped');
+  document.getElementById('fc-counter').textContent = `${fcIndex+1} / ${CARDS.length}`;
+  document.getElementById('fc-counter-top').textContent = `Kartu ${fcIndex+1} / ${CARDS.length}`;
+  document.getElementById('fc-known-count').textContent = known.size;
+  document.getElementById('fc-unknown-count').textContent = unknown.size;
+}
+document.getElementById('flashcard').addEventListener('click', ()=>{
+  document.getElementById('flashcard').classList.toggle('flipped');
+});
+document.getElementById('fc-next').addEventListener('click', ()=>{
+  fcIndex = (fcIndex+1) % CARDS.length; renderCard();
+});
+document.getElementById('fc-prev').addEventListener('click', ()=>{
+  fcIndex = (fcIndex-1+CARDS.length) % CARDS.length; renderCard();
+});
+document.getElementById('fc-got-it').addEventListener('click', ()=>{
+  const idx = fcOrder[fcIndex];
+  known.add(idx); unknown.delete(idx);
+  fcIndex = (fcIndex+1) % CARDS.length; renderCard();
+});
+document.getElementById('fc-know').addEventListener('click', ()=>{
+  const idx = fcOrder[fcIndex];
+  unknown.add(idx); known.delete(idx);
+  fcIndex = (fcIndex+1) % CARDS.length; renderCard();
+});
+document.getElementById('fc-shuffle').addEventListener('click', ()=>{
+  for(let i=fcOrder.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [fcOrder[i],fcOrder[j]]=[fcOrder[j],fcOrder[i]];
+  }
+  fcIndex = 0; renderCard();
+});
+document.getElementById('fc-restart').addEventListener('click', ()=>{
+  fcOrder = CARDS.map((_,i)=>i);
+  fcIndex = 0; known.clear(); unknown.clear(); renderCard();
+});
+renderCard();
+
+/* ============ CALCULATORS (Tab 4) ============ */
+function updateTRIR(){
+  const incidents = parseFloat(document.getElementById('incidents').value)||0;
+  const manhours = parseFloat(document.getElementById('manhours').value)||1;
+  const trir = (incidents * 1000000) / manhours;
+  document.getElementById('trir-out').innerHTML = `TRIR = <b>${trir.toFixed(2)}</b> (per 1.000.000 jam kerja) — rumus yang sama berlaku untuk LTIFR &amp; HPIF, tinggal ganti pembilangnya dengan jumlah LTI atau High-Potential Incident.`;
+}
+document.getElementById('incidents').addEventListener('input', updateTRIR);
+document.getElementById('manhours').addEventListener('input', updateTRIR);
+updateTRIR();
+
+// Simplified RPC matrix based on the materi's Halliburton-style table pattern
+const RPC_MATRIX = {
+  I:  {A:1, B:1, C:1, D:2, E:3},
+  II: {A:1, B:1, C:2, D:3, E:3},
+  III:{A:1, B:2, C:3, D:3, E:3},
+  IV: {A:2, B:3, C:3, D:3, E:3}
+};
+const RPC_INFO = {
+  1:{label:"HIGH RISK", desc:"Imperative to suppress risk to lower level — pekerjaan tidak boleh lanjut sebelum risiko diturunkan.", color:"var(--danger)"},
+  2:{label:"MEDIUM RISK", desc:"Operation may require waiver endorsed by management sebelum dilanjutkan.", color:"var(--amber)"},
+  3:{label:"OPERATION PERMISSIBLE", desc:"Risiko pada level yang dapat diterima — operasi diizinkan berjalan.", color:"var(--teal)"}
+};
+function updateRPC(){
+  const sev = document.getElementById('sev-select').value;
+  const prob = document.getElementById('prob-select').value;
+  const rpc = RPC_MATRIX[sev][prob];
+  const info = RPC_INFO[rpc];
+  document.getElementById('rpc-out').innerHTML = `<div class="rpc-box" style="background:${info.color};color:#14181A;">RPC ${rpc} — ${info.label}</div><p style="margin-top:8px;font-size:13.5px;color:var(--text-dim);">${info.desc}</p>`;
+}
+document.getElementById('sev-select').addEventListener('change', updateRPC);
+document.getElementById('prob-select').addEventListener('change', updateRPC);
+updateRPC();
+</script>
+</body>
+</html>

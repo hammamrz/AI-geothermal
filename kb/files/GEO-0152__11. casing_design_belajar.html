@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Casing Design — Paket Belajar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a1620;
+    --bg-2:#0e1e2a;
+    --card:#122736;
+    --card-2:#16303f;
+    --line:#22404f;
+    --line-soft:#1a3140;
+    --text:#e9eef2;
+    --text-dim:#8fa8b8;
+    --text-faint:#5f7c8c;
+    --amber:#f0a63c;
+    --amber-dim:#8a6423;
+    --rust:#c9552b;
+    --teal:#4fb3a9;
+    --good:#6fbf8b;
+    --bad:#d76a5c;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(ellipse 900px 500px at 15% -5%, rgba(240,166,60,0.08), transparent 60%),
+      radial-gradient(ellipse 700px 600px at 100% 10%, rgba(79,179,169,0.06), transparent 55%),
+      var(--bg);
+    color:var(--text);
+    font-family:'IBM Plex Sans', sans-serif;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--amber-dim); color:#fff;}
+
+  /* pipe-thread divider motif */
+  .thread-rule{
+    height:10px;
+    width:100%;
+    background-image: repeating-linear-gradient(90deg, var(--line) 0px, var(--line) 2px, transparent 2px, transparent 10px);
+    opacity:0.55;
+    margin: 0 0 0 0;
+  }
+
+  header{
+    padding:38px 24px 0;
+    max-width:1040px;
+    margin:0 auto;
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--teal);
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .eyebrow .joint{
+    display:inline-block;
+    width:22px; height:8px;
+    background: repeating-linear-gradient(90deg, var(--teal) 0 2px, transparent 2px 5px);
+    opacity:0.8;
+  }
+  h1{
+    font-family:'Oswald', sans-serif;
+    font-weight:700;
+    font-size:clamp(32px, 5vw, 52px);
+    letter-spacing:0.01em;
+    text-transform:uppercase;
+    margin:10px 0 6px;
+    line-height:1.05;
+  }
+  h1 span{color:var(--amber);}
+  .subtitle{
+    color:var(--text-dim);
+    font-size:15.5px;
+    max-width:640px;
+    line-height:1.55;
+    margin-bottom:22px;
+  }
+
+  nav.tabs{
+    max-width:1040px;
+    margin:0 auto;
+    padding:0 24px;
+    display:flex;
+    gap:4px;
+    position:sticky;
+    top:0;
+    background:linear-gradient(var(--bg) 78%, transparent);
+    padding-top:10px;
+    z-index:20;
+    overflow-x:auto;
+  }
+  .tab-btn{
+    font-family:'Oswald', sans-serif;
+    font-weight:500;
+    font-size:14.5px;
+    letter-spacing:0.04em;
+    text-transform:uppercase;
+    background:transparent;
+    border:none;
+    color:var(--text-faint);
+    padding:14px 18px 12px;
+    cursor:pointer;
+    position:relative;
+    white-space:nowrap;
+    transition:color .15s ease;
+  }
+  .tab-btn:hover{color:var(--text-dim);}
+  .tab-btn.active{color:var(--text);}
+  .tab-btn .num{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--text-faint);
+    margin-right:8px;
+  }
+  .tab-btn.active .num{color:var(--amber);}
+  .tab-underline{
+    position:absolute; left:14px; right:14px; bottom:0; height:3px;
+    background:transparent;
+  }
+  .tab-btn.active .tab-underline{
+    background:repeating-linear-gradient(90deg, var(--amber) 0 3px, transparent 3px 7px);
+  }
+
+  main{
+    max-width:1040px;
+    margin:0 auto;
+    padding:28px 24px 90px;
+  }
+  .panel{display:none;}
+  .panel.active{display:block; animation:fadein .25s ease;}
+  @keyframes fadein{from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);}}
+
+  /* ---------- SUMMARY TAB ---------- */
+  .sec{
+    background:var(--card);
+    border:1px solid var(--line-soft);
+    border-radius:var(--radius);
+    margin-bottom:16px;
+    overflow:hidden;
+  }
+  .sec-head{
+    display:flex;
+    align-items:baseline;
+    gap:12px;
+    padding:16px 20px;
+    cursor:pointer;
+    user-select:none;
+  }
+  .sec-head .idx{
+    font-family:'IBM Plex Mono', monospace;
+    color:var(--amber);
+    font-size:13px;
+    flex-shrink:0;
+  }
+  .sec-head h3{
+    font-family:'Oswald', sans-serif;
+    font-weight:600;
+    font-size:19px;
+    letter-spacing:0.01em;
+    text-transform:uppercase;
+    margin:0;
+    flex:1;
+  }
+  .sec-head .chev{
+    color:var(--text-faint);
+    font-size:14px;
+    transition:transform .2s ease;
+  }
+  .sec.open .sec-head .chev{transform:rotate(90deg); color:var(--amber);}
+  .sec-body{
+    max-height:0;
+    overflow:hidden;
+    transition:max-height .3s ease;
+    padding:0 20px;
+  }
+  .sec.open .sec-body{padding:0 20px 20px;}
+  .sec-body p{color:var(--text-dim); line-height:1.65; font-size:14.5px; margin:0 0 10px;}
+  .sec-body ul{margin:0 0 12px; padding-left:20px; color:var(--text-dim); font-size:14.5px; line-height:1.7;}
+  .sec-body li{margin-bottom:3px;}
+  .sec-body li b, .sec-body p b{color:var(--text);}
+  .mini-table{width:100%; border-collapse:collapse; margin:10px 0; font-size:13.5px;}
+  .mini-table th, .mini-table td{border:1px solid var(--line-soft); padding:7px 10px; text-align:left; color:var(--text-dim);}
+  .mini-table th{color:var(--amber); font-family:'IBM Plex Mono',monospace; font-weight:500; font-size:12px; text-transform:uppercase; letter-spacing:0.05em;}
+  .tag{
+    display:inline-block;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--teal);
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:1px 7px;
+    margin:0 6px 6px 0;
+  }
+
+  /* ---------- QUIZ TAB ---------- */
+  .quiz-wrap{max-width:660px;}
+  .quiz-meta{
+    display:flex; justify-content:space-between; align-items:center;
+    font-family:'IBM Plex Mono', monospace; font-size:12.5px; color:var(--text-faint);
+    margin-bottom:10px;
+  }
+  .quiz-meta .score{color:var(--amber);}
+  .progress-track{
+    height:6px; background:var(--line-soft); border-radius:3px; overflow:hidden; margin-bottom:22px;
+  }
+  .progress-fill{height:100%; background:var(--teal); width:0%; transition:width .3s ease;}
+  .q-card{
+    background:var(--card); border:1px solid var(--line-soft); border-radius:var(--radius);
+    padding:24px;
+  }
+  .q-cat{font-family:'IBM Plex Mono', monospace; font-size:11.5px; color:var(--teal); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:10px;}
+  .q-text{font-size:17px; line-height:1.5; margin:0 0 20px; font-weight:500;}
+  .opt{
+    display:block; width:100%; text-align:left;
+    background:var(--bg-2); border:1px solid var(--line-soft); border-radius:8px;
+    color:var(--text); font-family:'IBM Plex Sans', sans-serif; font-size:14.5px;
+    padding:12px 14px; margin-bottom:9px; cursor:pointer; transition:border-color .15s, background .15s;
+  }
+  .opt:hover{border-color:var(--teal);}
+  .opt.correct{border-color:var(--good); background:rgba(111,191,139,0.12); color:var(--good);}
+  .opt.wrong{border-color:var(--bad); background:rgba(215,106,92,0.12); color:var(--bad);}
+  .opt:disabled{cursor:default;}
+  .explain{
+    margin-top:14px; padding:13px 15px; border-left:3px solid var(--amber);
+    background:var(--bg-2); font-size:13.8px; color:var(--text-dim); line-height:1.6; border-radius:0 6px 6px 0;
+    display:none;
+  }
+  .explain.show{display:block;}
+  .q-actions{margin-top:18px; display:flex; justify-content:flex-end;}
+  .btn{
+    font-family:'Oswald', sans-serif; font-weight:500; letter-spacing:0.04em; text-transform:uppercase; font-size:13.5px;
+    background:var(--amber); color:#1a1206; border:none; border-radius:6px;
+    padding:10px 22px; cursor:pointer; transition:filter .15s;
+  }
+  .btn:hover{filter:brightness(1.08);}
+  .btn.ghost{background:transparent; border:1px solid var(--line); color:var(--text-dim);}
+  .quiz-done{text-align:center; padding:40px 20px;}
+  .quiz-done .big-score{font-family:'Oswald', sans-serif; font-size:56px; color:var(--amber); font-weight:700;}
+  .quiz-done p{color:var(--text-dim); font-size:14.5px;}
+
+  /* ---------- FLASHCARD TAB ---------- */
+  .fc-meta{
+    display:flex; justify-content:space-between; align-items:center;
+    font-family:'IBM Plex Mono', monospace; font-size:12.5px; color:var(--text-faint); margin-bottom:16px;
+  }
+  .fc-filter{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:16px;}
+  .fc-filter button{
+    font-family:'IBM Plex Mono', monospace; font-size:11.5px; color:var(--text-dim);
+    background:var(--bg-2); border:1px solid var(--line-soft); border-radius:14px; padding:5px 12px; cursor:pointer;
+  }
+  .fc-filter button.active{color:#1a1206; background:var(--amber); border-color:var(--amber);}
+  .fc-stage{display:flex; justify-content:center; margin-bottom:18px;}
+  .flip-card{
+    width:100%; max-width:520px; height:260px; perspective:1200px; cursor:pointer;
+  }
+  .flip-inner{
+    position:relative; width:100%; height:100%; transition:transform .5s; transform-style:preserve-3d;
+  }
+  .flip-card.flipped .flip-inner{transform:rotateY(180deg);}
+  .flip-face{
+    position:absolute; inset:0; backface-visibility:hidden;
+    border-radius:14px; border:1px solid var(--line-soft);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:28px; text-align:center;
+  }
+  .flip-front{
+    background:linear-gradient(160deg, var(--card-2), var(--card));
+  }
+  .flip-front .fc-label{font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--teal); letter-spacing:0.08em; text-transform:uppercase; margin-bottom:14px;}
+  .flip-front .fc-term{font-family:'Oswald', sans-serif; font-size:26px; font-weight:600; text-transform:uppercase; letter-spacing:0.01em;}
+  .flip-front .fc-hint{color:var(--text-faint); font-size:12px; margin-top:16px;}
+  .flip-back{
+    background:linear-gradient(160deg, #1d3a2e, #14261f);
+    transform:rotateY(180deg);
+  }
+  .flip-back .fc-def{color:#dff0e6; font-size:15px; line-height:1.6;}
+  .flip-back .fc-label{font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--good); letter-spacing:0.08em; text-transform:uppercase; margin-bottom:12px;}
+  .fc-nav{display:flex; justify-content:center; gap:10px; align-items:center;}
+  .fc-nav button{
+    font-family:'IBM Plex Mono', monospace; font-size:13px; background:var(--bg-2); color:var(--text);
+    border:1px solid var(--line-soft); border-radius:6px; padding:9px 16px; cursor:pointer;
+  }
+  .fc-nav button:hover{border-color:var(--teal);}
+  .fc-counter{font-family:'IBM Plex Mono', monospace; font-size:12.5px; color:var(--text-faint); min-width:64px; text-align:center;}
+
+  /* ---------- HARD PARTS TAB ---------- */
+  .hard-item{
+    background:var(--card); border:1px solid var(--line-soft); border-left:3px solid var(--rust);
+    border-radius:0 var(--radius) var(--radius) 0; padding:20px 22px; margin-bottom:16px;
+  }
+  .hard-item .hard-tag{
+    font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--rust); text-transform:uppercase; letter-spacing:0.07em; margin-bottom:8px;
+  }
+  .hard-item h3{
+    font-family:'Oswald', sans-serif; font-size:19px; font-weight:600; text-transform:uppercase; margin:0 0 12px;
+  }
+  .hard-item p{color:var(--text-dim); font-size:14.5px; line-height:1.7; margin:0 0 10px;}
+  .hard-item p b{color:var(--text);}
+  .formula-box{
+    font-family:'IBM Plex Mono', monospace; background:var(--bg-2); border:1px solid var(--line-soft);
+    border-radius:8px; padding:14px 16px; margin:10px 0; font-size:14px; color:var(--amber); line-height:1.8;
+  }
+  .example-box{
+    background:rgba(79,179,169,0.07); border:1px solid var(--line-soft); border-radius:8px;
+    padding:12px 15px; margin:10px 0; font-size:13.8px; color:var(--text-dim); line-height:1.7;
+  }
+  .example-box .ex-label{color:var(--teal); font-family:'IBM Plex Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:6px;}
+
+  footer{
+    text-align:center; padding:20px; color:var(--text-faint); font-size:12px; font-family:'IBM Plex Mono', monospace;
+  }
+
+  @media (max-width:600px){
+    .flip-card{height:300px;}
+    h1{font-size:30px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow"><span class="joint"></span>Jakarta Drilling Society · Materi Teknik</div>
+  <h1>Casing <span>Design</span></h1>
+  <p class="subtitle">Paket belajar interaktif dari slide "Casing Design" — rangkuman per-bagian, latihan soal dengan pembahasan, flashcard istilah teknis, dan penjelasan mendalam untuk bagian-bagian yang sering membingungkan.</p>
+</header>
+
+<div class="thread-rule"></div>
+
+<nav class="tabs" id="tabsNav">
+  <button class="tab-btn active" data-tab="ringkasan"><span class="num">01</span>Rangkuman<span class="tab-underline"></span></button>
+  <button class="tab-btn" data-tab="latihan"><span class="num">02</span>Latihan Soal<span class="tab-underline"></span></button>
+  <button class="tab-btn" data-tab="flashcard"><span class="num">03</span>Flashcard<span class="tab-underline"></span></button>
+  <button class="tab-btn" data-tab="sulit"><span class="num">04</span>Bagian Sulit<span class="tab-underline"></span></button>
+</nav>
+
+<main>
+
+  <!-- ============ TAB 1: RINGKASAN ============ -->
+  <section class="panel active" id="panel-ringkasan">
+
+    <div class="sec open">
+      <div class="sec-head"><span class="idx">1</span><h3>Pendahuluan & Fungsi Casing</h3><span class="chev">▶</span></div>
+      <div class="sec-body">
+        <p>Casing dan tubing adalah komponen utama dari konstruksi sumur. Setiap sumur migas harus dilapisi (di-casing) dengan material yang cukup kuat dan fungsional. Casing merupakan salah satu bagian termonahal dari program pemboran — <b>rata-rata sekitar 18% dari total biaya sumur</b> — sehingga tugas penting drilling engineer adalah mendesain program casing paling ekonomis yang tetap aman sepanjang umur sumur.</p>
+        <p><b>Fungsi utama casing:</b></p>
+        <ul>
+          <li>Menjaga stabilitas lubang bor (borehole stability)</li>
+          <li>Mencegah kontaminasi water sands</li>
+          <li>Mengisolasi air dari formasi produksi</li>
+          <li>Mengontrol tekanan sumur selama pemboran, produksi, dan workover</li>
+          <li>Menjadi tempat pemasangan BOP, wellhead equipment, production packer, dan production tubing</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head"><span class="idx">2</span><h3>Casing Connection</h3><span class="chev">▶</span></div>
+      <div class="sec-body">
+        <p><b>Standar API</b> mengenal 4 jenis koneksi threaded & coupled: <b>ST&C</b> (Short Thread & Coupling), <b>LT&C</b> (Long Thread & Coupling), <b>NUE</b> (Non-Upset End, untuk tubing), dan <b>EUE</b> (External Upset End, untuk tubing). Secara umum koneksi diklasifikasikan sebagai API, Semi Premium, dan Premium (gas-tight metal-to-metal seal).</p>
+        <p><b>Joint Efficiency (JE)</b> adalah rasio beban parting (fracture/jump out) dari koneksi terhadap beban parting dari body pipa. Jika JE = 1, kekuatan tarik koneksi sama dengan body pipa; JE > 1 lebih kuat dari body; JE < 1 lebih lemah dari body.</p>
+        <p><b>Integral vs Threaded & Coupled:</b> koneksi integral memiliki lebih sedikit potensi jalur bocor dan torque capacity lebih tinggi, tapi berisiko korosi di area upset pada lingkungan CO2. Threaded & coupled lebih murah diproduksi dan ujung pipa bisa di-re-cut jika ulir rusak.</p>
+        <p><b>Buttress connection</b> tidak memiliki spesifikasi torque API — pengencangan (make-up) dipantau secara visual sampai ke apex segitiga (triangle mark), bukan dengan torque monitoring. Cocok untuk casing besar berbiaya rendah, tapi tidak untuk sumur gas bertekanan/temperatur tinggi.</p>
+        <p><b>Quick Connector</b> (Quik-Thread®, Quik-Stab®, Quik-Jay™) mempercepat make-up casing besar (&lt;5 menit/joint vs Buttress 20–30 menit/joint), menghemat waktu rig secara signifikan meski ada biaya tambahan per koneksi.</p>
+        <table class="mini-table">
+          <tr><th>Tipe Koneksi</th><th>Joint Efficiency</th><th>Karakteristik</th></tr>
+          <tr><td>API 8 Round (ST&C, LT&C, NU)</td><td>70–75%</td><td>Gas tightness buruk, murah, tersedia luas</td></tr>
+          <tr><td>API 8 Round (EUE)</td><td>115–120%</td><td>Upset end, lebih kuat dari body</td></tr>
+          <tr><td>API Buttress</td><td>85–95%</td><td>Tin plating tingkatkan leak resistance</td></tr>
+          <tr><td>Metal-to-Metal (T&C)</td><td>≥ 100%</td><td>Gas tightness baik, hoop stress terkontrol</td></tr>
+          <tr><td>Formed & Integral (flush/semi-flush)</td><td>50–80%</td><td>Hole clearance sangat baik, lebih lemah untuk internal pressure</td></tr>
+          <tr><td>Weld On</td><td>≥ 100%</td><td>Mahal, tahan bending berat</td></tr>
+        </table>
+        <p><b>Pemilihan koneksi:</b> Premium untuk semua sumur offshore, sumur dalam/tekanan tinggi, dan semua sumur gas. API untuk sumur onshore tekanan rendah/pumping wells. Casing besar sebaiknya pakai Quick Connector atau Weld On — hindari Buttress thread.</p>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head"><span class="idx">3</span><h3>Casing Tally & Proses Manufaktur</h3><span class="chev">▶</span></div>
+      <div class="sec-body">
+        <p><b>Casing Tally</b> adalah pencatatan panjang setiap joint casing untuk menentukan kedalaman aktual di sumur. Untuk casing dengan tri-angle mark (Buttress, NSCC), tally = effective length. Untuk Semi Premium/Premium, tally = end-to-end length dikurangi make-up lost.</p>
+        <p>Kesalahan tally berdampak serius: perhitungan semen yang salah (akibat kesalahan FC/FS depth), TOC lebih dalam dari rencana (mengganggu well integrity), shoe depth lebih dangkal (mengurangi fracture gradient), dan rat hole yang lebih panjang (masalah hole cleaning).</p>
+        <p><b>Proses manufaktur:</b></p>
+        <ul>
+          <li><b>Seamless</b> — dibuat dengan extrusi logam, harga 20–30% lebih mahal dari ERW, integritas terbaik, cocok untuk sumur gas & tekanan tinggi.</li>
+          <li><b>ERW</b> (Electric Resistance Welded) — pengerolan logam lalu dilas longitudinal.</li>
+          <li><b>SAW / LSAW / DSAW</b> (Submerge Arc Welding varian) — lasan tunggal atau ganda (dalam-luar).</li>
+          <li><b>Spiral SAW</b> — lasan spiral.</li>
+        </ul>
+        <p>Welded casing lebih murah dan lead time lebih cepat, tapi integritas fair dan tidak cocok untuk tekanan tinggi/CO2/H2S — umumnya dipakai untuk conductor (30") dan surface casing (20"). Seamless umum dipakai untuk intermediate (13-3/8"), production (9-5/8"), dan perforated/tubing casing.</p>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head"><span class="idx">4</span><h3>Spesifikasi Casing (API Standard)</h3><span class="chev">▶</span></div>
+      <div class="sec-body">
+        <p>Spesifikasi casing API terdiri dari 5 elemen: <b>Size, Length, Weight, Grade, Connection</b> — ditambah item pelengkap lain.</p>
+        <ul>
+          <li><b>Size</b> — mengacu ke OD (outside diameter) body utama tubular, bukan connector. Casing berkisar 4.5"–36"; di bawah 4.5" disebut tubing.</li>
+          <li><b>Length</b> — Range 1 (16–25 ft), Range 2 (25–34 ft), Range 3 (&gt;34 ft, umumnya 38–43 ft). R-3 paling sering dipakai untuk mengurangi jumlah sambungan.</li>
+          <li><b>Weight</b> — berat per foot, merepresentasikan ketebalan dinding pipa. Drift diameter = ID minimum terjamin dari casing.</li>
+          <li><b>Grade</b> — huruf menunjukkan komposisi kimia material, angka menunjukkan minimum yield strength (dalam ribuan psi). Contoh: N-80 → yield strength minimum 80.000 psi; K-55 → 55.000 psi.</li>
+          <li><b>Connection</b> — bevel end, quick connector, BTC/ST&C/LT&C, semi premium, premium.</li>
+        </ul>
+        <p><b>Item pelengkap lain:</b> Special Drift (permintaan drift lebih besar dari standar), SCC/Special Clearance Coupling (OD coupling lebih kecil dari standar), Pup Joint (casing pendek 5/10/15/20 ft), X/O atau Cross Over (pin dan box berbeda jenis ulir).</p>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head"><span class="idx">5</span><h3>Jenis-Jenis Casing (String Types)</h3><span class="chev">▶</span></div>
+      <div class="sec-body">
+        <p>Dari luar ke dalam, sumur biasanya tersusun dari beberapa string casing berikut:</p>
+        <ul>
+          <li><b>Conductor Casing</b> — string pertama, dipasang sebelum rig datang (bisa didorong/di-auger). Mengisolasi formasi unconsolidated & shallow gas, mencegah washout, tempat pemasangan diverter/BOP awal. OD 16–24" (onshore), 24–48" (offshore).</li>
+          <li><b>Surface Casing</b> — memberi blowout protection, mengisolasi water sands, mencegah lost circulation, menopang wellhead & BOP. Biasanya disemen sampai permukaan/mudline.</li>
+          <li><b>Intermediate Casing</b> — mengisolasi zona tidak stabil, zona lemah, lost circulation, zona bertekanan rendah/produksi; sering dipasang di zona transisi normal ke abnormal pressure. Bisa lebih dari satu string.</li>
+          <li><b>Production Casing</b> — mengisolasi zona produksi & menahan tekanan formasi jika terjadi kebocoran tubing; harus dipasang sebelum well completion.</li>
+          <li><b>Liner</b> — casing yang tidak sampai ke wellhead, digantung dari string sebelumnya. Menghemat biaya, memperbaiki performa hidrolik, memungkinkan tubing lebih besar di atasnya.</li>
+          <li><b>Tieback String</b> — menyambung dari top liner ke wellhead untuk menambah integritas tekanan; bisa tidak disemen atau disemen sebagian.</li>
+          <li><b>Tubing</b> — jalur produksi minyak/gas dari formasi ke fasilitas permukaan; ukurannya memengaruhi keseluruhan desain casing.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head"><span class="idx">6</span><h3>Proses Desain Casing</h3><span class="chev">▶</span></div>
+      <div class="sec-body">
+        <p><b>Tujuan desain casing:</b> memenuhi strategi produksi, memberikan integritas mekanis terhadap load case yang mungkin dialami selama umur sumur, ekonomis, dan menyediakan cara plug & abandon di akhir umur sumur.</p>
+        <p><b>Data yang dibutuhkan:</b> data produksi (jenis & densitas packer fluid, reservoir fluid, laju alir, tekanan, temperatur, sour gas H2S/CO2), data geologi (pore pressure, fracture pressure, formation temperature, lokasi zona bermasalah), dan data directional (target geologis, lokasi permukaan, isu anti-collision).</p>
+        <p><b>Dua fase desain:</b></p>
+        <ul>
+          <li><b>Preliminary Design</b> — menentukan setting depth & jumlah string casing (berdasarkan pore pressure/fracture gradient, zona differential sticking, wellbore stability, ketidakpastian prediksi tekanan formasi, isu directional), program lumpur pemboran, kebutuhan peralatan pemboran & produksi, serta Top of Cement (TOC).</li>
+          <li><b>Detailed Design</b> — tahap lanjut untuk stress check, pemilihan material & koneksi, safety factor, dan verifikasi terhadap seluruh load case.</li>
+        </ul>
+        <p>TOC ditentukan berdasarkan: regulatory requirement, zonal isolation, formation strength, buckling, dan pressure build-up di annulus.</p>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ============ TAB 2: LATIHAN SOAL ============ -->
+  <section class="panel" id="panel-latihan">
+    <div class="quiz-wrap">
+      <div class="quiz-meta">
+        <span id="quizProgressLabel">Soal 1 / 16</span>
+        <span class="score">Skor: <span id="quizScore">0</span>/16</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      <div id="quizArea"></div>
+    </div>
+  </section>
+
+  <!-- ============ TAB 3: FLASHCARD ============ -->
+  <section class="panel" id="panel-flashcard">
+    <div class="fc-meta">
+      <span id="fcCounter">Kartu 1 / 24</span>
+      <span>Klik kartu untuk membalik</span>
+    </div>
+    <div class="fc-filter" id="fcFilter"></div>
+    <div class="fc-stage">
+      <div class="flip-card" id="flipCard">
+        <div class="flip-inner">
+          <div class="flip-face flip-front">
+            <div class="fc-label" id="fcCat">kategori</div>
+            <div class="fc-term" id="fcTerm">Istilah</div>
+            <div class="fc-hint">klik untuk lihat definisi</div>
+          </div>
+          <div class="flip-face flip-back">
+            <div class="fc-label">Definisi</div>
+            <div class="fc-def" id="fcDef">...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="fc-nav">
+      <button id="fcPrev">‹ Sebelumnya</button>
+      <span class="fc-counter" id="fcCounter2">1 / 24</span>
+      <button id="fcNext">Berikutnya ›</button>
+      <button id="fcShuffle">🔀 Acak</button>
+    </div>
+  </section>
+
+  <!-- ============ TAB 4: BAGIAN SULIT ============ -->
+  <section class="panel" id="panel-sulit">
+
+    <div class="hard-item">
+      <div class="hard-tag">Konsep · Kekuatan Koneksi</div>
+      <h3>Memahami Joint Efficiency</h3>
+      <p>Joint Efficiency sering disalahpahami sebagai "kualitas" koneksi secara umum, padahal ini murni rasio kekuatan tarik/tensile antara koneksi dan body pipa.</p>
+      <div class="formula-box">Joint Efficiency (JE) = Ty (Connection critical cross-section) ÷ Ty (Pipe body cross-section)</div>
+      <p><b>Cara membacanya:</b></p>
+      <ul style="color:var(--text-dim); font-size:14.5px; line-height:1.7; padding-left:20px; margin:0 0 10px;">
+        <li>JE = 1 → koneksi sama kuat dengan body pipa (titik lemah bukan di koneksi maupun body)</li>
+        <li>JE &gt; 1 → koneksi <b>lebih kuat</b> dari body — jika terjadi kegagalan tarik, body pipa yang akan putus lebih dulu, bukan koneksinya</li>
+        <li>JE &lt; 1 → koneksi <b>lebih lemah</b> dari body — koneksi menjadi titik kegagalan pertama saat beban tarik meningkat</li>
+      </ul>
+      <p>Ini penting karena JE menentukan berapa besar beban tarik (misalnya saat running casing atau saat terjadi stuck pipe) yang aman ditanggung oleh string secara keseluruhan — string hanya sekuat titik terlemahnya. Koneksi API 8 Round biasa (ST&C/LT&C) punya JE hanya 70–75%, artinya string tersebut sebenarnya "lebih lemah" dari yang terlihat pada rating body pipa.</p>
+    </div>
+
+    <div class="hard-item">
+      <div class="hard-tag">Notasi Teknis</div>
+      <h3>Membaca Kode Grade Casing (misal: N-80, K-55, L-80)</h3>
+      <p>Kode grade sering dikira sekadar nama produk, padahal setiap karakter punya arti teknis:</p>
+      <div class="formula-box">[HURUF] = komposisi kimia material<br>[ANGKA] × 1000 psi = minimum yield strength</div>
+      <div class="example-box">
+        <div class="ex-label">Contoh</div>
+        N-80 → minimum yield strength = 80.000 psi<br>
+        K-55 → minimum yield strength = 55.000 psi<br>
+        L-80 → carbon steel, cocok untuk servis H2S, harga relatif murah<br>
+        P-105 → high strength steel, untuk sumur dalam & beban tinggi, harga mahal
+      </div>
+      <p>Yield strength sendiri adalah tegangan minimum di mana material mulai mengalami deformasi permanen (di luar elastic limit / hukum Hooke). Semakin tinggi angkanya, semakin besar tegangan yang bisa ditahan sebelum material berubah bentuk permanen — tapi grade yang lebih tinggi tidak otomatis "lebih baik" untuk semua kondisi; harus disesuaikan dengan lingkungan sumur (misalnya grade tertentu justru rentan sulfide stress cracking pada servis H2S bila dipilih tanpa mempertimbangkan hardness-nya).</p>
+    </div>
+
+    <div class="hard-item">
+      <div class="hard-tag">Studi Kasus Numerik</div>
+      <h3>Dampak Kesalahan Casing Tally terhadap Kedalaman</h3>
+      <p>Kesalahan kecil pada make-up lost per joint bisa terakumulasi menjadi kesalahan kedalaman yang signifikan setelah puluhan joint disambung — ini sering jadi bagian yang sulit dibayangkan tanpa contoh angka.</p>
+      <div class="example-box">
+        <div class="ex-label">Contoh dari materi</div>
+        Make-up lost per joint: 5.6 in<br>
+        Total casing run: 100 joint<br>
+        Total kesalahan kedalaman = 5.6 in × 100 = 560 in ≈ <b>47 ft ≈ 14 m</b>
+      </div>
+      <p>Kesalahan sebesar 14 meter ini berdampak nyata: perhitungan volume semen jadi salah (karena FC/FS depth meleset), Top of Cement bisa jadi lebih dalam dari rencana (mengancam well integrity), shoe depth jadi lebih dangkal dari perkiraan (mengurangi margin fracture gradient untuk casing berikutnya), dan rat hole yang lebih panjang dari desain (menimbulkan masalah hole cleaning). Inilah alasan casing tally harus dicatat teliti per joint, bukan diasumsikan seragam.</p>
+    </div>
+
+    <div class="hard-item">
+      <div class="hard-tag">Trade-off Ekonomi & Teknis</div>
+      <h3>Kenapa Bukan Selalu Pakai Buttress untuk Casing Besar?</h3>
+      <p>Buttress terlihat menarik karena murah dan make-up-nya cepat dicek secara visual (sampai apex segitiga, tanpa perlu torque monitoring khusus API), tapi ada trade-off penting yang membuatnya tidak cocok untuk semua kasus.</p>
+      <table class="mini-table">
+        <tr><th></th><th>Buttress (BTC)</th><th>Quick Connector</th></tr>
+        <tr><td>Kecepatan make-up</td><td>20–30 menit/joint (casing 20")</td><td>&lt; 5 menit/joint</td></tr>
+        <tr><td>Kesesuaian sumur gas</td><td>Tidak cocok (limit tekanan & temperatur rendah)</td><td>Lebih fleksibel</td></tr>
+        <tr><td>Biaya per koneksi</td><td>Lebih murah</td><td>+USD 200/joint, tapi hemat waktu rig</td></tr>
+      </table>
+      <div class="example-box">
+        <div class="ex-label">Ilustrasi perhitungan penghematan (dari materi)</div>
+        Waktu rig yang dihemat: 15 menit/joint, dengan biaya rig USD 3.000/jam<br>
+        Penghematan kotor per joint: USD 750<br>
+        Biaya tambahan Quick Connector: USD 200/joint<br>
+        <b>Penghematan bersih: USD 550/joint</b> → untuk 45 joint per sumur = <b>USD 24.750/sumur</b>
+      </div>
+      <p>Poin pentingnya: keputusan pemilihan koneksi bukan cuma soal harga per unit, tapi total biaya operasi (termasuk rig time) dan kesesuaian dengan kondisi sumur (tekanan, temperatur, dose loading directional).</p>
+    </div>
+
+    <div class="hard-item">
+      <div class="hard-tag">Urutan & Fungsi</div>
+      <h3>Membedakan Conductor, Surface, Intermediate, Liner, dan Tieback</h3>
+      <p>Kelima jenis string ini sering tertukar karena sama-sama "casing", padahal fungsi dan posisinya berbeda dalam arsitektur sumur:</p>
+      <ul style="color:var(--text-dim); font-size:14.5px; line-height:1.8; padding-left:20px; margin:0;">
+        <li><b>Conductor</b> — paling luar/dangkal, dipasang duluan (bahkan sebelum rig datang), fokus ke isolasi formasi lepas & shallow gas.</li>
+        <li><b>Surface</b> — di bawah conductor, fokus ke blowout protection & menopang wellhead/BOP, disemen sampai permukaan.</li>
+        <li><b>Intermediate</b> — mengisolasi zona bermasalah di kedalaman menengah (unstable hole, lost circulation, zona bertekanan rendah), sering di zona transisi tekanan normal→abnormal.</li>
+        <li><b>Liner</b> — <i>bukan</i> string penuh — digantung dari casing sebelumnya, tidak sampai ke wellhead. Dipakai untuk menghemat biaya & rig time.</li>
+        <li><b>Tieback</b> — dipasang <i>setelah</i> liner, menyambung dari top liner naik ke wellhead untuk menambah integritas tekanan pada string yang sudah ada — bukan string baru yang menembus formasi baru.</li>
+      </ul>
+      <p style="margin-top:10px;">Cara mudah mengingat: conductor & surface fokus ke <b>dangkal & proteksi awal</b>, intermediate fokus ke <b>isolasi zona bermasalah di tengah</b>, sedangkan liner & tieback adalah strategi <b>penghematan & penguatan</b> — liner menghemat panjang casing, tieback menguatkan integritas tekanan tanpa perlu run casing penuh dari awal.</p>
+    </div>
+
+  </section>
+
+</main>
+
+<footer>Casing Design — Paket Belajar Interaktif · Dibuat dari materi Jakarta Drilling Society</footer>
+
+<script>
+// ---------- TAB SWITCHING ----------
+const tabBtns = document.querySelectorAll('.tab-btn');
+const panels = {
+  ringkasan: document.getElementById('panel-ringkasan'),
+  latihan: document.getElementById('panel-latihan'),
+  flashcard: document.getElementById('panel-flashcard'),
+  sulit: document.getElementById('panel-sulit'),
+};
+tabBtns.forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    tabBtns.forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    Object.values(panels).forEach(p=>p.classList.remove('active'));
+    panels[btn.dataset.tab].classList.add('active');
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+});
+
+// ---------- SUMMARY ACCORDION ----------
+document.querySelectorAll('.sec-head').forEach(head=>{
+  head.addEventListener('click', ()=>{
+    const sec = head.parentElement;
+    const body = sec.querySelector('.sec-body');
+    const isOpen = sec.classList.contains('open');
+    if(isOpen){
+      body.style.maxHeight = body.scrollHeight + 'px';
+      requestAnimationFrame(()=>{ body.style.maxHeight = '0px'; });
+      sec.classList.remove('open');
+    } else {
+      sec.classList.add('open');
+      body.style.maxHeight = body.scrollHeight + 'px';
+      setTimeout(()=>{ if(sec.classList.contains('open')) body.style.maxHeight = 'none'; }, 320);
+    }
+  });
+});
+// init open section height
+document.querySelectorAll('.sec.open .sec-body').forEach(b=>{ b.style.maxHeight = 'none'; });
+
+// ---------- QUIZ DATA ----------
+const quizData = [
+  {
+    cat:"Pendahuluan",
+    q:"Berapa persentase rata-rata biaya casing terhadap total biaya sumur yang sudah selesai dibangun?",
+    opts:["Sekitar 5%","Sekitar 18%","Sekitar 40%","Sekitar 65%"],
+    correct:1,
+    explain:"Materi menyebutkan casing merupakan salah satu bagian termahal dari program pemboran, dengan rata-rata biaya sekitar 18% dari total biaya sumur yang sudah selesai."
+  },
+  {
+    cat:"Fungsi Casing",
+    q:"Berikut ini yang BUKAN merupakan fungsi utama casing adalah:",
+    opts:["Menjaga stabilitas lubang bor","Mengisolasi air dari formasi produksi","Meningkatkan laju alir reservoir secara langsung","Mengontrol tekanan sumur"],
+    correct:2,
+    explain:"Fungsi casing adalah menjaga stabilitas borehole, mencegah kontaminasi water sands, mengisolasi air dari formasi produksi, dan mengontrol tekanan sumur — bukan meningkatkan laju alir reservoir (itu fungsi tubing/completion)."
+  },
+  {
+    cat:"Casing Connection",
+    q:"ST&C pada koneksi casing merupakan singkatan dari:",
+    opts:["Short Thread and Coupling","Standard Thread and Connector","Steel Thread and Casing","Sealed Thread and Coupling"],
+    correct:0,
+    explain:"ST&C = Short Thread and Coupling, salah satu tipe koneksi threaded and coupled standar API, selain LT&C (Long Thread and Coupling)."
+  },
+  {
+    cat:"Joint Efficiency",
+    q:"Jika sebuah koneksi casing memiliki Joint Efficiency (JE) = 1, artinya:",
+    opts:["Koneksi lebih lemah dari body pipa","Koneksi sama kuat dengan body pipa","Koneksi tidak bisa dipakai","Koneksi lebih kuat dua kali dari body pipa"],
+    correct:1,
+    explain:"JE = 1 berarti tensile strength koneksi sama dengan tensile strength body pipa. JE > 1 berarti koneksi lebih kuat dari body, JE < 1 berarti koneksi lebih lemah dari body."
+  },
+  {
+    cat:"Casing Connection",
+    q:"Jenis koneksi yang menggunakan gas-tight metal-to-metal seal disebut:",
+    opts:["API 8 Round","Buttress","Premium","ST&C"],
+    correct:2,
+    explain:"Koneksi Premium didefinisikan dengan gas tight metal-to-metal seal, digunakan untuk semua sumur offshore, sumur dalam/tekanan tinggi, dan semua sumur gas."
+  },
+  {
+    cat:"Spesifikasi Casing",
+    q:"Mengapa casing lebih sering dijalankan dalam Range 3 (R-3) dibanding R-1 atau R-2?",
+    opts:["Karena harganya paling murah","Karena mengurangi jumlah sambungan (connection) dalam string","Karena wajib menurut hukum","Karena diameternya lebih kecil"],
+    correct:1,
+    explain:"R-3 (umumnya 38–43 ft) dipilih karena mengurangi jumlah sambungan dalam string casing, dan karena casing dibuat per single joint, panjang R-3 masih mudah ditangani oleh sebagian besar rig."
+  },
+  {
+    cat:"Casing Tally",
+    q:"Untuk casing dengan tri-angle mark (Buttress, NSCC), casing tally dihitung sebagai:",
+    opts:["End-to-end length dikurangi make-up lost","Effective length","Panjang total dibagi jumlah joint","Panjang nominal dari katalog manufaktur"],
+    correct:1,
+    explain:"Casing dengan tri-angle mark (Buttress, NSCC) menggunakan Effective Length sebagai casing tally, sedangkan Semi Premium/Premium menggunakan End-to-End Length dikurangi Make Up Lost."
+  },
+  {
+    cat:"Spesifikasi Casing",
+    q:"Ukuran (size) casing mengacu pada:",
+    opts:["Diameter dalam (ID) dari connector","Diameter luar (OD) dari body utama tubular","Panjang total casing per joint","Berat casing per foot"],
+    correct:1,
+    explain:"Casing size mengacu pada outside diameter (O.D.) dari main body tubular, bukan diameter connector. Casing berkisar 4.5\" hingga 36\"; di bawah 4.5\" disebut tubing."
+  },
+  {
+    cat:"Grade Casing",
+    q:"Casing dengan grade N-80 memiliki minimum yield strength sebesar:",
+    opts:["55.000 psi","80.000 psi","110.000 psi","125.000 psi"],
+    correct:1,
+    explain:"Pada kode grade API, angka menunjukkan minimum yield strength dalam ribuan psi. N-80 berarti minimum yield strength 80.000 psi."
+  },
+  {
+    cat:"Manufaktur",
+    q:"Manakah pernyataan yang paling tepat mengenai welded casing (ERW/SAW) dibanding seamless?",
+    opts:["Welded lebih mahal tapi integritas lebih baik","Welded lebih murah dan lead time lebih cepat, tapi kurang cocok untuk tekanan tinggi/CO2/H2S","Welded selalu digunakan untuk production casing","Welded tidak pernah dipakai dalam industri migas"],
+    correct:1,
+    explain:"Welded casing memiliki keunggulan biaya lebih murah dan delivery time lebih cepat, tapi kelemahannya casing integrity fair dan tidak cocok untuk aplikasi tekanan tinggi serta lingkungan CO2/H2S."
+  },
+  {
+    cat:"Jenis Casing",
+    q:"Fungsi utama Conductor Casing adalah:",
+    opts:["Mengisolasi zona produksi hidrokarbon","Mengisolasi formasi unconsolidated & melindungi dari shallow gas di awal pemboran","Menjadi tempat pemasangan production packer","Menyambung liner ke wellhead"],
+    correct:1,
+    explain:"Conductor casing adalah string pertama yang dipasang, berfungsi mengisolasi formasi unconsolidated dan water sands serta melindungi dari shallow gas, sekaligus memungkinkan sirkulasi fluida pemboran awal."
+  },
+  {
+    cat:"Jenis Casing",
+    q:"Liner berbeda dari string casing penuh karena:",
+    opts:["Liner selalu lebih besar diameternya","Liner tidak diperpanjang sampai ke wellhead, melainkan digantung dari string sebelumnya","Liner tidak pernah disemen","Liner hanya dipakai di sumur geothermal"],
+    correct:1,
+    explain:"Liner adalah casing string yang tidak mencapai wellhead, melainkan digantung (hung) dari casing string lain di atasnya — digunakan untuk menghemat biaya rig time dan casing serta memperbaiki performa hidrolik saat pemboran lebih dalam."
+  },
+  {
+    cat:"Jenis Casing",
+    q:"Tieback string berfungsi untuk:",
+    opts:["Mengganti fungsi conductor casing","Memberikan integritas tekanan tambahan dari top liner sampai ke wellhead","Mengganti seluruh production casing","Mengisolasi zona shallow gas"],
+    correct:1,
+    explain:"Tieback string memberikan tambahan integritas tekanan dari top liner ke wellhead — intermediate tieback mengisolasi string yang tidak bisa menahan beban tekanan lanjutan, sedangkan production tieback mengisolasi intermediate string dari beban produksi."
+  },
+  {
+    cat:"Proses Desain",
+    q:"Dua fase utama dalam proses desain casing adalah:",
+    opts:["Fase eksplorasi dan fase produksi","Preliminary design dan detailed design","Fase pemboran dan fase komplesi","Fase konstruksi dan fase abandonment"],
+    correct:1,
+    explain:"Materi menjelaskan dua fase desain casing: preliminary design (menentukan setting depth, jumlah string, program lumpur, dsb) dan detailed design (stress check, pemilihan material/koneksi, safety factor)."
+  },
+  {
+    cat:"Proses Desain",
+    q:"Top of Cement (TOC) dalam desain casing ditentukan berdasarkan kriteria berikut, KECUALI:",
+    opts:["Regulatory requirement","Zonal isolation","Warna lumpur pemboran","Buckling dan pressure build-up di annulus"],
+    correct:2,
+    explain:"TOC ditentukan berdasarkan regulatory requirement, zonal isolation, formation strength, buckling, dan pressure build-up di annulus — bukan warna lumpur pemboran."
+  },
+  {
+    cat:"Big Casing Connection",
+    q:"Mengapa Buttress connection sebaiknya dihindari untuk big casing pada sumur gas bertekanan/temperatur tinggi?",
+    opts:["Karena Buttress tidak tersedia di pasaran","Karena tidak ada spesifikasi torque API dan memiliki keterbatasan tekanan, temperatur, serta DLS (dogleg severity)","Karena Buttress hanya untuk sumur geothermal","Karena Buttress lebih mahal dari Quick Connector"],
+    correct:1,
+    explain:"Materi menyebutkan Buttress tidak memiliki spesifikasi torque API (make-up dipantau visual ke triangle mark) dan punya keterbatasan untuk gas well pada temperatur/tekanan rendah serta limit DLS, sehingga tidak direkomendasikan untuk big casing bertekanan tinggi."
+  },
+];
+
+let quizIndex = 0;
+let quizScore = 0;
+let answered = false;
+const quizArea = document.getElementById('quizArea');
+const progressFill = document.getElementById('progressFill');
+const quizProgressLabel = document.getElementById('quizProgressLabel');
+const quizScoreEl = document.getElementById('quizScore');
+document.querySelector('.quiz-meta .score').innerHTML = 'Skor: <span id="quizScore">0</span>/' + quizData.length;
+
+function renderQuiz(){
+  if(quizIndex >= quizData.length){
+    quizArea.innerHTML = `
+      <div class="q-card quiz-done">
+        <div class="big-score">${quizScore}/${quizData.length}</div>
+        <p>Kamu menyelesaikan semua soal latihan Casing Design.</p>
+        <button class="btn" id="restartQuiz">Ulangi Kuis</button>
+      </div>`;
+    progressFill.style.width = '100%';
+    quizProgressLabel.textContent = 'Selesai';
+    document.getElementById('restartQuiz').addEventListener('click', ()=>{
+      quizIndex = 0; quizScore = 0;
+      document.getElementById('quizScore').textContent = 0;
+      renderQuiz();
+    });
+    return;
+  }
+  answered = false;
+  const item = quizData[quizIndex];
+  quizProgressLabel.textContent = `Soal ${quizIndex+1} / ${quizData.length}`;
+  progressFill.style.width = (quizIndex/quizData.length*100) + '%';
+
+  quizArea.innerHTML = `
+    <div class="q-card">
+      <div class="q-cat">${item.cat}</div>
+      <p class="q-text">${item.q}</p>
+      <div id="optsWrap"></div>
+      <div class="explain" id="explainBox">${item.explain}</div>
+      <div class="q-actions"><button class="btn" id="nextBtn" style="display:none;">Lanjut ›</button></div>
+    </div>`;
+
+  const optsWrap = document.getElementById('optsWrap');
+  item.opts.forEach((opt, i)=>{
+    const b = document.createElement('button');
+    b.className = 'opt';
+    b.textContent = opt;
+    b.addEventListener('click', ()=>{
+      if(answered) return;
+      answered = true;
+      const allOpts = optsWrap.querySelectorAll('.opt');
+      allOpts.forEach(o=>o.disabled=true);
+      if(i === item.correct){
+        b.classList.add('correct');
+        quizScore++;
+        document.getElementById('quizScore').textContent = quizScore;
+      } else {
+        b.classList.add('wrong');
+        allOpts[item.correct].classList.add('correct');
+      }
+      document.getElementById('explainBox').classList.add('show');
+      document.getElementById('nextBtn').style.display = 'inline-block';
+    });
+    optsWrap.appendChild(b);
+  });
+
+  document.getElementById('nextBtn').addEventListener('click', ()=>{
+    quizIndex++;
+    renderQuiz();
+  });
+}
+renderQuiz();
+
+// ---------- FLASHCARD DATA ----------
+const flashData = [
+  {cat:"Koneksi", term:"Joint Efficiency", def:"Rasio kekuatan tarik (parting load) koneksi terhadap kekuatan tarik body pipa. JE=1 berarti sama kuat, JE>1 koneksi lebih kuat, JE<1 koneksi lebih lemah dari body."},
+  {cat:"Koneksi", term:"ST&C", def:"Short Thread and Coupling — salah satu tipe koneksi threaded and coupled standar API untuk casing."},
+  {cat:"Koneksi", term:"LT&C", def:"Long Thread and Coupling — tipe koneksi threaded and coupled standar API dengan ulir lebih panjang dari ST&C."},
+  {cat:"Koneksi", term:"NUE", def:"Non-Upset End — tipe koneksi untuk tubing dengan OD dan ID ujung pipa sama seperti body, kekuatan lebih rendah dari tipe upset."},
+  {cat:"Koneksi", term:"EUE", def:"External Upset End — tipe koneksi tubing dengan ujung pipa yang ditebalkan (upset) secara eksternal, joint efficiency 115–120%."},
+  {cat:"Koneksi", term:"Premium Connection", def:"Koneksi dengan gas-tight metal-to-metal seal, digunakan untuk sumur offshore, sumur dalam/tekanan tinggi, dan semua sumur gas."},
+  {cat:"Koneksi", term:"Buttress Connection", def:"Koneksi tanpa spesifikasi torque API; make-up dipantau visual sampai apex triangle mark. Murah tapi tidak cocok untuk sumur gas tekanan/temperatur tinggi."},
+  {cat:"Koneksi", term:"Quick Connector", def:"Koneksi casing besar (Quik-Thread®, Quik-Stab®, Quik-Jay™) yang mempercepat make-up (<5 menit/joint) dibanding Buttress (20-30 menit/joint)."},
+  {cat:"Koneksi", term:"Integral Connection", def:"Koneksi tanpa coupling terpisah — pipa disambung langsung pin-to-box, mengurangi jumlah potensi jalur bocor dan meningkatkan torque capacity."},
+  {cat:"Koneksi", term:"Weld On Connection", def:"Koneksi hasil pengelasan connector ke pipa; mahal (biaya connector, weld, NDT) tapi joint efficiency ≥100% dan tahan bending berat."},
+  {cat:"Spesifikasi", term:"Casing Size", def:"Mengacu pada outside diameter (OD) dari body utama tubular, bukan diameter connector. Rentang 4.5\"–36\"; di bawah 4.5\" disebut tubing."},
+  {cat:"Spesifikasi", term:"Range 1 / 2 / 3 (R-1/R-2/R-3)", def:"Klasifikasi panjang casing API: R-1 (16–25 ft), R-2 (25–34 ft), R-3 (>34 ft, umumnya 38–43 ft). R-3 paling umum dipakai untuk mengurangi jumlah sambungan."},
+  {cat:"Spesifikasi", term:"Casing Weight", def:"Berat casing per foot (ppf), merepresentasikan ketebalan dinding pipa. Semakin berat, semakin tebal dindingnya untuk OD yang sama."},
+  {cat:"Spesifikasi", term:"Drift Diameter", def:"Diameter dalam (ID) minimum yang dijamin oleh manufaktur pada casing — menentukan alat/tool terbesar yang bisa lewat casing tersebut."},
+  {cat:"Spesifikasi", term:"Casing Grade (contoh N-80)", def:"Kode grade: huruf = komposisi kimia material, angka = minimum yield strength dalam ribuan psi. N-80 = minimum yield strength 80.000 psi."},
+  {cat:"Spesifikasi", term:"SCC (Special Clearance Coupling)", def:"Coupling dengan OD lebih kecil dari coupling standar, digunakan agar casing muat pada clearance hole yang terbatas."},
+  {cat:"Spesifikasi", term:"Pup Joint", def:"Casing dengan panjang lebih pendek dari standar (5, 10, 15, atau 20 ft), dipakai untuk penyesuaian panjang string, misalnya di bawah wellhead."},
+  {cat:"Spesifikasi", term:"X/O (Cross Over)", def:"Sambungan penghubung dua casing/tubing dengan jenis ulir pin dan box yang berbeda."},
+  {cat:"Spesifikasi", term:"Special Drift", def:"Permintaan khusus agar ID casing di-drift lebih besar dari standar, biasanya agar bit ukuran tertentu bisa lewat."},
+  {cat:"Manufaktur", term:"Seamless Casing", def:"Casing dibuat dengan cara mengekstrusi logam tanpa sambungan las. Harga 20-30% lebih mahal dari ERW, integritas terbaik, cocok untuk sumur gas & tekanan tinggi."},
+  {cat:"Manufaktur", term:"ERW (Electric Resistance Welded)", def:"Casing dibuat dengan cara menggulung (rolling) pelat logam lalu dilas secara longitudinal sepanjang badan pipa."},
+  {cat:"Manufaktur", term:"LSAW / DSAW", def:"Longitudinal Submerge Arc Welding (lasan tunggal di permukaan luar) / Double SAW (lasan ganda di dalam & luar) — varian proses pengelasan casing."},
+  {cat:"Jenis Casing", term:"Conductor Casing", def:"String casing pertama, dipasang sebelum rig datang, mengisolasi formasi unconsolidated & shallow gas, tempat instalasi diverter/BOP awal."},
+  {cat:"Jenis Casing", term:"Surface Casing", def:"Casing untuk blowout protection, mengisolasi water sands, mencegah lost circulation, dan menopang wellhead & BOP; disemen sampai permukaan/mudline."},
+  {cat:"Jenis Casing", term:"Intermediate Casing", def:"Mengisolasi zona tidak stabil, zona lemah, lost circulation, dan zona bertekanan rendah/produksi; sering di zona transisi tekanan normal-abnormal."},
+  {cat:"Jenis Casing", term:"Production Casing", def:"Mengisolasi zona produksi dan menahan tekanan formasi jika terjadi kebocoran tubing; dipasang sebelum well completion."},
+  {cat:"Jenis Casing", term:"Liner", def:"Casing string yang tidak mencapai wellhead, digantung dari string sebelumnya — menghemat biaya rig time & casing, disemen sepanjang keseluruhan panjangnya."},
+  {cat:"Jenis Casing", term:"Tieback String", def:"Menyambung dari top liner sampai ke wellhead untuk menambah integritas tekanan pada string yang sudah ada; bisa disemen sebagian atau tidak sama sekali."},
+  {cat:"Proses Desain", term:"Preliminary Design", def:"Fase pertama desain casing: menentukan setting depth & jumlah string, program lumpur pemboran, kebutuhan peralatan pemboran/produksi, dan TOC."},
+  {cat:"Proses Desain", term:"Top of Cement (TOC)", def:"Ketinggian puncak semen di annulus, ditentukan berdasarkan regulatory requirement, zonal isolation, formation strength, buckling, dan pressure build-up annulus."},
+];
+
+let fcOrder = flashData.map((_,i)=>i);
+let fcIndex = 0;
+let activeFilter = "Semua";
+const fcTerm = document.getElementById('fcTerm');
+const fcDef = document.getElementById('fcDef');
+const fcCat = document.getElementById('fcCat');
+const flipCard = document.getElementById('flipCard');
+const fcCounter = document.getElementById('fcCounter');
+const fcCounter2 = document.getElementById('fcCounter2');
+const fcFilter = document.getElementById('fcFilter');
+
+const categories = ["Semua", ...new Set(flashData.map(f=>f.cat))];
+categories.forEach(cat=>{
+  const b = document.createElement('button');
+  b.textContent = cat;
+  if(cat === "Semua") b.classList.add('active');
+  b.addEventListener('click', ()=>{
+    activeFilter = cat;
+    fcFilter.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    fcOrder = flashData.map((_,i)=>i).filter(i => cat==="Semua" || flashData[i].cat===cat);
+    fcIndex = 0;
+    flipCard.classList.remove('flipped');
+    renderFlash();
+  });
+  fcFilter.appendChild(b);
+});
+
+function renderFlash(){
+  if(fcOrder.length === 0) return;
+  const item = flashData[fcOrder[fcIndex]];
+  fcCat.textContent = item.cat;
+  fcTerm.textContent = item.term;
+  fcDef.textContent = item.def;
+  fcCounter.textContent = `Kartu ${fcIndex+1} / ${fcOrder.length}`;
+  fcCounter2.textContent = `${fcIndex+1} / ${fcOrder.length}`;
+}
+flipCard.addEventListener('click', ()=>{ flipCard.classList.toggle('flipped'); });
+document.getElementById('fcNext').addEventListener('click', ()=>{
+  fcIndex = (fcIndex+1) % fcOrder.length;
+  flipCard.classList.remove('flipped');
+  renderFlash();
+});
+document.getElementById('fcPrev').addEventListener('click', ()=>{
+  fcIndex = (fcIndex-1+fcOrder.length) % fcOrder.length;
+  flipCard.classList.remove('flipped');
+  renderFlash();
+});
+document.getElementById('fcShuffle').addEventListener('click', ()=>{
+  for(let i=fcOrder.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [fcOrder[i], fcOrder[j]] = [fcOrder[j], fcOrder[i]];
+  }
+  fcIndex = 0;
+  flipCard.classList.remove('flipped');
+  renderFlash();
+});
+renderFlash();
+</script>
+
+</body>
+</html>

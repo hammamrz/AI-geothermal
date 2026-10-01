@@ -1,7 +1,7 @@
 {
   "name": "aigeothermal-pln",
   "displayName": "AIGeothermal-PLN",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "Review subsurface, drilling, dan well geothermal dengan knowledge base (KB) bersama yang dikelola admin di GitHub, retrieval selektif, PowerPoint technical review PLN IP, dan DOCX comment sheet report dengan shell KKP PLN IP.",
   "author": {
     "name": "Generation Business Development"

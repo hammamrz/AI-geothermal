@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paket Belajar — Basic Directional Drilling</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#12161b;
+  --panel:#1a2028;
+  --panel-2:#20272f;
+  --line:#2c3641;
+  --ink:#e7ebee;
+  --ink-dim:#8fa0ac;
+  --amber:#e8930c;
+  --amber-dim:#8a5c14;
+  --red:#c8342a;
+  --green:#3fa65a;
+  --mono:'IBM Plex Mono',monospace;
+  --disp:'Oswald',sans-serif;
+  --body:'Inter',sans-serif;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:
+    radial-gradient(circle at 15% -10%, #24303a 0%, transparent 45%),
+    var(--bg);
+  color:var(--ink);
+  font-family:var(--body);
+  min-height:100vh;
+  padding:0 0 60px;
+}
+::selection{background:var(--amber);color:#1a1200;}
+
+/* ===== HEADER ===== */
+header{
+  padding:34px 6vw 22px;
+  border-bottom:1px solid var(--line);
+  position:relative;
+  overflow:hidden;
+}
+header::before{
+  content:"";
+  position:absolute; inset:0;
+  background-image:repeating-linear-gradient(90deg, transparent 0 38px, rgba(232,147,12,0.05) 38px 39px);
+  pointer-events:none;
+}
+.eyebrow{
+  font-family:var(--mono);
+  color:var(--amber);
+  letter-spacing:.22em;
+  font-size:11.5px;
+  text-transform:uppercase;
+  display:flex; align-items:center; gap:10px;
+}
+.eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--amber);box-shadow:0 0 8px var(--amber);}
+h1{
+  font-family:var(--disp);
+  font-weight:600;
+  font-size:clamp(28px,4.4vw,46px);
+  margin:10px 0 6px;
+  letter-spacing:.01em;
+  line-height:1.05;
+}
+h1 span{color:var(--amber);}
+.subtitle{color:var(--ink-dim);font-size:15px;max-width:680px;line-height:1.55;}
+
+/* ===== TAB NAV — gauge cluster style ===== */
+nav.tabs{
+  display:flex;
+  gap:2px;
+  margin:26px 6vw 0;
+  border:1px solid var(--line);
+  border-radius:10px;
+  overflow:hidden;
+  background:var(--panel);
+}
+nav.tabs button{
+  flex:1;
+  background:transparent;
+  border:none;
+  color:var(--ink-dim);
+  font-family:var(--disp);
+  font-size:14.5px;
+  letter-spacing:.03em;
+  padding:15px 8px 13px;
+  cursor:pointer;
+  position:relative;
+  transition:color .2s, background .2s;
+  border-right:1px solid var(--line);
+}
+nav.tabs button:last-child{border-right:none;}
+nav.tabs button .tnum{
+  display:block;
+  font-family:var(--mono);
+  font-size:10px;
+  color:var(--amber-dim);
+  letter-spacing:.15em;
+  margin-bottom:4px;
+}
+nav.tabs button:hover{color:var(--ink); background:rgba(255,255,255,.02);}
+nav.tabs button.active{color:var(--amber); background:var(--panel-2);}
+nav.tabs button.active .tnum{color:var(--amber);}
+nav.tabs button.active::after{
+  content:"";
+  position:absolute; left:0; right:0; bottom:0; height:3px;
+  background:linear-gradient(90deg,var(--amber),var(--red));
+}
+
+main{max-width:1100px; margin:0 auto; padding:34px 6vw 0;}
+section.pane{display:none; animation:fade .35s ease;}
+section.pane.active{display:block;}
+@keyframes fade{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;}}
+
+h2.sec-title{
+  font-family:var(--disp);
+  font-size:22px;
+  color:var(--ink);
+  margin:0 0 4px;
+  display:flex; align-items:center; gap:10px;
+}
+h2.sec-title::before{content:"";width:4px;height:22px;background:var(--amber);border-radius:2px;}
+.sec-note{color:var(--ink-dim); font-size:13.5px; margin:0 0 22px; padding-left:14px;}
+
+/* ===== SUMMARY CARDS ===== */
+.grid-3{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:30px;}
+@media(max-width:820px){.grid-3{grid-template-columns:1fr;}}
+.card{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:20px 20px 18px;
+}
+.card h3{
+  font-family:var(--disp);
+  font-size:16px; margin:0 0 10px;
+  color:var(--amber);
+  display:flex; gap:8px; align-items:center;
+  text-transform:uppercase; letter-spacing:.02em;
+}
+.card ul{margin:0; padding-left:18px; color:#c7d0d6; font-size:13.6px; line-height:1.65;}
+.card ul li{margin-bottom:6px;}
+.card ul li b{color:var(--ink);}
+.card .formula{
+  font-family:var(--mono);
+  background:var(--panel-2);
+  border:1px dashed var(--amber-dim);
+  border-radius:8px;
+  padding:10px 12px;
+  font-size:12.6px;
+  margin-top:10px;
+  color:var(--amber);
+}
+
+.module{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:12px;
+  margin-bottom:18px;
+  overflow:hidden;
+}
+.module .mh{
+  padding:16px 20px;
+  display:flex; align-items:center; gap:12px;
+  background:var(--panel-2);
+  border-bottom:1px solid var(--line);
+}
+.module .mh .idx{
+  font-family:var(--mono); color:var(--amber); font-size:12px;
+  border:1px solid var(--amber-dim); border-radius:6px; padding:3px 8px;
+}
+.module .mh h3{font-family:var(--disp); font-size:17px; margin:0; font-weight:500;}
+.module .mb{padding:18px 20px; font-size:14px; line-height:1.7; color:#c7d0d6;}
+.module .mb b{color:var(--ink);}
+.module .mb .two-col{display:grid; grid-template-columns:1fr 1fr; gap:20px;}
+@media(max-width:700px){.module .mb .two-col{grid-template-columns:1fr;}}
+.tag{
+  display:inline-block; font-family:var(--mono); font-size:11px;
+  background:rgba(232,147,12,.12); color:var(--amber);
+  border:1px solid var(--amber-dim); border-radius:5px; padding:2px 7px; margin:2px 4px 2px 0;
+}
+.compare-table{width:100%; border-collapse:collapse; font-size:13px; margin-top:8px;}
+.compare-table th{
+  text-align:left; font-family:var(--mono); font-size:11px; letter-spacing:.05em;
+  color:var(--amber); border-bottom:1px solid var(--line); padding:8px 10px; text-transform:uppercase;
+}
+.compare-table td{padding:8px 10px; border-bottom:1px solid var(--line); color:#c7d0d6;}
+.compare-table tr:last-child td{border-bottom:none;}
+
+/* ===== QUIZ ===== */
+.quiz-top{display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; flex-wrap:wrap; gap:10px;}
+.score-badge{
+  font-family:var(--mono); background:var(--panel); border:1px solid var(--line);
+  border-radius:8px; padding:8px 14px; font-size:13px; color:var(--ink-dim);
+}
+.score-badge b{color:var(--amber); font-size:16px;}
+button.reset-btn{
+  background:transparent; border:1px solid var(--amber-dim); color:var(--amber);
+  font-family:var(--mono); font-size:12px; padding:8px 14px; border-radius:8px; cursor:pointer;
+}
+button.reset-btn:hover{background:rgba(232,147,12,.1);}
+
+.q-card{
+  background:var(--panel); border:1px solid var(--line); border-radius:12px;
+  padding:20px 22px; margin-bottom:14px;
+}
+.q-card .q-head{display:flex; gap:10px; align-items:baseline; margin-bottom:12px;}
+.q-num{font-family:var(--mono); color:var(--amber); font-size:13px; flex-shrink:0;}
+.q-text{font-size:15px; line-height:1.5; color:var(--ink);}
+.opts{display:flex; flex-direction:column; gap:8px;}
+.opt{
+  text-align:left; background:var(--panel-2); border:1px solid var(--line); color:#c7d0d6;
+  padding:11px 14px; border-radius:8px; font-size:13.6px; cursor:pointer; transition:.15s;
+  font-family:var(--body);
+}
+.opt:hover{border-color:var(--amber-dim);}
+.opt.correct{background:rgba(63,166,90,.14); border-color:var(--green); color:#dff5e4;}
+.opt.wrong{background:rgba(200,52,42,.14); border-color:var(--red); color:#ffd9d5;}
+.opt[disabled]{cursor:default;}
+.explain{
+  margin-top:10px; font-size:13px; color:var(--ink-dim); border-left:2px solid var(--amber-dim);
+  padding:8px 12px; background:var(--panel-2); border-radius:0 8px 8px 0; display:none;
+}
+.explain.show{display:block;}
+
+/* ===== FLASHCARDS ===== */
+.fc-controls{display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; flex-wrap:wrap; gap:10px;}
+.fc-progress{font-family:var(--mono); color:var(--ink-dim); font-size:13px;}
+.fc-progress b{color:var(--amber);}
+.fc-wrap{display:flex; justify-content:center;}
+.flashcard{
+  width:100%; max-width:560px; height:290px; perspective:1400px; cursor:pointer;
+}
+.flashcard .inner{
+  position:relative; width:100%; height:100%; transition:transform .55s cubic-bezier(.3,.9,.3,1);
+  transform-style:preserve-3d;
+}
+.flashcard.flipped .inner{transform:rotateY(180deg);}
+.face{
+  position:absolute; inset:0; backface-visibility:hidden;
+  border-radius:16px; border:1px solid var(--line);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; padding:30px;
+}
+.face.front{
+  background:linear-gradient(155deg,var(--panel),var(--panel-2));
+}
+.face.front .lbl{font-family:var(--mono); color:var(--amber); font-size:11px; letter-spacing:.2em; margin-bottom:14px; text-transform:uppercase;}
+.face.front .q{font-family:var(--disp); font-size:22px; line-height:1.35; color:var(--ink);}
+.face.back{
+  background:linear-gradient(155deg,#23303a,#1a2c26);
+  transform:rotateY(180deg);
+  border-color:var(--green);
+}
+.face.back .lbl{font-family:var(--mono); color:var(--green); font-size:11px; letter-spacing:.2em; margin-bottom:14px; text-transform:uppercase;}
+.face.back .a{font-size:15.5px; line-height:1.6; color:#dff5e4;}
+.fc-hint{text-align:center; color:var(--ink-dim); font-size:12px; margin-top:14px; font-family:var(--mono);}
+.fc-nav{display:flex; justify-content:center; gap:12px; margin-top:20px;}
+.fc-nav button{
+  background:var(--panel); border:1px solid var(--line); color:var(--ink);
+  font-family:var(--disp); font-size:14px; padding:10px 22px; border-radius:8px; cursor:pointer;
+}
+.fc-nav button:hover{border-color:var(--amber);color:var(--amber);}
+.fc-deckbar{display:flex; gap:6px; justify-content:center; margin-top:16px; flex-wrap:wrap;}
+.fc-dot{width:8px;height:8px;border-radius:50%;background:var(--line); cursor:pointer;}
+.fc-dot.on{background:var(--amber);}
+
+/* ===== DIFFICULT CONCEPTS ===== */
+.diff-item{
+  background:var(--panel); border:1px solid var(--line); border-radius:12px; margin-bottom:14px; overflow:hidden;
+}
+.diff-h{
+  padding:16px 20px; display:flex; align-items:center; gap:12px; cursor:pointer; user-select:none;
+}
+.diff-h .flag{
+  font-family:var(--mono); font-size:10px; letter-spacing:.1em; padding:3px 8px; border-radius:5px;
+  background:rgba(200,52,42,.15); color:#ff8f85; border:1px solid var(--red); flex-shrink:0;
+}
+.diff-h h3{font-family:var(--disp); font-size:16.5px; margin:0; flex:1; font-weight:500;}
+.diff-h .chev{color:var(--amber); font-family:var(--mono); transition:transform .25s;}
+.diff-item.open .chev{transform:rotate(90deg);}
+.diff-body{
+  max-height:0; overflow:hidden; transition:max-height .35s ease;
+  border-top:1px solid var(--line);
+}
+.diff-item.open .diff-body{max-height:900px;}
+.diff-b-in{padding:18px 20px; font-size:14px; line-height:1.75; color:#c7d0d6;}
+.diff-b-in b{color:var(--amber);}
+.diff-b-in .analogy{
+  margin-top:10px; background:var(--panel-2); border-radius:8px; padding:12px 14px;
+  border-left:3px solid var(--amber); font-size:13.4px; color:#d9c9a8;
+}
+.diff-b-in .analogy .lbl{font-family:var(--mono); font-size:10.5px; color:var(--amber); letter-spacing:.1em; display:block; margin-bottom:5px;}
+
+footer{
+  text-align:center; color:var(--ink-dim); font-size:11.5px; font-family:var(--mono);
+  margin-top:50px; padding-top:20px; border-top:1px solid var(--line);
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow"><span class="dot"></span> HALLIBURTON · SPERRY DRILLING — MODUL BELAJAR</div>
+  <h1>Basic Directional <span>Drilling</span></h1>
+  <p class="subtitle">Paket belajar interaktif dari materi presentasi Riza Fauzi Rahman: BHA & Rotary Steering, Anti-Collision, dan Torque &amp; Drag / Execution. Rangkuman, latihan soal, flashcard, dan penjelasan bagian sulit — semua dalam satu halaman.</p>
+</header>
+
+<nav class="tabs">
+  <button class="tab-btn active" data-tab="ringkasan"><span class="tnum">01 · BACA</span>Rangkuman</button>
+  <button class="tab-btn" data-tab="latihan"><span class="tnum">02 · UJI</span>Latihan Soal</button>
+  <button class="tab-btn" data-tab="flashcard"><span class="tnum">03 · HAFAL</span>Flashcard</button>
+  <button class="tab-btn" data-tab="sulit"><span class="tnum">04 · PAHAMI</span>Bagian Sulit</button>
+</nav>
+
+<main>
+
+<!-- =================== TAB 1: RINGKASAN =================== -->
+<section class="pane active" id="ringkasan">
+
+  <h2 class="sec-title">Modul 1 — BHA & Rotary Steering</h2>
+  <p class="sec-note">Bottom Hole Assembly, jenis rangkaian, dan sistem pengarah lubang.</p>
+
+  <div class="module">
+    <div class="mh"><span class="idx">1.1</span><h3>Komponen BHA (dari bit ke permukaan)</h3></div>
+    <div class="mb">
+      Urutan dasar drill string: <b>Bit → Stabiliser → Drill Collar → BHA (bagian tebal/berat) → Drill Pipe</b> menuju permukaan.
+      Pada BHA motor lengkap dari dasar ke atas: <b>PDC Bit → PDM Sleeve Stabilizer → PDM (Mud Motor) → String Stabilizer → MWD Tool → LWD Tools → Drill Collar → Jar → Drill Collar → Heavy Weight Drill Pipe → Drill Pipe → Casing Shoe</b>.
+      <span class="tag">MWD = Measurement While Drilling</span><span class="tag">LWD = Logging While Drilling</span><span class="tag">Jar = alat pembebas jepitan</span>
+    </div>
+  </div>
+
+  <div class="module">
+    <div class="mh"><span class="idx">1.2</span><h3>Tiga Rangkaian Rotary BHA</h3></div>
+    <div class="mb">
+      <table class="compare-table">
+        <tr><th>Tujuan</th><th>Nama Rangkaian</th><th>Prinsip Kerja</th></tr>
+        <tr><td><b>Build</b> (naikkan inklinasi)</td><td>Fulcrum Assembly</td><td>Near-bit stabilizer dekat bit jadi <b>pivot point</b>; drill collar di atasnya melengkung akibat gravity sag, menghasilkan lateral bit force ke arah build.</td></tr>
+        <tr><td><b>Hold</b> (pertahankan inklinasi)</td><td>Packed-Hole Assembly</td><td>Beberapa stabilizer dipasang berdekatan agar BHA "kaku"/lurus mengikuti sumbu lubang — arah tetap stabil.</td></tr>
+        <tr><td><b>Drop</b> (turunkan inklinasi)</td><td>Pendulum Assembly</td><td>Stabilizer diletakkan jauh dari bit; bagian bawah tanpa penyangga melengkung karena gravitasi (sag) sebelum <b>point of tangency</b>, mendorong bit ke arah drop.</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="module">
+    <div class="mh"><span class="idx">1.3</span><h3>Konfigurasi Dasar BHA</h3></div>
+    <div class="mb">
+      <table class="compare-table">
+        <tr><th>Tipe</th><th>Karakteristik</th></tr>
+        <tr><td><b>Dumb Iron Rotary BHA</b></td><td>Bisa dikonfigurasi build/drop dalam rentang terbatas; hampir tidak ada kontrol walk tendency.</td></tr>
+        <tr><td><b>Motor BHA</b></td><td>Steerable, mampu hasilkan dogleg besar; slide drilling memakan waktu; ada batas kecepatan rotasi drill string.</td></tr>
+        <tr><td><b>Rotary Steerable System (RSS)</b></td><td>Steerable sambil full rotation (mis. Geo-Pilot®, iCruise®); kapasitas dogleg terbatas; rentan hole enlargement; keandalan lebih rendah dari motor.</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <h2 class="sec-title" style="margin-top:36px;">Modul 2 — Anti-Collision</h2>
+  <p class="sec-note">Menghindari tabrakan antar sumur saat pengeboran berarah.</p>
+
+  <div class="grid-3">
+    <div class="card">
+      <h3>Persiapan (Preparation)</h3>
+      <ul>
+        <li>Tinjau well plan terbaru, verifikasi <b>surface location</b> & <b>datum elevation</b> (RKB/Air Gap, MSL, Ground Level).</li>
+        <li>Cek <b>Ellipse of Uncertainty (EOU)</b> — mencerminkan ketidakpastian posisi wellbore akibat error pengukuran.</li>
+        <li>Pilih <b>Instrument Performance Model (IPM)</b> yang tepat: NS-Gyro-MS, MWD+SC, atau MWD saja.</li>
+      </ul>
+      <div class="formula">Lebih banyak koreksi survei (SC, IFR, MS, SAG) → semakin kecil uncertainty.</div>
+    </div>
+    <div class="card">
+      <h3>4 Metode Scanning</h3>
+      <ul>
+        <li><b>Horizontal Plane</b> — cek apakah offset well menembus bidang datar horizontal dari titik current well.</li>
+        <li><b>Travelling Cylinder</b> — bidang tegak lurus terhadap current well; bisa "melewatkan" titik tabrakan mendekati tegak lurus jika interpolasi terlalu besar.</li>
+        <li><b>Closest Approach (3D)</b> — scan segala arah dari kedua sumur; dianggap <b>paling aman</b> dan paling umum dipakai.</li>
+        <li><b>Minimum Distance</b> — mirip 3D tapi arah scan dibalik; <i>tidak digunakan oleh Sperry</i>.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Clearance Factor (CF)</h3>
+      <div class="formula">CF = Jarak antar pusat ÷ (Jarak antar pusat − Jarak antar ellipsoid)</div>
+      <ul>
+        <li><b>CF &lt; 1.0</b> → sumur bersinggungan/beririsan → <b>STOP & REVIEW</b> risiko HSE.</li>
+        <li><b>1.0 &lt; CF &lt; 2.0</b> → terlalu dekat, pastikan customer paham risiko, ikuti prosedur collision risk.</li>
+        <li><b>CF &gt; 2.0</b> → aman, lanjutkan pengeboran (drill ahead).</li>
+        <li>Makin kecil CF, makin dekat kedua sumur. Radius casing bisa ditambahkan agar center-to-center distance lebih realistis.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2 class="sec-title" style="margin-top:10px;">Modul 3 — Torque & Drag, Hidraulika, dan Eksekusi Steering</h2>
+  <p class="sec-note">Gesekan, buckling, hidraulika lumpur, serta cara mengarahkan sumur di lapangan.</p>
+
+  <div class="grid-3">
+    <div class="card">
+      <h3>Torque & Drag</h3>
+      <ul>
+        <li>Fungsi: evaluasi kelayakan profil sumur, tentukan spesifikasi pipa, posisi HWDP, dan evaluasi kondisi lubang via friction factor.</li>
+        <li><b>Friction factor</b>: 0.15–0.22 (casing, halus) vs 0.2–0.4 (open hole, kasar).</li>
+        <li><b>Buckling</b> 3 level: Sinusoidal (2D snaking) → Helical (3D coil) → Lock-up (WOB tidak sampai ke bit).</li>
+        <li>Buckling berkurang jika: inklinasi lebih besar, kekakuan (EI) lebih tinggi, berat linear lebih besar, clearance radial lebih kecil, gesekan dikurangi lubrikan, kualitas lubang lebih baik.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Hidraulika</h3>
+      <ul>
+        <li>Input: trajektori sumur, sifat lumpur tiap seksi, desain drill string & BHA (motor, MWD), batas tekanan pompa rig, tipe bit & TFA/jets.</li>
+        <li>Flow rate optimal ditentukan oleh: hidraulika bit, kecepatan annular untuk hole cleaning, batas tekanan sistem, dan rekomendasi motor handbook.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Sliding & Toolface</h3>
+      <ul>
+        <li><b>Sliding</b>: drill string tidak berotasi (0 rpm), hanya bit yang berputar via motor — untuk mengubah arah (build/drop/turn).</li>
+        <li><b>Toolface</b>: arah mata bor pengarah menghadap; <b>Magnetic (MTF)</b> dipakai saat inklinasi &lt; 5° (referensi utara), <b>Gravity (GTF)</b> dipakai saat inklinasi &gt; 5° (referensi highside, kanan/kiri).</li>
+        <li><b>Reactive torque</b>: kecenderungan drill string berputar berlawanan arah bit akibat differential pressure — memengaruhi kestabilan toolface.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="module">
+    <div class="mh"><span class="idx">3.4</span><h3>Survey & Menghitung Slide untuk Dogleg</h3></div>
+    <div class="mb">
+      <div class="two-col">
+        <div>
+          <b>3 Komponen Survey:</b> Depth, Inclination (0°=vertikal, 90°=horizontal), Azimuth (arah horizontal terhadap utara).<br><br>
+          <b>Survei dianggap berhasil</b> bila Gtotal (±0.003G), Bcalc (±300 nT), dan dip angle (±0.3°) berada dalam kriteria yang diterima.
+        </div>
+        <div>
+          <b>Rumus panjang slide:</b>
+          <div class="formula">Slide Required = (DLS Diminta ÷ Motor Yield) × Course Length</div>
+          Contoh dari materi: DLS diminta 2.5°/100ft, motor yield 4.88°/100ft, course length 100ft →
+          Slide = (2.5/4.88) × 100 ≈ <b>51.2 ft</b>.
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- =================== TAB 2: LATIHAN SOAL =================== -->
+<section class="pane" id="latihan">
+  <h2 class="sec-title">Latihan Soal</h2>
+  <p class="sec-note">Pilih satu jawaban untuk tiap soal. Jawaban benar dan penjelasan akan langsung tampil.</p>
+
+  <div class="quiz-top">
+    <div class="score-badge">Skor: <b id="scoreNow">0</b> / <span id="scoreMax">0</span></div>
+    <button class="reset-btn" onclick="resetQuiz()">↺ Ulangi Kuis</button>
+  </div>
+
+  <div id="quizContainer"></div>
+</section>
+
+<!-- =================== TAB 3: FLASHCARD =================== -->
+<section class="pane" id="flashcard">
+  <h2 class="sec-title">Flashcard</h2>
+  <p class="sec-note">Klik kartu untuk membalik dan lihat jawabannya. Gunakan tombol untuk pindah kartu.</p>
+
+  <div class="fc-controls">
+    <div class="fc-progress">Kartu <b id="fcIndexDisp">1</b> / <span id="fcTotalDisp">0</span></div>
+  </div>
+
+  <div class="fc-wrap">
+    <div class="flashcard" id="flashcard">
+      <div class="inner">
+        <div class="face front">
+          <span class="lbl">Istilah</span>
+          <div class="q" id="fcQ">—</div>
+        </div>
+        <div class="face back">
+          <span class="lbl">Penjelasan</span>
+          <div class="a" id="fcA">—</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="fc-hint">klik kartu untuk membalik</p>
+  <div class="fc-nav">
+    <button onclick="fcPrev()">← Sebelumnya</button>
+    <button onclick="fcNext()">Berikutnya →</button>
+  </div>
+  <div class="fc-deckbar" id="fcDeckbar"></div>
+</section>
+
+<!-- =================== TAB 4: BAGIAN SULIT =================== -->
+<section class="pane" id="sulit">
+  <h2 class="sec-title">Penjelasan Bagian yang Sering Membingungkan</h2>
+  <p class="sec-note">Klik tiap topik untuk membuka penjelasan lebih santai, dengan analogi sederhana.</p>
+  <div id="diffContainer"></div>
+</section>
+
+</main>
+
+<footer>PAKET BELAJAR INTERAKTIF — DISUSUN DARI MATERI "BASIC DIRECTIONAL DRILLING" (HALLIBURTON SPERRY DRILLING, 2018)</footer>
+
+<script>
+/* ---------- TAB SWITCHING ---------- */
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.pane').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
+  });
+});
+
+/* ---------- QUIZ DATA ---------- */
+const quiz = [
+  {q:"Rangkaian BHA apa yang digunakan untuk MEMPERTAHANKAN (hold) inklinasi sumur?",
+   opts:["Fulcrum Assembly","Packed-Hole Assembly","Pendulum Assembly","Rotary Steerable System"],
+   correct:1, exp:"Packed-Hole Assembly menggunakan beberapa stabilizer berdekatan agar rangkaian tetap kaku/lurus mengikuti sumbu lubang sehingga inklinasi tidak berubah."},
+  {q:"Pada Pendulum Assembly, apa yang menyebabkan bit terdorong ke arah 'drop'?",
+   opts:["Adjustable bent housing pada motor","Sag akibat gravitasi pada bagian tak tersangga sebelum point of tangency","Stabilizer near-bit sebagai pivot point","Rotary steerable dengan full rotation"],
+   correct:1, exp:"Bagian drill collar yang jauh dari stabilizer melengkung (sag) akibat gravitasi sebelum titik singgung (point of tangency), menghasilkan lateral bit force ke arah drop."},
+  {q:"Manakah metode Anti-Collision scanning yang dianggap PALING AMAN?",
+   opts:["Horizontal Plane","Travelling Cylinder","Closest Approach (3D)","Minimum Distance"],
+   correct:2, exp:"Closest Approach (3D) melakukan scanning ke segala arah dan sudut sehingga dianggap metode paling aman di antara keempatnya."},
+  {q:"Jika Clearance Factor (CF) suatu titik = 0.8, tindakan yang tepat adalah?",
+   opts:["Drill ahead seperti biasa","Ensure customer memahami risiko lalu lanjut","STOP & REVIEW risiko HSE","Abaikan karena CF di atas 0"],
+   correct:2, exp:"CF < 1.0 berarti ellipsoid of uncertainty kedua sumur bersinggungan/beririsan — wajib STOP & REVIEW risiko HSE sebelum melanjutkan."},
+  {q:"Apa perbedaan utama antara Magnetic Toolface (MTF) dan Gravity Toolface (GTF)?",
+   opts:["MTF dipakai di semua inklinasi, GTF hanya di casing","MTF referensi ke utara dan dipakai saat inklinasi rendah; GTF referensi ke highside dan dipakai saat inklinasi lebih besar","MTF hanya untuk rotary steerable system","Tidak ada perbedaan, keduanya sama"],
+   correct:1, exp:"MTF (referensi kompas/utara) digunakan pada sumur vertikal/near-vertical (umumnya inklinasi <5°). GTF (referensi highside, kanan/kiri) dipakai saat sumur sudah miring (umumnya >5°)."},
+  {q:"Apa itu 'reactive torque' pada motor lumpur (mud motor)?",
+   opts:["Torsi yang diberikan operator secara manual dari permukaan","Kecenderungan drill string berputar berlawanan arah bit akibat differential pressure saat WOB diterapkan","Gaya gravitasi yang menekan bit ke dasar lubang","Tekanan pompa maksimum yang diizinkan"],
+   correct:1, exp:"Reactive torque adalah kecenderungan drill string untuk berputar ke arah berlawanan dari putaran bit, akibat tekanan diferensial yang meningkat seiring WOB diterapkan — ini memengaruhi kestabilan toolface."},
+  {q:"Dalam kegiatan sliding, berapa rotasi drill string di permukaan?",
+   opts:["Sama dengan RPM normal drilling","0 (tidak berotasi, hanya bit yang berputar via motor)","Setengah dari RPM normal","Tergantung jenis bit"],
+   correct:1, exp:"Saat sliding, drill string di permukaan berada pada 0 rotasi; hanya bit yang berputar karena digerakkan oleh mud motor, agar toolface tetap terjaga untuk mengubah arah sumur."},
+  {q:"Faktor apa yang TIDAK mengurangi (reduce) risiko buckling pada drill string?",
+   opts:["Meningkatkan inklinasi lubang (gravity hold down)","Menambah clearance radial (hole lebih besar, pipa lebih kecil)","Meningkatkan kekakuan (stiffness/EI) pipa","Mengurangi gesekan wellbore dengan lubrikan"],
+   correct:1, exp:"Justru MENURUNKAN (bukan menambah) clearance radial — yakni lubang lebih kecil/pipa lebih besar — yang mengurangi risiko buckling, karena ruang gerak pipa untuk melengkung menjadi lebih sempit."},
+  {q:"Rumus untuk menghitung panjang slide yang dibutuhkan adalah?",
+   opts:["Slide = Course Length ÷ DLS Diminta","Slide = (DLS Diminta ÷ Motor Yield) × Course Length","Slide = Motor Yield × DLS Diminta","Slide = Course Length − Motor Yield"],
+   correct:1, exp:"Slide Required = (DLS yang diminta ÷ Motor Yield/output) × Course Length. Contoh: (2.5/4.88) × 100 ft ≈ 51.2 ft."},
+  {q:"Instrument Performance Model (IPM) berfungsi untuk apa?",
+   opts:["Mengatur kecepatan pompa lumpur","Mendefinisikan ketidakpastian posisi wellbore yang dipakai dalam kalkulasi anti-collision","Menentukan jenis bit yang dipakai","Mengukur suhu lubang bor"],
+   correct:1, exp:"IPM (juga disebut Error Model/Toolcode) mendefinisikan ketidakpastian posisi wellbore (uncertainty) yang digunakan dalam kalkulasi Anti-Collision, dan spesifik untuk jenis instrumen survei, kualitas survei, dan teknologi koreksi error yang dipakai."}
+];
+let userAnswers = new Array(quiz.length).fill(null);
+
+function renderQuiz(){
+  const c = document.getElementById('quizContainer');
+  c.innerHTML = '';
+  document.getElementById('scoreMax').textContent = quiz.length;
+  quiz.forEach((item,i)=>{
+    const card = document.createElement('div');
+    card.className = 'q-card';
+    card.innerHTML = `
+      <div class="q-head"><span class="q-num">Q${i+1}</span><span class="q-text">${item.q}</span></div>
+      <div class="opts" id="opts-${i}"></div>
+      <div class="explain" id="exp-${i}">${item.exp}</div>
+    `;
+    c.appendChild(card);
+    const optsWrap = card.querySelector(`#opts-${i}`);
+    item.opts.forEach((opt,oi)=>{
+      const b = document.createElement('button');
+      b.className = 'opt';
+      b.textContent = opt;
+      b.onclick = ()=>answer(i,oi);
+      optsWrap.appendChild(b);
+    });
+  });
+  updateScore();
+}
+
+function answer(qi,oi){
+  if(userAnswers[qi]!==null) return;
+  userAnswers[qi] = oi;
+  const wrap = document.getElementById(`opts-${qi}`);
+  const buttons = wrap.querySelectorAll('.opt');
+  buttons.forEach((b,idx)=>{
+    b.disabled = true;
+    if(idx===quiz[qi].correct) b.classList.add('correct');
+    else if(idx===oi) b.classList.add('wrong');
+  });
+  document.getElementById(`exp-${qi}`).classList.add('show');
+  updateScore();
+}
+
+function updateScore(){
+  const s = userAnswers.reduce((acc,a,i)=> acc + (a===quiz[i].correct?1:0), 0);
+  document.getElementById('scoreNow').textContent = s;
+}
+
+function resetQuiz(){
+  userAnswers = new Array(quiz.length).fill(null);
+  renderQuiz();
+}
+renderQuiz();
+
+/* ---------- FLASHCARDS ---------- */
+const cards = [
+  {q:"Fulcrum Assembly", a:"Rangkaian rotary BHA untuk BUILD inklinasi. Stabilizer near-bit jadi pivot point; drill collar di atas melengkung akibat sag, menghasilkan lateral bit force ke arah build."},
+  {q:"Packed-Hole Assembly", a:"Rangkaian rotary BHA untuk HOLD (mempertahankan) inklinasi. Beberapa stabilizer berdekatan membuat rangkaian kaku dan lurus."},
+  {q:"Pendulum Assembly", a:"Rangkaian rotary BHA untuk DROP inklinasi. Stabilizer jauh dari bit; bagian bawah sag sebelum point of tangency mendorong bit ke arah drop."},
+  {q:"Rotary Steerable System (RSS)", a:"Sistem pengarah yang steerable sambil tetap full rotation (mis. Geo-Pilot®, iCruise®). Dogleg terbatas, rentan hole enlargement, keandalan lebih rendah dari motor."},
+  {q:"Ellipse of Uncertainty (EOU)", a:"Representasi ketidakpastian posisi aktual wellbore akibat error pengukuran (surface location, instrument, borehole, depth, environmental)."},
+  {q:"Instrument Performance Model (IPM)", a:"Model/error model/toolcode yang mendefinisikan ketidakpastian posisi wellbore untuk kalkulasi anti-collision; spesifik terhadap jenis instrumen dan teknologi koreksi (SC, IFR1, IFR2, MS, SAG)."},
+  {q:"Clearance Factor (CF)", a:"CF = Jarak antar pusat ÷ (Jarak antar pusat − Jarak antar ellipsoid). CF<1 = bersinggungan (stop&review); 1–2 = terlalu dekat; >2 = aman untuk drill ahead."},
+  {q:"Closest Approach (3D)", a:"Metode anti-collision scanning yang men-scan kedua sumur ke segala arah/sudut untuk menemukan titik terdekat. Dianggap metode paling aman."},
+  {q:"Travelling Cylinder", a:"Proyeksi matematis anti-collision berupa bidang tegak lurus terhadap sumur saat ini di tiap kedalaman. Bisa melewatkan (miss) intersection yang hampir tegak lurus jika interpolasi scan besar."},
+  {q:"Friction Factor", a:"Parameter 'lumped' (0–1) yang mewakili kekasaran permukaan kontak drill string dengan lubang; open hole 0.2–0.4 lebih tinggi dari cased hole 0.15–0.22, meliputi juga efek tortuosity, mud lubricity, dan hole cleaning."},
+  {q:"Buckling (dan 3 levelnya)", a:"Deformasi drill string akibat kompresi & friksi. 1) Sinusoidal (2D snaking); 2) Helical (3D coil); 3) Lock-up — tidak ada tambahan slack-off weight yang sampai ke bit."},
+  {q:"Magnetic Toolface (MTF)", a:"Arah toolface direferensikan ke utara (kompas), dipakai saat steering di section vertikal/near-vertical (umumnya inklinasi <5°)."},
+  {q:"Gravity Toolface (GTF)", a:"Arah toolface direferensikan ke 'highside' lubang (kanan/kiri), dipakai saat steering di section yang sudah inklinasi (umumnya >5°)."},
+  {q:"Reactive Torque", a:"Kecenderungan drill string berputar berlawanan arah putaran bit akibat differential pressure yang meningkat saat WOB diterapkan pada motor — memengaruhi kestabilan toolface control."},
+  {q:"Sliding", a:"Mengebor dengan motor dalam toolface tertentu (magnetic/gravity) untuk mengubah arah sumur; drill string di permukaan pada 0 rotasi, hanya bit yang berputar."},
+  {q:"3 Komponen Survey", a:"Depth, Inclination (sudut dari garis vertikal; 0°=vertikal, 90°=horizontal), dan Azimuth (arah horizontal terhadap referensi utara, diukur searah jarum jam)."},
+  {q:"Rig Floor Offset (RFO)", a:"Nilai koreksi (derajat) untuk menyelaraskan scribe line MWD dengan bend motor, dihitung dari posisi keliling (circumference method) agar toolface yang dibaca akurat."},
+  {q:"Rumus Slide Required", a:"Slide Required = (DLS yang diminta ÷ Motor Yield) × Course Length. Contoh: (2.5°/100ft ÷ 4.88°/100ft) × 100 ft ≈ 51.2 ft."}
+];
+let fcIndex = 0;
+function renderFlashcard(){
+  document.getElementById('fcQ').textContent = cards[fcIndex].q;
+  document.getElementById('fcA').textContent = cards[fcIndex].a;
+  document.getElementById('fcIndexDisp').textContent = fcIndex+1;
+  document.getElementById('fcTotalDisp').textContent = cards.length;
+  document.getElementById('flashcard').classList.remove('flipped');
+  renderDeckbar();
+}
+function renderDeckbar(){
+  const bar = document.getElementById('fcDeckbar');
+  bar.innerHTML='';
+  cards.forEach((_,i)=>{
+    const d = document.createElement('span');
+    d.className = 'fc-dot' + (i===fcIndex? ' on':'');
+    d.onclick = ()=>{ fcIndex = i; renderFlashcard(); };
+    bar.appendChild(d);
+  });
+}
+document.getElementById('flashcard').addEventListener('click',()=>{
+  document.getElementById('flashcard').classList.toggle('flipped');
+});
+function fcNext(){ fcIndex = (fcIndex+1)%cards.length; renderFlashcard(); }
+function fcPrev(){ fcIndex = (fcIndex-1+cards.length)%cards.length; renderFlashcard(); }
+renderFlashcard();
+
+/* ---------- DIFFICULT CONCEPTS ---------- */
+const diffs = [
+  {flag:"SERING TERTUKAR", title:"Beda Fulcrum, Packed-Hole, dan Pendulum",
+   body:`Ketiganya sama-sama BHA rotary tanpa motor, bedanya hanya <b>posisi stabilizer</b> relatif terhadap bit dan drill collar.
+   Fulcrum: stabilizer DEKAT bit → bagian atas melengkung → dorong bit ke atas (build).
+   Packed-Hole: stabilizer BANYAK & rapat → tidak ada ruang melengkung → arah tetap (hold).
+   Pendulum: stabilizer JAUH dari bit → bagian bawah (tanpa penyangga) melengkung ke bawah akibat gravitasi → bit tertarik turun (drop).`,
+   analogy:"Bayangkan tongkat pancing: kalau penyangga (stabilizer) dekat ujung, ujung tongkat naik (build). Kalau penyangganya banyak sepanjang tongkat, tongkat lurus kaku (hold). Kalau penyangga jauh dari ujung, ujung tongkat yang bebas akan melengkung turun karena beratnya sendiri (drop)."},
+  {flag:"SERING TERTUKAR", title:"Magnetic Toolface vs Gravity Toolface — kapan pakai yang mana?",
+   body:`Aturan sederhana di materi: <b>inklinasi &lt; 5° → pakai Magnetic Toolface (MTF)</b>, <b>inklinasi &gt; 5° → pakai Gravity Toolface (GTF)</b> (nilai 5° adalah default, bisa diubah sesuai standar perusahaan/customer).
+   Alasannya: saat lubang masih hampir vertikal, sensor gravitasi (accelerometer) tidak bisa menentukan arah highside dengan akurat karena hampir tidak ada "atas-bawah" yang jelas — jadi dipakai referensi kompas (utara). Setelah lubang cukup miring, highside menjadi jelas secara gravitasi, sehingga GTF menjadi lebih stabil dan lebih relevan untuk steering.`,
+   analogy:"Coba bayangkan memiringkan gelas berisi air. Kalau gelas masih hampir tegak, permukaan air tidak banyak membantu menunjukkan arah 'miring'. Tapi begitu gelas dimiringkan cukup jauh, permukaan air (gravitasi) jelas menunjukkan sisi mana yang 'atas'. Itulah kenapa GTF baru dipakai setelah inklinasi cukup besar."},
+  {flag:"KONSEP ABSTRAK", title:"Kenapa Ellipse of Uncertainty berbentuk elips 3D, bukan titik?",
+   body:`Posisi sumur di bawah tanah TIDAK pernah diketahui 100% pasti — hanya diperkirakan dari survei (MWD/gyro) yang punya banyak sumber error (kalibrasi instrumen, misalignment, kedalaman, faktor lingkungan). Karena itu posisi sebenarnya bisa berada di area sekitar titik hasil hitungan, bukan tepat di titik itu.
+   Level kepercayaan dinyatakan dalam <b>sigma</b>: 1σ = 31.82% kemungkinan posisi asli ada di dalam elips itu (dalam 3 dimensi), 2σ = 86.96%, 3σ = 99.19%. Semakin tinggi sigma yang dipakai, semakin besar elipsnya, tapi semakin yakin posisi asli ada di dalamnya.`,
+   analogy:"Ibarat memprediksi di mana bola jatuh setelah dilempar dengan mata tertutup — kamu tidak yakin persis titiknya, tapi kamu bisa menggambar lingkaran area kemungkinan. Makin besar lingkaran yang kamu gambar, makin yakin bolanya ada di dalam lingkaran itu, tapi juga makin kurang presisi."},
+  {flag:"SERING TERTUKAR", title:"Clearance Factor: makin KECIL angka justru makin BAHAYA",
+   body:`Ini sering terbalik dipahami. CF bukan 'skor keamanan' yang makin besar makin bagus secara linear — CF adalah rasio jarak antar pusat sumur dibanding jarak setelah dikurangi radius ellipsoid ketidakpastian.
+   Kalau CF = 1.0, itu artinya kedua ellipsoid ketidakpastian TEPAT bersinggungan (touching). Kalau CF &lt; 1.0, ellipsoid-nya sudah TUMPANG TINDIH (overlap) — potensi tabrakan nyata. Jadi memang <b>makin kecil CF, makin dekat & makin berbahaya</b> kedua sumur tersebut.`,
+   analogy:"Bayangkan dua balon yang sedang ditiup mendekat satu sama lain. CF besar = balonnya masih jauh, aman. CF mendekati 1 = permukaan balon mulai bersentuhan. CF di bawah 1 = balonnya sudah saling menekan/menembus — itu tanda bahaya."},
+  {flag:"KONSEP ABSTRAK", title:"Kenapa harus 'sliding' — bukannya rotary drilling saja lebih cepat?",
+   body:`Saat rotary drilling normal (drill string berputar penuh), motor lumpur di BHA juga ikut berputar bersama string, sehingga arah bengkokan (bend housing) motor terus berubah-ubah arah setiap saat — efeknya menyebar rata ke segala arah dan TIDAK menghasilkan pembelokan terarah (lubang cenderung tetap lurus mengikuti arah semula).
+   Saat sliding (string tidak berotasi, hanya bit berputar via motor), arah bengkokan motor TETAP diam menghadap satu toolface tertentu sepanjang waktu — sehingga gaya lateral pada bit konsisten ke satu arah, dan lubang benar-benar berbelok sesuai rencana (build/drop/turn).
+   Konsekuensinya, sliding lebih lambat dan makin sering menyebabkan drag/friksi lebih tinggi — makanya di materi disebutkan "slide drilling can be time consuming" sebagai kelemahan Motor BHA.`,
+   analogy:"Ibarat mendorong sepeda dengan setang yang terus berputar-putar sendiri (rotary) — sepeda cenderung jalan lurus karena arah dorongannya berubah-ubah dan saling meniadakan. Tapi kalau setangnya kamu tahan diam miring ke satu sisi (sliding), sepeda pasti berbelok ke arah itu."},
+  {flag:"RUMUS", title:"Cara membaca rumus Slide Required tanpa menghafal",
+   body:`Rumus: <b>Slide = (DLS Diminta ÷ Motor Yield) × Course Length</b>.
+   Logikanya: Motor Yield adalah berapa derajat pembelokan yang dihasilkan motor untuk setiap 100 ft SLIDE PENUH (bukan course length total). Jika DLS yang diminta sama persis dengan Motor Yield, maka seluruh course length (100 ft) harus di-slide. Tapi kalau DLS yang diminta lebih kecil dari Motor Yield (motor "terlalu kuat" membelokkan), maka cukup sebagian dari course length yang perlu di-slide — sisanya bisa rotary drilling.
+   Rasio (DLS Diminta ÷ Motor Yield) itulah yang menunjukkan proporsi course length yang harus di-slide.`,
+   analogy:"Kalau motor 'mampu membelokkan' 4.88° per 100 ft slide penuh, tapi kamu cuma butuh belokan 2.5° per 100 ft, kamu tidak perlu slide sepanjang 100 ft — cukup sekitar setengahnya saja (2.5/4.88 ≈ 51%), sisanya bisa rotary drilling lurus."}
+];
+function renderDiff(){
+  const c = document.getElementById('diffContainer');
+  c.innerHTML='';
+  diffs.forEach((d,i)=>{
+    const item = document.createElement('div');
+    item.className='diff-item';
+    item.innerHTML = `
+      <div class="diff-h" onclick="toggleDiff(${i})">
+        <span class="flag">${d.flag}</span>
+        <h3>${d.title}</h3>
+        <span class="chev">▸</span>
+      </div>
+      <div class="diff-body">
+        <div class="diff-b-in">
+          <div>${d.body}</div>
+          <div class="analogy"><span class="lbl">Analogi</span>${d.analogy}</div>
+        </div>
+      </div>`;
+    c.appendChild(item);
+  });
+}
+function toggleDiff(i){
+  document.querySelectorAll('.diff-item')[i].classList.toggle('open');
+}
+renderDiff();
+</script>
+</body>
+</html>

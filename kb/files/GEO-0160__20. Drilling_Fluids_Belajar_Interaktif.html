@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Drilling Fluids — Paket Belajar Interaktif (JDS)</title>
+<style>
+:root{
+  --bg:#14181A;
+  --bg-panel:#1C2124;
+  --bg-panel-2:#22282B;
+  --bg-raised:#272E31;
+  --line:#37403F;
+  --line-soft:#2A3133;
+  --mud:#A8702E;
+  --mud-soft:#C68C4C;
+  --teal:#3E9188;
+  --amber:#E3A62F;
+  --danger:#C1543D;
+  --text:#EDE6D8;
+  --text-dim:#AEB3AC;
+  --text-faint:#748078;
+  --serif: Georgia, 'Iowan Old Style', 'Times New Roman', serif;
+  --mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:
+    radial-gradient(ellipse at top left, #1A2E2C 0%, transparent 45%),
+    radial-gradient(ellipse at bottom right, #241B12 0%, transparent 50%),
+    var(--bg);
+  color:var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+::selection{background:var(--mud);color:#14181A;}
+
+/* ===== Layout shell ===== */
+.wrap{max-width:920px;margin:0 auto;padding:28px 18px 80px;}
+
+/* ===== Header / signature strata bar ===== */
+header.hero{
+  display:flex;
+  gap:18px;
+  align-items:stretch;
+  border:1px solid var(--line);
+  background:var(--bg-panel);
+  border-radius:6px;
+  overflow:hidden;
+  margin-bottom:22px;
+}
+.strata{
+  width:16px;
+  flex-shrink:0;
+  background:
+    repeating-linear-gradient(180deg,
+      #6E4A24 0px, #6E4A24 18px,
+      #8C6234 18px, #8C6234 34px,
+      #3E9188 34px, #3E9188 46px,
+      #4C5654 46px, #4C5654 62px,
+      #A8702E 62px, #A8702E 78px,
+      #2A3133 78px, #2A3133 96px
+    );
+  background-size: 16px 96px;
+}
+.hero-body{padding:22px 24px 22px 6px;flex:1;}
+.eyebrow{
+  font-family:var(--mono);
+  font-size:11px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--mud-soft);
+  margin:0 0 6px;
+}
+h1.title{
+  font-family:var(--serif);
+  font-weight:700;
+  font-size:28px;
+  line-height:1.15;
+  margin:0 0 6px;
+  color:var(--text);
+}
+.tagline{
+  font-family:var(--serif);
+  font-style:italic;
+  color:var(--teal);
+  font-size:15px;
+  margin:0 0 12px;
+}
+.hero-meta{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  font-family:var(--mono);
+  font-size:11px;
+  color:var(--text-dim);
+}
+.chip{
+  border:1px solid var(--line);
+  padding:3px 9px;
+  border-radius:3px;
+  background:var(--bg-panel-2);
+}
+
+/* ===== Tabs ===== */
+nav.tabs{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:2px;
+  background:var(--line);
+  border-radius:6px;
+  overflow:hidden;
+  margin-bottom:22px;
+  border:1px solid var(--line);
+}
+nav.tabs button{
+  font-family:var(--mono);
+  font-size:12.5px;
+  letter-spacing:.03em;
+  text-transform:uppercase;
+  padding:13px 6px;
+  background:var(--bg-panel);
+  color:var(--text-dim);
+  border:none;
+  cursor:pointer;
+  transition:background .15s, color .15s;
+}
+nav.tabs button:hover{background:var(--bg-raised);color:var(--text);}
+nav.tabs button.active{background:var(--mud);color:#14181A;font-weight:700;}
+
+section.panel{display:none;}
+section.panel.active{display:block;animation:fade .25s ease;}
+@keyframes fade{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+
+/* ===== Generic card ===== */
+.card{
+  background:var(--bg-panel);
+  border:1px solid var(--line);
+  border-radius:6px;
+  padding:18px 20px;
+  margin-bottom:14px;
+}
+.card h2{
+  font-family:var(--serif);
+  font-size:19px;
+  margin:0 0 10px;
+  color:var(--mud-soft);
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.card h2 .num{
+  font-family:var(--mono);
+  font-size:12px;
+  color:var(--bg);
+  background:var(--teal);
+  padding:2px 7px;
+  border-radius:3px;
+}
+.card p, .card li{font-size:14.5px;line-height:1.6;color:var(--text-dim);}
+.card ul{margin:6px 0;padding-left:20px;}
+.card strong{color:var(--text);}
+
+/* accordion */
+.accordion{border:1px solid var(--line);border-radius:6px;overflow:hidden;margin-bottom:12px;}
+.acc-head{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:13px 16px;cursor:pointer;background:var(--bg-panel-2);
+  font-family:var(--serif);font-size:16px;color:var(--text);
+  transition:background .15s;
+}
+.acc-head:hover{background:var(--bg-raised);}
+.acc-head .arrow{font-family:var(--mono);color:var(--mud-soft);transition:transform .2s;font-size:13px;}
+.acc-head.open .arrow{transform:rotate(90deg);}
+.acc-body{max-height:0;overflow:hidden;transition:max-height .3s ease;background:var(--bg-panel);}
+.acc-body-inner{padding:4px 18px 16px;}
+
+/* table */
+table{width:100%;border-collapse:collapse;margin:8px 0;font-size:13px;}
+th,td{border:1px solid var(--line-soft);padding:7px 9px;text-align:left;vertical-align:top;}
+th{background:var(--bg-panel-2);color:var(--mud-soft);font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.04em;}
+td{color:var(--text-dim);}
+td strong{color:var(--text);}
+tr:nth-child(even) td{background:rgba(255,255,255,0.015);}
+
+.tag{display:inline-block;font-family:var(--mono);font-size:10.5px;padding:2px 7px;border-radius:3px;border:1px solid var(--line);color:var(--text-dim);margin:1px 3px 1px 0;}
+.tag.teal{border-color:var(--teal);color:var(--teal);}
+.tag.amber{border-color:var(--amber);color:var(--amber);}
+.tag.mud{border-color:var(--mud-soft);color:var(--mud-soft);}
+
+/* ===== Quiz ===== */
+#quiz-score-bar{
+  display:flex;justify-content:space-between;align-items:center;
+  font-family:var(--mono);font-size:12px;color:var(--text-dim);
+  margin-bottom:14px;padding:10px 14px;border:1px solid var(--line);border-radius:6px;background:var(--bg-panel);
+}
+#quiz-score-bar #score{color:var(--amber);font-weight:700;}
+.progressbar{flex:1;height:6px;background:var(--bg-panel-2);border-radius:3px;margin:0 14px;overflow:hidden;}
+.progressbar-fill{height:100%;background:var(--teal);width:0%;transition:width .3s;}
+
+.qcard{background:var(--bg-panel);border:1px solid var(--line);border-radius:6px;padding:18px 20px;margin-bottom:14px;}
+.qcard .qnum{font-family:var(--mono);font-size:11px;color:var(--mud-soft);text-transform:uppercase;letter-spacing:.05em;}
+.qcard .qtext{font-family:var(--serif);font-size:16.5px;margin:8px 0 14px;line-height:1.4;}
+.opt{
+  display:block;width:100%;text-align:left;
+  background:var(--bg-panel-2);border:1px solid var(--line);color:var(--text);
+  padding:10px 14px;margin-bottom:8px;border-radius:5px;font-size:14px;cursor:pointer;
+  transition:border-color .15s, background .15s;
+}
+.opt:hover{border-color:var(--mud-soft);}
+.opt.correct{background:rgba(62,145,136,0.18);border-color:var(--teal);color:var(--teal);}
+.opt.wrong{background:rgba(193,84,61,0.18);border-color:var(--danger);color:#E8988A;}
+.opt[disabled]{cursor:default;}
+.explain{
+  display:none;margin-top:10px;padding:10px 14px;border-left:3px solid var(--amber);
+  background:var(--bg-panel-2);font-size:13.5px;color:var(--text-dim);line-height:1.55;border-radius:0 4px 4px 0;
+}
+.explain.show{display:block;}
+#quiz-actions{display:flex;gap:10px;margin-top:6px;}
+button.btn{
+  font-family:var(--mono);font-size:12.5px;text-transform:uppercase;letter-spacing:.04em;
+  background:var(--mud);color:#14181A;border:none;padding:10px 18px;border-radius:5px;cursor:pointer;font-weight:700;
+}
+button.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--text-dim);}
+button.btn:hover{filter:brightness(1.1);}
+#quiz-result{display:none;text-align:center;padding:30px 20px;}
+#quiz-result h3{font-family:var(--serif);font-size:24px;color:var(--amber);}
+
+/* ===== Flashcards ===== */
+#fc-controls{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;font-family:var(--mono);font-size:12px;color:var(--text-dim);flex-wrap:wrap;gap:8px;}
+#fc-deck{display:flex;gap:10px;}
+.scene{perspective:1200px;height:230px;margin-bottom:16px;}
+.flashcard{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .5s;cursor:pointer;}
+.flashcard.flipped{transform:rotateY(180deg);}
+.face{
+  position:absolute;inset:0;backface-visibility:hidden;
+  border-radius:8px;border:1px solid var(--line);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:24px;text-align:center;
+}
+.face.front{background:var(--bg-panel);}
+.face.front .cat{font-family:var(--mono);font-size:10.5px;color:var(--mud-soft);text-transform:uppercase;letter-spacing:.08em;position:absolute;top:14px;left:16px;}
+.face.front .term{font-family:var(--serif);font-size:22px;line-height:1.3;color:var(--text);}
+.face.front .hint{position:absolute;bottom:14px;font-family:var(--mono);font-size:10.5px;color:var(--text-faint);}
+.face.back{background:var(--bg-raised);transform:rotateY(180deg);}
+.face.back .def{font-size:14.5px;line-height:1.6;color:var(--text-dim);}
+.face.back .def strong{color:var(--teal);}
+.fc-nav{display:flex;justify-content:center;gap:12px;align-items:center;}
+.fc-counter{font-family:var(--mono);font-size:12px;color:var(--text-dim);min-width:60px;text-align:center;}
+.fc-status{display:flex;justify-content:center;gap:20px;margin-top:12px;font-family:var(--mono);font-size:11px;color:var(--text-faint);}
+.fc-status span b{color:var(--teal);}
+.fc-status span.dk b{color:var(--danger);}
+
+/* ===== Tab 4: sulit ===== */
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0;}
+.compare-cell{background:var(--bg-panel-2);border:1px solid var(--line);border-radius:5px;padding:12px 14px;}
+.compare-cell h4{margin:0 0 6px;font-family:var(--mono);font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--amber);}
+.compare-cell p{margin:0;font-size:13.5px;}
+@media(max-width:640px){.compare-grid{grid-template-columns:1fr;}}
+
+.calc-box{background:var(--bg-panel-2);border:1px dashed var(--line);border-radius:6px;padding:16px;margin-top:10px;}
+.calc-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;}
+.calc-row label{font-family:var(--mono);font-size:11px;color:var(--text-dim);display:block;margin-bottom:4px;}
+.calc-row input{
+  width:90px;background:var(--bg);border:1px solid var(--line);color:var(--text);
+  padding:7px 9px;border-radius:4px;font-family:var(--mono);font-size:13px;
+}
+.calc-out{font-family:var(--mono);font-size:13.5px;color:var(--teal);margin-top:6px;padding-top:10px;border-top:1px solid var(--line-soft);}
+.calc-out b{color:var(--amber);}
+
+footer.foot{text-align:center;font-family:var(--mono);font-size:11px;color:var(--text-faint);margin-top:30px;padding-top:18px;border-top:1px solid var(--line-soft);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <div class="strata"></div>
+    <div class="hero-body">
+      <p class="eyebrow">JDS Training · 25 Juli 2026</p>
+      <h1 class="title">Drilling Fluids for Non‑Mud Engineers</h1>
+      <p class="tagline">"Protect GOOD Reservoir with GOOD MUD"</p>
+      <div class="hero-meta">
+        <span class="chip">3 Subjek</span>
+        <span class="chip">132 Slide sumber</span>
+        <span class="chip">Rangkuman · Soal · Flashcard · Penjelasan Sulit</span>
+      </div>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab-btn active" data-tab="rangkuman">1 · Rangkuman</button>
+    <button class="tab-btn" data-tab="soal">2 · Latihan Soal</button>
+    <button class="tab-btn" data-tab="flashcard">3 · Flashcard</button>
+    <button class="tab-btn" data-tab="sulit">4 · Bagian Sulit</button>
+  </nav>
+
+  <!-- ============================================================ -->
+  <!-- TAB 1: RANGKUMAN -->
+  <!-- ============================================================ -->
+  <section class="panel active" id="tab-rangkuman">
+
+    <div class="card">
+      <h2>Tujuan Pembelajaran</h2>
+      <ul>
+        <li>Informasi dasar untuk mendesain sistem <em>drilling fluid</em></li>
+        <li>Memilih penggunaan produk yang tepat</li>
+        <li>Mengantisipasi masalah terkait lumpur (mud-related problems)</li>
+        <li>Pendekatan meminimalkan kerusakan formasi (formation damage)</li>
+        <li>Mengelola operasi secara cost-effective</li>
+      </ul>
+      <p><strong>Prinsip inti:</strong> sistem drilling fluid yang paling akurat harus dirancang berdasarkan <strong>data geologi</strong> sumur yang akan dibor.</p>
+    </div>
+
+    <div class="accordion" data-acc>
+      <div class="acc-head open"><span>Subjek 1 — Clay Mineralogy</span><span class="arrow">▶</span></div>
+      <div class="acc-body" style="max-height:1400px;">
+        <div class="acc-body-inner">
+          <p>Clay minerals adalah batuan sedimen paling melimpah, mencakup <strong>~70–80% kolom stratigrafi</strong>. Ada dua istilah yang perlu dibedakan:</p>
+          <ul>
+            <li><strong>"Clays"</strong> = clay yang ditambang secara komersial → Bentonite (Sodium & Calcium)</li>
+            <li><strong>"Clay minerals"</strong> = mineral yang ada di batuan sedimen formasi: Kaolinite, Illite, Chlorite, Smectite (Montmorillonite), dan mixed-layer Illite/Smectite (I/S)</li>
+          </ul>
+          <p>Dampak clay reaktif: <span class="tag amber">wellbore instability</span> <span class="tag amber">stuck pipe</span> <span class="tag amber">slow ROP</span></p>
+
+          <table>
+            <tr><th>Clay mineral</th><th>Karakter partikel</th><th>Reaktivitas</th></tr>
+            <tr><td><strong>Kaolinite</strong></td><td>Sangat keras, non-swelling; hasil pelapukan Feldspar</td><td>Paling rendah</td></tr>
+            <tr><td><strong>Chlorite</strong></td><td>Keras, min-swelling; cenderung menyumbat pore throat</td><td>Rendah</td></tr>
+            <tr><td><strong>Illite</strong></td><td>Keras, min-swelling; mengandung ion K⁺ di interlayer; salinitas tinggi bisa memecahnya jadi fine particles</td><td>Rendah–sedang</td></tr>
+            <tr><td><strong>Mixed layer (I/S)</strong></td><td>Komposisi umum: 70–80% Illite, 20–30% Smectite</td><td>Sedang</td></tr>
+            <tr><td><strong>Smectite (Montmorillonite)</strong></td><td>Sangat lunak, max-swelling, sangat reaktif & dispersible</td><td>Paling tinggi</td></tr>
+          </table>
+
+          <p><strong>Bentonite:</strong> Ca²⁺ Bentonite → ekspansi minimal, kurang kental. Na⁺ Bentonite → ekspansi maksimal, sangat kental.</p>
+          <p><strong>Shale:</strong> mengandung clay dalam jumlah tinggi, mudah menyerap air, mengembang seiring waktu, dan tidak terlihat kasat mata — berdampak pada wellbore instability, stuck pipe, dan slow ROP.</p>
+          <p><strong>Uji inhibisi clay/shale:</strong></p>
+          <ul>
+            <li><strong>CST (Capillary Suction Timer)</strong> — memperkirakan kebutuhan salinitas untuk inhibisi sampel clay tertentu.</li>
+            <li><strong>LSM (Linear Swell Meter)</strong> — mengukur perubahan panjang core clay/shale utuh seiring waktu; dipakai bersama CST untuk menentukan formulasi mud yang tepat untuk formasi shale tertentu.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion" data-acc>
+      <div class="acc-head"><span>Subjek 2A — Fungsi &amp; Klasifikasi Drilling Fluid</span><span class="arrow">▶</span></div>
+      <div class="acc-body">
+        <div class="acc-body-inner">
+          <p><strong>Definisi:</strong> Drilling Fluid = Chemicals + Liquid Based (campuran aditif kimia dalam basis cairan).</p>
+          <p><strong>8 Fungsi Drilling Fluid:</strong></p>
+          <ol>
+            <li>Membersihkan cutting hasil pemboran dari wellbore</li>
+            <li>Menstabilkan tekanan di wellbore</li>
+            <li>Mengumpulkan informasi geologi bawah permukaan (via cutting)</li>
+            <li>Memungkinkan pembacaan electric log yang interpretable</li>
+            <li>Meminimalkan kerusakan reservoir</li>
+            <li>Mengontrol korosi</li>
+            <li>Menopang berat tubular (buoyancy)</li>
+            <li>Menstabilkan wellbore</li>
+          </ol>
+          <p><strong>Dampak ketidakseimbangan tekanan (fungsi #2):</strong></p>
+          <table>
+            <tr><th>Kondisi</th><th>Hubungan tekanan</th><th>Akibat</th></tr>
+            <tr><td>Stuck pipe</td><td>Hydrostatic Pressure (HP) &gt; Formation Pressure (FP)</td><td>Pipa terjepit oleh filter cake</td></tr>
+            <tr><td>Loss circulation</td><td>HP &gt; FP</td><td>Mud hilang ke formasi</td></tr>
+            <tr><td>Gas kick / blow-out</td><td>HP &lt; FP</td><td>Fluida formasi masuk ke wellbore</td></tr>
+          </table>
+
+          <p><strong>Klasifikasi Drilling Fluid (3 kelompok besar):</strong></p>
+          <table>
+            <tr><th>Pneumatic Fluids</th><th>WBM (Water-Based Mud)</th><th>OBM (Oil-Based Mud)</th></tr>
+            <tr><td>Air, Foam, Aerated</td><td>Sistem berbasis air</td><td>Diesel oil, Mineral oil, Synthetic (Ester)</td></tr>
+          </table>
+          <p><strong>Pneumatic fluids</strong> — dipakai untuk sumur depleted/tekanan rendah. Kelebihan: drilling cepat, minim formation damage, tanpa hidrasi clay. Kekurangan: butuh peralatan rig tambahan (compressor), tidak efektif jika volume fluida formasi besar.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion" data-acc>
+      <div class="acc-head"><span>Subjek 2B — Sistem WBM: Dispersed vs Non-Dispersed</span><span class="arrow">▶</span></div>
+      <div class="acc-body">
+        <div class="acc-body-inner">
+          <p>Empat istilah kunci: <strong>Dispersed</strong> (mendispersikan cutting/formasi), <strong>Non-Dispersed</strong> (tidak mendispersikan), <strong>Inhibited</strong> (mampu menghambat swelling clay/shale), <strong>Non-Inhibited</strong> (tidak mampu menghambat).</p>
+
+          <table>
+            <tr><th>Kategori</th><th>Sistem</th><th>Produk utama</th><th>Catatan</th></tr>
+            <tr><td rowspan="2"><strong>Dispersed</strong></td><td>Inhibited — Lime Mud</td><td>Lime Ca(OH)₂</td><td>Ca²⁺ menggantikan Na⁺ di layer clay → flokulasi, presipitasi, menurunkan sifat rheologi</td></tr>
+            <tr><td>Non-Inhibited — Lignosulfonate / Lignite</td><td>Lignosulfonate, Lignite</td><td>Mendispersikan clay & cutting reaktif; butuh solids control bagus; <strong>tidak disarankan untuk reservoir</strong></td></tr>
+            <tr><td rowspan="2"><strong>Non-Dispersed</strong></td><td>Inhibited — Polymer</td><td>KCl/NaCl-Polymer, PHPA, Glycol, HPWBM, Formate</td><td>Untuk formasi clay reaktif, aman untuk reservoir</td></tr>
+            <tr><td>Non-Inhibited — Spud/Polymer</td><td>Bentonite, Bentonite/Polymer</td><td>Untuk formasi clay tidak reaktif; umum dipakai sebagai spud mud</td></tr>
+          </table>
+
+          <p><strong>HPWBM (High Performance WBM / Highly Inhibitive Aqueous Fluid):</strong> pengganti sistem berbasis chloride, menstabilkan clay sangat reaktif, didesain untuk drilling reservoir, stabil di HTHP, ramah lingkungan, dan kemampuan mengontrol clay reaktif setara OBM. Produk kunci: <strong>Polyamine</strong> (shale inhibitor — membuat clay lebih hidrofobik) dan <strong>Accretion suppressant</strong> (mencegah penempelan bit/BHA).</p>
+
+          <p><strong>Formate-based mud</strong> (Sodium/Potassium/Cesium Formate): pengganti sistem chloride, menstabilkan clay reaktif, mud solid rendah, memperpanjang stabilitas termal polimer, korosi lebih rendah, stabil HTHP, ramah lingkungan. Cesium formate density tertinggi (~19.2 ppg).</p>
+
+          <p><strong>Deep Water Mud System:</strong> perhatian utama = <strong>gas hydrates</strong> dan suhu flowline rendah. Gas hydrate terbentuk di suhu &lt;50°F; makin dalam sumur, makin tinggi salinitas dibutuhkan untuk menekan hydrate. OBM unggul menekan hydrate karena kandungan air rendah & salinitas tinggi.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion" data-acc>
+      <div class="acc-head"><span>Subjek 2C — OBM, Brine (CWOF) &amp; Filtrasi</span><span class="arrow">▶</span></div>
+      <div class="acc-body">
+        <div class="acc-body-inner">
+          <p><strong>OBM (Non-Aqueous Fluid)</strong> dipakai saat WBM tidak efektif: efektif di clay/shale sangat reaktif, loose sand; tahan suhu tinggi; tahan kontaminasi (semen, anhydrate, H₂S, CO₂); tahan korosi; lubrikasi sangat baik; near-gauge wellbore; melindungi produksi; performa bagus di sumur deviated/horizontal; zero discharge (ester-based); dapat dipakai ulang.</p>
+          <p><strong>Keterbatasan OBM:</strong> mahal untuk 1–2 sumur, isu lingkungan (oil kualitas rendah), mahal jika loss circulation, isu kesehatan, butuh peralatan rig khusus, isu pembuangan limbah.</p>
+          <p><strong>Klasifikasi OBM:</strong></p>
+          <table>
+            <tr><th></th><th>Water</th><th>Salts</th><th>Emulsifier</th><th>Filtrate</th></tr>
+            <tr><td><strong>Invert Emulsion</strong></td><td>Ya</td><td>Ya</td><td>Ya</td><td>All oil</td></tr>
+            <tr><td><strong>All-Oil System</strong></td><td>Tidak</td><td>Tidak</td><td>Sedikit</td><td>—</td></tr>
+          </table>
+          <p><strong>Kunci sukses OBM:</strong> urutan mixing yang tepat, sifat mud stabil, minim treatment (cost-effective), fasilitas shearing bagus, hindari kontaminasi air, performa solids control equipment yang baik, dan kapabilitas mud engineer.</p>
+
+          <p><strong>Completion / Work-over Fluids (CWOF):</strong> dua tipe dasar — <em>Clear-fluid system</em> (Brine, disukai karena solids-free) dan <em>Solids-enhanced system</em> (WBM/OBM). Brine bisa single salt (KCl, NaCl, CaCl₂, NaBr, CaBr₂, formate) hingga two/three salts (CaCl₂/CaBr₂/ZnBr₂) untuk densitas lebih tinggi (hingga ~19.2 ppg), namun makin kompleks makin mahal & korosif.</p>
+          <p><strong>Filtrasi</strong> bertujuan menghilangkan partikel halus agar didapat fluida bersih & bebas solid. Diukur dengan <strong>turbidity (NTU)</strong> — air berkualitas baik &lt;1 NTU. Unit filtrasi: DE Unit (NTU 0–2) dan Dual Pod Unit / cartridge (NTU 10–30).</p>
+          <p>Fluida umumnya dianggap aman sebagai CWOF bila partikel berdiameter &lt;2µ dengan konsentrasi &lt;100 mg/L.</p>
+          <p><strong>Fluida khusus lain:</strong> Coring fluid (hindari fiber, gunakan tracer, solid serendah mungkin), Milling fluid (rheologi tinggi: YP & 6-rpm), Packer fluid (statis lama, menyeimbangkan tekanan tubing–casing; harus solids-free & anti korosi).</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion" data-acc>
+      <div class="acc-head"><span>Subjek 3 — Properti &amp; Field Testing</span><span class="arrow">▶</span></div>
+      <div class="acc-body">
+        <div class="acc-body-inner">
+          <p>Standar acuan: <strong>API 13B-1</strong> (WBM) dan <strong>API 13B-2</strong> (OBM).</p>
+          <table>
+            <tr><th>Parameter</th><th>Fungsi/arti</th><th>Alat</th><th>Satuan</th></tr>
+            <tr><td>Mud Weight (MW)</td><td>Densitas fluida</td><td>API/Pressurized Mud Balance</td><td>ppg, SG, lb/cuft</td></tr>
+            <tr><td>Funnel Viscosity</td><td>Viskositas cepat di lapangan</td><td>Marsh Funnel</td><td>sec/qt</td></tr>
+            <tr><td>Plastic Viscosity (PV)</td><td>Volume, tipe & ukuran solids</td><td>VG-Meter/Fann</td><td>cP — nilai = 600rpm − 300rpm</td></tr>
+            <tr><td>Yield Point (YP)</td><td>Kemampuan hole cleaning</td><td>Rheometer</td><td>lb/100ft² — nilai = 300rpm − PV</td></tr>
+            <tr><td>Gel Strength</td><td>Gaya tarik saat statis (berkembang seiring waktu)</td><td>Rheometer</td><td>lb/100ft² @10s/10m/30m (bacaan 3-rpm)</td></tr>
+            <tr><td>6-RPM Reading</td><td>Hole cleaning di laju pompa rendah</td><td>Rheometer</td><td>lb/100ft²</td></tr>
+            <tr><td>n-value</td><td>Indeks aliran laminar (mode alir); polymer mud umumnya 0.4–0.6</td><td>Kalkulasi dari data VG-Meter</td><td>tanpa satuan</td></tr>
+            <tr><td>LGS (Low Gravity Solids)</td><td>Indikator kualitas mud (drilled solids, impuritas); normal 50–55 lb/bbl (5–6% vol)</td><td>—</td><td>lb/bbl, % vol</td></tr>
+            <tr><td>HGS (High Gravity Solids)</td><td>Barite, Manganese Tetroxide, Hematite — komponen inert</td><td>—</td><td>lb/bbl, % vol</td></tr>
+            <tr><td>API Fluid Loss</td><td>Laju filtrat masuk formasi</td><td>API Filter Press @100 psi, suhu ambient</td><td>mls/30min</td></tr>
+            <tr><td>HTHP Fluid Loss</td><td>Fluid loss pada suhu tinggi</td><td>HTHP Filter Press / Fann 90 @600psi/100psi</td><td>mls/30min</td></tr>
+            <tr><td>Filter (Mud) Cake</td><td>Residu di media permeabel; idealnya impermeable, tipis, kuat (~2/32 in)</td><td>—</td><td>inch</td></tr>
+            <tr><td>pH (Alkalinity)</td><td>pH WBM umumnya 9–10</td><td>pH Meter/Paper</td><td>tanpa satuan</td></tr>
+            <tr><td>Hardness</td><td>Kandungan Ca²⁺ & Mg²⁺ di make-up water</td><td>—</td><td>mg/L (as Ca)</td></tr>
+            <tr><td>Chloride Content</td><td>Kandungan Cl⁻ (dari KCl, NaCl, CaCl₂, seawater, formation water)</td><td>—</td><td>mg/L, ppm</td></tr>
+            <tr><td>Potassium Content</td><td>Kandungan K⁺ (dari KCl, KOH, KCOOH)</td><td>Centrifuge</td><td>mg/L, ppm</td></tr>
+            <tr><td>Methylene Blue Capacity (MBT)</td><td>Menunjukkan jumlah clay di sistem mud</td><td>Methylene Blue Test</td><td>ppb</td></tr>
+            <tr><td>Retort (Solids/Water/Oil)</td><td>Kandungan solid, air, oil — dasar treatment & rasio oil/water pada OBM</td><td>Retort 10/20/50cc</td><td>% vol</td></tr>
+            <tr><td>Electrical Stability (ES)</td><td>Kapabilitas emulsi & oil-wetting (khusus OBM)</td><td>ES Tester</td><td>Volt</td></tr>
+            <tr><td>Salinity</td><td>Kandungan Cl⁻ untuk inhibisi & stabilisasi hole</td><td>—</td><td>mg/L, ppm</td></tr>
+            <tr><td>Excess Lime</td><td>Meningkatkan performa emulsifier di OBM; ideal 3–6 ppb</td><td>—</td><td>ppb</td></tr>
+          </table>
+
+          <p><strong>Solids Management</strong> — dua jenis solid: komersial (produk mud) dan drilled solids (dari formasi). Solid berlebih sebagai kontaminan menyebabkan: mud weight & properti meningkat, swabbing/surging, mud cake menebal (risiko tight hole/stuck pipe), dilution rate & biaya naik, erosi (abrasif), dan reservoir damage.</p>
+          <p>Prinsip: <strong>eliminasi solid sedini mungkin</strong> — karena satu cutting yang pecah menjadi partikel lebih kecil meningkatkan luas permukaan (surface area) secara drastis, memperbesar potensi reaktivitas & masalah.</p>
+          <p><strong>Metode pengangkatan solid:</strong> pemisahan mekanis (disukai), dilusi, pembersihan rutin sand trap/settling pit, serta metode <em>Dump and Dilute</em> (efektif tapi menambah biaya mud & isu lingkungan).</p>
+          <table>
+            <tr><th>Peralatan</th><th>Kapasitas pemisahan partikel</th></tr>
+            <tr><td>Desander</td><td>hingga 100 µ</td></tr>
+            <tr><td>Desilter</td><td>hingga 75 µ</td></tr>
+            <tr><td>Mud Cleaner</td><td>hingga 60 µ</td></tr>
+            <tr><td>Centrifuge</td><td>hingga 2–10 µ</td></tr>
+          </table>
+          <p>Shale shaker adalah peralatan mekanis pertama untuk mengangkat drilled solids. Screen tipe <strong>pyramid</strong> memberikan area penyaringan efektif ~125% lebih besar dibanding screen tipe <strong>flat</strong>.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="border-color:var(--amber);">
+      <h2><span class="num">✓</span>Kesimpulan Materi</h2>
+      <ol>
+        <li>Kenali litologi sumur yang akan dibor untuk memilih tipe sistem mud yang tepat.</li>
+        <li>Drilling & C/WO fluids harus didesain dan diformulasikan dengan benar untuk meminimalkan kerusakan formasi.</li>
+        <li>Performa Solids Control Equipment harus selalu dijaga dalam kondisi berjalan yang tepat.</li>
+        <li>Mud Engineer harus kompeten menangani pekerjaan.</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- TAB 2: LATIHAN SOAL -->
+  <!-- ============================================================ -->
+  <section class="panel" id="tab-soal">
+    <div id="quiz-score-bar">
+      <span>Progress</span>
+      <div class="progressbar"><div class="progressbar-fill" id="progress-fill"></div></div>
+      <span>Skor: <span id="score">0</span>/<span id="total">0</span></span>
+    </div>
+    <div id="quiz-container"></div>
+    <div id="quiz-actions">
+      <button class="btn" id="btn-check" disabled>Periksa Semua Jawaban</button>
+      <button class="btn ghost" id="btn-reset">Ulangi Kuis</button>
+    </div>
+    <div id="quiz-result">
+      <h3 id="result-title"></h3>
+      <p id="result-desc" style="color:var(--text-dim);"></p>
+      <button class="btn" onclick="resetQuiz()">Coba Lagi</button>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- TAB 3: FLASHCARD -->
+  <!-- ============================================================ -->
+  <section class="panel" id="tab-flashcard">
+    <div id="fc-controls">
+      <span id="fc-counter-top">Kartu 1 / 1</span>
+      <div id="fc-deck">
+        <button class="btn ghost" id="fc-shuffle">🔀 Acak</button>
+        <button class="btn ghost" id="fc-restart">↺ Ulangi</button>
+      </div>
+    </div>
+    <div class="scene">
+      <div class="flashcard" id="flashcard">
+        <div class="face front">
+          <span class="cat" id="fc-cat">KATEGORI</span>
+          <div class="term" id="fc-term">Term</div>
+          <span class="hint">klik kartu untuk lihat jawaban</span>
+        </div>
+        <div class="face back">
+          <div class="def" id="fc-def">Definisi</div>
+        </div>
+      </div>
+    </div>
+    <div class="fc-nav">
+      <button class="btn ghost" id="fc-know">✗ Belum Hafal</button>
+      <button class="btn ghost" id="fc-prev">‹ Prev</button>
+      <span class="fc-counter" id="fc-counter">1 / 1</span>
+      <button class="btn ghost" id="fc-next">Next ›</button>
+      <button class="btn" id="fc-got-it">✓ Sudah Hafal</button>
+    </div>
+    <div class="fc-status">
+      <span>Sudah hafal: <b id="fc-known-count">0</b></span>
+      <span class="dk">Belum hafal: <b id="fc-unknown-count">0</b></span>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- TAB 4: PENJELASAN BAGIAN SULIT -->
+  <!-- ============================================================ -->
+  <section class="panel" id="tab-sulit">
+
+    <div class="card">
+      <h2><span class="num">!</span>Kenapa bagian ini sering membingungkan?</h2>
+      <p>Empat konsep di bawah adalah yang paling sering tertukar oleh non-mud engineer: istilah dispersed/inhibited, angka-angka rheologi (PV/YP/Gel), logika kenapa OBM lebih mahal tapi tetap dipakai, dan kenapa partikel kecil lebih berbahaya daripada yang besar. Tiap bagian dilengkapi kalkulator kecil supaya konsepnya "kepegang", bukan cuma dihafal.</p>
+    </div>
+
+    <div class="accordion" data-acc>
+      <div class="acc-head open"><span>1 — Dispersed/Non-Dispersed × Inhibited/Non-Inhibited</span><span class="arrow">▶</span></div>
+      <div class="acc-body" style="max-height:900px;">
+        <div class="acc-body-inner">
+          <p>Ini bukan satu skala, tapi <strong>dua sumbu independen</strong> yang sering dianggap satu istilah:</p>
+          <div class="compare-grid">
+            <div class="compare-cell"><h4>Dispersed</h4><p>Mud <strong>secara sengaja memecah/mendispersikan</strong> clay formasi & cutting menjadi partikel halus. Efeknya: rheologi turun, tapi meningkatkan luas permukaan reaktif → butuh solids control bagus. Contoh: Lime, Lignosulfonate.</p></div>
+            <div class="compare-cell"><h4>Non-Dispersed</h4><p>Mud <strong>tidak</strong> mendispersikan clay/cutting — cutting tetap utuh sehingga lebih mudah diangkat solids control equipment. Contoh: sistem Polymer, HPWBM.</p></div>
+            <div class="compare-cell"><h4>Inhibited</h4><p>Mud punya kemampuan <strong>menahan clay/shale agar tidak menyerap air</strong> (swelling). Biasanya via ion (Ca²⁺, K⁺) atau produk kimia (polyamine). Aman untuk formasi reaktif & reservoir.</p></div>
+            <div class="compare-cell"><h4>Non-Inhibited</h4><p>Mud <strong>tidak</strong> punya kemampuan menahan swelling — dipakai hanya bila formasi memang tidak reaktif (mis. spud mud di formasi dangkal non-clay).</p></div>
+          </div>
+          <p>Jadi Lime Mud = <span class="tag">Dispersed</span><span class="tag teal">Inhibited</span> — sengaja memecah clay TAPI tetap menahan swelling lewat Ca²⁺. Sedangkan HPWBM = <span class="tag">Non-Dispersed</span><span class="tag teal">Inhibited</span> — cutting dijaga tetap utuh sekaligus swelling ditahan. Kombinasi inilah yang membuat HPWBM disebut mendekati performa OBM tapi tetap water-based.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion" data-acc>
+      <div class="acc-head"><span>2 — Menghitung PV, YP &amp; memahami Gel Strength</span><span class="arrow">▶</span></div>
+      <div class="acc-body">
+        <div class="acc-body-inner">
+          <p>Ketiganya berasal dari alat yang sama (Rheometer/VG-Meter), diukur di kecepatan rotasi berbeda, tapi maknanya berbeda:</p>
+          <ul>
+            <li><strong>Plastic Viscosity (PV)</strong> = bacaan 600rpm − bacaan 300rpm → mewakili gesekan mekanis akibat jumlah/ukuran/tipe solid. PV tinggi biasanya berarti terlalu banyak solid halus di mud.</li>
+            <li><strong>Yield Point (YP)</strong> = bacaan 300rpm − PV → mewakili gaya tarik-menarik antar partikel saat mud <em>mengalir</em>. YP menentukan kemampuan mud mengangkat cutting ke permukaan (hole cleaning).</li>
+            <li><strong>Gel Strength</strong> = bacaan 3-rpm pada interval waktu 10 detik / 10 menit / 30 menit saat mud <em>diam</em> (statis) → mewakili kemampuan mud menahan cutting agar tidak turun (settling) saat sirkulasi berhenti.</li>
+          </ul>
+          <p>Singkatnya: PV = "kekentalan akibat solid", YP = "daya angkat saat mengalir", Gel = "daya tahan saat diam". Coba hitung sendiri di bawah ini:</p>
+          <div class="calc-box">
+            <div class="calc-row">
+              <div><label>Bacaan 600 RPM</label><input type="number" id="r600" value="42"></div>
+              <div><label>Bacaan 300 RPM</label><input type="number" id="r300" value="28"></div>
+            </div>
+            <div class="calc-out" id="pvyp-out">PV = 14 cP &nbsp;·&nbsp; YP = 14 lb/100ft²</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion" data-acc>
+      <div class="acc-head"><span>3 — Mekanisme Inhibisi Clay (kenapa Ca²⁺/K⁺ menahan swelling?)</span><span class="arrow">▶</span></div>
+      <div class="acc-body">
+        <div class="acc-body-inner">
+          <p>Clay reaktif (terutama Smectite) mengembang karena molekul air masuk di antara lapisan (layer) clay yang bermuatan negatif dan diselingi ion Na⁺ yang mudah terhidrasi — proses ini disebut <strong>hydration (swelling)</strong>.</p>
+          <p>Ion seperti <strong>Ca²⁺ dan K⁺</strong> memiliki daya tarik lebih kuat ke permukaan clay dan ukuran hidrasi yang lebih kecil dibanding Na⁺, sehingga ketika menggantikan Na⁺ di interlayer, clay menjadi lebih rapat dan sulit menyerap air lagi — proses ini disebut <strong>dehydration</strong>. Pada Lime Mud, mekanismenya bahkan berlanjut menjadi flokulasi (partikel saling menggumpal lalu mengendap).</p>
+          <p><strong>Polyamine</strong> bekerja dengan cara berbeda: molekulnya teradsorpsi ke permukaan clay dan membuat permukaan itu <em>hidrofobik</em> (menolak air), sehingga air tidak sempat masuk ke struktur clay sejak awal — ini yang membuat HPWBM efektif tanpa harus mengandalkan salinitas tinggi seperti sistem KCl/NaCl konvensional.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion" data-acc>
+      <div class="acc-head"><span>4 — HPWBM vs Formate vs OBM: kapan pilih yang mana?</span><span class="arrow">▶</span></div>
+      <div class="acc-body">
+        <div class="acc-body-inner">
+          <p>Ketiganya sama-sama bisa menahan clay reaktif, tapi alasan pemilihannya beda:</p>
+          <table>
+            <tr><th>Sistem</th><th>Kelebihan khas</th><th>Pertimbangan</th></tr>
+            <tr><td><strong>HPWBM</strong></td><td>Water-based, ramah lingkungan, HTHP stabil, performa mendekati OBM</td><td>Butuh produk khusus (polyamine, accretion suppressant)</td></tr>
+            <tr><td><strong>Formate</strong></td><td>Densitas tinggi tanpa solid (Cesium formate hingga 19.2 ppg), korosi rendah, memperpanjang stabilitas termal polimer</td><td>Biaya bahan baku formate relatif tinggi, terutama Cesium</td></tr>
+            <tr><td><strong>OBM</strong></td><td>Standar tertinggi untuk clay sangat reaktif, HT, kontaminasi (H₂S/CO₂/semen), lubrikasi terbaik</td><td>Mahal untuk sumur sedikit, isu lingkungan & kesehatan, butuh peralatan khusus & manajemen limbah</td></tr>
+          </table>
+          <p>Pola pikirnya: naik dari WBM konvensional → HPWBM/Formate ketika WBM biasa tidak cukup menahan clay reaktif tapi OBM belum perlu/tidak diizinkan secara lingkungan → OBM hanya ketika WBM (termasuk versi high-performance-nya) benar-benar tidak efektif, misalnya di shale sangat reaktif, suhu ekstrem, atau kontaminasi berat.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion" data-acc>
+      <div class="acc-head"><span>5 — Kenapa partikel kecil jauh lebih berbahaya daripada yang besar?</span><span class="arrow">▶</span></div>
+      <div class="acc-body">
+        <div class="acc-body-inner">
+          <p>Materi menunjukkan satu cutting berukuran 1in × 1in × 1in (luas permukaan 6 in²) yang terus dipecah menjadi bagian lebih kecil justru meningkatkan total luas permukaannya secara drastis walau volumenya tetap. Inilah alasan filosofi "eliminasi solid sedini mungkin" — makin lama dibiarkan bersirkulasi lalu tergerus alat/bit, makin besar area yang bisa bereaksi dengan air dan bahan kimia mud, mempercepat swelling, meningkatkan viskositas tak terkendali, dan mempersulit solids control equipment mengangkatnya (partikel semakin halus semakin butuh centrifuge, bukan cukup shale shaker).</p>
+          <div class="calc-box">
+            <p style="margin:0 0 10px;font-size:13px;">Coba ubah jumlah pembagian kubus (tiap sisi kubus 1 inci dibagi rata N kali per sisi) untuk melihat efek pada luas permukaan total:</p>
+            <div class="calc-row">
+              <div><label>Bagi tiap sisi menjadi (N)</label><input type="number" id="ncube" value="2" min="1" max="16"></div>
+            </div>
+            <div class="calc-out" id="cube-out"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion" data-acc>
+      <div class="acc-head"><span>6 — Gas Hydrates di Deep Water: kenapa OBM &amp; salinitas membantu?</span><span class="arrow">▶</span></div>
+      <div class="acc-body">
+        <div class="acc-body-inner">
+          <p>Gas hydrate adalah padatan kristal mirip es, campuran gas dan air, yang terbentuk secara alami pada suhu &lt;50°F — kondisi yang umum dijumpai di flowline/riser laut dalam karena suhu air menurun seiring kedalaman. Jika hydrate terbentuk di dalam sistem, ia bisa menyumbat jalur aliran.</p>
+          <p><strong>Salinitas tinggi</strong> menurunkan titik beku/titik pembentukan hydrate (mirip prinsip garam menurunkan titik beku air), sehingga makin dalam sumur (makin dingin), makin tinggi salinitas yang dibutuhkan untuk menekan pembentukan hydrate.</p>
+          <p><strong>OBM</strong> unggul di sini bukan karena "melawan" hydrate secara kimiawi, tapi karena fase air dalam OBM sedikit (invert emulsion) dan air yang ada sudah bersalinitas tinggi — sehingga secara alami kondisinya sudah tidak ramah untuk pembentukan hydrate.</p>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <footer class="foot">Disusun otomatis dari materi "Drilling Fluids for Non-Mud Engineers" — JDS Training, 25 Juli 2026.</footer>
+</div>
+
+<script>
+/* ============ TAB SWITCHING ============ */
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+  });
+});
+
+/* ============ ACCORDION ============ */
+document.querySelectorAll('[data-acc]').forEach(acc=>{
+  const head = acc.querySelector('.acc-head');
+  const body = acc.querySelector('.acc-body');
+  head.addEventListener('click', ()=>{
+    const isOpen = head.classList.contains('open');
+    if(isOpen){
+      head.classList.remove('open');
+      body.style.maxHeight = '0px';
+    } else {
+      head.classList.add('open');
+      body.style.maxHeight = body.scrollHeight + 'px';
+    }
+  });
+  // set initial height for pre-open ones
+  if(head.classList.contains('open')){
+    body.style.maxHeight = body.scrollHeight + 'px';
+  }
+});
+window.addEventListener('load', ()=>{
+  document.querySelectorAll('[data-acc]').forEach(acc=>{
+    const head = acc.querySelector('.acc-head');
+    const body = acc.querySelector('.acc-body');
+    if(head.classList.contains('open')) body.style.maxHeight = body.scrollHeight + 'px';
+  });
+});
+
+/* ============ QUIZ DATA ============ */
+const QUIZ = [
+  {q:"Menurut materi, clay minerals mencakup berapa persen dari kolom stratigrafi sedimen?",opts:["10-20%","40-50%","70-80%","hampir 100%"],ans:2,exp:"Clay minerals adalah batuan sedimen paling melimpah, sekitar 70-80% dari kolom stratigrafi."},
+  {q:"Clay mineral mana yang memiliki reaktivitas/swelling paling tinggi?",opts:["Kaolinite","Chlorite","Illite","Smectite (Montmorillonite)"],ans:3,exp:"Smectite/Montmorillonite bersifat sangat lunak, max-swelling, dan sangat reaktif — paling tinggi di antara clay lain."},
+  {q:"Apa fungsi utama uji Linear Swell Meter (LSM)?",opts:["Mengukur densitas mud","Mengukur perubahan panjang core clay/shale seiring waktu","Mengukur pH mud","Mengukur kandungan barite"],ans:1,exp:"LSM mengukur pertambahan/penurunan panjang core clay/shale utuh terhadap waktu untuk menentukan formulasi mud yang sesuai."},
+  {q:"Sodium (Na⁺) Bentonite dibanding Calcium (Ca²⁺) Bentonite memiliki karakter...",opts:["Ekspansi minimal, kurang kental","Ekspansi maksimal, lebih kental","Tidak mengembang sama sekali","Hanya larut di OBM"],ans:1,exp:"Na⁺ Bentonite memberi ekspansi maksimal dan viskositas tinggi, sedangkan Ca²⁺ Bentonite ekspansi minimal & kurang kental."},
+  {q:"Kondisi Hydrostatic Pressure (HP) lebih KECIL dari Formation Pressure (FP) akan menyebabkan...",opts:["Stuck pipe","Loss circulation","Gas kick / blow-out","Filter cake menebal"],ans:2,exp:"Bila HP < FP, fluida formasi dapat masuk ke wellbore, menyebabkan gas kick hingga blow-out."},
+  {q:"Sistem Lime Mud termasuk kategori...",opts:["Dispersed / Inhibited","Dispersed / Non-Inhibited","Non-Dispersed / Inhibited","Non-Dispersed / Non-Inhibited"],ans:0,exp:"Lime Mud mendispersikan clay reaktif namun juga menghambat swelling melalui pertukaran Ca2+/Na+ — sehingga Dispersed & Inhibited."},
+  {q:"Produk utama yang membuat HPWBM mampu menahan swelling clay adalah...",opts:["Barite","Polyamine","Xanthan Gum","Lignosulfonate"],ans:1,exp:"Polyamine teradsorpsi pada permukaan clay membuatnya hidrofobik sehingga menghambat penetrasi air."},
+  {q:"Formate mana yang memiliki densitas maksimum paling tinggi menurut materi?",opts:["Sodium Formate","Potassium Formate","Cesium Formate","Semua sama"],ans:2,exp:"Cesium Formate (CsCOOH) mampu mencapai densitas hingga 19.20 ppg (SG 2.30), tertinggi di antara formate lain."},
+  {q:"Perhatian utama desain drilling fluid di Deep Water adalah...",opts:["Kadar barite tinggi","Gas hydrates dan suhu flowline rendah","Kekurangan bentonite","Kadar pH rendah"],ans:1,exp:"Perhatian utama Deep Water Mud System adalah gas hydrates yang terbentuk pada suhu rendah di flowline/laut dalam."},
+  {q:"Pada klasifikasi OBM, sistem yang mengandung water, salts, dan emulsifier dengan filtrate all-oil disebut...",opts:["All-Oil System","Invert Emulsion","Formate System","Spud Mud"],ans:1,exp:"Invert Emulsion mengandung water+salts+emulsifier namun filtratnya tetap all-oil, berbeda dengan All-Oil System yang nyaris tanpa air."},
+  {q:"Fluida yang paling disukai (preferred) sebagai Completion/Work-Over Fluid (CWOF) adalah...",opts:["WBM Dispersed","OBM Invert Emulsion","Brine (Clear-fluid system)","Pneumatic fluid"],ans:2,exp:"CWOF paling disukai adalah Clear-Fluid system berupa Brine, karena solids-free."},
+  {q:"Satuan NTU pada uji turbiditas menunjukkan...",opts:["Kandungan barite","Tingkat kekeruhan/konsentrasi partikel tersuspensi","Kandungan garam","Nilai pH"],ans:1,exp:"NTU (Nephelometric Turbidity Unit) mengukur konsentrasi partikel tersuspensi dalam fluida — indikator kebersihan fluida."},
+  {q:"Plastic Viscosity (PV) dihitung dengan rumus...",opts:["600rpm + 300rpm","600rpm − 300rpm","300rpm − PV","3rpm pada 10 menit"],ans:1,exp:"PV = bacaan 600rpm dikurangi bacaan 300rpm, mengindikasikan volume/jenis/ukuran solid dalam mud."},
+  {q:"Yield Point (YP) berfungsi mengindikasikan...",opts:["Kepadatan solid tinggi","Kemampuan hole cleaning","pH mud","Kandungan minyak"],ans:1,exp:"Yield Point mengindikasikan kemampuan mud membawa/mengangkat cutting keluar wellbore (hole cleaning)."},
+  {q:"Gel Strength diukur pada bacaan berapa rpm, di interval waktu berapa?",opts:["600-rpm di 10s/10m/30m","300-rpm di 1 menit","3-rpm di 10s/10m/30m","6-rpm di 30 menit"],ans:2,exp:"Gel Strength direkam pada bacaan 3-rpm di interval waktu 10 detik / 10 menit / 30 menit saat mud statis."},
+  {q:"Nilai normal Low Gravity Solids (LGS) menurut materi adalah...",opts:["5-10 lb/bbl","50-55 lb/bbl (5-6% vol)","100-150 lb/bbl","1-2 lb/bbl"],ans:1,exp:"LGS normal berkisar 50-55 lb/bbl atau setara 5-6% by volume."},
+  {q:"Peralatan solids control dengan kapasitas pemisahan partikel paling halus (2-10µ) adalah...",opts:["Desander","Desilter","Mud Cleaner","Centrifuge"],ans:3,exp:"Centrifuge mampu memisahkan partikel hingga 2-10 mikron, paling halus dibanding desander/desilter/mud cleaner."},
+  {q:"Screen shale shaker tipe pyramid memberikan area penyaringan efektif berapa persen lebih besar dibanding tipe flat?",opts:["25%","75%","125%","200%"],ans:2,exp:"Materi menyebutkan pyramid type screen memberi 125% area penyaringan lebih efektif dibanding flat type."},
+  {q:"Metode 'Dump and Dilute' diterapkan ketika...",opts:["Mud terlalu encer","Solids Control Equipment tidak mampu bekerja efektif","pH terlalu tinggi","Barite berlebih"],ans:1,exp:"Dump and Dilute diterapkan bila Solids Control Equipment tidak dapat berkinerja efektif — membuang mud solid tinggi dan menggantinya dengan mud baru."},
+  {q:"Excess Lime yang ideal pada sistem OBM berada di kisaran...",opts:["0-1 ppb","3-6 ppb","10-15 ppb","20-25 ppb"],ans:1,exp:"Materi menyebutkan Excess Lime 3-6 ppb adalah nilai yang diinginkan (desirable) pada sistem OBM."},
+];
+
+let selected = new Array(QUIZ.length).fill(null);
+let checked = false;
+
+function renderQuiz(){
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  document.getElementById('total').textContent = QUIZ.length;
+  QUIZ.forEach((item, qi)=>{
+    const card = document.createElement('div');
+    card.className='qcard';
+    card.innerHTML = `
+      <div class="qnum">Soal ${qi+1} / ${QUIZ.length}</div>
+      <div class="qtext">${item.q}</div>
+      <div class="opts" id="opts-${qi}"></div>
+      <div class="explain" id="exp-${qi}"><strong>Penjelasan:</strong> ${item.exp}</div>
+    `;
+    container.appendChild(card);
+    const optsDiv = card.querySelector(`#opts-${qi}`);
+    item.opts.forEach((optText, oi)=>{
+      const b = document.createElement('button');
+      b.className='opt';
+      b.textContent = optText;
+      b.addEventListener('click', ()=>{
+        if(checked) return;
+        selected[qi] = oi;
+        optsDiv.querySelectorAll('.opt').forEach(o=>o.style.borderColor='var(--line)');
+        b.style.borderColor='var(--mud-soft)';
+        updateProgress();
+      });
+      optsDiv.appendChild(b);
+    });
+  });
+}
+
+function updateProgress(){
+  const answered = selected.filter(s=>s!==null).length;
+  document.getElementById('progress-fill').style.width = (answered/QUIZ.length*100)+'%';
+  document.getElementById('btn-check').disabled = answered < QUIZ.length;
+}
+
+document.getElementById('btn-check').addEventListener('click', ()=>{
+  checked = true;
+  let score = 0;
+  QUIZ.forEach((item, qi)=>{
+    const optsDiv = document.getElementById(`opts-${qi}`);
+    const buttons = optsDiv.querySelectorAll('.opt');
+    buttons.forEach((b, oi)=>{
+      b.setAttribute('disabled','true');
+      if(oi === item.ans) b.classList.add('correct');
+      else if(oi === selected[qi]) b.classList.add('wrong');
+    });
+    if(selected[qi]===item.ans) score++;
+    document.getElementById(`exp-${qi}`).classList.add('show');
+  });
+  document.getElementById('score').textContent = score;
+  document.getElementById('btn-check').style.display='none';
+
+  const result = document.getElementById('quiz-result');
+  const pct = Math.round(score/QUIZ.length*100);
+  let title, desc;
+  if(pct>=85){title='Mantap! Pemahaman kamu sangat kuat 🎯'; desc='Kamu sudah menguasai sebagian besar konsep Drilling Fluids dari materi JDS ini.';}
+  else if(pct>=60){title='Bagus, tapi masih ada ruang belajar 📘'; desc='Coba review kembali bagian Rangkuman dan Penjelasan Bagian Sulit untuk topik yang salah.';}
+  else{title='Perlu belajar lagi ya 💪'; desc='Jangan khawatir — baca ulang tab Rangkuman & Flashcard, lalu coba kuis ini lagi.';}
+  document.getElementById('result-title').textContent = `Skor akhir: ${score}/${QUIZ.length} (${pct}%)`;
+  document.getElementById('result-desc').textContent = desc;
+  result.style.display='block';
+  result.scrollIntoView({behavior:'smooth', block:'center'});
+});
+
+function resetQuiz(){
+  selected = new Array(QUIZ.length).fill(null);
+  checked = false;
+  document.getElementById('score').textContent = '0';
+  document.getElementById('progress-fill').style.width='0%';
+  document.getElementById('btn-check').style.display='inline-block';
+  document.getElementById('btn-check').disabled = true;
+  document.getElementById('quiz-result').style.display='none';
+  renderQuiz();
+}
+document.getElementById('btn-reset').addEventListener('click', resetQuiz);
+renderQuiz();
+
+/* ============ FLASHCARDS ============ */
+const CARDS = [
+  {cat:"Clay Mineralogy", term:"Smectite (Montmorillonite)", def:"Clay mineral dengan reaktivitas <strong>tertinggi</strong>: sangat lunak, max-swelling, sangat reaktif & dispersible."},
+  {cat:"Clay Mineralogy", term:"Kaolinite", def:"Clay mineral dengan reaktivitas <strong>paling rendah</strong>; partikel sangat keras, non-swelling; hasil pelapukan feldspar."},
+  {cat:"Clay Mineralogy", term:"CST (Capillary Suction Timer)", def:"Uji untuk <strong>memperkirakan kebutuhan salinitas</strong> agar suatu sampel clay dapat diinhibisi."},
+  {cat:"Clay Mineralogy", term:"LSM (Linear Swell Meter)", def:"Uji yang mengukur <strong>perubahan panjang</strong> core clay/shale utuh terhadap waktu, untuk menentukan formulasi mud."},
+  {cat:"Clay Mineralogy", term:"Bentonite Na⁺ vs Ca²⁺", def:"<strong>Na⁺</strong>: ekspansi maksimal, viskositas tinggi. <strong>Ca²⁺</strong>: ekspansi minimal, kurang kental."},
+  {cat:"Fungsi Fluid", term:"8 Fungsi Drilling Fluid", def:"Angkut cutting, stabilkan tekanan, kumpulkan data geologi, dukung electric log, minimalkan reservoir damage, kontrol korosi, topang tubular, stabilkan wellbore."},
+  {cat:"Fungsi Fluid", term:"Stuck Pipe", def:"Terjadi ketika <strong>Hydrostatic Pressure &gt; Formation Pressure</strong>; pipa terjepit filter cake."},
+  {cat:"Fungsi Fluid", term:"Gas Kick / Blow-out", def:"Terjadi ketika <strong>Hydrostatic Pressure &lt; Formation Pressure</strong>; fluida formasi masuk wellbore."},
+  {cat:"Klasifikasi", term:"Pneumatic Fluids", def:"Air, Foam, Aerated — untuk sumur depleted/tekanan rendah; cepat & minim formation damage, tapi butuh compressor tambahan."},
+  {cat:"Klasifikasi", term:"Dispersed", def:"Mud yang <strong>mendispersikan</strong> clay formasi & cutting menjadi partikel halus (mis. Lime, Lignosulfonate)."},
+  {cat:"Klasifikasi", term:"Inhibited", def:"Mud yang mampu <strong>menghambat swelling</strong> clay/shale, biasanya lewat ion Ca²⁺/K⁺ atau polyamine."},
+  {cat:"Sistem WBM", term:"Lime Mud System", def:"Sistem Dispersed/Inhibited; primer: Lime Ca(OH)₂; Ca²⁺ menggantikan Na⁺ di clay → flokulasi & presipitasi."},
+  {cat:"Sistem WBM", term:"Lignosulfonate/Lignite System", def:"Sistem Dispersed/Non-Inhibited; mendispersikan clay reaktif; <strong>tidak disarankan untuk reservoir</strong>."},
+  {cat:"Sistem WBM", term:"HPWBM", def:"High Performance WBM; Non-Dispersed/Inhibited; kunci produk: Polyamine & Accretion suppressant; performa mendekati OBM tapi water-based."},
+  {cat:"Sistem WBM", term:"Formate-based Mud", def:"Pengganti sistem chloride; low-solids, korosi rendah, HTHP stabil; Cesium Formate densitas tertinggi (~19.2 ppg)."},
+  {cat:"Sistem WBM", term:"Spud Mud", def:"Sistem Non-Dispersed/Non-Inhibited berbasis Bentonite; dipakai di formasi non-reaktif/permukaan."},
+  {cat:"Deep Water", term:"Gas Hydrates", def:"Padatan kristal mirip es (campuran gas+air) yang terbentuk pada suhu &lt;50°F; risiko utama di deep water flowline."},
+  {cat:"OBM", term:"Invert Emulsion", def:"Klasifikasi OBM yang mengandung water, salts & emulsifier, namun filtratnya tetap all-oil."},
+  {cat:"OBM", term:"All-Oil System", def:"Klasifikasi OBM tanpa water/salts, hanya sedikit emulsifier."},
+  {cat:"OBM", term:"Kunci Sukses OBM", def:"Urutan mixing yang tepat, hindari kontaminasi air, solids control baik, dan kapabilitas mud engineer."},
+  {cat:"CWOF", term:"Brine", def:"Solusi garam solids-free, sistem <strong>Clear-Fluid</strong> yang paling disukai sebagai Completion/Work-Over Fluid."},
+  {cat:"CWOF", term:"Turbidity (NTU)", def:"Nephelometric Turbidity Unit — indikator kebersihan fluida; air berkualitas baik &lt;1 NTU."},
+  {cat:"Properti", term:"Plastic Viscosity (PV)", def:"= bacaan 600rpm − 300rpm; mengindikasikan volume/tipe/ukuran solid dalam mud (cP)."},
+  {cat:"Properti", term:"Yield Point (YP)", def:"= bacaan 300rpm − PV; mengindikasikan kemampuan <strong>hole cleaning</strong> (lb/100ft²)."},
+  {cat:"Properti", term:"Gel Strength", def:"Bacaan 3-rpm pada 10 detik/10 menit/30 menit; mewakili gaya tarik antar partikel saat mud statis."},
+  {cat:"Properti", term:"LGS vs HGS", def:"<strong>LGS</strong>: drilled solids/impuritas (indikator kualitas mud). <strong>HGS</strong>: produk berat inert seperti Barite, Hematite."},
+  {cat:"Properti", term:"MBT (Methylene Blue Test)", def:"Mengukur <strong>jumlah clay</strong> yang ada dalam sistem mud (satuan ppb)."},
+  {cat:"Solids Mgmt", term:"Desander / Desilter / Centrifuge", def:"Urutan kapasitas pemisahan halus: Desander (100µ) → Desilter (75µ) → Mud Cleaner (60µ) → Centrifuge (2-10µ)."},
+  {cat:"Solids Mgmt", term:"Dump and Dilute", def:"Metode membuang mud volume solid tertinggi & mengganti dengan mud baru; dipakai jika solids control equipment tak efektif."},
+];
+
+let fcIndex = 0;
+let fcOrder = CARDS.map((_,i)=>i);
+let known = new Set();
+let unknown = new Set();
+
+function renderCard(){
+  const idx = fcOrder[fcIndex];
+  const c = CARDS[idx];
+  document.getElementById('fc-cat').textContent = c.cat;
+  document.getElementById('fc-term').textContent = c.term;
+  document.getElementById('fc-def').innerHTML = c.def;
+  document.getElementById('flashcard').classList.remove('flipped');
+  document.getElementById('fc-counter').textContent = `${fcIndex+1} / ${CARDS.length}`;
+  document.getElementById('fc-counter-top').textContent = `Kartu ${fcIndex+1} / ${CARDS.length}`;
+  document.getElementById('fc-known-count').textContent = known.size;
+  document.getElementById('fc-unknown-count').textContent = unknown.size;
+}
+document.getElementById('flashcard').addEventListener('click', ()=>{
+  document.getElementById('flashcard').classList.toggle('flipped');
+});
+document.getElementById('fc-next').addEventListener('click', ()=>{
+  fcIndex = (fcIndex+1) % CARDS.length; renderCard();
+});
+document.getElementById('fc-prev').addEventListener('click', ()=>{
+  fcIndex = (fcIndex-1+CARDS.length) % CARDS.length; renderCard();
+});
+document.getElementById('fc-got-it').addEventListener('click', ()=>{
+  const idx = fcOrder[fcIndex];
+  known.add(idx); unknown.delete(idx);
+  fcIndex = (fcIndex+1) % CARDS.length; renderCard();
+});
+document.getElementById('fc-know').addEventListener('click', ()=>{
+  const idx = fcOrder[fcIndex];
+  unknown.add(idx); known.delete(idx);
+  fcIndex = (fcIndex+1) % CARDS.length; renderCard();
+});
+document.getElementById('fc-shuffle').addEventListener('click', ()=>{
+  for(let i=fcOrder.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [fcOrder[i],fcOrder[j]]=[fcOrder[j],fcOrder[i]];
+  }
+  fcIndex = 0; renderCard();
+});
+document.getElementById('fc-restart').addEventListener('click', ()=>{
+  fcOrder = CARDS.map((_,i)=>i);
+  fcIndex = 0; known.clear(); unknown.clear(); renderCard();
+});
+renderCard();
+
+/* ============ CALCULATORS (Tab 4) ============ */
+function updatePVYP(){
+  const r600 = parseFloat(document.getElementById('r600').value)||0;
+  const r300 = parseFloat(document.getElementById('r300').value)||0;
+  const pv = r600 - r300;
+  const yp = r300 - pv;
+  document.getElementById('pvyp-out').innerHTML = `PV = <b>${pv}</b> cP &nbsp;·&nbsp; YP = <b>${yp}</b> lb/100ft²`;
+}
+document.getElementById('r600').addEventListener('input', updatePVYP);
+document.getElementById('r300').addEventListener('input', updatePVYP);
+updatePVYP();
+
+function updateCube(){
+  let n = parseInt(document.getElementById('ncube').value)||1;
+  if(n<1) n=1; if(n>16) n=16;
+  const sideLen = 1/n; // inch
+  const numPieces = n*n*n;
+  const areaPerPiece = 6 * sideLen * sideLen;
+  const totalArea = numPieces * areaPerPiece;
+  document.getElementById('cube-out').innerHTML =
+    `Dipecah jadi <b>${numPieces}</b> potongan kecil (sisi ${sideLen.toFixed(3)} in) → total luas permukaan = <b>${totalArea.toFixed(1)} in²</b> (dari semula 6 in² saat masih 1 kubus utuh). Volume tetap 1 in³, tapi luas permukaan naik <b>${(totalArea/6).toFixed(1)}×</b> lipat.`;
+}
+document.getElementById('ncube').addEventListener('input', updateCube);
+updateCube();
+</script>
+</body>
+</html>

@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Drill Bit — Introduction</title>
+<style>
+  :root{
+    --char-950:#0c0a08;
+    --char-900:#171310;
+    --char-800:#241d17;
+    --char-700:#332821;
+    --char-600:#4a382c;
+    --steel:#5c7a8a;
+    --steel-light:#8fb4c4;
+    --copper:#d98a3d;
+    --copper-light:#f3b06a;
+    --copper-dim:#7a4f1f;
+    --diamond:#7fd8c8;
+    --red-flag:#d6534a;
+    --green-ok:#4caf7d;
+    --text-light:#f3ece4;
+    --text-dim:#c2b0a0;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Segoe UI',Tahoma,Verdana,sans-serif;
+    background:radial-gradient(ellipse at top, var(--char-800), var(--char-950) 70%);
+    color:var(--text-light);
+    min-height:100vh;
+  }
+  header{
+    padding:28px 20px 18px;
+    text-align:center;
+    border-bottom:2px solid var(--copper-dim);
+    background:linear-gradient(180deg, rgba(217,138,61,0.10), transparent);
+  }
+  header h1{
+    margin:0 0 6px;
+    font-size:1.6em;
+    color:var(--copper-light);
+    letter-spacing:0.5px;
+  }
+  header p{
+    margin:0;
+    color:var(--text-dim);
+    font-size:0.95em;
+  }
+  .tabs{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:8px;
+    padding:18px 12px 0;
+    max-width:1000px;
+    margin:0 auto;
+  }
+  .tab-btn{
+    background:var(--char-700);
+    border:1px solid var(--steel);
+    color:var(--text-dim);
+    padding:11px 22px;
+    border-radius:8px 8px 0 0;
+    cursor:pointer;
+    font-size:0.95em;
+    font-weight:600;
+    transition:all 0.2s ease;
+  }
+  .tab-btn:hover{background:var(--char-600); color:var(--text-light);}
+  .tab-btn.active{
+    background:var(--copper);
+    color:var(--char-950);
+    border-color:var(--copper);
+  }
+  main{
+    max-width:1000px;
+    margin:0 auto;
+    padding:26px 18px 60px;
+  }
+  .panel{display:none; animation:fadeIn 0.35s ease;}
+  .panel.active{display:block;}
+  @keyframes fadeIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+
+  h2.section-title{
+    color:var(--copper-light);
+    border-left:4px solid var(--copper);
+    padding-left:12px;
+    margin-top:34px;
+    font-size:1.25em;
+  }
+  h2.section-title:first-child{margin-top:0;}
+
+  .card{
+    background:var(--char-800);
+    border:1px solid var(--char-600);
+    border-radius:10px;
+    padding:16px 20px;
+    margin:14px 0;
+  }
+  .card h3{margin-top:0; color:var(--steel-light);}
+  .card ul{margin:8px 0; padding-left:20px;}
+  .card li{margin:5px 0;}
+  .formula{
+    background:var(--char-900);
+    border:1px dashed var(--copper-dim);
+    border-radius:8px;
+    padding:12px 16px;
+    font-family:'Consolas','Courier New',monospace;
+    color:var(--copper-light);
+    text-align:center;
+    margin:10px 0;
+    font-size:1.0em;
+  }
+  .insight-box{
+    background:linear-gradient(135deg, rgba(217,138,61,0.14), rgba(217,138,61,0.03));
+    border:1px solid var(--copper-dim);
+    border-radius:10px;
+    padding:14px 18px;
+    margin:14px 0;
+  }
+  .insight-box strong{color:var(--copper-light);}
+  table.compare{
+    width:100%;
+    border-collapse:collapse;
+    margin:12px 0;
+    font-size:0.9em;
+  }
+  table.compare th, table.compare td{
+    border:1px solid var(--char-600);
+    padding:8px 10px;
+    text-align:left;
+  }
+  table.compare th{
+    background:var(--char-700);
+    color:var(--copper-light);
+  }
+  table.compare tr:nth-child(even){background:rgba(255,255,255,0.02);}
+
+  /* Quiz */
+  .quiz-progress{
+    text-align:center;
+    color:var(--text-dim);
+    margin-bottom:14px;
+    font-size:0.9em;
+  }
+  .q-block{
+    background:var(--char-800);
+    border:1px solid var(--char-600);
+    border-radius:10px;
+    padding:18px 20px;
+    margin-bottom:16px;
+  }
+  .q-block .q-text{font-weight:600; margin-bottom:10px; color:var(--text-light);}
+  .q-options{display:flex; flex-direction:column; gap:8px;}
+  .opt-btn{
+    text-align:left;
+    background:var(--char-700);
+    border:1px solid var(--steel);
+    color:var(--text-light);
+    padding:10px 14px;
+    border-radius:7px;
+    cursor:pointer;
+    font-size:0.95em;
+  }
+  .opt-btn:hover{background:var(--char-600);}
+  .opt-btn.correct{background:var(--green-ok); border-color:var(--green-ok); color:#04150c;}
+  .opt-btn.wrong{background:var(--red-flag); border-color:var(--red-flag); color:#2a0505;}
+  .opt-btn.disabled{pointer-events:none;}
+  .explain{
+    margin-top:10px;
+    padding:10px 14px;
+    background:var(--char-900);
+    border-left:3px solid var(--copper);
+    border-radius:6px;
+    font-size:0.9em;
+    color:var(--text-dim);
+    display:none;
+  }
+  .explain.show{display:block;}
+  .quiz-score-bar{
+    text-align:center;
+    margin:20px 0;
+  }
+  .quiz-score-bar button{
+    background:var(--copper);
+    color:var(--char-950);
+    border:none;
+    padding:10px 22px;
+    border-radius:8px;
+    font-weight:700;
+    cursor:pointer;
+  }
+  #scoreDisplay{
+    font-size:1.1em;
+    color:var(--copper-light);
+    margin-bottom:10px;
+    font-weight:700;
+  }
+
+  /* Flashcards */
+  .flash-wrap{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:16px;
+  }
+  .flash-counter{color:var(--text-dim); font-size:0.9em;}
+  .flashcard{
+    width:100%;
+    max-width:560px;
+    height:280px;
+    perspective:1200px;
+    cursor:pointer;
+  }
+  .flash-inner{
+    position:relative;
+    width:100%;
+    height:100%;
+    transition:transform 0.6s;
+    transform-style:preserve-3d;
+  }
+  .flashcard.flipped .flash-inner{transform:rotateY(180deg);}
+  .flash-face{
+    position:absolute;
+    width:100%;
+    height:100%;
+    backface-visibility:hidden;
+    border-radius:14px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:26px;
+    font-size:1.15em;
+    border:2px solid var(--copper-dim);
+  }
+  .flash-front{
+    background:linear-gradient(160deg, var(--char-800), var(--char-700));
+    color:var(--text-light);
+    font-weight:600;
+  }
+  .flash-back{
+    background:linear-gradient(160deg, var(--copper-dim), var(--char-800));
+    color:var(--copper-light);
+    transform:rotateY(180deg);
+    font-size:1.0em;
+  }
+  .flash-nav{
+    display:flex;
+    gap:12px;
+    align-items:center;
+  }
+  .flash-nav button{
+    background:var(--char-700);
+    border:1px solid var(--steel);
+    color:var(--text-light);
+    padding:9px 18px;
+    border-radius:7px;
+    cursor:pointer;
+    font-weight:600;
+  }
+  .flash-nav button:hover{background:var(--char-600);}
+  .flash-hint{color:var(--text-dim); font-size:0.85em;}
+
+  /* Difficult concepts */
+  .ascii-box{
+    background:var(--char-950);
+    border:1px solid var(--steel);
+    border-radius:8px;
+    padding:14px;
+    font-family:'Consolas','Courier New',monospace;
+    color:var(--steel-light);
+    white-space:pre;
+    overflow-x:auto;
+    font-size:0.8em;
+    line-height:1.35;
+    margin:12px 0;
+  }
+  .worked{
+    background:var(--char-900);
+    border-radius:8px;
+    padding:12px 16px;
+    margin:10px 0;
+    font-size:0.92em;
+  }
+  .worked .step{margin:4px 0; color:var(--text-dim);}
+  .worked .result{color:var(--green-ok); font-weight:700;}
+
+  footer{
+    text-align:center;
+    padding:20px;
+    color:var(--text-dim);
+    font-size:0.8em;
+    border-top:1px solid var(--char-700);
+  }
+
+  @media (max-width:600px){
+    .tab-btn{padding:9px 14px; font-size:0.85em;}
+    header h1{font-size:1.25em;}
+    .flashcard{height:340px;}
+    table.compare{font-size:0.78em;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🛠 Drill Bit — Introduction</h1>
+  <p>Jakarta Drilling Society — Rahmad Febdiansyah Bas | Paket Belajar Interaktif Offline</p>
+</header>
+
+<div class="tabs">
+  <button class="tab-btn active" data-tab="ringkasan">📘 Ringkasan</button>
+  <button class="tab-btn" data-tab="latihan">📝 Latihan Soal</button>
+  <button class="tab-btn" data-tab="flashcard">🃏 Flashcard</button>
+  <button class="tab-btn" data-tab="sulit">🧩 Bagian Sulit</button>
+</div>
+
+<main>
+
+<!-- ==================== RINGKASAN ==================== -->
+<section id="ringkasan" class="panel active">
+
+  <h2 class="section-title">1. Sejarah Singkat Teknologi Drill Bit</h2>
+  <div class="card">
+    <ul>
+      <li><strong>1859</strong> — Edwin L. Drake mengebor sumur minyak pertama di Titusville, Pennsylvania, AS, menggunakan Fishtail Bit / Drag Bit.</li>
+      <li><strong>1909</strong> — Howard Hughes mematenkan roller cone rock bit.</li>
+      <li><strong>1925</strong> — Intermeshing 2-cone bits ditemukan.</li>
+      <li><strong>1928–1932</strong> — Tungsten carbide hardfacing mulai digunakan pada bit; roller & ball bearing diperkenalkan ke roller cone bit.</li>
+      <li><strong>1933</strong> — Three cone bits ditemukan; Tungsten Carbide Inserts (TCI) pertama digunakan di Roller Cone Bits.</li>
+      <li><strong>1951</strong> — General Electric menciptakan kristal diamond sintetis.</li>
+      <li><strong>1953</strong> — Sealed bearing pertama kali digunakan.</li>
+      <li><strong>1973</strong> — GE menguji roller cone bit 8mm Polycrystalline Diamond Compact (PDC) pertama.</li>
+      <li><strong>1976</strong> — GE mengomersialkan lini produk PDC cutter "Stratapax".</li>
+      <li><strong>1990</strong> — Mono dan multi modal grain mixes diperkenalkan.</li>
+      <li><strong>1994</strong> — Teknologi Non-Planar Interface (NPI) diperkenalkan.</li>
+      <li><strong>1996</strong> — Fully diamond enhanced inserts pertama digunakan di roller cone bits.</li>
+      <li><strong>2003</strong> — TReX leaching technology diperkenalkan oleh ReedHycalog.</li>
+      <li><strong>2005</strong> — Ukuran pasar fixed cutter bit (PDC) melampaui roller cone.</li>
+      <li><strong>2009</strong> — Bit kombinasi PDC dan RC (hybrid) pertama dikomersialkan.</li>
+      <li><strong>2013</strong> — Rotating PDC cutters diperkenalkan.</li>
+      <li><strong>2015</strong> — Teknologi shaped PDC mulai populer kembali.</li>
+    </ul>
+  </div>
+
+  <h2 class="section-title">2. Jenis-Jenis Drill Bit & Rock Failure Mechanism</h2>
+  <div class="card">
+    <table class="compare">
+      <tr><th></th><th>Fixed Cutter (PDC)</th><th>Roller Cone (RC / Tricone)</th></tr>
+      <tr><td>Mekanisme kegagalan batuan</td><td>Continuous Shearing</td><td>Continuous Crushing & Abrasion / Cyclic Compression</td></tr>
+      <tr><td>Bagian bergerak</td><td>Tidak ada (fixed, tidak berputar independen)</td><td>Cone berputar pada journal bearing</td></tr>
+      <tr><td>Nama lain</td><td>Polycrystalline Diamond Compact Bit / Fixed Cutters Bit</td><td>Tricone Bit</td></tr>
+    </table>
+    <p><strong>Rock Failure Mechanism — Cyclic Compression (RC):</strong> beban gigi (tooth load) mengatasi kekuatan tekan batuan untuk menghasilkan kawah (crater), menghasilkan retakan dari titik impact. Scraping membantu melepas serpihan (chip) dari kawah; pelepasan chip diperlukan agar chip baru bisa terbentuk; hidrolika membantu mengangkat cutting ini.</p>
+    <p><strong>Rock Failure Mechanism — Shear (PDC):</strong> cutter PDC menggeser/mencukur batuan secara kontinu. Dianalisis dengan Discrete Element Method (DEM): tanpa confining pressure vs dengan confining pressure menunjukkan perbedaan pola keretakan, divalidasi dengan lab testing.</p>
+  </div>
+
+  <h2 class="section-title">3. Komponen Dasar Roller Cone (RC) Bit</h2>
+  <div class="card">
+    <p><strong>Komponen utama:</strong> Cone, Tooth, Nozzle, Arm, Connection.</p>
+    <p><strong>Komponen bearing system:</strong> Bearing, Seal, Reservoir (pelumas untuk bearing).</p>
+    <p><strong>Komponen detail RC Bit:</strong> Tungsten Carbide Inserts, Silver Plated Thrust Face Washer, HNBR Seal, Journal, Bearings (recessed/crowned rollers untuk RC diameter besar), Heel Pac Inserts, Heel, Shirttail (dengan P Protection), Nozzle & Nozzle Pod, Pin API Connection, Pin Shoulder, Lug.</p>
+    <p><strong>Dua tipe cutting structure RC:</strong> Insert (Tungsten Carbide Insert/TCI) dan Mill Tooth (gigi baja yang di-hardface).</p>
+  </div>
+
+  <h2 class="section-title">4. Desain Roller Cone Bit</h2>
+  <div class="card">
+    <p><strong>Journal Angle</strong> — sudut journal terhadap centerline bit:</p>
+    <ul>
+      <li><strong>36°</strong> — untuk formasi lebih keras. Sudut journal lebih besar memberi thrust load lebih besar pada bit, memungkinkan perubahan profil untuk gauge protection.</li>
+      <li><strong>33°</strong> — untuk formasi lebih lunak. Sudut lebih kecil memberi ruang lebih besar untuk cutting structure, meningkatkan ROP.</li>
+    </ul>
+    <p><strong>Skew Angle & Offset</strong> — sudut yang dihasilkan oleh offset cone (umumnya 0°–5° pada bit NOV ReedHycalog):</p>
+    <ul>
+      <li><strong>0°</strong> — formasi keras: durabilitas tinggi, memaksimalkan aksi crushing.</li>
+      <li><strong>3°–5°</strong> — formasi lunak: aksi cutting lebih agresif dengan meningkatkan gerakan sliding/scraping.</li>
+    </ul>
+    <p><strong>Insert Layout</strong> — susunan cutter diatur agar cakupan dasar lubang (bottom hole coverage) cukup untuk menggagalkan batuan, dikombinasikan dengan tingkat agresivitas/durabilitas yang diinginkan.</p>
+  </div>
+
+  <h2 class="section-title">5. Komponen Dasar PDC Bit</h2>
+  <div class="card">
+    <p><strong>Komponen utama:</strong> Bit Head, Blades, Gauge Pad, Cutter (PDC), Shank, Bit Breaker Slot, Connection.</p>
+  </div>
+
+  <h2 class="section-title">6. Design Compromise: Aggressivity vs Durability</h2>
+  <div class="card">
+    <p>Desain bit PDC selalu merupakan kompromi antara Rate of Penetration (ROP) dan durabilitas.</p>
+    <table class="compare">
+      <tr><th>Parameter</th><th>Aggressivity (ROP tinggi)</th><th>Durability (tahan lama)</th></tr>
+      <tr><td>Nose profile</td><td>Sharp (tajam)</td><td>Flat, deep cone</td></tr>
+      <tr><td>Jumlah cutter</td><td>Sedikit</td><td>Sedang – banyak</td></tr>
+      <tr><td>Ukuran cutter</td><td>Besar</td><td>Kecil</td></tr>
+      <tr><td>Back Rake</td><td>Rendah</td><td>Tinggi</td></tr>
+      <tr><td>GL (Gauge Length)</td><td>Sedang, straight</td><td>Panjang, spiral</td></tr>
+    </table>
+    <div class="insight-box"><strong>Insight:</strong> Desain yang dioptimalkan untuk kecepatan (open, light-set cutters) cenderung kurang durable; desain untuk durabilitas (cutter lebih berat & kompleks) cenderung ROP-nya lebih rendah.</div>
+  </div>
+
+  <h2 class="section-title">7. Blade & Cutter Configuration</h2>
+  <div class="card">
+    <ul>
+      <li>Jumlah blade ditentukan oleh jumlah cutter yang dibutuhkan desain — volume diamond lebih tinggi butuh lebih banyak blade.</li>
+      <li>Ukuran (lebar) blade dipengaruhi kebutuhan cutting structure cadangan/redundan atau komponen sekunder.</li>
+      <li>Ukuran cutter tersedia 8mm – 25mm:
+        <ul>
+          <li><strong>13mm</strong> — umum untuk hole size kecil atau butuh ketahanan impact tinggi.</li>
+          <li><strong>16mm</strong> — ukuran umum untuk semua aplikasi; keseimbangan antara depth of cut dan ketahanan impact/thermal.</li>
+          <li><strong>19mm</strong> — untuk depth of cut tinggi di formasi lebih lunak, ROP tinggi, namun rawan patah saat impact tinggi (front faced overload).</li>
+        </ul>
+      </li>
+    </ul>
+    <div class="insight-box"><strong>Rule of Thumb:</strong> Lebih banyak cutter = lebih durable. Lebih sedikit cutter = lebih agresif.</div>
+  </div>
+
+  <h2 class="section-title">8. Blade Profile & Cutter Density</h2>
+  <div class="card">
+    <p><strong>Cone Height</strong>: Deep cone → stabilitas lebih besar; Shallow cone → steerability lebih besar.</p>
+    <p><strong>Tip Profile</strong> (mempengaruhi steerability, ROP, stability):</p>
+    <table class="compare">
+      <tr><th>Profil</th><th>Deskripsi</th><th>Lebih Baik Untuk</th></tr>
+      <tr><td>A</td><td>Long Taper</td><td>Stability</td></tr>
+      <tr><td>B</td><td>Medium Taper</td><td>Stability</td></tr>
+      <tr><td>C</td><td>Short-Medium</td><td>Stability, ROP</td></tr>
+      <tr><td>D</td><td>Short Taper</td><td>Stability, ROP, Steerability</td></tr>
+      <tr><td>E</td><td>Short-flat Taper</td><td>Steerability</td></tr>
+      <tr><td>F</td><td>Flat</td><td>Steerability (Side-tracking)</td></tr>
+    </table>
+    <p><strong>Cutter Density</strong>: cutter yang lebih rapat pada blade memberi durabilitas lebih besar.</p>
+    <p><strong>Shoulder Length</strong>: shoulder lebih panjang = durabilitas meningkat; profil lebih datar = steerability meningkat.</p>
+  </div>
+
+  <h2 class="section-title">9. Cutter Rake Angles</h2>
+  <div class="card">
+    <p>PDC cutter dipasang untuk mencapai sudut rake (attack) tertentu relatif terhadap formasi. Ada dua jenis: <strong>Back Rake</strong> dan <strong>Side Rake</strong>.</p>
+    <p><strong>Back Rake</strong> — sudut antara muka cutter dan garis tegak lurus terhadap formasi yang dibor:</p>
+    <ul>
+      <li>Back rake lebih rendah → lebih agresif, depth of cut (DOC) meningkat, ROP lebih tinggi.</li>
+      <li>Back rake lebih tinggi → kurang agresif, lebih tahan impact, DOC berkurang.</li>
+    </ul>
+    <p><strong>Side Rake</strong> — sudut muka cutter relatif terhadap radius bit:</p>
+    <ul>
+      <li>Tanpa side rake (0°) → umum digunakan.</li>
+      <li>Side rake negatif → mengarahkan muka cutter ke sumbu tengah bit, mendorong cutting ke arah dalam (bukan ke junk slot), dapat meningkatkan stabilitas lateral.</li>
+    </ul>
+  </div>
+
+  <h2 class="section-title">10. Gauge Types dan Profiles</h2>
+  <div class="card">
+    <table class="compare">
+      <tr><th>Tipe</th><th>Stability</th><th>Steerability</th></tr>
+      <tr><td>Straight Passive</td><td>Area kontak besar & datar, namun tidak 360° — bisa memicu ketidakstabilan lateral, jarang dipakai</td><td>Tidak direkomendasikan untuk directional</td></tr>
+      <tr><td>Reverse / Forward Spiral</td><td>Kontak borehole lebih baik & kontinu 360° → stabilitas lebih besar</td><td>Cakupan lebih luas dengan gauge pad lebih pendek → kontrol directional lebih baik</td></tr>
+      <tr><td>Tapered Gauge</td><td>Umum untuk aplikasi directional karena kontak dengan borehole berkurang, dampak ke stabilitas minim</td><td>Mengurangi drag dari tilt dengan mencocokkan sudut wellbore & motor, membantu mengurangi torque</td></tr>
+      <tr><td>Stepped Gauge</td><td>—</td><td>—</td></tr>
+      <tr><td>Semi-Active Gauge</td><td>Passive vs Semi-Active, Under vs Full contact</td><td>—</td></tr>
+    </table>
+  </div>
+
+  <h2 class="section-title">11. PDC Cutters — Komposisi & Proses</h2>
+  <div class="card">
+    <p><strong>PDC (Polycrystalline Diamond Compact)</strong> adalah elemen cutting yang terdiri dari lapisan polycrystalline diamond yang terikat pada substrate tungsten carbide.</p>
+    <ul>
+      <li>Dibentuk pada tekanan sangat tinggi (&gt;1,000,000 psi) dan temperatur 1300°C dari serbuk diamond sintetis.</li>
+      <li>Terdiri dari lapisan polycrystalline diamond setebal 2–3mm yang terikat secara integral ke tungsten carbide substrate.</li>
+      <li>Permukaan diamond table di-leach dengan asam panas untuk menghilangkan Cobalt dari permukaan cutter, meningkatkan sifat termalnya.</li>
+      <li>Diamond table direkayasa untuk memaksimalkan densitas polycrystalline diamond serta mendorong ketahanan abrasi & impact:
+        <ul>
+          <li>Grain lebih besar → ketahanan impact meningkat.</li>
+          <li>Grain lebih kecil → ketahanan abrasi meningkat.</li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <h2 class="section-title">12. Body Material: Matrix vs Steel</h2>
+  <div class="card">
+    <table class="compare">
+      <tr><th></th><th>Matrix (hard carbon molded body)</th><th>Steel (milled body geometry)</th></tr>
+      <tr><td>Kelebihan</td><td>Erosion resistant, abrasion resistant</td><td>Umumnya lebih murah, lead time lebih singkat, shock resistance tinggi, lebih agresif (cutter exposure & fleksibilitas desain lebih besar)</td></tr>
+      <tr><td>Kekurangan</td><td>Fleksibilitas desain terbatas (blade height, cutter exposure), lebih rapuh dan lebih mahal dari steel</td><td>Lead time lebih lama, potensi erosi, perlu hardfacing</td></tr>
+    </table>
+  </div>
+
+  <h2 class="section-title">13. Hydraulics & Cleaning Efficiency</h2>
+  <div class="card">
+    <p><strong>OFV (Open Face Volume)</strong>: selisih volume yang dilingkupi antara tip profile yang direvolusikan dan bit yang sudah lengkap, hingga gauge ramp.</p>
+    <p><strong>JSA (Junk Slot Area)</strong>: area penampang minimum yang dilingkupi antara radius bit dan profil milled/waterway.</p>
+    <div class="insight-box"><strong>OFV dan JSA yang lebih besar sangat krusial</strong> untuk aplikasi yang memicu bit balling — misalnya pengeboran formasi lunak & lengket dengan water based mud, di mana formasi bereaksi dengan air dalam lumpur, mengembang, dan menjadi lengket.</div>
+    <p><strong>CFD (Computational Fluid Dynamics)</strong>: layout hidrolik yang dioptimalkan memberikan pendinginan cutter dan evakuasi cutting yang efisien untuk menghindari bit balling. CFD mengevaluasi arah aliran, laju aliran junk slot, tegangan dasar lubang, dan tegangan bit body untuk menyempurnakan desain hidrolik. Model CFD diterapkan dengan TFA (Total Flow Area) dan flow rate khas sesuai aplikasi — mungkin butuh banyak iterasi. Faktor pembatas penempatan nozzle: lokasi blade, manufacturability (bentrok/clashing), kekuatan blade.</p>
+  </div>
+
+  <h2 class="section-title">14. Bit Selection — Prinsip Umum</h2>
+  <div class="card">
+    <p><strong>3 Prinsip Pemilihan Bit (ditekankan berulang di materi):</strong> Offset Data, Offset Data, dan Offset Data.</p>
+    <p><strong>Good Offset Data</strong> mencakup: Bit Record, Bits Dull Photos, Master Logs, DDRs (Daily Drilling Reports), UCS/Rock Strength.</p>
+    <p><strong>Close Offset</strong> mencakup: Gamma Ray dan Sonic log, Well Schematic/Profile, Steering Sheets, BHA, Vibration Data, End of Well Reports.</p>
+  </div>
+
+  <h2 class="section-title">15. Karakteristik Aplikasi yang Perlu Diketahui</h2>
+  <div class="card">
+    <p><strong>Yang perlu diketahui tentang aplikasi:</strong> Lithology, Interval, Direction/Drive Type, Mud, dan faktor lain.</p>
+    <p><strong>Character formasi:</strong> Rock Strength, Abrasiveness, Clay Content, Drillability.</p>
+    <p><strong>Dimension:</strong> Thickness (ketebalan lapisan formasi).</p>
+    <p><strong>Contoh — Clastic Rock (mis. Sandstone):</strong> formasi biasanya abrasif. Semakin formasi menjadi lebih keras: gunakan cutter yang lebih kecil, blade lebih banyak, cutter lebih banyak.</p>
+  </div>
+
+  <h2 class="section-title">16. Cutter Shape Technology</h2>
+  <div class="card">
+    <p><strong>ION 3D Cutter:</strong></p>
+    <ul>
+      <li>Tepi chisel menghasilkan point loading pada arah WOB (Weight on Bit), meningkatkan efisiensi DOC.</li>
+      <li>Tegangan meningkat melalui profil tegangan hingga ke permukaan.</li>
+      <li>Membantu merambatkan retakan ke permukaan, meningkatkan efisiensi pada arah shearing.</li>
+      <li>Bentuk ION 3D menciptakan retakan lebih besar & jelas yang merambat ke permukaan, membutuhkan energi lebih sedikit untuk menggagalkan batuan sambil menciptakan cutting yang lebih tipis dan tidak terkonsolidasi.</li>
+    </ul>
+    <p><strong>ION 4D Cutter:</strong></p>
+    <ul>
+      <li>Muka cutting non-planar 4D menciptakan efek "plough" yang meningkatkan point loading pada arah shearing.</li>
+      <li>Rear flank bersudut menciptakan saluran fluida di belakang cutter.</li>
+      <li>Mengurangi adhesi ke muka cutter → mengurangi kerugian friksi.</li>
+      <li>Meningkatkan gaya hidrolik pada cutting, memecahnya menjadi bagian yang lebih kecil.</li>
+    </ul>
+  </div>
+
+  <h2 class="section-title">17. Strategi Run: Single Run vs Two Bit Run</h2>
+  <div class="card">
+    <table class="compare">
+      <tr><th>Single Run</th><th>Two Bit Run</th></tr>
+      <tr><td>Biaya bit lebih rendah</td><td>Butuh trip tambahan (wiper trip)</td></tr>
+      <tr><td>Trip lebih sedikit</td><td>Total biaya lebih rendah (dalam skenario tertentu)</td></tr>
+    </table>
+    <p><strong>Varian Single Run (Opsi 1 vs Opsi 2):</strong></p>
+    <table class="compare">
+      <tr><th>Single Run — Opsi 1</th><th>Single Run — Opsi 2</th></tr>
+      <tr><td>Biaya bit lebih rendah, trip lebih sedikit</td><td>Biaya bit lebih tinggi, tapi drilling lebih cepat → biaya drilling lebih rendah, trip lebih sedikit</td></tr>
+    </table>
+    <p>Faktor penentu: apakah interval pendek atau panjang, apakah akan single run atau two bit run.</p>
+  </div>
+
+  <h2 class="section-title">18. Faktor Well Profile & Drive System</h2>
+  <div class="card">
+    <ul>
+      <li><strong>Well Profile</strong> dan <strong>Build/Turn Rate</strong> mempengaruhi pemilihan bit (terutama gauge design & steerability).</li>
+      <li><strong>Drive System</strong>: Rotary, Motor (mud motor), RSS (Rotary Steerable System), Motorized RSS.</li>
+    </ul>
+  </div>
+
+  <h2 class="section-title">19. Optimasi Hidrolik Bit: HSI dan JIF</h2>
+  <div class="card">
+    <p>Hidrolik bit yang optimal bergantung pada BHA yang digunakan, kedalaman lubang, dan karakteristik formasi.</p>
+    <ul>
+      <li><strong>HSI (Hydraulic Horsepower per Square Inch)</strong>: pada formasi lunak, HSI antara <strong>3–5</strong> lebih disukai untuk performa ROP optimal. Berhati-hatilah bila HSI di bawah 1 atau di atas 5.</li>
+      <li><strong>JIF (Jet Impact Force)</strong>: dioptimalkan ketika penurunan tekanan (pressure drop) di bit sekitar <strong>50%</strong>. Cocok untuk: sumur dangkal berdiameter besar, formasi lunak, mengurangi bit balling pada formasi reaktif.</li>
+    </ul>
+  </div>
+
+  <h2 class="section-title">20. Situasi Khusus dalam Pemilihan Bit</h2>
+  <div class="card">
+    <ul>
+      <li><strong>Drill Out</strong>: perlu dipertimbangkan apakah material "PDC Drillable" atau "Not PDC Drillable" (misal cement plug, casing shoe komponen tertentu).</li>
+      <li><strong>Bi-Center Bits</strong> (pass-through): digunakan saat bit perlu melewati restriction tertentu namun mengebor lubang lebih besar.</li>
+      <li><strong>Junk in Hole</strong>: memerlukan bit mill atau RC untuk menggiling junk.</li>
+    </ul>
+  </div>
+
+  <h2 class="section-title">21. Ringkasan Proses Pemilihan Bit</h2>
+  <div class="card">
+    <p>Faktor-faktor kunci: <strong>Application</strong>, <strong>Lithology</strong>, <strong>Direction/Well Profile</strong>, <strong>Interval</strong>, dan faktor lainnya (drive system, hidrolika, run strategy, dll).</p>
+  </div>
+
+  <h2 class="section-title">22. Performance & Failure Analysis — IADC Dull Grading System</h2>
+  <div class="card">
+    <p>Setelah bit ditarik ke permukaan, kondisinya dinilai menggunakan <strong>Sistem IADC Dull Grading</strong> — sebuah format standar (8 kolom) yang mencatat kondisi cutting structure, lokasi kerusakan, kondisi bearing/seal, gauge, karakteristik dull lain, dan alasan bit ditarik (reason pulled). Sistem ini berlaku untuk RC maupun PDC bit (dengan penyesuaian istilah).</p>
+
+    <p><strong>Kode-kode Dull Characteristic (kondisi cutting structure):</strong></p>
+    <table class="compare">
+      <tr><th>Kode</th><th>Arti</th><th>Kategori</th></tr>
+      <tr><td>NO</td><td>No Dull Characteristic (tidak ada dull, bit dalam kondisi baik)</td><td>Normal</td></tr>
+      <tr><td>WT</td><td>Worn Teeth/Cutters — gigi/cutter aus</td><td>Cutting Structure — Normal</td></tr>
+      <tr><td>CT</td><td>Chipped Teeth/Cutters — gigi/cutter terkelupas/retak kecil</td><td>Cutting Structure — Impact Damage</td></tr>
+      <tr><td>BT</td><td>Broken Teeth/Cutters — gigi/cutter patah</td><td>Cutting Structure — Severe Damage</td></tr>
+      <tr><td>HC</td><td>Heat Checking — retak akibat panas berlebih (mis. akibat stick-slip) pada cutter atau matrix body</td><td>Severe Damage</td></tr>
+      <tr><td>RO</td><td>Ring Out — cutter/insert aus membentuk cincin (khas pada roller cone)</td><td>Severe Damage</td></tr>
+      <tr><td>CR</td><td>Cored — bit membentuk "core" di tengah karena cutter tengah tidak berfungsi</td><td>Severe Damage</td></tr>
+      <tr><td>LN</td><td>Lost Nozzle — nozzle hilang</td><td>Hydraulic Related</td></tr>
+      <tr><td>JD</td><td>Junk Damage — kerusakan katastropik masif pada cutting structure dan/atau gauge pad dan/atau bit body akibat junk; periksa tanda karat pada matrix body</td><td>Severe Damage</td></tr>
+      <tr><td>ER</td><td>Erosion — erosi pada bit body/blade akibat aliran fluida</td><td>Hydraulic Related</td></tr>
+      <tr><td>PN</td><td>Plugged Nozzle — nozzle tersumbat</td><td>Hydraulic Related</td></tr>
+      <tr><td>BU</td><td>Balled Up — bit "balling" (terselimuti cutting/lumpur menggumpal)</td><td>Hydraulic Related</td></tr>
+      <tr><td>LT</td><td>Lost Teeth/Cutters — gigi/cutter hilang</td><td>Quality Control</td></tr>
+      <tr><td>BF</td><td>Bond Failure — kegagalan ikatan antara diamond table dan tungsten carbide substrate (khusus PDC)</td><td>Quality Control</td></tr>
+    </table>
+    <p><strong>Undergauge</strong> juga dicatat — mengukur seberapa besar diameter bit sudah berkurang dari ukuran nominal akibat pemakaian pada gauge pad/heel.</p>
+  </div>
+
+</section>
+
+<!-- ==================== LATIHAN SOAL ==================== -->
+<section id="latihan" class="panel">
+  <h2 class="section-title">📝 Latihan Soal</h2>
+  <p style="color:var(--text-dim);">Klik salah satu jawaban untuk melihat apakah benar, beserta penjelasannya.</p>
+  <div class="quiz-progress" id="quizProgress"></div>
+  <div id="quizContainer"></div>
+  <div class="quiz-score-bar">
+    <div id="scoreDisplay"></div>
+    <button onclick="resetQuiz()">🔄 Ulangi Kuis</button>
+  </div>
+</section>
+
+<!-- ==================== FLASHCARD ==================== -->
+<section id="flashcard" class="panel">
+  <h2 class="section-title">🃏 Flashcard</h2>
+  <div class="flash-wrap">
+    <div class="flash-counter" id="flashCounter"></div>
+    <div class="flashcard" id="flashcard" onclick="flipCard()">
+      <div class="flash-inner">
+        <div class="flash-face flash-front">
+          <div><span style="position:absolute;top:12px;left:16px;font-size:0.7em;color:var(--steel-light);text-transform:uppercase;letter-spacing:1px;">Istilah</span><div id="flashFrontText"></div></div>
+        </div>
+        <div class="flash-face flash-back">
+          <div id="flashBackText"></div>
+        </div>
+      </div>
+    </div>
+    <div class="flash-hint">Klik kartu untuk membalik</div>
+    <div class="flash-nav">
+      <button onclick="prevCard()">⬅ Sebelumnya</button>
+      <button onclick="shuffleCards()">🔀 Acak</button>
+      <button onclick="nextCard()">Berikutnya ➡</button>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== BAGIAN SULIT ==================== -->
+<section id="sulit" class="panel">
+  <h2 class="section-title">🧩 Konsep-Konsep Sulit</h2>
+
+  <div class="card">
+    <h3>1. Journal Angle vs Skew Angle — sering tertukar</h3>
+    <p>Kedua istilah ini sama-sama parameter desain roller cone bit, tapi mengontrol hal yang berbeda:</p>
+    <div class="ascii-box">
+JOURNAL ANGLE                         SKEW ANGLE (& OFFSET)
+(sudut journal thd centerline bit)    (sudut akibat cone di-offset dari
+                                        centerline bit)
+
+     centerline                            titik pusat bit
+        |                                       *
+        |   \ 36° (keras)                   cone A    cone B    cone C
+        |    \                              (di-offset sedikit dari pusat)
+        |     \___ journal                  
+        |    /                              0°   = tidak di-offset
+        |   / 33° (lunak)                        -> gerakan MURNI rolling
+        |  /                                       (crushing maksimal)
+                                             3-5° = di-offset
+Journal lebih besar (36°)                        -> ada gerakan SCRAPING
+ -> thrust load lebih besar                        tambahan saat cone
+ -> untuk formasi keras                            berputar (lebih agresif)
+Journal lebih kecil (33°)
+ -> ruang cutting structure lebih besar
+ -> untuk formasi lunak, ROP naik
+    </div>
+    <div class="insight-box"><strong>Cara mudah mengingat:</strong> Journal Angle mengatur seberapa besar "gaya dorong" (thrust) yang bisa ditahan bit — ini soal KEKUATAN struktural. Skew Angle/Offset mengatur seberapa besar gerakan "menggaruk" (scraping) tambahan yang terjadi saat cone berputar — ini soal AGRESIVITAS cutting action. Keduanya bisa dikombinasikan sesuai kekerasan formasi target.</div>
+  </div>
+
+  <div class="card">
+    <h3>2. Kenapa PDC "Continuous Shearing" lebih efisien dari RC "Cyclic Compression" di formasi lunak-medium?</h3>
+    <div class="ascii-box">
+ROLLER CONE (Cyclic Compression & Crushing):
+
+   cone berputar -> gigi menghantam -> lepas -> menghantam lagi
+   [BENTUR]....[LEPAS]....[BENTUR]....[LEPAS]....
+   Energi terbuang di antara benturan (gigi tidak selalu
+   kontak dengan batuan). Efisien untuk batuan KERAS yang
+   memang butuh gaya impact besar untuk pecah.
+
+PDC (Continuous Shearing):
+
+   cutter TETAP menempel & terus menggeser batuan
+   [GESER----------------------------------------]
+   Tidak ada "waktu kosong" - cutter selalu memotong.
+   Sangat efisien untuk batuan LUNAK-MEDIUM yang bisa
+   "dicukur" tanpa perlu energi impact besar.
+   Kurang efisien di batuan sangat keras/abrasif karena
+   cutter tidak berputar sendiri -> aus/patah lebih cepat.
+    </div>
+    <div class="insight-box"><strong>Insight:</strong> Inilah sebabnya sejak 2005 pasar fixed cutter (PDC) melampaui roller cone — mayoritas sumur dibor di formasi lunak-medium dimana shearing jauh lebih efisien secara energi. RC tetap unggul di formasi sangat keras, abrasif, atau heterogen (interbedded) karena cone yang berputar bisa "menyerap" benturan tanpa mematahkan cutting structure.</div>
+  </div>
+
+  <div class="card">
+    <h3>3. Back Rake vs Side Rake — dua sudut yang berbeda fungsi</h3>
+    <div class="ascii-box">
+BACK RAKE (dilihat dari SAMPING cutter, searah gerak bit)
+
+     formasi -->  |  cutter face
+                  | \
+                  |  \  <- sudut back rake terhadap garis
+                  |   \    tegak lurus formasi
+                  |____\
+        Back rake KECIL          Back rake BESAR
+        (cutter lebih "tegak")   (cutter lebih "miring")
+        -> agresif, DOC besar    -> tahan impact, DOC kecil
+
+
+SIDE RAKE (dilihat dari ATAS, searah radius bit)
+
+        pusat bit
+           *
+            \
+             \  <- side rake NEGATIF: muka cutter mengarah
+              \    ke pusat bit -> cutting terdorong ke
+               \   DALAM (bukan ke junk slot)
+              [cutter]
+    </div>
+    <div class="insight-box"><strong>Insight:</strong> Back rake mengatur "seberapa agresif cutter menggigit formasi ke arah maju (WOB direction)" — ini trade-off klasik ROP vs durability. Side rake mengatur "ke arah mana cutting diarahkan setelah terpotong" — pengaruhnya lebih ke stabilitas lateral & efisiensi pembersihan cutting, bukan langsung ke ROP.</div>
+  </div>
+
+  <div class="card">
+    <h3>4. OFV vs JSA — dua ukuran "ruang kosong" yang berbeda maksud</h3>
+    <p>Keduanya sama-sama tentang ruang untuk aliran & pembersihan cutting, tapi diukur di tempat dan untuk tujuan yang berbeda:</p>
+    <div class="ascii-box">
+OFV (Open Face Volume)                  JSA (Junk Slot Area)
+-> diukur di WAJAH BIT                  -> diukur di ALUR/SLOT SAMPING bit
+   (bagian yang menghadap formasi)         (jalur keluarnya cutting menuju
+                                             annulus)
+
+   [face bit] <-- selisih volume           [blade][slot][blade][slot]
+   antara profil tip yang di-revolve            ^          ^
+   vs bit yang sudah jadi, hingga           luas penampang minimum
+   gauge ramp.                              di slot ini = JSA
+
+Fungsi: ruang untuk fluida & cutting     Fungsi: "jalan keluar" bagi
+        BERPUTAR/bergerak di wajah              cutting menuju annulus
+        bit sebelum terangkat                   tanpa tersumbat
+    </div>
+    <div class="insight-box"><strong>Insight praktis:</strong> Jika OFV terlalu kecil, cutting menumpuk DI WAJAH bit (balling di cutting structure). Jika JSA terlalu kecil, cutting yang sudah terpotong tidak bisa "keluar" dengan cepat menuju annulus (balling di sekitar blade/gauge). Keduanya harus cukup besar terutama di formasi lunak-lengket yang reaktif terhadap water based mud.</div>
+  </div>
+
+  <div class="card">
+    <h3>5. HSI vs JIF — dua filosofi optimasi hidrolik yang berbeda</h3>
+    <p>Materi menyebutkan HSI ideal 3–5 untuk performa ROP optimal di formasi lunak, sementara JIF dioptimalkan saat pressure drop di bit ~50%. Keduanya adalah PENDEKATAN BERBEDA untuk masalah yang sama (berapa banyak energi hidrolik yang harus dialokasikan ke bit):</p>
+    <div class="ascii-box">
+HSI (Hydraulic Horsepower per Square Inch)
+  -> fokus pada ENERGI (horsepower) yang disalurkan per luas
+     area bit. Cocok untuk formasi lunak dimana yang
+     dibutuhkan adalah "daya bersih-bersih" cutting secara
+     kontinu (mencegah bit balling & re-cutting).
+
+JIF (Jet Impact Force)
+  -> fokus pada GAYA TUMBUKAN fluida yang keluar dari nozzle
+     ke dasar lubang. Cocok untuk aplikasi yang butuh
+     "dorongan fisik" kuat untuk membersihkan cutting dari
+     dasar lubang secara agresif -- misal sumur besar &
+     dangkal, atau formasi reaktif yang mudah balling.
+    </div>
+    <div class="insight-box"><strong>Kapan pakai yang mana?</strong> Bukan "pilih salah satu" secara ketat — keduanya dihitung dan dicek batas amannya (HSI jangan di bawah 1 atau di atas 5). JIF jadi acuan tambahan khususnya ketika kondisi butuh gaya tumbukan langsung (sumur besar dangkal, formasi lunak reaktif) — di situ target pressure drop di bit ~50% dari total sistem sirkulasi dijadikan patokan optimasi.</div>
+  </div>
+
+  <div class="card">
+    <h3>6. Membaca Sistem IADC Dull Grading — bukan sekadar hafalan kode</h3>
+    <p>IADC Dull Grading terdiri dari 8 kolom standar. Materi ini menekankan kode-kode "Dull Characteristic" (kolom cutting structure & other), tapi penting memahami bahwa kode ini SELALU dilaporkan berdampingan dengan kolom lain agar bermakna:</p>
+    <div class="ascii-box">
+Format standar (disederhanakan):
+
+  [I] [O] [D] [L] [B] [G] [O] [R]
+   |   |   |   |   |   |   |   |
+   |   |   |   |   |   |   |   +-- Reason Pulled (kenapa bit ditarik)
+   |   |   |   |   |   |   +------ Other dull characteristic
+   |   |   |   |   |   +---------- Gauge (1/16" undergauge, atau I=in gauge)
+   |   |   |   |   +-------------- Bearing/Seal condition
+   |   |   |   +------------------ Location (kode posisi kerusakan di bit)
+   |   |   +---------------------- Dull Characteristic (kode: WT,BT,CT,HC,dst)
+   |   +-------------------------- Cutting Structure - Outer rows (0-8)
+   +------------------------------ Cutting Structure - Inner rows (0-8)
+
+Contoh membaca: "2  3  WT  A  X  I  NO  TD"
+  -> Inner rows aus grade 2/8, Outer rows aus grade 3/8,
+     dull characteristic = Worn Teeth, lokasi kerusakan = All rows,
+     Bearing = tidak dapat dinilai (X, khas PDC), Gauge = In gauge,
+     tidak ada karakteristik dull lain, ditarik karena TD (Total Depth
+     tercapai -- bukan karena kerusakan bit).
+    </div>
+    <div class="insight-box"><strong>Insight kritis:</strong> Kode dull SENDIRIAN (misal "BT" saja) tidak cukup untuk mengevaluasi performa bit. Yang menentukan apakah itu masalah desain, masalah operasional, atau memang wajar (bit sudah capai target depth) adalah kombinasi grade keausan (angka 0-8) + lokasi + reason pulled. Inilah kenapa "Good Offset Data" pada bagian Bit Selection menekankan Bit Record dan Dull Photos — bukan cuma kode dull-nya saja, tapi konteks lengkapnya.</div>
+  </div>
+
+  <div class="card">
+    <h3>7. Kenapa "Design Compromise" (Aggressivity vs Durability) muncul berulang kali di materi ini?</h3>
+    <p>Konsep ini muncul minimal 3 kali dalam presentasi dengan variasi parameter berbeda (cutter count/size/back rake, blade count, cone profile) — karena ini adalah PRINSIP DASAR yang mendasari HAMPIR SEMUA keputusan desain PDC bit, bukan sekadar satu topik terpisah.</p>
+    <div class="ascii-box">
+Satu "sumbu" trade-off besar yang menjelaskan banyak parameter sekaligus:
+
+  AGRESIF <-------------------------------------------> DURABLE
+  (ROP tinggi,                                    (tahan lama,
+   umur lebih pendek)                              ROP lebih rendah)
+
+  - Cutter besar (19mm)          <->   - Cutter kecil (13mm)
+  - Cutter sedikit                <->   - Cutter banyak
+  - Back rake rendah              <->   - Back rake tinggi
+  - Blade sedikit                 <->   - Blade banyak
+  - Shallow cone / flat profile   <->   - Deep cone profile
+  - Shoulder pendek                <->   - Shoulder panjang
+  - GL pendek, straight            <->   - GL panjang, spiral
+</div>
+    <div class="insight-box"><strong>Insight:</strong> Setelah memahami satu sumbu trade-off ini, hampir semua parameter desain PDC bit di materi (blade config, cutter density, gauge, dst) bisa "dipetakan" ke posisi tertentu di sumbu Aggressivity–Durability sesuai karakter formasi target. Ini jauh lebih berguna daripada menghafal tiap parameter secara terpisah.</div>
+  </div>
+
+</section>
+
+</main>
+
+<footer>
+  Paket belajar offline — Jakarta Drilling Society | Materi: Drill Bit — Introduction (Rahmad Febdiansyah Bas)
+</footer>
+
+<script>
+// ===================== TAB SWITCHING =====================
+const tabBtns = document.querySelectorAll('.tab-btn');
+const panels = document.querySelectorAll('.panel');
+tabBtns.forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    tabBtns.forEach(b=>b.classList.remove('active'));
+    panels.forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
+  });
+});
+
+// ===================== QUIZ DATA =====================
+const quizData = [
+  {
+    q: "Siapa yang mematenkan roller cone rock bit pada tahun 1909?",
+    opts: ["Edwin L. Drake", "Howard Hughes", "General Electric", "ReedHycalog"],
+    correct: 1,
+    explain: "Howard Hughes mematenkan roller cone rock bit pada tahun 1909."
+  },
+  {
+    q: "Tahun berapa GE menguji roller cone bit dengan 8mm Polycrystalline Diamond Compact (PDC) pertama kali?",
+    opts: ["1953", "1963", "1973", "1976"],
+    correct: 2,
+    explain: "Pada 1973, GE menguji roller cone bit 8mm PDC pertama, sebelum akhirnya mengomersialkan lini produk Stratapax pada 1976."
+  },
+  {
+    q: "Mekanisme kegagalan batuan utama pada Fixed Cutter (PDC) Bit adalah...",
+    opts: ["Cyclic Compression", "Continuous Crushing & Abrasion", "Continuous Shearing", "Impact Hammering"],
+    correct: 2,
+    explain: "PDC bit bekerja dengan mekanisme Continuous Shearing, sedangkan Roller Cone bekerja dengan Continuous Crushing & Abrasion / Cyclic Compression."
+  },
+  {
+    q: "Manakah yang TERMASUK komponen dasar Roller Cone Bit?",
+    opts: ["Blade, Gauge Pad, Shank", "Cone, Tooth, Nozzle, Arm, Connection", "Bit Head, Bit Breaker Slot", "Cutter PDC, Blade"],
+    correct: 1,
+    explain: "Komponen dasar RC bit: Cone, Tooth, Nozzle, Arm, Connection. Blade/Gauge Pad/Shank adalah komponen PDC bit."
+  },
+  {
+    q: "Journal Angle 36° pada Roller Cone bit cocok digunakan untuk...",
+    opts: [
+      "Formasi lunak, meningkatkan ROP",
+      "Formasi keras, memberi thrust load lebih besar",
+      "Hanya untuk aplikasi geothermal",
+      "Tidak mempengaruhi performa bit"
+    ],
+    correct: 1,
+    explain: "Journal angle 36° (lebih besar) digunakan untuk formasi keras karena memberikan thrust load lebih besar pada bit."
+  },
+  {
+    q: "Skew angle 0° pada roller cone bit menghasilkan...",
+    opts: [
+      "Aksi scraping lebih agresif",
+      "Aksi crushing maksimal, durable untuk formasi keras",
+      "ROP tertinggi di semua formasi",
+      "Bit tidak bisa berputar"
+    ],
+    correct: 1,
+    explain: "Skew angle 0° (tidak offset) ideal untuk formasi keras karena durable dan memaksimalkan aksi crushing."
+  },
+  {
+    q: "Apa fungsi Heel Pac Inserts pada RC bit?",
+    opts: [
+      "Melindungi bearing dari panas",
+      "Insert tambahan pada bagian heel, umumnya untuk RC diameter besar",
+      "Menggantikan fungsi nozzle",
+      "Bagian dari sistem hidrolik CFD"
+    ],
+    correct: 1,
+    explain: "Heel Pac Inserts adalah insert pada bagian heel bit yang umumnya digunakan pada RC bit berdiameter besar."
+  },
+  {
+    q: "Manakah yang TERMASUK komponen dasar PDC Bit?",
+    opts: ["Cone, Journal, Bearing", "Bit Head, Blades, Gauge Pad, Cutter, Shank", "Insert, Mill Tooth", "Reservoir, Seal"],
+    correct: 1,
+    explain: "Komponen dasar PDC bit: Bit Head, Blades, Gauge Pad, Cutter (PDC), Shank, Bit Breaker Slot, Connection."
+  },
+  {
+    q: "Dalam Design Compromise Aggressivity vs Durability, cutter yang BESAR dan SEDIKIT cenderung membuat bit menjadi...",
+    opts: ["Lebih durable", "Lebih agresif (ROP tinggi)", "Tidak berpengaruh terhadap ROP", "Lebih cocok untuk formasi sangat keras"],
+    correct: 1,
+    explain: "Cutter besar dan sedikit, back rake rendah, cenderung membuat desain lebih agresif dengan ROP lebih tinggi, namun durabilitas lebih rendah."
+  },
+  {
+    q: "Menurut 'Rule of Thumb' pada Blade and Cutter Configuration, lebih banyak cutter berarti...",
+    opts: ["Lebih agresif", "Lebih durable", "ROP pasti lebih tinggi", "Bit menjadi lebih murah"],
+    correct: 1,
+    explain: "Rule of thumb: More Cutters = More Durability, Less Cutters = More Aggressive."
+  },
+  {
+    q: "Cutter 19mm pada PDC bit memiliki kelemahan berupa...",
+    opts: [
+      "Ketahanan impact tinggi tapi ROP rendah",
+      "Propensity untuk patah saat impact tinggi (front faced overload)",
+      "Hanya bisa dipakai di hole size kecil",
+      "Tidak bisa digunakan di formasi lunak"
+    ],
+    correct: 1,
+    explain: "Cutter 19mm mampu mencapai ROP tinggi di formasi lunak namun rawan patah ketika terkena impact tinggi pada depth of cut besar (front faced overload)."
+  },
+  {
+    q: "Cone Height yang DEEP pada blade profile PDC bit memberikan keunggulan berupa...",
+    opts: ["Steerability lebih besar", "Stabilitas lebih besar", "ROP paling tinggi", "Durabilitas cutter meningkat drastis"],
+    correct: 1,
+    explain: "Deep cone height memberikan stabilitas lebih besar, sedangkan shallow cone memberikan steerability lebih besar."
+  },
+  {
+    q: "Back Rake yang RENDAH pada PDC cutter menghasilkan...",
+    opts: [
+      "Lebih tahan impact, DOC berkurang",
+      "Lebih agresif, DOC meningkat, ROP lebih tinggi",
+      "Tidak mempengaruhi ROP sama sekali",
+      "Cutter menjadi lebih dingin"
+    ],
+    correct: 1,
+    explain: "Back rake rendah membuat cutter lebih agresif — meningkatkan depth of cut (DOC) dan ROP, namun mengurangi ketahanan terhadap impact."
+  },
+  {
+    q: "Side rake NEGATIF pada PDC cutter mengarahkan cutting ke arah...",
+    opts: ["Ke luar menuju junk slot", "Ke dalam menuju sumbu tengah bit", "Ke atas menuju permukaan langsung", "Tidak ada perubahan arah cutting"],
+    correct: 1,
+    explain: "Side rake negatif mengarahkan muka cutter ke sumbu tengah bit, mendorong cutting ke arah dalam, dapat meningkatkan stabilitas lateral."
+  },
+  {
+    q: "Gauge type manakah yang UMUM digunakan untuk aplikasi directional karena mengurangi kontak dengan borehole wall?",
+    opts: ["Straight Passive", "Tapered Gauge", "Stepped Gauge saja", "Tidak ada gauge type khusus untuk directional"],
+    correct: 1,
+    explain: "Tapered Gauge umum digunakan untuk aplikasi directional karena kontak dengan borehole wall berkurang, sehingga dampak ke stabilitas minim namun membantu mengurangi drag dan torque."
+  },
+  {
+    q: "PDC cutter dibentuk pada tekanan dan temperatur berapa?",
+    opts: ["500,000 psi dan 800°C", ">1,000,000 psi dan 1300°C", "100,000 psi dan 500°C", "Tidak memerlukan tekanan tinggi"],
+    correct: 1,
+    explain: "PDC cutter dibentuk pada tekanan >1,000,000 psi dan temperatur 1300°C dari serbuk diamond sintetis."
+  },
+  {
+    q: "Proses leaching pada PDC cutter bertujuan untuk...",
+    opts: [
+      "Menambah lapisan tungsten carbide",
+      "Menghilangkan Cobalt dari permukaan cutter untuk meningkatkan sifat termal",
+      "Memperbesar ukuran cutter",
+      "Mengubah warna cutter"
+    ],
+    correct: 1,
+    explain: "Leaching menggunakan asam panas untuk menghilangkan Cobalt dari permukaan diamond table, meningkatkan sifat termal cutter."
+  },
+  {
+    q: "Grain diamond yang LEBIH BESAR pada diamond table PDC cutter meningkatkan...",
+    opts: ["Ketahanan abrasi", "Ketahanan impact", "Berat cutter saja", "Warna cutter"],
+    correct: 1,
+    explain: "Grain lebih besar meningkatkan ketahanan impact; grain lebih kecil meningkatkan ketahanan abrasi."
+  },
+  {
+    q: "Manakah kelebihan Body Material STEEL dibanding Matrix?",
+    opts: [
+      "Lebih erosion resistant",
+      "Umumnya lebih murah dan shock resistance lebih tinggi",
+      "Fleksibilitas desain lebih terbatas",
+      "Lead time lebih lama"
+    ],
+    correct: 1,
+    explain: "Steel body umumnya lebih murah, lead time lebih singkat, shock resistance tinggi, dan lebih agresif karena fleksibilitas desain lebih besar."
+  },
+  {
+    q: "OFV (Open Face Volume) diukur sebagai...",
+    opts: [
+      "Area penampang minimum di junk slot",
+      "Selisih volume antara tip profile yang direvolusikan dan bit lengkap, hingga gauge ramp",
+      "Total flow area nozzle",
+      "Kedalaman hole yang sudah dibor"
+    ],
+    correct: 1,
+    explain: "OFV adalah selisih volume yang dilingkupi antara revolved tip profile dan bit yang sudah lengkap, hingga gauge ramp."
+  },
+  {
+    q: "OFV dan JSA yang besar menjadi krusial terutama pada aplikasi...",
+    opts: [
+      "Formasi sangat keras dan kering",
+      "Formasi lunak dan lengket (memicu bit balling) dengan water based mud",
+      "Sumur vertikal dangkal saja",
+      "Hanya berlaku untuk roller cone bit"
+    ],
+    correct: 1,
+    explain: "OFV dan JSA besar sangat penting untuk aplikasi yang memicu bit balling, misalnya formasi lunak & lengket yang bereaksi dengan water based mud."
+  },
+  {
+    q: "Apa 3 prinsip utama pemilihan bit yang ditekankan dalam materi ini?",
+    opts: ["Harga, Merek, Ketersediaan", "Offset Data, Offset Data, Offset Data", "ROP, Durability, Cost", "Lithology, Mud, BHA"],
+    correct: 1,
+    explain: "Materi menekankan tiga kali 'Offset Data' sebagai prinsip utama pemilihan bit — menunjukkan betapa krusialnya data historis dari sumur-sumur terdekat."
+  },
+  {
+    q: "Manakah yang termasuk 'Close Offset' data (bukan 'Good Offset Data' umum)?",
+    opts: ["Bit Record dan Dull Photos", "Master Logs dan DDRs", "Gamma Ray, Sonic log, Well Schematic, BHA, Vibration Data", "UCS/Rock Strength saja"],
+    correct: 2,
+    explain: "Close Offset mencakup Gamma Ray & Sonic log, Well Schematic/Profile, Steering Sheets, BHA, Vibration Data, dan End of Well Reports."
+  },
+  {
+    q: "Untuk formasi Clastic Rock (misal Sandstone) yang semakin KERAS, strategi desain bit yang tepat adalah...",
+    opts: [
+      "Gunakan cutter lebih besar, blade lebih sedikit",
+      "Gunakan cutter lebih kecil, blade lebih banyak, cutter lebih banyak",
+      "Tidak perlu penyesuaian desain",
+      "Gunakan hanya roller cone bit"
+    ],
+    correct: 1,
+    explain: "Saat formasi menjadi lebih keras, strategi desain PDC bit adalah: gunakan cutter lebih kecil, tambah jumlah blade, dan tambah jumlah cutter — meningkatkan durabilitas."
+  },
+  {
+    q: "ION 3D Cutter meningkatkan efisiensi dengan cara...",
+    opts: [
+      "Menghilangkan back rake sepenuhnya",
+      "Tepi chisel menghasilkan point loading, membantu merambatkan retakan ke permukaan",
+      "Mengurangi jumlah cutter yang dibutuhkan",
+      "Mengganti tungsten carbide dengan baja"
+    ],
+    correct: 1,
+    explain: "Tepi chisel pada ION 3D Cutter menghasilkan point loading pada arah WOB, membantu retakan merambat ke permukaan sehingga efisiensi shearing meningkat."
+  },
+  {
+    q: "ION 4D Cutter menggunakan muka non-planar untuk menghasilkan efek...",
+    opts: ["Plough (bajak) yang meningkatkan point loading", "Pendinginan cutter tanpa fluida", "Penguncian cutter ke blade", "Perubahan warna cutter"],
+    correct: 0,
+    explain: "Muka cutting non-planar 4D menciptakan efek plough yang meningkatkan point loading pada arah shearing, serta membantu memecah cutting menjadi lebih kecil."
+  },
+  {
+    q: "Keuntungan utama strategi 'Single Run' dibanding 'Two Bit Run' adalah...",
+    opts: ["Selalu lebih murah tanpa syarat", "Biaya bit lebih rendah dan trip lebih sedikit", "Tidak memerlukan evaluasi offset data", "Hanya cocok untuk sumur horizontal"],
+    correct: 1,
+    explain: "Single run umumnya menawarkan biaya bit lebih rendah dan lebih sedikit trip dibanding Two Bit Run yang memerlukan wiper trip tambahan."
+  },
+  {
+    q: "HSI (Hydraulic Horsepower per Square Inch) yang disarankan untuk performa ROP optimal di formasi lunak adalah...",
+    opts: ["Di bawah 1", "Antara 3–5", "Di atas 8", "Tidak ada batas spesifik"],
+    correct: 1,
+    explain: "Untuk formasi lunak, HSI antara 3–5 disukai untuk performa ROP optimal. Perlu hati-hati bila HSI di bawah 1 atau di atas 5."
+  },
+  {
+    q: "JIF (Jet Impact Force) dianggap optimal ketika...",
+    opts: ["Pressure drop di bit sekitar 50%", "Pressure drop di bit 0%", "Flow rate maksimum tanpa batas", "Tidak berkaitan dengan pressure drop"],
+    correct: 0,
+    explain: "JIF dioptimalkan saat pressure drop di bit sekitar 50% dari total sistem — relevan terutama untuk sumur besar dangkal dan formasi lunak reaktif."
+  },
+  {
+    q: "Kode IADC Dull Grading 'BF' berarti...",
+    opts: ["Broken Flank", "Bond Failure — kegagalan ikatan diamond table & tungsten carbide substrate", "Bit Failure secara umum", "Bearing Failure"],
+    correct: 1,
+    explain: "BF = Bond Failure, khusus untuk PDC bit — kegagalan ikatan antara lapisan diamond table dan substrate tungsten carbide."
+  },
+  {
+    q: "Kode dull 'BU' pada IADC Dull Grading System berarti...",
+    opts: ["Bit Undergauge", "Balled Up — bit terselimuti cutting/lumpur menggumpal", "Bearing Used", "Broken Undercutter"],
+    correct: 1,
+    explain: "BU = Balled Up, salah satu kondisi Hydraulic Related yang menunjukkan bit balling."
+  },
+  {
+    q: "Mengapa 'Reason Pulled' penting dibaca bersamaan dengan kode dull characteristic seperti BT atau WT?",
+    opts: [
+      "Karena kode dull saja sudah cukup menjelaskan performa bit secara lengkap",
+      "Karena reason pulled menunjukkan apakah kerusakan itu masalah desain/operasional atau memang wajar (misal TD tercapai)",
+      "Reason pulled tidak relevan dengan evaluasi bit",
+      "Reason pulled hanya untuk keperluan administrasi rig"
+    ],
+    correct: 1,
+    explain: "Kode dull sendirian tidak cukup — kombinasi dengan reason pulled (misal TD = Total Depth tercapai) menentukan apakah kondisi bit itu wajar atau indikasi masalah yang perlu dievaluasi lebih lanjut."
+  }
+];
+
+let userAnswers = new Array(quizData.length).fill(null);
+
+function renderQuiz(){
+  const container = document.getElementById('quizContainer');
+  container.innerHTML = '';
+  quizData.forEach((item, idx)=>{
+    const block = document.createElement('div');
+    block.className = 'q-block';
+    block.innerHTML = `
+      <div class="q-text">${idx+1}. ${item.q}</div>
+      <div class="q-options" id="opts-${idx}"></div>
+      <div class="explain" id="explain-${idx}">💡 ${item.explain}</div>
+    `;
+    container.appendChild(block);
+    const optsDiv = block.querySelector(`#opts-${idx}`);
+    item.opts.forEach((opt, oidx)=>{
+      const b = document.createElement('button');
+      b.className = 'opt-btn';
+      b.textContent = String.fromCharCode(65+oidx) + '. ' + opt;
+      b.onclick = ()=>selectAnswer(idx, oidx);
+      optsDiv.appendChild(b);
+    });
+  });
+  updateProgress();
+}
+
+function selectAnswer(qIdx, oIdx){
+  if(userAnswers[qIdx] !== null) return;
+  userAnswers[qIdx] = oIdx;
+  const optsDiv = document.getElementById(`opts-${qIdx}`);
+  const buttons = optsDiv.querySelectorAll('.opt-btn');
+  buttons.forEach((btn, i)=>{
+    btn.classList.add('disabled');
+    if(i === quizData[qIdx].correct) btn.classList.add('correct');
+    else if(i === oIdx) btn.classList.add('wrong');
+  });
+  document.getElementById(`explain-${qIdx}`).classList.add('show');
+  updateProgress();
+}
+
+function updateProgress(){
+  const answered = userAnswers.filter(a=>a!==null).length;
+  const correct = userAnswers.filter((a,i)=>a===quizData[i].correct).length;
+  document.getElementById('quizProgress').textContent = `Terjawab: ${answered}/${quizData.length}`;
+  document.getElementById('scoreDisplay').textContent = answered>0 ? `Skor: ${correct}/${answered} benar (dari ${answered} dijawab)` : '';
+}
+
+function resetQuiz(){
+  userAnswers = new Array(quizData.length).fill(null);
+  renderQuiz();
+  window.scrollTo({top: document.getElementById('latihan').offsetTop - 20, behavior:'smooth'});
+}
+
+renderQuiz();
+
+// ===================== FLASHCARD DATA =====================
+const flashData = [
+  {front:"Fishtail Bit / Drag Bit", back:"Bit pertama yang digunakan Edwin L. Drake untuk mengebor sumur minyak pertama di dunia (1859, Titusville, Pennsylvania)."},
+  {front:"Tahun Roller Cone Rock Bit dipatenkan", back:"1909, oleh Howard Hughes."},
+  {front:"PDC (Polycrystalline Diamond Compact)", back:"Elemen cutting terdiri dari lapisan polycrystalline diamond (2-3mm) yang terikat integral ke substrate tungsten carbide, dibentuk pada >1,000,000 psi dan 1300°C."},
+  {front:"2 Jenis Drill Bit Utama", back:"Fixed Cutter (PDC) — Continuous Shearing; Roller Cone (RC/Tricone) — Continuous Crushing & Abrasion / Cyclic Compression."},
+  {front:"5 Komponen Dasar Roller Cone Bit", back:"Cone, Tooth, Nozzle, Arm, Connection."},
+  {front:"3 Komponen Bearing System RC Bit", back:"Bearing, Seal, Reservoir (pelumas)."},
+  {front:"2 Tipe Cutting Structure RC Bit", back:"Insert (Tungsten Carbide Insert/TCI) dan Mill Tooth (gigi baja yang di-hardface)."},
+  {front:"Journal Angle", back:"Sudut journal terhadap centerline bit. 36° untuk formasi keras (thrust load besar); 33° untuk formasi lunak (ROP lebih tinggi)."},
+  {front:"Skew Angle & Offset", back:"Sudut hasil offset cone (0°-5°). 0° = durable, crushing maksimal (formasi keras). 3-5° = lebih agresif, scraping meningkat (formasi lunak)."},
+  {front:"7 Komponen Dasar PDC Bit", back:"Bit Head, Blades, Gauge Pad, Cutter (PDC), Shank, Bit Breaker Slot, Connection."},
+  {front:"Design Compromise (PDC)", back:"Trade-off fundamental antara Aggressivity (ROP tinggi) vs Durability (tahan lama) — mempengaruhi hampir semua parameter desain PDC bit."},
+  {front:"Rule of Thumb — Jumlah Cutter", back:"Lebih banyak cutter = lebih durable. Lebih sedikit cutter = lebih agresif."},
+  {front:"Ukuran Cutter PDC — 13mm", back:"Umum untuk hole size kecil atau butuh ketahanan impact tinggi."},
+  {front:"Ukuran Cutter PDC — 16mm", back:"Ukuran umum untuk semua aplikasi; keseimbangan antara depth of cut dan ketahanan impact/thermal."},
+  {front:"Ukuran Cutter PDC — 19mm", back:"Depth of cut tinggi, ROP tinggi di formasi lunak, tapi rawan patah saat impact tinggi (front faced overload)."},
+  {front:"Cone Height — Deep vs Shallow", back:"Deep cone = stabilitas lebih besar. Shallow cone = steerability lebih besar."},
+  {front:"Back Rake", back:"Sudut antara muka cutter dan garis tegak lurus formasi. Rendah = agresif, DOC/ROP naik. Tinggi = tahan impact, DOC turun."},
+  {front:"Side Rake", back:"Sudut muka cutter relatif terhadap radius bit. Negatif = mengarahkan cutting ke dalam (sumbu tengah bit), meningkatkan stabilitas lateral."},
+  {front:"Tapered Gauge", back:"Gauge type umum untuk directional application; kontak borehole berkurang, mengurangi drag & torque, dampak ke stabilitas minim."},
+  {front:"Proses Leaching pada PDC Cutter", back:"Permukaan diamond table di-leach dengan asam panas untuk menghilangkan Cobalt, meningkatkan sifat termal cutter."},
+  {front:"Grain Diamond — Besar vs Kecil", back:"Grain besar = ketahanan impact meningkat. Grain kecil = ketahanan abrasi meningkat."},
+  {front:"Body Material — Matrix", back:"Hard carbon molded body. Kelebihan: erosion & abrasion resistant. Kekurangan: fleksibilitas desain terbatas, lebih rapuh & mahal."},
+  {front:"Body Material — Steel", back:"Milled body geometry. Kelebihan: lebih murah, lead time singkat, shock resistance tinggi, lebih agresif. Kekurangan: potensi erosi, perlu hardfacing."},
+  {front:"OFV (Open Face Volume)", back:"Selisih volume antara revolved tip profile dan bit lengkap, hingga gauge ramp. Penting untuk mencegah bit balling di wajah bit."},
+  {front:"JSA (Junk Slot Area)", back:"Area penampang minimum antara radius bit dan profil milled/waterway. Jalur keluarnya cutting menuju annulus."},
+  {front:"CFD (Computational Fluid Dynamics) untuk Bit", back:"Mengevaluasi arah aliran, laju aliran junk slot, tegangan dasar lubang & bit body untuk menyempurnakan desain hidrolik bit."},
+  {front:"3 Prinsip Utama Bit Selection", back:"Offset Data, Offset Data, Offset Data — data historis sumur terdekat adalah faktor terpenting."},
+  {front:"Good Offset Data — isi", back:"Bit Record, Bits Dull Photos, Master Logs, DDRs, UCS/Rock Strength."},
+  {front:"Close Offset — isi", back:"Gamma Ray & Sonic log, Well Schematic/Profile, Steering Sheets, BHA, Vibration Data, End of Well Reports."},
+  {front:"ION 3D Cutter", back:"Tepi chisel menghasilkan point loading pada arah WOB, membantu retakan merambat ke permukaan, meningkatkan efisiensi shearing."},
+  {front:"ION 4D Cutter", back:"Muka non-planar 4D menciptakan efek plough, meningkatkan point loading arah shearing, mengurangi friksi, memecah cutting lebih kecil."},
+  {front:"HSI (Hydraulic Horsepower per Square Inch)", back:"Untuk formasi lunak, nilai ideal 3-5 untuk ROP optimal. Hati-hati bila di bawah 1 atau di atas 5."},
+  {front:"JIF (Jet Impact Force)", back:"Optimal ketika pressure drop di bit ~50%. Cocok untuk sumur besar dangkal, formasi lunak, dan mengurangi bit balling di formasi reaktif."},
+  {front:"Bi-Center Bits", back:"Bit pass-through — digunakan saat bit perlu melewati restriction tertentu namun tetap mengebor lubang yang lebih besar."},
+  {front:"NO (IADC Dull Code)", back:"No Dull Characteristic — bit dalam kondisi baik, tidak ada dull."},
+  {front:"WT (IADC Dull Code)", back:"Worn Teeth/Cutters — gigi/cutter aus (kondisi normal, bukan kerusakan mendadak)."},
+  {front:"CT (IADC Dull Code)", back:"Chipped Teeth/Cutters — gigi/cutter terkelupas/retak kecil (impact damage)."},
+  {front:"BT (IADC Dull Code)", back:"Broken Teeth/Cutters — gigi/cutter patah (severe damage)."},
+  {front:"HC (IADC Dull Code)", back:"Heat Checking — retak akibat panas berlebih, misalnya akibat stick-slip, pada cutter atau matrix body."},
+  {front:"RO (IADC Dull Code)", back:"Ring Out — insert/cutter aus membentuk pola cincin, khas pada roller cone bit."},
+  {front:"CR (IADC Dull Code)", back:"Cored — bit membentuk 'core' di tengah karena cutter tengah tidak berfungsi."},
+  {front:"LN (IADC Dull Code)", back:"Lost Nozzle — nozzle hilang (hydraulic related)."},
+  {front:"JD (IADC Dull Code)", back:"Junk Damage — kerusakan katastropik masif pada cutting structure/gauge pad/bit body akibat junk di lubang."},
+  {front:"ER (IADC Dull Code)", back:"Erosion — erosi pada bit body/blade akibat aliran fluida (hydraulic related)."},
+  {front:"PN (IADC Dull Code)", back:"Plugged Nozzle — nozzle tersumbat (hydraulic related)."},
+  {front:"BU (IADC Dull Code)", back:"Balled Up — bit terselimuti cutting/lumpur yang menggumpal (hydraulic related)."},
+  {front:"LT (IADC Dull Code)", back:"Lost Teeth/Cutters — gigi/cutter hilang (quality control)."},
+  {front:"BF (IADC Dull Code)", back:"Bond Failure — kegagalan ikatan diamond table dan tungsten carbide substrate (khusus PDC, quality control)."}
+];
+
+let flashOrder = flashData.map((_,i)=>i);
+let flashIdx = 0;
+
+function renderFlashcard(){
+  const item = flashData[flashOrder[flashIdx]];
+  document.getElementById('flashFrontText').textContent = item.front;
+  document.getElementById('flashBackText').textContent = item.back;
+  document.getElementById('flashCounter').textContent = `Kartu ${flashIdx+1} dari ${flashData.length}`;
+  document.getElementById('flashcard').classList.remove('flipped');
+}
+
+function flipCard(){
+  document.getElementById('flashcard').classList.toggle('flipped');
+}
+
+function nextCard(){
+  flashIdx = (flashIdx + 1) % flashData.length;
+  renderFlashcard();
+}
+
+function prevCard(){
+  flashIdx = (flashIdx - 1 + flashData.length) % flashData.length;
+  renderFlashcard();
+}
+
+function shuffleCards(){
+  for(let i=flashOrder.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [flashOrder[i], flashOrder[j]] = [flashOrder[j], flashOrder[i]];
+  }
+  flashIdx = 0;
+  renderFlashcard();
+}
+
+renderFlashcard();
+</script>
+
+</body>
+</html>

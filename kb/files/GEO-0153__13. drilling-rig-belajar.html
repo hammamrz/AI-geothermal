@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Surface Rotary Drilling Rig — Paket Belajar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#11141a;
+    --panel:#191d24;
+    --panel2:#1f242c;
+    --border:#2b313c;
+    --text:#e9e7e1;
+    --muted:#8b93a1;
+    --amber:#f2a71b;
+    --amber-dim:#5f4116;
+    --steel:#4a90c9;
+    --green:#4fae6e;
+    --rust:#d9622b;
+    --grid: repeating-linear-gradient(to bottom, var(--border) 0 1px, transparent 1px 24px);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; -webkit-font-smoothing:antialiased; min-height:100vh;}
+  ::selection{background:var(--amber); color:#1a1300;}
+
+  .hero{
+    position:relative; border-bottom:1px solid var(--border);
+    background:linear-gradient(180deg, rgba(242,167,27,0.09), transparent 60%), var(--bg);
+    overflow:hidden; padding:38px 6vw 26px;
+  }
+  .rig-rail{
+    position:absolute; left:0; top:0; bottom:0; width:64px;
+    background-image:var(--grid); opacity:.55;
+    font-family:'JetBrains Mono',monospace; font-size:9px; color:var(--muted);
+  }
+  .rig-rail span{ position:absolute; left:8px; transform:translateY(-50%); }
+  .hero-inner{ position:relative; margin-left:64px; }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.14em;
+    color:var(--steel); text-transform:uppercase; display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{content:"●"; color:var(--amber); font-size:10px;}
+  h1.title{
+    font-family:'Oswald',sans-serif; font-weight:700; text-transform:uppercase;
+    font-size:clamp(26px,4.4vw,50px); margin:8px 0 6px; line-height:1.03; color:#fff;
+  }
+  h1.title em{ color:var(--amber); font-style:normal; }
+  .subtitle{ color:var(--muted); font-size:15px; max-width:660px; line-height:1.55; margin-bottom:18px; }
+  .hero-stats{ display:flex; gap:0; flex-wrap:wrap; border-top:1px solid var(--border); margin-top:6px; }
+  .hstat{ padding:14px 22px 4px 0; margin-right:22px; border-right:1px solid var(--border); min-width:100px; }
+  .hstat:last-child{border-right:none;}
+  .hstat b{ font-family:'Oswald',sans-serif; font-size:24px; color:var(--amber); display:block; }
+  .hstat span{ font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; }
+
+  .tabbar{
+    position:sticky; top:0; z-index:50; display:flex; gap:2px;
+    background:var(--panel); border-bottom:1px solid var(--border);
+    padding:0 6vw; overflow-x:auto;
+  }
+  .tabbtn{
+    font-family:'Oswald',sans-serif; text-transform:uppercase; letter-spacing:.05em; font-size:14px;
+    background:transparent; border:none; color:var(--muted); padding:16px 20px 13px;
+    cursor:pointer; border-bottom:3px solid transparent; white-space:nowrap;
+    transition:color .15s ease, border-color .15s ease;
+  }
+  .tabbtn .n{ color:var(--amber); margin-right:8px; font-family:'JetBrains Mono',monospace; font-size:12px;}
+  .tabbtn:hover{ color:var(--text); }
+  .tabbtn.active{ color:#fff; border-bottom-color:var(--amber); }
+
+  main{ padding:34px 6vw 70px; max-width:1180px; margin:0 auto; }
+  .panel{ display:none; animation:fadeIn .25s ease; }
+  .panel.active{ display:block; }
+  @keyframes fadeIn{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;} }
+
+  .section-head{ display:flex; align-items:baseline; gap:12px; margin:38px 0 16px; }
+  .section-head:first-child{ margin-top:0; }
+  .section-head .tag{
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--amber);
+    border:1px solid var(--amber-dim); padding:3px 8px; border-radius:3px;
+    text-transform:uppercase; letter-spacing:.06em;
+  }
+  .section-head h2{ font-family:'Oswald',sans-serif; text-transform:uppercase; font-size:21px; margin:0; color:#fff; }
+  .section-head .line{ flex:1; height:1px; background:var(--border); }
+  .lead-note{ color:var(--muted); font-size:14.5px; line-height:1.6; max-width:760px; margin-bottom:18px; }
+
+  .grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px; }
+  .card{ background:var(--panel); border:1px solid var(--border); border-radius:6px; padding:18px 18px 16px; }
+  .card h3{ font-family:'Oswald',sans-serif; font-size:15px; text-transform:uppercase; margin:0 0 10px; color:var(--steel); letter-spacing:.03em; }
+  .card ul{ margin:0; padding-left:18px; color:var(--text); font-size:13.6px; line-height:1.65; }
+  .card ul li{ margin-bottom:5px; }
+  .card p{ font-size:13.6px; color:var(--text); line-height:1.6; margin:0 0 8px;}
+  .card .mini{ color:var(--muted); font-size:12.5px; }
+
+  .callout{
+    border-left:3px solid var(--amber); background:rgba(242,167,27,0.08);
+    padding:12px 16px; border-radius:0 4px 4px 0; font-size:13.8px; color:var(--text); margin:16px 0;
+  }
+  .callout b{ color:var(--amber); }
+
+  table.simple{ width:100%; border-collapse:collapse; font-size:13px; margin-top:6px; }
+  table.simple th, table.simple td{ border:1px solid var(--border); padding:8px 10px; text-align:left; }
+  table.simple th{ background:var(--panel2); color:var(--steel); font-family:'JetBrains Mono',monospace; font-size:11.5px; text-transform:uppercase; }
+  table.simple td{ color:var(--text); }
+  code.f{ font-family:'JetBrains Mono',monospace; background:var(--panel2); border:1px solid var(--border); padding:1px 6px; border-radius:3px; color:var(--steel); }
+
+  .quiz-top{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:20px;}
+  .scorebox{ font-family:'JetBrains Mono',monospace; background:var(--panel); border:1px solid var(--border); border-radius:6px; padding:10px 16px; font-size:13px; color:var(--muted); }
+  .scorebox b{ color:var(--amber); font-size:16px; }
+  .progressbar{ height:6px; background:var(--panel2); border-radius:4px; overflow:hidden; flex:1; min-width:180px; margin:0 16px;}
+  .progressbar i{ display:block; height:100%; background:var(--amber); width:0%; transition:width .3s ease; }
+  .btn{
+    font-family:'Oswald',sans-serif; text-transform:uppercase; letter-spacing:.04em;
+    background:var(--amber); color:#1a1300; border:none; border-radius:5px; padding:9px 18px; font-size:13px; cursor:pointer; font-weight:600;
+  }
+  .btn.secondary{ background:transparent; border:1px solid var(--border); color:var(--text); }
+  .btn:hover{ filter:brightness(1.08); }
+
+  .qcard{ background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:24px; margin-bottom:16px; }
+  .qmeta{ font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); text-transform:uppercase; margin-bottom:8px; letter-spacing:.05em;}
+  .qtext{ font-size:16.5px; font-weight:500; margin-bottom:16px; line-height:1.5; }
+  .opts{ display:grid; gap:9px; }
+  .opt{
+    text-align:left; background:var(--panel2); border:1px solid var(--border); color:var(--text);
+    padding:11px 14px; border-radius:6px; cursor:pointer; font-size:14px;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .opt:hover{ border-color:var(--steel); }
+  .opt.correct{ border-color:var(--green); background:rgba(79,174,110,0.12); }
+  .opt.wrong{ border-color:var(--rust); background:rgba(217,98,43,0.14); }
+  .opt[disabled]{ cursor:default; }
+  .explain{
+    margin-top:14px; padding:12px 14px; border-radius:6px; background:var(--panel2); border:1px solid var(--border);
+    font-size:13.5px; color:var(--muted); display:none; line-height:1.55;
+  }
+  .explain b{ color:var(--text); }
+  .quiz-nav{ display:flex; justify-content:space-between; margin-top:6px; }
+  #quizResult{ display:none; text-align:center; padding:40px 20px; }
+  #quizResult h3{ font-family:'Oswald',sans-serif; font-size:30px; text-transform:uppercase; color:#fff;}
+  #quizResult .big{ font-family:'Oswald',sans-serif; font-size:56px; color:var(--amber); }
+
+  .fc-top{ display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:18px;}
+  .fc-filter{ display:flex; gap:6px; flex-wrap:wrap; }
+  .chip{
+    font-family:'JetBrains Mono',monospace; font-size:11px; text-transform:uppercase;
+    background:var(--panel2); border:1px solid var(--border); color:var(--muted); padding:6px 11px; border-radius:20px; cursor:pointer;
+  }
+  .chip.active{ background:var(--amber); color:#1a1300; border-color:var(--amber); }
+  .fc-stage{ display:flex; flex-direction:column; align-items:center; gap:16px; }
+  .fc-count{ font-family:'JetBrains Mono',monospace; color:var(--muted); font-size:12px; }
+  .flashcard{ width:100%; max-width:560px; height:270px; perspective:1400px; cursor:pointer; }
+  .fc-inner{ position:relative; width:100%; height:100%; transform-style:preserve-3d; transition:transform .5s cubic-bezier(.2,.9,.3,1); }
+  .flashcard.flipped .fc-inner{ transform:rotateY(180deg); }
+  .fc-face{
+    position:absolute; inset:0; backface-visibility:hidden; border-radius:10px; border:1px solid var(--border);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; padding:30px; text-align:center;
+  }
+  .fc-front{ background:linear-gradient(160deg, var(--panel), var(--panel2)); }
+  .fc-front .cat{ font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--steel); text-transform:uppercase; letter-spacing:.08em; position:absolute; top:16px; left:20px; }
+  .fc-front .term{ font-family:'Oswald',sans-serif; font-size:25px; text-transform:uppercase; color:#fff; }
+  .fc-front .hint{ position:absolute; bottom:14px; font-size:11px; color:var(--muted); }
+  .fc-back{ background:linear-gradient(160deg, #22270f, var(--panel2)); transform:rotateY(180deg); border-color:var(--green); }
+  .fc-back p{ font-size:14.5px; line-height:1.55; color:var(--text); margin:0;}
+  .fc-controls{ display:flex; gap:10px; align-items:center; }
+
+  .acc-item{ background:var(--panel); border:1px solid var(--border); border-radius:8px; margin-bottom:12px; overflow:hidden; }
+  .acc-head{ display:flex; align-items:center; gap:12px; justify-content:space-between; padding:16px 18px; cursor:pointer; }
+  .acc-head h4{ font-family:'Oswald',sans-serif; text-transform:uppercase; font-size:15.5px; margin:0; color:#fff; display:flex; align-items:center; gap:10px; }
+  .acc-head h4 .diff{ font-family:'JetBrains Mono',monospace; font-size:9.5px; padding:2px 7px; border-radius:3px; background:var(--amber-dim); color:#ffd88a; letter-spacing:.05em; }
+  .acc-head .chev{ color:var(--muted); transition:transform .25s ease; font-size:18px; }
+  .acc-item.open .chev{ transform:rotate(45deg); color:var(--amber); }
+  .acc-body{ max-height:0; overflow:hidden; transition:max-height .3s ease; padding:0 18px; }
+  .acc-item.open .acc-body{ padding-bottom:18px; }
+  .acc-body p{ font-size:14px; line-height:1.65; color:var(--text); margin:0 0 10px;}
+  .acc-body .why{ background:var(--panel2); border-left:3px solid var(--steel); padding:10px 14px; border-radius:0 5px 5px 0; font-size:13.3px; color:var(--muted); margin-top:10px; }
+  .acc-body .why b{ color:var(--steel); }
+
+  footer{ text-align:center; padding:30px; color:var(--muted); font-size:12px; border-top:1px solid var(--border); font-family:'JetBrains Mono',monospace; }
+
+  @media(max-width:640px){
+    .rig-rail{ display:none; }
+    .hero-inner{ margin-left:0; }
+    .tabbtn{ padding:14px 12px 11px; font-size:12.5px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="rig-rail" id="rigRail"></div>
+  <div class="hero-inner">
+    <div class="eyebrow">Jakarta Drilling Society · Materi Ignatius Febrianta</div>
+    <h1 class="title">Surface Rotary Drilling <em>System</em> &amp; Rig Components</h1>
+    <p class="subtitle">Paket belajar interaktif dari materi Surface Rotary Drilling System & Rig Components (JDS 2025). Rangkuman, latihan soal, flashcard, dan penjelasan konsep-konsep yang sering membingungkan seputar rig, tersusun dalam satu halaman.</p>
+    <div class="hero-stats">
+      <div class="hstat"><b>7</b><span>Sistem Rig</span></div>
+      <div class="hstat"><b>20</b><span>Soal Latihan</span></div>
+      <div class="hstat"><b>26</b><span>Flashcard</span></div>
+      <div class="hstat"><b>6</b><span>Konsep Sulit</span></div>
+      <div class="hstat"><b>172</b><span>Slide Sumber</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="tabbar">
+  <button class="tabbtn active" data-tab="ringkasan"><span class="n">01</span>Ringkasan</button>
+  <button class="tabbtn" data-tab="latihan"><span class="n">02</span>Latihan Soal</button>
+  <button class="tabbtn" data-tab="flashcard"><span class="n">03</span>Flashcard</button>
+  <button class="tabbtn" data-tab="sulit"><span class="n">04</span>Konsep Sulit</button>
+</div>
+
+<main>
+
+  <!-- ===================== TAB 1: RINGKASAN ===================== -->
+  <section class="panel active" id="panel-ringkasan">
+
+    <div class="section-head"><span class="tag">Part 1</span><h2>Tipe Rig Pemboran Rotary</h2><span class="line"></span></div>
+    <div class="grid">
+      <div class="card">
+        <h3>Offshore</h3>
+        <ul>
+          <li><b>Bottom supported:</b> Swamp barge, Tender assist, Conventional fixed platform, Jack-up (complaint tower)</li>
+          <li><b>Floater:</b> Tension leg platform, Semi-submersible, Drillship</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Onshore</h3>
+        <ul>
+          <li><b>Conventional</b> — investasi besar, komponen berat, drilling floor luas.</li>
+          <li><b>Fast Moving</b> — Truck mount, Semi-trailer.</li>
+          <li><b>Mobile</b></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Conventional vs Mobile Rig</h3>
+        <p><b>Conventional:</b> tripping lebih cepat (stand di triple), tenaga lebih besar (drawworks &amp; mud pump &gt;1000 HP), hook load &gt;200 ton, tapi investasi &amp; hari pindah lebih besar.</p>
+        <p><b>Mobile:</b> investasi awal lebih kecil, pindah lebih cepat, truk lebih sedikit, tapi tripping lebih lambat (stand di double) dan lebih banyak rig mekanikal (noise tinggi).</p>
+      </div>
+      <div class="card">
+        <h3>Horse Power vs Kedalaman (Rule of Thumb)</h3>
+        <p>Contoh rentang tipikal dari materi:</p>
+        <table class="simple"><tr><th>HP</th><th>Kedalaman (m)</th><th>Hook Load (K-Lbs)</th></tr>
+        <tr><td>650</td><td>1800</td><td>350–400</td></tr>
+        <tr><td>1000–1150</td><td>3000–3800</td><td>440–650</td></tr>
+        <tr><td>1700–1800</td><td>5100–9144</td><td>850–1000</td></tr>
+        <tr><td>2000</td><td>3500–6700</td><td>975–1250</td></tr></table>
+        <p class="mini">Semakin dalam target sumur, semakin besar HP, hook load, mud pump HP, dan kapasitas mud tank yang dibutuhkan.</p>
+      </div>
+    </div>
+
+    <div class="section-head"><span class="tag">Part 2</span><h2>Standar Drilling System</h2><span class="line"></span></div>
+    <div class="grid">
+      <div class="card">
+        <h3>4 Standar Utama</h3>
+        <ul>
+          <li>American Petroleum Institute (<b>API</b>)</li>
+          <li>Norwegian Petroleum Industry (<b>NORSOK</b>)</li>
+          <li>Standar Nasional Indonesia (<b>SNI</b>)</li>
+          <li>Standard New Zealand (<b>NZS</b>)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>API Standar per Sistem Rig</h3>
+        <table class="simple">
+          <tr><th>Sistem</th><th>Standar API</th></tr>
+          <tr><td>Hoisting</td><td>4F, 4G, 8B, 9A</td></tr>
+          <tr><td>Power</td><td>7C, RP500</td></tr>
+          <tr><td>Rotating</td><td>7L, 7K</td></tr>
+          <tr><td>Circulating</td><td>7K, RP500, RP13C</td></tr>
+          <tr><td>Control &amp; Measurement</td><td>16A, 16B, 16D, RP53</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3>API Spec Kunci Lainnya</h3>
+        <ul>
+          <li>API Spec 7K — Drilling Equipment</li>
+          <li>API RP 7L — Inspection, Maintenance, Repair &amp; Remanufacture</li>
+          <li>API RP 7G — Drill Stem Design &amp; Operating Limits</li>
+          <li>API Spec 9A — Wire Rope; API RP 9B — Care &amp; Use of Wire Rope</li>
+          <li>API Spec 16A/16C/16D — Drill Through Equipment, Choke &amp; Kill, Control Systems</li>
+          <li>API RP 53 — Blow Out Prevention Equipment Systems</li>
+        </ul>
+        <p class="mini">Setiap rig di Indonesia harus memiliki <b>Persetujuan Layak Operasi (PLO)</b> sebelum beroperasi.</p>
+      </div>
+    </div>
+
+    <div class="section-head"><span class="tag">Part 3</span><h2>Drilling System &amp; Rig Components</h2><span class="line"></span></div>
+
+    <div class="grid">
+      <div class="card">
+        <h3>a. Hoisting &amp; Rotating System</h3>
+        <ul>
+          <li><b>Mast &amp; Substructure</b> — struktur menahan beban drill string; Derrick (fixed), Mast (portable, tipe Cantilever/Telescopic, tinggi single/double/triple joint)</li>
+          <li><b>Crown Block</b> — puli tetap di puncak mast</li>
+          <li><b>Traveling Block</b> — puli bergerak, digantung wire rope</li>
+          <li><b>Top Drive / Swivel</b> — memutar drill string sekaligus jadi penghubung sirkulasi</li>
+          <li><b>Rotary Table</b> — memutar drill string dari dasar (sistem konvensional)</li>
+          <li><b>Drawworks</b> — drum penggulung wire rope (single/double drum)</li>
+          <li><b>Drilling Line</b> &amp; <b>Deadline Anchor</b> — wire rope hoisting &amp; jangkar ujung mati</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>b. Mud Circulating System</h3>
+        <ul>
+          <li><b>Mud Tanks</b> — Shaker tank, Intermediate tank, Active tank, Reserve tank</li>
+          <li><b>Mud Mixing Hopper</b></li>
+          <li><b>Triplex Mud Pump</b></li>
+          <li><b>Mud Recycle Equipment</b> — Shale shaker, Desander &amp; Desilter, Degasser</li>
+          <li><b>Surface High Pressure Line</b> — Standpipe, Manifold &amp; Rotary Hose</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>c. Power Generation &amp; Control System</h3>
+        <p>Mencakup generator, sistem kontrol drive (DC-DC, DC Drive/SCR, AC Drive/VFD) yang menyalurkan tenaga ke drawworks, mud pump, dan rotary system.</p>
+      </div>
+      <div class="card">
+        <h3>d. Well Control System</h3>
+        <p>Rangkaian peralatan Blow Out Preventer (BOP) &amp; pendukungnya untuk mengendalikan tekanan sumur, mencegah kick berkembang jadi blowout — mengacu pada API RP 53 &amp; API Spec 16A/16C/16D.</p>
+        <p class="mini">Termasuk BOP stack (annular &amp; ram preventer), choke manifold, kill &amp; choke line, dan accumulator unit.</p>
+      </div>
+      <div class="card">
+        <h3>e. Drilling Instrumentation</h3>
+        <ul>
+          <li>Weight Indicator</li>
+          <li>Rate of Penetration (ROP)</li>
+          <li>Rotary RPM &amp; Rotary Torque</li>
+          <li>Pump Stroke (SPM)</li>
+          <li>Pump / Standpipe Pressure</li>
+          <li>Casing Pressure</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>f. Drilling String &amp; BHA</h3>
+        <ul>
+          <li><b>Drill Pipe</b></li>
+          <li><b>Bottom Hole Assembly (BHA):</b> Heavy Weight Drill Pipe (HWDP), Drill Collar (DC)</li>
+          <li><b>Stabilizer</b></li>
+          <li><b>Bit Sub &amp; Cross Over (X/O)</b></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>g. Tubular Handling Tools</h3>
+        <ul>
+          <li><b>Manual Tongs</b> &amp; <b>Power Tongs</b> / <b>Iron Roughneck</b></li>
+          <li><b>Link &amp; Elevator:</b> Center latch elevator, Side door elevator, Single joint elevator</li>
+          <li><b>Slips:</b> Drill pipe slips, Drill collar slips, Casing slips</li>
+          <li><b>Safety Clamp</b></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section-head"><span class="tag">Struktur Tim</span><h2>Line Organization Rig Crew</h2><span class="line"></span></div>
+    <div class="grid">
+      <div class="card">
+        <h3>Hierarki (dari materi)</h3>
+        <p>Drilling Superintendent → Area Manager → Rig Manager → (Toolpusher, Materials Man, Warehouseman)</p>
+        <p>Toolpusher membawahi: Safety &amp; Training Specialist, Maintenance Engineer, Driller, Welder</p>
+        <p>Driller membawahi: Rig Mechanic, Electrician, Asst. Driller, Pipe Fitter, Crane Operator</p>
+        <p>Asst. Driller membawahi: Motorman, Pump Tender, Derrickman, Roughneck, Roustabout, Rigger, Driver, Helper</p>
+      </div>
+    </div>
+
+    <div class="section-head"><span class="tag">Part 4</span><h2>Rig Inspection &amp; Maintenance</h2><span class="line"></span></div>
+    <div class="grid">
+      <div class="card">
+        <h3>4 Kategori Inspeksi</h3>
+        <ul>
+          <li><b>Category I</b> — observasi kinerja saat operasi</li>
+          <li><b>Category II</b> — I + cek korosi, deformasi, komponen longgar/hilang, deteriorasi, pelumasan, retak eksternal</li>
+          <li><b>Category III</b> — II + NDT area kritis, mungkin ada disassembly</li>
+          <li><b>Category IV</b> — III + disassembly menyeluruh untuk NDT semua komponen primary-load-carrying</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>3 Tingkat Rekomendasi Temuan</h3>
+        <ul>
+          <li><b>Critical</b> — berpotensi hilang nyawa, cedera serius, atau kerusakan lingkungan</li>
+          <li><b>Major</b> — berpotensi merusak peralatan penting/mengganggu operasi</li>
+          <li><b>Minor</b> — berpotensi memicu insiden atau standar operasi tidak terpenuhi</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Service Category Drilling String (DS-1 / API RP7G-2)</h3>
+        <table class="simple">
+          <tr><th>Well Depth (ft)</th><th>Min. Service Cat.</th><th>Mud Weight (ppg)</th><th>Min. Service Cat.</th></tr>
+          <tr><td>&lt; 5.000</td><td>2</td><td>&lt; 9.0</td><td>2</td></tr>
+          <tr><td>5.000–10.000</td><td>3</td><td>9.1–11.0</td><td>3</td></tr>
+          <tr><td>10.000–16.000</td><td>4</td><td>11.1–14.5</td><td>4</td></tr>
+          <tr><td>&gt; 16.000</td><td>5</td><td>&gt; 14.5</td><td>5</td></tr>
+        </table>
+        <p class="mini">Referensi rotating hours: Drill pipe 1.500–2.500 jam; BHA 250–500 jam.</p>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:30px;"><b>SAFETY MOMENT:</b> "HSE is My Culture, Equipment is My Life, Cost is My Attitude." Dan ingat filosofi DPM: kecepatan kereta kencana ditentukan oleh kuda yang paling lambat, bukan yang tercepat — Kerja Cerdas, Kerja Ikhlas, Kerja Selamat.</div>
+  </section>
+
+  <!-- ===================== TAB 2: LATIHAN SOAL ===================== -->
+  <section class="panel" id="panel-latihan">
+    <div class="section-head"><span class="tag">Kuis</span><h2>Latihan Soal Pilihan Ganda</h2><span class="line"></span></div>
+    <p class="lead-note">20 soal mencakup seluruh materi rig components. Pilih jawaban, lihat penjelasan langsung, lalu lanjut ke soal berikutnya.</p>
+
+    <div class="quiz-top">
+      <div class="scorebox">Skor: <b id="scoreNow">0</b> / <span id="scoreTotal">0</span></div>
+      <div class="progressbar"><i id="progFill"></i></div>
+      <button class="btn secondary" id="restartBtn">Ulangi Kuis</button>
+    </div>
+
+    <div class="qcard" id="qCard">
+      <div class="qmeta">Soal <span id="qIndex">1</span> / <span id="qCountTotal">20</span></div>
+      <div class="qtext" id="qText"></div>
+      <div class="opts" id="qOpts"></div>
+      <div class="explain" id="qExplain"></div>
+      <div class="quiz-nav">
+        <button class="btn secondary" id="prevBtn">← Sebelumnya</button>
+        <button class="btn" id="nextBtn">Selanjutnya →</button>
+      </div>
+    </div>
+
+    <div id="quizResult">
+      <div class="big" id="finalScore">0/20</div>
+      <h3>Kuis Selesai!</h3>
+      <p class="lead-note" id="finalMsg" style="margin:0 auto 20px;"></p>
+      <button class="btn" id="retryBtn">Coba Lagi</button>
+    </div>
+  </section>
+
+  <!-- ===================== TAB 3: FLASHCARD ===================== -->
+  <section class="panel" id="panel-flashcard">
+    <div class="section-head"><span class="tag">Hafalan</span><h2>Flashcard Komponen Rig</h2><span class="line"></span></div>
+    <p class="lead-note">Klik kartu untuk membalik. Gunakan filter kategori untuk fokus belajar per sistem.</p>
+
+    <div class="fc-top">
+      <div class="fc-filter" id="fcFilters"></div>
+      <button class="chip" id="shuffleBtn">🔀 Acak</button>
+    </div>
+
+    <div class="fc-stage">
+      <div class="fc-count"><span id="fcIndex">1</span> / <span id="fcTotal">26</span></div>
+      <div class="flashcard" id="flashcard">
+        <div class="fc-inner">
+          <div class="fc-face fc-front">
+            <span class="cat" id="fcCat">Kategori</span>
+            <div class="term" id="fcTerm">Term</div>
+            <span class="hint">klik untuk lihat jawaban</span>
+          </div>
+          <div class="fc-face fc-back">
+            <p id="fcDef">Definisi</p>
+          </div>
+        </div>
+      </div>
+      <div class="fc-controls">
+        <button class="btn secondary" id="fcPrev">← Sebelumnya</button>
+        <button class="btn" id="fcNext">Selanjutnya →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== TAB 4: KONSEP SULIT ===================== -->
+  <section class="panel" id="panel-sulit">
+    <div class="section-head"><span class="tag">Pendalaman</span><h2>Konsep-Konsep yang Sering Membingungkan</h2><span class="line"></span></div>
+    <p class="lead-note">Klik tiap topik untuk membuka penjelasan lebih detail, lengkap dengan alasan mengapa konsep ini penting dan sering salah dipahami.</p>
+    <div id="accWrap"></div>
+  </section>
+
+</main>
+
+<footer>JAKARTA DRILLING SOCIETY · SURFACE ROTARY DRILLING SYSTEM & RIG COMPONENTS — PAKET BELAJAR INTERAKTIF</footer>
+
+<script>
+/* ================= TAB SWITCHING ================= */
+const tabBtns = document.querySelectorAll('.tabbtn');
+const panels = document.querySelectorAll('.panel');
+tabBtns.forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    tabBtns.forEach(b=>b.classList.remove('active'));
+    panels.forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-'+btn.dataset.tab).classList.add('active');
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+});
+
+/* ================= RAIL DECORATION (rig height markers) ================= */
+const rail = document.getElementById('rigRail');
+const marks = [
+  {v:0, l:'Crown'}, {v:20, l:'Monkey Bd'}, {v:45, l:'Rotary Tbl'},
+  {v:70, l:'Substr.'}, {v:90, l:'Cellar'}, {v:100, l:'Base'}
+];
+marks.forEach(m=>{
+  const el = document.createElement('span');
+  el.style.top = m.v+'%';
+  el.textContent = m.l;
+  rail.appendChild(el);
+});
+
+/* ================= QUIZ DATA ================= */
+const quiz = [
+  {q:"Struktur rig manakah yang bersifat portable (bisa dibongkar-pasang), berbeda dari Derrick yang fixed?", opts:["Substructure","Mast","Rotary table","Drawworks"], correct:1, exp:"Derrick adalah struktur fixed (tetap), sedangkan Mast adalah struktur portable dengan tipe Cantilever atau Telescopic, serta tinggi single/double/triple joint."},
+  {q:"Apa fungsi utama Crown Block pada sistem hoisting?", opts:["Menggulung wire rope drilling line","Puli tetap di puncak mast tempat wire rope dilewatkan","Memutar drill string","Menahan beban aksial casing"], correct:1, exp:"Crown block adalah puli (sheave) tetap yang dipasang di puncak mast, berpasangan dengan traveling block yang bergerak naik-turun."},
+  {q:"Manakah yang termasuk bagian dari Mud Recycle Equipment?", opts:["Standpipe dan rotary hose","Shale shaker, desander & desilter, degasser","Triplex mud pump","Mud mixing hopper"], correct:1, exp:"Mud recycle equipment terdiri dari shale shaker, desander & desilter, dan degasser — berfungsi membersihkan lumpur bor dari cutting dan gas sebelum disirkulasikan kembali."},
+  {q:"Alat instrumentasi pemboran manakah yang mengukur kecepatan penembusan bit ke formasi?", opts:["Weight Indicator","Rate of Penetration (ROP)","Rotary Torque","Casing Pressure"], correct:1, exp:"ROP (Rate of Penetration) mengukur seberapa cepat bit menembus formasi, biasanya dalam satuan ft/jam atau m/jam."},
+  {q:"Apa perbedaan utama antara Drill Collar dan Heavy Weight Drill Pipe (HWDP) dalam BHA?", opts:["Keduanya adalah komponen yang persis sama","Drill Collar jauh lebih berat/kaku untuk memberi weight-on-bit, HWDP adalah transisi antara drill pipe dan drill collar","HWDP hanya dipakai di offshore","Drill Collar tidak termasuk bagian BHA"], correct:1, exp:"Drill Collar memberikan berat (weight-on-bit) dan kekakuan pada BHA, sedangkan HWDP berfungsi sebagai transisi kekakuan antara drill pipe yang fleksibel dan drill collar yang kaku."},
+  {q:"Manakah dari berikut ini yang merupakan jenis Link & Elevator sesuai materi?", opts:["Center latch, side door, single joint elevator","Manual tong, power tong, iron roughneck","Drill pipe slip, casing slip, drill collar slip","Kelly cock, safety valve, float valve"], correct:0, exp:"Tiga jenis elevator yang disebutkan: Center Latch Elevator, Side Door Elevator, dan Single Joint Elevator."},
+  {q:"Alat apa yang berfungsi menahan drill string/casing agar tidak jatuh ke dalam sumur saat sambungan dilepas/dipasang?", opts:["Slips","Deadline anchor","Crown block","Standpipe manifold"], correct:0, exp:"Slips (drill pipe slip, casing slip, drill collar slip) dipasang di rotary table untuk mencengkeram dan menahan pipa agar tidak jatuh ke dalam sumur."},
+  {q:"Standar API manakah yang menjadi acuan utama untuk BOP (Well Control System)?", opts:["API RP 9B","API RP 53 dan API Spec 16A/16C/16D","API Spec 4F","API RP 7G"], correct:1, exp:"API RP 53 (Blow Out Prevention Equipment Systems) dan API Spec 16A (Drill Through Equipment), 16C (Choke and Kill Systems), 16D (Control Systems) menjadi acuan Well Control System."},
+  {q:"Apa itu Persetujuan Layak Operasi (PLO)?", opts:["Sertifikat keahlian driller","Dokumen persetujuan yang menyatakan rig layak dioperasikan berdasarkan standar yang berlaku","Laporan hasil pemboran harian","Kontrak sewa rig antara operator dan kontraktor"], correct:1, exp:"PLO adalah dokumen persetujuan yang menyatakan sebuah rig telah memenuhi standar dan layak untuk dioperasikan."},
+  {q:"Dalam kategori inspeksi rig, apa yang membedakan Category III dari Category II?", opts:["Category III hanya observasi visual saat operasi","Category III menambahkan NDT (Non-Destructive Testing) pada area kritis dan mungkin melibatkan disassembly","Category III adalah kategori termudah","Category III sama persis dengan Category I"], correct:1, exp:"Category III = Category II + inspeksi tambahan termasuk NDT pada area kritis, dan mungkin melibatkan sebagian disassembly."},
+  {q:"Rekomendasi temuan inspeksi manakah yang berpotensi menyebabkan hilangnya nyawa atau kerusakan lingkungan?", opts:["Minor Recommendation","Major Recommendation","Critical Recommendation","Standard Recommendation"], correct:2, exp:"Critical Recommendation adalah kategori tertinggi — mengindikasikan shortcoming yang bisa menyebabkan hilang nyawa, cedera serius, atau kerusakan lingkungan."},
+  {q:"Menurut tabel service category drilling string (DS-1/API RP7G-2), sumur dengan kedalaman 12.000 ft masuk minimum service category berapa?", opts:["Category 2","Category 3","Category 4","Category 5"], correct:2, exp:"Kedalaman 10.000–16.000 ft masuk minimum service category 4 menurut tabel pada materi."},
+  {q:"Apa keunggulan utama Conventional Rig dibanding Mobile Rig?", opts:["Investasi awal jauh lebih kecil","Waktu pindah rig lebih cepat","Tripping lebih cepat karena stand di triple, dan tenaga (HP) jauh lebih besar","Area wellsite yang dibutuhkan lebih kecil"], correct:2, exp:"Conventional rig unggul dalam kecepatan tripping (stand di triple) dan tenaga peralatan yang jauh lebih besar (drawworks & mud pump di atas 1000 HP, hook load di atas 200 ton)."},
+  {q:"Apa keunggulan utama Mobile Rig dibanding Conventional Rig?", opts:["Hook load jauh lebih besar","Investasi awal lebih kecil dan pindah rig lebih cepat","Drilling floor lebih luas","Lebih sedikit personel yang berpengalaman dibutuhkan untuk rig raksasa"], correct:1, exp:"Mobile rig unggul dari sisi investasi awal yang lebih kecil, kecepatan pindah, jumlah truk lebih sedikit, dan area wellsite lebih kecil — meski tripping-nya lebih lambat."},
+  {q:"Siapa yang secara langsung membawahi posisi Driller dalam struktur organisasi rig crew?", opts:["Area Manager","Rig Manager","Toolpusher","Warehouseman"], correct:2, exp:"Struktur organisasi pada materi: Toolpusher membawahi Safety & Training Specialist, Maintenance Engineer, Driller, dan Welder."},
+  {q:"Posisi manakah yang berada langsung di bawah Asst. Driller dalam hierarki crew?", opts:["Rig Manager dan Materials Man","Motorman, Pump Tender, Derrickman, Roughneck, Roustabout","Toolpusher dan Welder","Area Manager dan Drilling Superintendent"], correct:1, exp:"Asst. Driller membawahi Motorman, Pump Tender, Derrickman, Roughneck, dan Roustabout — posisi-posisi operasional lapangan langsung."},
+  {q:"Instrumen pemboran manakah yang digunakan untuk memonitor tekanan di dalam annulus casing selama operasi?", opts:["Pump/Standpipe Pressure","Casing Pressure","Rotary Torque","Weight Indicator"], correct:1, exp:"Casing Pressure secara khusus memonitor tekanan pada annulus casing, berbeda dari Pump/Standpipe Pressure yang memantau tekanan sirkulasi lumpur di dalam drill string."},
+  {q:"Alat penyambung/pelepas sambungan pipa otomatis dengan torsi tinggi yang menggantikan power tongs manual disebut...", opts:["Safety Clamp","Iron Roughneck","Deadline Anchor","Mud Mixing Hopper"], correct:1, exp:"Iron Roughneck adalah alat mekanis/hidraulik untuk menyambung dan melepas sambungan drill pipe secara otomatis dengan torsi terkontrol, menggantikan power tongs manual."},
+  {q:"Apa fungsi Deadline Anchor pada sistem hoisting?", opts:["Menjepit ujung drilling line yang tidak bergerak (deadline) di dekat drawworks","Memutar drill string dari permukaan","Menahan pipa di rotary table","Mendinginkan lumpur bor"], correct:0, exp:"Deadline anchor menjangkarkan ujung 'mati' (deadline) dari wire rope hoisting sehingga sistem hoisting bisa bekerja dengan aman dan terukur (fast line di drum, deadline di anchor)."},
+  {q:"Kenapa sistem Rotary Table umumnya diasosiasikan dengan rig konvensional dibanding Top Drive?", opts:["Rotary table hanya memutar drill string dari dasar dengan bantuan kelly, sementara top drive memutar sekaligus mengedarkan lumpur dari atas rangkaian tanpa perlu kelly","Rotary table hanya bisa dipakai di darat","Top drive tidak pernah dipasang pada mast","Rotary table lebih mahal daripada top drive"], correct:0, exp:"Rotary table memutar drill string dari dasar (melalui kelly bushing), sedangkan top drive terpasang bergerak naik-turun di traveling block dan bisa memutar sekaligus menyalurkan lumpur — memberi fleksibilitas triple stand & back-reaming yang lebih baik."}
+];
+
+let curQ = 0;
+let userAnswers = new Array(quiz.length).fill(null);
+
+document.getElementById('scoreTotal').textContent = quiz.length;
+document.getElementById('qCountTotal').textContent = quiz.length;
+
+function renderQuestion(){
+  document.getElementById('qCard').style.display='block';
+  document.getElementById('quizResult').style.display='none';
+  const item = quiz[curQ];
+  document.getElementById('qIndex').textContent = curQ+1;
+  document.getElementById('qText').textContent = item.q;
+  const optsWrap = document.getElementById('qOpts');
+  optsWrap.innerHTML='';
+  const explain = document.getElementById('qExplain');
+  explain.style.display='none';
+  explain.innerHTML = '<b>Penjelasan:</b> '+item.exp;
+
+  item.opts.forEach((opt,i)=>{
+    const b = document.createElement('button');
+    b.className='opt';
+    b.textContent = opt;
+    if(userAnswers[curQ]!==null){
+      b.disabled = true;
+      if(i===item.correct) b.classList.add('correct');
+      if(i===userAnswers[curQ] && i!==item.correct) b.classList.add('wrong');
+      explain.style.display='block';
+    }
+    b.addEventListener('click', ()=>{
+      if(userAnswers[curQ]!==null) return;
+      userAnswers[curQ]=i;
+      updateScore();
+      renderQuestion();
+    });
+    optsWrap.appendChild(b);
+  });
+
+  document.getElementById('prevBtn').disabled = curQ===0;
+  document.getElementById('nextBtn').textContent = curQ===quiz.length-1 ? 'Lihat Hasil →' : 'Selanjutnya →';
+  const pct = ((curQ+1)/quiz.length)*100;
+  document.getElementById('progFill').style.width = pct+'%';
+}
+
+function updateScore(){
+  let s=0;
+  userAnswers.forEach((a,i)=>{ if(a===quiz[i].correct) s++; });
+  document.getElementById('scoreNow').textContent = s;
+}
+
+document.getElementById('nextBtn').addEventListener('click', ()=>{
+  if(curQ < quiz.length-1){ curQ++; renderQuestion(); }
+  else { showResult(); }
+});
+document.getElementById('prevBtn').addEventListener('click', ()=>{
+  if(curQ>0){ curQ--; renderQuestion(); }
+});
+document.getElementById('restartBtn').addEventListener('click', resetQuiz);
+document.getElementById('retryBtn').addEventListener('click', resetQuiz);
+
+function resetQuiz(){
+  curQ=0; userAnswers = new Array(quiz.length).fill(null);
+  updateScore();
+  renderQuestion();
+}
+
+function showResult(){
+  document.getElementById('qCard').style.display='none';
+  document.getElementById('quizResult').style.display='block';
+  let s=0;
+  userAnswers.forEach((a,i)=>{ if(a===quiz[i].correct) s++; });
+  document.getElementById('finalScore').textContent = s+'/'+quiz.length;
+  let msg='';
+  const pct = s/quiz.length;
+  if(pct>=0.85) msg='Luar biasa! Kamu sudah menguasai komponen rig pemboran dengan sangat baik.';
+  else if(pct>=0.6) msg='Bagus! Beberapa komponen masih perlu diulang — coba cek tab Konsep Sulit.';
+  else msg='Yuk pelajari lagi tab Ringkasan dan Flashcard, lalu coba kuis ini sekali lagi.';
+  document.getElementById('finalMsg').textContent = msg;
+}
+renderQuestion();
+
+/* ================= FLASHCARD DATA ================= */
+const cards = [
+  {cat:"Tipe Rig", term:"Jack-Up Rig", def:"Rig offshore bottom-supported dengan kaki (legs) yang bisa diturunkan hingga menyentuh dasar laut, mengangkat hull/platform di atas permukaan air — cocok untuk perairan dangkal."},
+  {cat:"Tipe Rig", term:"Semi-Submersible", def:"Rig offshore tipe floater yang mengapung dengan pontoon terendam sebagian di bawah air untuk stabilitas, digunakan di perairan dalam."},
+  {cat:"Tipe Rig", term:"Drillship", def:"Kapal yang dimodifikasi menjadi rig pemboran offshore tipe floater, mampu beroperasi di laut sangat dalam dengan mobilitas tinggi."},
+  {cat:"Tipe Rig", term:"Conventional Rig", def:"Rig onshore dengan investasi besar di awal, tripping cepat (stand triple), tenaga besar (drawworks/mud pump >1000 HP), hook load >200 ton."},
+  {cat:"Tipe Rig", term:"Mobile Rig", def:"Rig onshore dengan investasi awal lebih kecil, mobilisasi lebih cepat, truk lebih sedikit, tapi tripping lebih lambat (stand double) dan lebih banyak rig mekanikal."},
+  {cat:"Standar", term:"API RP 53", def:"Recommended Practice untuk Blow Out Prevention Equipment Systems pada operasi pemboran sumur."},
+  {cat:"Standar", term:"API Spec 7K", def:"Spesifikasi API untuk Drilling Equipment — mencakup persyaratan desain dan manufaktur peralatan pemboran."},
+  {cat:"Standar", term:"API RP 9B", def:"Recommended Practice untuk aplikasi, perawatan, dan penggunaan wire rope pada layanan oilfield."},
+  {cat:"Standar", term:"Persetujuan Layak Operasi (PLO)", def:"Dokumen persetujuan resmi yang menyatakan sebuah rig telah memenuhi standar teknis dan layak dioperasikan di Indonesia."},
+  {cat:"Hoisting", term:"Crown Block", def:"Rangkaian puli (sheave) tetap yang dipasang di puncak mast/derrick, tempat wire rope drilling line dilewatkan menuju traveling block."},
+  {cat:"Hoisting", term:"Traveling Block", def:"Rangkaian puli bergerak yang digantung oleh drilling line, naik-turun membawa hook, elevator, dan beban drill string/casing."},
+  {cat:"Hoisting", term:"Top Drive", def:"Unit motor yang tergantung di traveling block, memutar drill string sekaligus menyalurkan fluida sirkulasi — menggantikan fungsi kelly & rotary table untuk memutar."},
+  {cat:"Hoisting", term:"Drawworks", def:"Unit drum (single/double) yang menggulung/melepas wire rope drilling line untuk menaik-turunkan traveling block dan beban di hook."},
+  {cat:"Hoisting", term:"Deadline Anchor", def:"Titik jangkar tetap tempat ujung 'mati' (deadline) dari wire rope hoisting diikatkan, berlawanan dengan fast line yang tergulung di drawworks."},
+  {cat:"Mud System", term:"Shale Shaker", def:"Ayakan bergetar yang memisahkan cutting (serbuk bor) padat dari lumpur bor sebelum lumpur disirkulasikan kembali ke dalam sumur."},
+  {cat:"Mud System", term:"Desander & Desilter", def:"Peralatan berbasis hydrocyclone yang menghilangkan partikel pasir (desander) dan lanau/silt halus (desilter) dari lumpur bor."},
+  {cat:"Mud System", term:"Degasser", def:"Peralatan yang menghilangkan gas terlarut/terperangkap dari lumpur bor sebelum lumpur disirkulasikan kembali, mencegah pengurangan densitas lumpur."},
+  {cat:"Mud System", term:"Triplex Mud Pump", def:"Pompa lumpur tiga silinder (piston) yang mensirkulasikan lumpur bor bertekanan tinggi dari permukaan turun ke drill string dan naik lewat annulus."},
+  {cat:"Instrumentasi", term:"Weight Indicator", def:"Instrumen yang menunjukkan beban (berat) pada hook/traveling block, membantu memantau weight-on-bit dan beban string."},
+  {cat:"Instrumentasi", term:"Rate of Penetration (ROP)", def:"Kecepatan penembusan bit terhadap formasi batuan, biasanya diukur dalam feet/jam atau meter/jam."},
+  {cat:"Instrumentasi", term:"Standpipe Pressure", def:"Tekanan fluida pemboran yang diukur pada standpipe, mencerminkan tekanan sirkulasi lumpur di dalam sistem."},
+  {cat:"Drill String & BHA", term:"Heavy Weight Drill Pipe (HWDP)", def:"Drill pipe berdinding tebal yang berfungsi sebagai transisi kekakuan antara drill pipe standar (fleksibel) dan drill collar (kaku)."},
+  {cat:"Drill String & BHA", term:"Drill Collar", def:"Pipa tebal dan berat dalam BHA yang memberikan berat (weight-on-bit) dan kekakuan pada rangkaian bor dekat bit."},
+  {cat:"Drill String & BHA", term:"Stabilizer", def:"Alat dalam BHA yang menjaga drill string tetap terpusat di lubang bor, mengontrol arah lubang dan mengurangi getaran/whirl."},
+  {cat:"Tubular Handling", term:"Iron Roughneck", def:"Alat mekanis/hidraulik untuk menyambung dan melepas sambungan pipa secara otomatis dengan torsi terkontrol, menggantikan power tongs manual."},
+  {cat:"Inspeksi", term:"Service Category (DS-1/API RP7G-2)", def:"Klasifikasi tingkat inspeksi drill string (kategori 2-5) berdasarkan kedalaman sumur dan berat lumpur — semakin dalam/berat, semakin tinggi kategorinya."}
+];
+
+let fcOrder = cards.map((_,i)=>i);
+let fcIdx = 0;
+let fcCatFilter = 'Semua';
+
+const categories = ['Semua', ...new Set(cards.map(c=>c.cat))];
+const fcFiltersWrap = document.getElementById('fcFilters');
+categories.forEach(cat=>{
+  const chip = document.createElement('button');
+  chip.className = 'chip'+(cat==='Semua'?' active':'');
+  chip.textContent = cat;
+  chip.addEventListener('click', ()=>{
+    fcCatFilter = cat;
+    document.querySelectorAll('.fc-filter .chip').forEach(c=>c.classList.remove('active'));
+    chip.classList.add('active');
+    applyFilter();
+  });
+  fcFiltersWrap.appendChild(chip);
+});
+
+function applyFilter(){
+  fcOrder = cards.map((_,i)=>i).filter(i => fcCatFilter==='Semua' || cards[i].cat===fcCatFilter);
+  fcIdx = 0;
+  document.getElementById('flashcard').classList.remove('flipped');
+  renderCard();
+}
+
+function renderCard(){
+  const total = fcOrder.length;
+  document.getElementById('fcTotal').textContent = total;
+  if(total===0){
+    document.getElementById('fcTerm').textContent = '—';
+    document.getElementById('fcDef').textContent = 'Tidak ada kartu pada kategori ini.';
+    document.getElementById('fcIndex').textContent = 0;
+    return;
+  }
+  const c = cards[fcOrder[fcIdx]];
+  document.getElementById('fcCat').textContent = c.cat;
+  document.getElementById('fcTerm').textContent = c.term;
+  document.getElementById('fcDef').textContent = c.def;
+  document.getElementById('fcIndex').textContent = fcIdx+1;
+}
+
+document.getElementById('flashcard').addEventListener('click', function(){
+  this.classList.toggle('flipped');
+});
+document.getElementById('fcNext').addEventListener('click', ()=>{
+  if(fcOrder.length===0) return;
+  fcIdx = (fcIdx+1) % fcOrder.length;
+  document.getElementById('flashcard').classList.remove('flipped');
+  renderCard();
+});
+document.getElementById('fcPrev').addEventListener('click', ()=>{
+  if(fcOrder.length===0) return;
+  fcIdx = (fcIdx-1+fcOrder.length) % fcOrder.length;
+  document.getElementById('flashcard').classList.remove('flipped');
+  renderCard();
+});
+document.getElementById('shuffleBtn').addEventListener('click', ()=>{
+  for(let i=fcOrder.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [fcOrder[i],fcOrder[j]]=[fcOrder[j],fcOrder[i]];
+  }
+  fcIdx=0;
+  document.getElementById('flashcard').classList.remove('flipped');
+  renderCard();
+});
+renderCard();
+
+/* ================= DIFFICULT CONCEPTS DATA ================= */
+const difficult = [
+  {
+    level:"Sering Salah", title:"Conventional Rig vs Mobile Rig — Kapan Memilih yang Mana?",
+    body:`<p>Perbandingan ini sering disederhanakan jadi "conventional = bagus, mobile = murah", padahal keduanya punya trade-off yang jelas tergantung kondisi lapangan:</p>
+    <table class="simple"><tr><th>Aspek</th><th>Conventional</th><th>Mobile</th></tr>
+    <tr><td>Kecepatan tripping</td><td>Cepat (stand triple)</td><td>Lambat (stand double)</td></tr>
+    <tr><td>Tenaga (HP)</td><td>Besar (&gt;1000 HP)</td><td>Terbatas oleh diesel engine drive</td></tr>
+    <tr><td>Hook load</td><td>&gt;200 ton</td><td>Lebih rendah</td></tr>
+    <tr><td>Investasi awal</td><td>Besar</td><td>Kecil</td></tr>
+    <tr><td>Waktu rig-up/pindah</td><td>Lama, truk banyak</td><td>Cepat, truk sedikit</td></tr>
+    <tr><td>Kebisingan</td><td>Lebih rendah (diesel-electric)</td><td>Tinggi (banyak rig mekanikal)</td></tr></table>
+    <div class="why"><b>Kenapa ini penting:</b> Pemilihan rig bukan soal "yang terbaik", tapi soal mencocokkan spesifikasi rig dengan kedalaman target, jumlah sumur yang akan dibor berurutan (padat vs tersebar), dan anggaran proyek. Sumur dalam dengan casing berat butuh conventional rig; sumur dangkal-menengah dengan banyak lokasi berpindah lebih efisien pakai mobile rig.</div>`
+  },
+  {
+    level:"Perlu Latihan", title:"4 Kategori Inspeksi Rig — Perbedaan Level Kedalaman Pemeriksaan",
+    body:`<p>Keempat kategori ini bersifat <b>akumulatif</b> — setiap kategori yang lebih tinggi mencakup semua yang ada di kategori sebelumnya, ditambah pemeriksaan baru:</p>
+    <table class="simple"><tr><th>Kategori</th><th>Cakupan Tambahan</th></tr>
+    <tr><td>I</td><td>Observasi kinerja saat operasi berjalan</td></tr>
+    <tr><td>II</td><td>+ korosi, deformasi, komponen longgar/hilang, deteriorasi, pelumasan, retak eksternal, penyetelan</td></tr>
+    <tr><td>III</td><td>+ NDT (Non-Destructive Testing) pada area kritis, kemungkinan disassembly sebagian</td></tr>
+    <tr><td>IV</td><td>+ disassembly menyeluruh untuk NDT semua komponen primary-load-carrying</td></tr></table>
+    <div class="why"><b>Kenapa sering salah paham:</b> Orang sering mengira Category IV berarti "ganti semua part", padahal artinya adalah tingkat kedalaman <b>pemeriksaan</b> (bongkar untuk NDT), bukan otomatis penggantian komponen. Kategori inspeksi yang dipilih untuk sebuah rig ditentukan oleh kedalaman sumur dan berat lumpur yang akan dihadapi (lihat tabel Service Category), bukan sembarang dipilih.</div>`
+  },
+  {
+    level:"Konsep Inti", title:"Kenapa Service Category Drilling String Ditentukan oleh DUA Faktor (Kedalaman & Mud Weight)?",
+    body:`<p>Tabel pada materi menetapkan kategori servis minimum berdasarkan <b>dua parameter independen</b> yang sama-sama menentukan beban kerja drill string:</p>
+    <table class="simple"><tr><th>Well Depth (ft)</th><th>Kategori</th><th>Mud Weight (ppg)</th><th>Kategori</th></tr>
+    <tr><td>&lt;5.000</td><td>2</td><td>&lt;9.0</td><td>2</td></tr>
+    <tr><td>5.000-10.000</td><td>3</td><td>9.1-11.0</td><td>3</td></tr>
+    <tr><td>10.000-16.000</td><td>4</td><td>11.1-14.5</td><td>4</td></tr>
+    <tr><td>&gt;16.000</td><td>5</td><td>&gt;14.5</td><td>5</td></tr></table>
+    <p>Kategori final yang dipakai adalah nilai <b>tertinggi</b> dari kedua kolom. Contoh: sumur 8.000 ft (kategori 3) tapi mud weight 12 ppg (kategori 4) → kategori servis minimum yang dipakai adalah <b>4</b>.</p>
+    <div class="why"><b>Kenapa dua faktor:</b> Kedalaman menentukan beban tarik (tensile load) pada drill string akibat berat rangkaian itu sendiri, sementara mud weight menentukan tekanan hidrostatik dan beban kolaps/burst pada pipa. Sumur dangkal dengan lumpur sangat berat (misal sumur bertekanan tinggi) tetap butuh inspeksi ketat meski kedalamannya kecil — karena itu kedua faktor dinilai terpisah lalu diambil yang paling ketat.</div>`
+  },
+  {
+    level:"Konsep Inti", title:"Rotary Table vs Top Drive — Bukan Sekadar Beda Bentuk",
+    body:`<p>Kedua sistem sama-sama berfungsi memutar drill string, tapi mekanismenya sangat berbeda:</p>
+    <p><b>Rotary Table:</b> alat berputar di lantai rig, memutar Kelly (batang pipa persegi) yang diteruskan ke drill string. Drill string harus dilepas dari Kelly setiap kali menyambung pipa baru (biasanya per single/double joint).</p>
+    <p><b>Top Drive:</b> unit motor yang tergantung di traveling block, ikut naik-turun mengikuti pergerakan hoisting, dan memutar sekaligus menyalurkan fluida ke drill string dari atas — tanpa perlu Kelly.</p>
+    <div class="why"><b>Kenapa ini penting:</b> Top drive memungkinkan penyambungan pipa dalam satuan triple stand (bukan hanya single), mempercepat tripping, dan memungkinkan back-reaming (memutar sambil menarik pipa ke atas) — sesuatu yang tidak bisa dilakukan rotary table konvensional. Inilah salah satu alasan rig modern, terutama untuk sumur directional/horizontal, lebih memilih top drive.</div>`
+  },
+  {
+    level:"Sering Salah", title:"HWDP bukan Drill Pipe biasa, dan bukan Drill Collar",
+    body:`<p>Banyak yang mengira BHA hanya terdiri dari drill collar saja, padahal ada komponen transisi penting: <b>Heavy Weight Drill Pipe (HWDP)</b>.</p>
+    <ul>
+      <li><b>Drill Pipe</b> — dinding tipis, fleksibel, menyalurkan putaran & sirkulasi dari permukaan.</li>
+      <li><b>HWDP</b> — dinding jauh lebih tebal dari drill pipe biasa, tapi masih punya tool joint mirip drill pipe; berfungsi sebagai zona transisi kekakuan.</li>
+      <li><b>Drill Collar</b> — paling tebal & berat, memberi weight-on-bit dan kekakuan maksimum dekat bit.</li>
+    </ul>
+    <div class="why"><b>Kenapa ini penting:</b> Tanpa HWDP, transisi kekakuan dari drill pipe (fleksibel) langsung ke drill collar (sangat kaku) terlalu tiba-tiba, meningkatkan risiko kelelahan (fatigue failure) drill pipe tepat di titik transisi. HWDP menyebarkan perubahan kekakuan ini secara bertahap, mengurangi titik tegangan berlebih (stress concentration).</div>`
+  },
+  {
+    level:"Perlu Latihan", title:"Struktur Organisasi Rig Crew — Siapa Melapor ke Siapa",
+    body:`<p>Struktur pada materi berbentuk piramida dengan garis komando yang jelas:</p>
+    <p style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--steel);line-height:1.8;">
+    Drilling Superintendent → Area Manager<br>
+    → Rig Manager → (Materials Man, Warehouseman)<br>
+    → Toolpusher → (Safety & Training Specialist, Maintenance Engineer, Driller, Welder)<br>
+    → Driller → (Rig Mechanic, Electrician, Asst. Driller, Pipe Fitter, Crane Operator)<br>
+    → Asst. Driller → (Motorman, Pump Tender, Derrickman, Roughneck, Roustabout, Rigger, Driver, Helper)</p>
+    <div class="why"><b>Kenapa ini sering membingungkan:</b> Posisi seperti Rig Mechanic dan Electrician terlihat seperti staf teknis independen, padahal dalam struktur ini mereka melapor ke Driller — bukan langsung ke Toolpusher. Memahami garis komando ini penting untuk tahu jalur eskalasi masalah teknis maupun keselamatan di lokasi rig secara benar dan cepat.</div>`
+  }
+];
+
+const accWrap = document.getElementById('accWrap');
+difficult.forEach((d,i)=>{
+  const item = document.createElement('div');
+  item.className='acc-item';
+  item.innerHTML = `
+    <div class="acc-head">
+      <h4><span class="diff">${d.level}</span>${d.title}</h4>
+      <span class="chev">+</span>
+    </div>
+    <div class="acc-body">${d.body}</div>
+  `;
+  item.querySelector('.acc-head').addEventListener('click', ()=>{
+    const body = item.querySelector('.acc-body');
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.acc-item').forEach(o=>{
+      o.classList.remove('open');
+      o.querySelector('.acc-body').style.maxHeight = null;
+    });
+    if(!isOpen){
+      item.classList.add('open');
+      body.style.maxHeight = body.scrollHeight + 40 + 'px';
+    }
+  });
+  accWrap.appendChild(item);
+});
+accWrap.firstChild.querySelector('.acc-head').click();
+</script>
+</body>
+</html>

@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Well Construction Principle — Study Kit</title>
+<style>
+:root{
+  --rig-navy:#0d1b2e;
+  --rig-navy-2:#16283f;
+  --rig-steel:#2c4260;
+  --rig-amber:#e08c2b;
+  --rig-amber-2:#c9761c;
+  --rig-paper:#f3ede1;
+  --rig-paper-2:#e8dfc9;
+  --rig-ink:#1c2430;
+  --rig-line:#3f5a7a;
+  --ok:#3f9d5c;
+  --bad:#c5533b;
+  --mono: 'Courier New', Courier, monospace;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  background:var(--rig-navy);
+  background-image:
+    repeating-linear-gradient(0deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 40px),
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 40px);
+  color:var(--rig-paper);
+  font-family: Georgia, 'Times New Roman', serif;
+  line-height:1.5;
+}
+.wrap{max-width:1000px;margin:0 auto;padding:28px 22px 80px;}
+
+/* HEADER — like a wellhead nameplate */
+.rig-header{
+  border:2px solid var(--rig-amber);
+  padding:22px 26px;
+  position:relative;
+  margin-bottom:26px;
+  background:linear-gradient(180deg, var(--rig-navy-2), var(--rig-navy));
+}
+.rig-header::before{
+  content:"";
+  position:absolute; top:6px; left:6px; right:6px; bottom:6px;
+  border:1px solid rgba(224,140,43,0.35);
+  pointer-events:none;
+}
+.tag{
+  font-family: var(--mono);
+  letter-spacing:3px;
+  font-size:11px;
+  color:var(--rig-amber);
+  text-transform:uppercase;
+}
+h1{
+  font-family: 'Trebuchet MS', Helvetica, Arial, sans-serif;
+  font-weight:800;
+  font-size:clamp(28px,5vw,42px);
+  margin:6px 0 4px;
+  letter-spacing:0.5px;
+  color:#fff;
+}
+.subtitle{color:var(--rig-paper-2); font-style:italic; font-size:15px;}
+
+/* NAV TABS as depth markers */
+.tabs{
+  display:flex; gap:0; margin:26px 0 20px; flex-wrap:wrap;
+  border-bottom:2px solid var(--rig-steel);
+}
+.tab-btn{
+  font-family:'Trebuchet MS', sans-serif;
+  background:none;
+  border:none;
+  color:var(--rig-paper-2);
+  padding:10px 18px;
+  cursor:pointer;
+  font-size:14px;
+  font-weight:700;
+  letter-spacing:0.5px;
+  position:relative;
+  border-bottom:3px solid transparent;
+  transition:all .15s;
+}
+.tab-btn:hover{color:#fff;}
+.tab-btn.active{color:var(--rig-amber); border-bottom:3px solid var(--rig-amber);}
+.panel{display:none; animation:fade .25s ease;}
+.panel.active{display:block;}
+@keyframes fade{from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);}}
+
+/* SUMMARY */
+.section-block{
+  background:var(--rig-paper);
+  color:var(--rig-ink);
+  border-left:6px solid var(--rig-amber);
+  padding:18px 22px;
+  margin-bottom:18px;
+}
+.section-block h2{
+  font-family:'Trebuchet MS', sans-serif;
+  margin:0 0 10px;
+  font-size:19px;
+  color:var(--rig-navy);
+  display:flex; align-items:center; gap:10px;
+}
+.section-block h2 .num{
+  font-family:var(--mono);
+  background:var(--rig-navy);
+  color:var(--rig-amber);
+  font-size:12px;
+  padding:3px 8px;
+}
+.section-block h3{font-size:15px; margin:14px 0 6px; color:var(--rig-amber-2);}
+.section-block ul{margin:4px 0 10px 18px; padding:0;}
+.section-block li{margin-bottom:5px;}
+.formula{
+  font-family:var(--mono);
+  background:var(--rig-navy);
+  color:#ffd28a;
+  display:inline-block;
+  padding:6px 12px;
+  margin:6px 0;
+  font-size:14px;
+  border:1px dashed var(--rig-amber);
+}
+.chip-row{display:flex; flex-wrap:wrap; gap:6px; margin:8px 0;}
+.chip{
+  font-family:var(--mono);
+  font-size:12px;
+  background:var(--rig-steel);
+  color:#fff;
+  padding:4px 9px;
+  border-radius:3px;
+}
+
+/* FLASHCARDS */
+.fc-controls{display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:10px;}
+.fc-counter{font-family:var(--mono); color:var(--rig-amber); font-size:13px;}
+.fc-stage{
+  perspective:1400px;
+  max-width:560px;
+  margin:0 auto;
+  height:280px;
+}
+.fc-card{
+  width:100%; height:100%;
+  position:relative;
+  transform-style:preserve-3d;
+  transition:transform .5s cubic-bezier(.2,.8,.2,1);
+  cursor:pointer;
+}
+.fc-card.flipped{transform:rotateY(180deg);}
+.fc-face{
+  position:absolute; inset:0;
+  backface-visibility:hidden;
+  border:2px solid var(--rig-amber);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center;
+  padding:26px;
+  background:linear-gradient(160deg, var(--rig-navy-2), var(--rig-navy));
+}
+.fc-face .eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:2px; color:var(--rig-amber); margin-bottom:14px; text-transform:uppercase;}
+.fc-face .content{font-family:'Trebuchet MS', sans-serif; font-size:20px; font-weight:700; color:#fff;}
+.fc-face.back{transform:rotateY(180deg); background:linear-gradient(160deg, var(--rig-paper-2), var(--rig-paper)); border-color:var(--rig-amber-2);}
+.fc-face.back .content{color:var(--rig-ink); font-size:16px; font-weight:400; font-family:Georgia, serif;}
+.fc-face.back .eyebrow{color:var(--rig-amber-2);}
+.fc-nav{display:flex; justify-content:center; gap:12px; margin-top:20px;}
+.btn{
+  font-family:'Trebuchet MS', sans-serif;
+  background:var(--rig-amber);
+  color:var(--rig-navy);
+  border:none;
+  padding:10px 20px;
+  font-weight:800;
+  cursor:pointer;
+  font-size:14px;
+  letter-spacing:0.5px;
+  transition:background .15s;
+}
+.btn:hover{background:#f5a13f;}
+.btn.secondary{background:transparent; color:var(--rig-amber); border:1px solid var(--rig-amber);}
+.btn.secondary:hover{background:rgba(224,140,43,0.15);}
+.hint{text-align:center; color:var(--rig-paper-2); font-size:12px; margin-top:10px; font-style:italic;}
+
+/* QUIZ */
+.q-block{
+  background:var(--rig-paper);
+  color:var(--rig-ink);
+  padding:18px 20px;
+  margin-bottom:16px;
+  border-left:6px solid var(--rig-steel);
+  position:relative;
+}
+.q-block.calc{border-left-color:var(--rig-amber);}
+.q-num{
+  font-family:var(--mono);
+  font-size:12px;
+  color:#fff;
+  background:var(--rig-navy);
+  display:inline-block;
+  padding:2px 8px;
+  margin-bottom:8px;
+}
+.q-text{font-weight:700; margin-bottom:10px; font-size:15.5px;}
+.opts{display:grid; gap:8px; margin-bottom:10px;}
+.opt{
+  border:1.5px solid var(--rig-steel);
+  padding:9px 12px;
+  cursor:pointer;
+  background:#fff;
+  font-size:14px;
+  transition:all .12s;
+}
+.opt:hover{background:var(--rig-paper-2);}
+.opt.correct{background:#e2f3e6; border-color:var(--ok); font-weight:700;}
+.opt.wrong{background:#fbe4df; border-color:var(--bad);}
+.reveal-btn{
+  font-family:var(--mono);
+  font-size:12px;
+  background:none;
+  border:1px solid var(--rig-navy);
+  color:var(--rig-navy);
+  padding:6px 12px;
+  cursor:pointer;
+}
+.answer-box{
+  display:none;
+  margin-top:10px;
+  padding:10px 14px;
+  background:#e9f0fb;
+  border-left:4px solid var(--rig-steel);
+  font-size:14px;
+}
+.answer-box.show{display:block;}
+.essay-input{
+  width:100%;
+  border:1.5px solid var(--rig-steel);
+  padding:10px;
+  font-family:Georgia, serif;
+  font-size:14px;
+  min-height:60px;
+  margin-bottom:8px;
+  resize:vertical;
+}
+
+/* DIFFICULT PARTS */
+.diff-block{
+  background:var(--rig-paper);
+  color:var(--rig-ink);
+  padding:18px 22px;
+  margin-bottom:18px;
+  border:1px solid var(--rig-steel);
+  border-top:5px solid var(--bad);
+}
+.diff-block h2{
+  font-family:'Trebuchet MS', sans-serif;
+  color:var(--rig-navy);
+  font-size:18px;
+  margin:0 0 10px;
+}
+.diff-block .why{
+  background:#fff3e6;
+  border-left:4px solid var(--rig-amber-2);
+  padding:8px 12px;
+  font-size:13.5px;
+  margin:10px 0;
+  font-style:italic;
+}
+.diagram{
+  font-family:var(--mono);
+  background:var(--rig-navy);
+  color:#dfe9f5;
+  padding:12px 14px;
+  font-size:13px;
+  white-space:pre;
+  overflow-x:auto;
+  margin:10px 0;
+}
+.example-box{
+  background:var(--rig-navy);
+  color:#ffd28a;
+  padding:10px 14px;
+  font-family:var(--mono);
+  font-size:13.5px;
+  margin:8px 0;
+}
+
+.score-bar{
+  position:sticky; bottom:0;
+  background:var(--rig-navy-2);
+  border-top:2px solid var(--rig-amber);
+  padding:10px 18px;
+  display:flex; justify-content:space-between; align-items:center;
+  font-family:var(--mono); font-size:13px; color:var(--rig-amber);
+  margin-top:20px;
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="rig-header">
+    <div class="tag">Jakarta Drilling Society · April 2026</div>
+    <h1>Well Construction Principle</h1>
+    <div class="subtitle">Paket Belajar: Rangkuman • Flashcard • Latihan Soal • Bagian Sulit</div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="summary">📋 Rangkuman</button>
+    <button class="tab-btn" data-tab="flash">🎴 Flashcard</button>
+    <button class="tab-btn" data-tab="quiz">✏️ Latihan Soal</button>
+    <button class="tab-btn" data-tab="hard">⚠️ Bagian Sulit</button>
+  </div>
+
+  <!-- ===================== SUMMARY ===================== -->
+  <div class="panel active" id="summary">
+
+    <div class="section-block">
+      <h2><span class="num">01</span> Drilling Introduction</h2>
+      <p><b>Drilling</b> adalah proses pengeboran sumur ke dalam bumi untuk mencapai reservoir minyak, gas, atau panas bumi menggunakan rig pengeboran dan sistem pendukungnya.</p>
+      <h3>Siklus Proyek Drilling (7 Tahap)</h3>
+      <ul>
+        <li><b>1. Peta Geologi</b> — oleh Geologist, Petrophysicist, Geophysicist</li>
+        <li><b>2. Evaluasi Reservoir</b> — oleh Reservoir Engineer, Production Technologist</li>
+        <li><b>3. Penentuan Lokasi & Target</b> — surface location, bottom-hole location, offset well info, hazard dangkal/dalam, platform (Surface/Facility Engineer)</li>
+        <li><b>4. Well Trajectory</b> — perancangan lintasan sumur</li>
+        <li><b>5. Well Design</b> — torque & drag simulation, casing design, pemilihan material, mud & cement program, pemilihan rig, risk assessment</li>
+        <li><b>6. Evaluasi Ekonomi</b> — waktu & biaya, analisis ekonomi, persetujuan SKK Migas (POD, AFE)</li>
+        <li><b>7. Eksekusi</b> — drilling program, pengawasan rig, end of well report, lesson learnt, close out report</li>
+      </ul>
+      <p><b>3 Pilar Well Construction Process:</b></p>
+      <div class="chip-row">
+        <span class="chip">WELL DESIGN → Trajectory, Depth, Size</span>
+        <span class="chip">WELL COMPONENTS → Casing, Wellhead, Cement</span>
+        <span class="chip">WELL EXECUTION → Rig, Tools, Fluid</span>
+      </div>
+    </div>
+
+    <div class="section-block">
+      <h2><span class="num">02</span> Well Design</h2>
+      <h3>A. Well Trajectory</h3>
+      <p>Jalur lintasan sumur dari lokasi permukaan menuju target bawah permukaan — mengontrol arah sumur agar mencapai target secara aman & efisien.</p>
+      <ul>
+        <li><b>RKB</b> = Rotary Kelly Bushing (titik referensi permukaan)</li>
+        <li><b>KOP</b> = Kick-off Point (titik mulai belok)</li>
+        <li><b>EOB</b> = End of Build (akhir bagian build/naik sudut)</li>
+        <li><b>EOH</b> = End of Hold (akhir bagian tangent/lurus)</li>
+        <li><b>TVD</b> = True Vertical Depth (kedalaman vertikal sebenarnya)</li>
+        <li><b>TD</b> = Well Depth / Total Depth</li>
+      </ul>
+      <p><b>4 Jenis Trajektori:</b> Vertical, Slant (J-Type), "S" Type, Horizontal — perbedaannya pada jumlah komponen build/tangent/drop yang dimiliki.</p>
+
+      <h3>B. Well Depth</h3>
+      <p>Jarak dari permukaan ke dasar sumur — dipakai untuk merencanakan operasi, menentukan penempatan casing, dan menjamin keselamatan sumur.</p>
+      <ul><li><b>TVD</b> (True Vertical Depth) ≠ <b>MD</b> (Measured Depth) — TVD hanya mengukur kedalaman vertikal lurus ke bawah, MD mengikuti panjang lintasan sumur sesungguhnya (termasuk bagian miring).</li></ul>
+      <div class="formula">P = F / A &nbsp;&nbsp;(Pressure = Force / Area)</div>
+      <div class="formula">Mud Gradient (psi/ft) = Mud Weight (ppg) × 0.052</div>
+      <div class="formula">Hydrostatic Pressure (psi) = Mud Weight (ppg) × 0.052 × TVD (ft)</div>
+      <p><b>Formation/Pore Pressure</b>: tekanan hasil resultan gaya geomekanik + tekanan fluida pada batuan.<br>
+      <b>Fracture Pressure</b>: nilai tekanan saat formasi mulai pecah/retak.</p>
+      <div class="formula">Formation Pressure &lt; Mud Hydrostatic &lt; Fracture Pressure</div>
+      <ul>
+        <li><b>Overbalanced</b>: Mud Hydrostatic &gt; Formation Pressure (mud lebih berat, berisiko fluid loss)</li>
+        <li><b>Underbalanced</b>: Mud Hydrostatic &lt; Formation Pressure (mud lebih ringan, berisiko kick/well flow)</li>
+      </ul>
+
+      <h3>C. Well Size</h3>
+      <p>Diameter lubang bor yang dibuat pada formasi — menentukan ukuran casing, alat bor, sirkulasi lumpur, dan desain komplesi.</p>
+      <ul>
+        <li>Urutan casing dari yang pertama dipasang hingga terakhir: <b>Conductor → Surface Casing → Intermediate Casing → Production Casing/Liner</b></li>
+        <li>Pemilihan diameter dilakukan dari <b>bawah ke atas</b> (bottom-up design)</li>
+        <li>Bit size = hole size; bit harus bisa melewati casing di atasnya (bit size &lt; casing drift ID)</li>
+        <li>Bit interval terakhir harus sedikit lebih besar dari OD connector casing produksi agar casing bisa masuk dan ada ruang untuk mud cake, centralizer, scratcher</li>
+      </ul>
+    </div>
+
+    <div class="section-block">
+      <h2><span class="num">03</span> Well Components</h2>
+      <h3>A. Casing Design</h3>
+      <p>Casing adalah pipa baja yang dipasang di dalam sumur, berlapis-lapis dari permukaan hingga reservoir untuk melindungi sumur.</p>
+      <table style="width:100%; border-collapse:collapse; font-size:13.5px; margin:8px 0;">
+        <tr style="background:var(--rig-navy); color:#fff;"><th style="padding:6px; text-align:left;">Casing</th><th style="padding:6px; text-align:left;">Fungsi Utama</th></tr>
+        <tr style="background:#fff;"><td style="padding:6px; border-bottom:1px solid #ccc;"><b>Conductor</b></td><td style="padding:6px; border-bottom:1px solid #ccc;">Casing pertama; cegah broaching; menopang beban aksial seluruh sumur</td></tr>
+        <tr style="background:var(--rig-paper-2);"><td style="padding:6px; border-bottom:1px solid #ccc;"><b>Surface Casing</b></td><td style="padding:6px; border-bottom:1px solid #ccc;">Casing terpenting untuk lindungi manusia & lingkungan; casing pertama dengan BOP terpasang</td></tr>
+        <tr style="background:#fff;"><td style="padding:6px; border-bottom:1px solid #ccc;"><b>Intermediate Casing</b></td><td style="padding:6px; border-bottom:1px solid #ccc;">Mengisolasi formasi bertekanan berbeda / zona bermasalah (loss circulation, formasi tidak stabil)</td></tr>
+        <tr style="background:var(--rig-paper-2);"><td style="padding:6px;"><b>Production Casing/Liner</b></td><td style="padding:6px;">Casing sepanjang seluruh sumur; mengisolasi seluruh wellbore; memfasilitasi komplesi</td></tr>
+      </table>
+      <p><b>Prinsip Desain Kekuatan Casing:</b></p>
+      <div class="formula">Casing Strength ≥ Casing Load</div>
+      <ul>
+        <li>Burst Strength ≥ Burst Load (tekanan dari dalam ke luar)</li>
+        <li>Collapse Strength ≥ Collapse Load (tekanan dari luar ke dalam)</li>
+        <li>Axial Strength ≥ Axial Load (gaya tarik/tension)</li>
+      </ul>
+      <p><b>Contoh kode casing:</b> <span class="formula">18-5/8", 115 ppf, K-55, R-3, BTC</span> → OD, berat per satuan panjang, grade baja, panjang range, tipe coupling/connection.</p>
+
+      <h3>B. Wellhead Design</h3>
+      <p>Peralatan yang dipasang di permukaan, di atas sumur — fungsinya menahan casing/tubing dan menyegel sumur untuk kontrol tekanan.</p>
+      <ul>
+        <li><b>Casing Head</b> — dilas ke ujung atas casing, dasar untuk komponen di atasnya</li>
+        <li><b>Casing Spool</b> — akses samping untuk memantau/memompa fluida antar pipa</li>
+        <li><b>Tubing Spool/Head</b> — menahan tubing produksi</li>
+        <li><b>Tubing Head Adapter</b> — menghubungkan tubing spool ke tree</li>
+        <li><b>Tree (Christmas Tree)</b> — panel kontrol valve & gauge untuk mengelola aliran sumur</li>
+        <li><b>Choke</b> — valve yang dapat diatur untuk mengontrol tekanan & laju alir</li>
+        <li><b>Production Line</b> — pipa penyalur minyak/gas ke storage/processing</li>
+      </ul>
+
+      <h3>C. Cement Design</h3>
+      <p>Proses memompa cement slurry ke dalam sumur untuk mengisi ruang antara casing dan formasi batuan — tujuan utamanya menyegel & menahan casing secara permanen.</p>
+      <ol>
+        <li><b>Run Casing</b> — casing baja diturunkan ke lubang bor</li>
+        <li><b>Pump Cement</b> — slurry semen dipompa turun lewat casing, naik kembali mengisi annulus</li>
+        <li><b>Displace with Mud</b> — lumpur bor mendorong semen ke posisinya; plug memisahkan semen dari lumpur</li>
+        <li><b>WOC (Wait On Cement)</b> — menunggu semen mengeras seperti beton hingga casing tersegel permanen</li>
+      </ol>
+    </div>
+
+    <div class="section-block">
+      <h2><span class="num">04</span> Well Execution</h2>
+      <h3>A. Drilling Rig</h3>
+      <p>Rangkaian peralatan yang mengebor sumur untuk mencapai sumber daya migas/panas bumi.</p>
+      <p><b>Kategori berdasarkan lokasi:</b></p>
+      <div class="chip-row">
+        <span class="chip">Onshore → Oil & Gas Well, Geothermal</span>
+        <span class="chip">Offshore → Deep Water, Surface Stack, Swamp Barge</span>
+      </div>
+      <p><b>Jenis rig migas:</b> Jack Up Rig, Semi Submersible, Drillship, Swamp Barge, Land Rig</p>
+      <p><b>5 Sistem Utama Rig:</b></p>
+      <ul>
+        <li><b>Power System</b> — untuk rotasi, hoisting, sirkulasi fluida, mud cleaning, peralatan bantu, BOP (umumnya diesel)</li>
+        <li><b>Hoisting System</b> — menjalankan & menarik rangkaian pengeboran; terdiri dari crown block, traveling block, drilling hook, drawworks, drum brake</li>
+        <li><b>Rotary System</b> — top drive system (elektrik & hidrolik) memutar rangkaian pemboran</li>
+        <li><b>Circulating System</b> — mud pump, mud tank, shale shaker, desander, desilter, solid control equipment</li>
+        <li><b>Well Control System</b> — BOP (Blowout Preventer): diverter, pipe rams, blind/shear rams — mencegah pelepasan fluida bertekanan tinggi secara tak terkendali</li>
+      </ul>
+
+      <h3>B. Drilling Tools</h3>
+      <p>Peralatan yang digunakan untuk membuat wellbore dan mendukung proses pengeboran — mengebor lubang, menyalurkan rotasi & beban ke bit, mensirkulasikan lumpur.</p>
+      <p><b>BHA (Bottom Hole Assembly)</b> terdiri dari: Mud Motor, MWD/LWD, Stabilizer, Drill Collar, HWDP — ditambah <b>Drilling Bit</b> di paling bawah dan <b>Drill Pipe</b> di atasnya menuju permukaan.</p>
+
+      <h3>C. Drilling Fluid</h3>
+      <p>Fluida (disebut juga lumpur bor) yang disirkulasikan selama operasi pengeboran.</p>
+      <p><b>Fungsi:</b> mendinginkan & melumasi bit, membawa cutting ke permukaan, mengontrol tekanan formasi, menjaga stabilitas lubang bor.</p>
+      <p>Terdiri dari fluida dasar (air/minyak) + zat terlarut + padatan tersuspensi:</p>
+      <ul>
+        <li><b>Solid particles</b> — ditambahkan sengaja untuk mengontrol properti mud (mis. Barite, Bentonite)</li>
+        <li><b>Drilling solid</b> — cutting hasil pengeboran</li>
+        <li><b>Fluid</b> — dapat mengandung zat terlarut (garam, polimer)</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ===================== FLASHCARDS ===================== -->
+  <div class="panel" id="flash">
+    <div class="fc-controls">
+      <div class="fc-counter" id="fcCounter">Kartu 1 / 20</div>
+      <button class="btn secondary" id="fcShuffle">🔀 Acak Kartu</button>
+    </div>
+    <div class="fc-stage">
+      <div class="fc-card" id="fcCard">
+        <div class="fc-face front">
+          <div class="eyebrow">Istilah</div>
+          <div class="content" id="fcFront">-</div>
+        </div>
+        <div class="fc-face back">
+          <div class="eyebrow">Penjelasan</div>
+          <div class="content" id="fcBack">-</div>
+        </div>
+      </div>
+    </div>
+    <p class="hint">Klik kartu untuk membalik</p>
+    <div class="fc-nav">
+      <button class="btn secondary" id="fcPrev">← Sebelumnya</button>
+      <button class="btn" id="fcNext">Selanjutnya →</button>
+    </div>
+  </div>
+
+  <!-- ===================== QUIZ ===================== -->
+  <div class="panel" id="quiz">
+    <div id="quizContainer"></div>
+    <div class="score-bar">
+      <span>SKOR PILIHAN GANDA</span>
+      <span id="scoreDisplay">0 / 0 dijawab</span>
+    </div>
+  </div>
+
+  <!-- ===================== DIFFICULT PARTS ===================== -->
+  <div class="panel" id="hard">
+
+    <div class="diff-block">
+      <h2>1. TVD vs MD — Sering Tertukar</h2>
+      <p><b>TVD (True Vertical Depth)</b> adalah kedalaman vertikal murni diukur lurus ke bawah dari permukaan (RKB), seolah kita menjatuhkan tali lurus ke bawah.</p>
+      <p><b>MD (Measured Depth)</b> adalah panjang lintasan sumur yang sebenarnya diukur mengikuti jalur pipa/drill string, termasuk bagian yang miring/melengkung.</p>
+      <div class="diagram">Sumur VERTIKAL:        Sumur BERBELOK (miring setelah KOP):
+   TVD = MD               TVD < MD  (selalu!)
+   (garis lurus)          karena jalur lebih panjang
+                          daripada jarak vertikal lurus
+
+Contoh dari slide:
+   Sumur A (vertikal) : 30 ft TVD = 30 ft MD
+   Sumur B (miring)   : 30 ft TVD, tapi 50 ft MD</div>
+      <div class="why">💡 Kenapa penting? TVD dipakai untuk menghitung tekanan hidrostatik (karena tekanan hanya dipengaruhi ketinggian kolom fluida vertikal), sedangkan MD dipakai untuk menghitung panjang pipa/casing yang dibutuhkan secara fisik.</div>
+    </div>
+
+    <div class="diff-block">
+      <h2>2. Menghitung Tekanan Hidrostatik</h2>
+      <p>Rumus dasar: <b>P = F/A</b>. Untuk kolom fluida di sumur, ini disederhanakan jadi:</p>
+      <div class="formula">HP (psi) = Mud Weight (ppg) × 0.052 × TVD (ft)</div>
+      <p>Angka <b>0.052</b> adalah konstanta konversi ppg (pound per gallon) ke psi/ft. Air tawar (8.33 ppg) punya gradient sekitar 0.433 psi/ft.</p>
+      <div class="example-box">
+Contoh (dari slide "Well A"):
+HP = Gradient × TVD
+   = 0.59 psi/ft × 8.900 ft
+   = 5.251 psi
+      </div>
+      <div class="why">💡 Titik jebakan umum: jika soal memberi TVD dan MD berbeda (sumur berbelok), gunakan TVD, BUKAN MD, untuk menghitung tekanan hidrostatik!</div>
+    </div>
+
+    <div class="diff-block">
+      <h2>3. Jendela Berat Lumpur (Mud Weight Window)</h2>
+      <p>Ini konsep paling sering membingungkan pemula: mengapa berat lumpur tidak boleh terlalu ringan ATAU terlalu berat?</p>
+      <div class="diagram">   Fracture Pressure  ─────────────  ← batas ATAS (mud terlalu berat 
+                                          → formasi pecah/rekah, fluid loss)
+                        
+        ZONA AMAN
+     (Operating Mud
+      Weight Window)
+                        
+   Pore/Formation Pressure ─────────  ← batas BAWAH (mud terlalu ringan
+                                          → kick, formasi fluid masuk sumur)</div>
+      <p><b>Overbalanced</b> (Mud Hydrostatic &gt; Formation Pressure): lebih aman dari segi well control, tapi berisiko fluid loss, differential sticking, kerusakan formasi.</p>
+      <p><b>Underbalanced</b> (Mud Hydrostatic &lt; Formation Pressure): fluida formasi bisa masuk ke sumur (kick) → berisiko blowout jika tak terkontrol.</p>
+      <div class="why">💡 Ingat urutannya sebagai satu garis angka: Formation Pressure &lt; Mud Hydrostatic (target) &lt; Fracture Pressure. Casing dipasang bertahap justru untuk "mereset" jendela ini tiap kali margin semakin sempit di kedalaman tertentu.</div>
+    </div>
+
+    <div class="diff-block">
+      <h2>4. Logika Ukuran Casing & Bit (Telescoping)</h2>
+      <p>Diagram "casing seating chart" pada slide sering terlihat rumit, padahal logikanya sederhana: seperti teleskop, tiap casing yang dipasang lebih dalam harus lebih KECIL dari casing di atasnya (karena harus masuk melalui casing sebelumnya).</p>
+      <div class="diagram">Permukaan   [ 20" casing ]   ← paling besar, dipasang PALING AWAL
+                 ↓  bit 17-1/2" mengebor lubang di dalam casing 20"
+            [ 13-3/8" casing ]
+                 ↓  bit 12-1/4"
+            [ 9-5/8" casing ]      ← makin dalam, makin kecil
+                 ↓  bit 8-1/2"
+            [ 7" casing / liner ]  ← paling kecil, paling dalam</div>
+      <p><b>Aturan kunci:</b></p>
+      <ul>
+        <li>Perencanaan dilakukan dari <b>bawah ke atas</b> (mulai dari ukuran casing produksi yang dibutuhkan reservoir, baru dihitung mundur ke ukuran-ukuran di atasnya)</li>
+        <li>Bit size = hole size (ukuran mata bor = ukuran lubang yang terbentuk)</li>
+        <li>Bit yang dipakai harus cukup besar untuk memberi ruang casing + coupling + mud cake + centralizer, tapi cukup kecil untuk tetap masuk melalui casing di atasnya</li>
+      </ul>
+      <div class="why">💡 Cara membaca chart casing seating: ikuti garis panah dari bawah (casing production) ke atas — setiap "bit and hole size" adalah lubang yang dibor SEBELUM casing di atasnya (yang lebih besar) dipasang.</div>
+    </div>
+
+    <div class="diff-block">
+      <h2>5. Perbedaan Jenis Well Trajectory</h2>
+      <p>Keempat jenis trajektori dibedakan oleh KOMBINASI komponen lintasan yang dimilikinya:</p>
+      <div class="diagram">Vertical  : [Vertical]
+Slant/J   : [Vertical] → [Build] → [Tangent]                         (berhenti miring, tidak balik tegak)
+S-Type    : [Vertical] → [Build] → [Tangent] → [2nd Build]           (balik ke vertikal di bawah)
+Horizontal: [Vertical] → [Build] → [Tangent] → [2nd Build/Horizontal] (berakhir horizontal penuh)</div>
+      <div class="why">💡 Tipe "S" dan Horizontal sama-sama punya dua fase "build" (dua kali berubah sudut), bedanya S-Type berhenti pada sudut tertentu sedangkan Horizontal terus dibelokkan hingga ~90° (mendatar).</div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+/* ---------- TAB SWITCHING ---------- */
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
+  });
+});
+
+/* ---------- FLASHCARD DATA ---------- */
+let flashcards = [
+  {f:"RKB", b:"Rotary Kelly Bushing — titik referensi elevasi di permukaan tempat kedalaman sumur mulai diukur."},
+  {f:"KOP", b:"Kick-off Point — titik di mana lintasan sumur mulai dibelokkan dari vertikal."},
+  {f:"EOB", b:"End of Build — titik akhir dari bagian 'build' (kenaikan sudut) pada lintasan sumur."},
+  {f:"EOH", b:"End of Hold — titik akhir dari bagian tangent (sudut konstan/lurus)."},
+  {f:"TVD", b:"True Vertical Depth — kedalaman vertikal sebenarnya, diukur lurus ke bawah dari permukaan."},
+  {f:"MD (Measured Depth)", b:"Panjang lintasan sumur sesungguhnya yang diukur mengikuti jalur pipa, termasuk bagian miring/lengkung. MD ≥ TVD."},
+  {f:"Formation / Pore Pressure", b:"Tekanan hasil resultan dari gaya geomekanik dan tekanan fluida yang menekan wellbore."},
+  {f:"Fracture Pressure", b:"Nilai tekanan di mana formasi mulai mengalami breakdown atau retak (crack)."},
+  {f:"Overbalanced", b:"Kondisi saat tekanan hidrostatik lumpur LEBIH BESAR dari tekanan formasi — berisiko fluid loss."},
+  {f:"Underbalanced", b:"Kondisi saat tekanan hidrostatik lumpur LEBIH KECIL dari tekanan formasi — berisiko kick/blowout."},
+  {f:"Conductor Casing", b:"Casing pertama yang dipasang; mencegah broaching dan menopang beban aksial seluruh sumur."},
+  {f:"Surface Casing", b:"Casing terpenting untuk melindungi manusia & lingkungan di permukaan; casing pertama yang dipasangi BOP."},
+  {f:"Intermediate Casing", b:"Casing untuk mengisolasi formasi dengan tekanan pori/rekah berbeda atau zona bermasalah."},
+  {f:"Production Casing/Liner", b:"Casing yang membentang sepanjang seluruh sumur untuk mengisolasi wellbore & memfasilitasi komplesi."},
+  {f:"Burst / Collapse / Axial Strength", b:"Tiga parameter kekuatan casing: burst (tahan tekanan dari dalam), collapse (tahan tekanan dari luar), axial (tahan gaya tarik)."},
+  {f:"Tree (Christmas Tree)", b:"Bagian wellhead paling atas berupa panel kontrol valve & gauge untuk mengelola aliran sumur."},
+  {f:"Choke", b:"Valve yang dapat diatur pada wellhead untuk mengontrol tekanan dan laju alir fluida."},
+  {f:"BOP (Blowout Preventer)", b:"Sistem well control yang mencegah pelepasan fluida bertekanan tinggi secara tak terkendali dari formasi bawah permukaan."},
+  {f:"WOC (Wait On Cement)", b:"Tahap menunggu cement slurry mengeras (seperti beton) sebelum melanjutkan operasi pengeboran."},
+  {f:"BHA (Bottom Hole Assembly)", b:"Rangkaian alat di ujung bawah drill string: Bit, Mud Motor, MWD/LWD, Stabilizer, Drill Collar, HWDP."},
+];
+let fcIndex = 0;
+let flipped = false;
+
+function renderCard(){
+  document.getElementById('fcFront').textContent = flashcards[fcIndex].f;
+  document.getElementById('fcBack').textContent = flashcards[fcIndex].b;
+  document.getElementById('fcCounter').textContent = `Kartu ${fcIndex+1} / ${flashcards.length}`;
+  document.getElementById('fcCard').classList.remove('flipped');
+  flipped = false;
+}
+document.getElementById('fcCard').addEventListener('click', ()=>{
+  flipped = !flipped;
+  document.getElementById('fcCard').classList.toggle('flipped', flipped);
+});
+document.getElementById('fcNext').addEventListener('click', ()=>{
+  fcIndex = (fcIndex+1) % flashcards.length;
+  renderCard();
+});
+document.getElementById('fcPrev').addEventListener('click', ()=>{
+  fcIndex = (fcIndex-1+flashcards.length) % flashcards.length;
+  renderCard();
+});
+document.getElementById('fcShuffle').addEventListener('click', ()=>{
+  for(let i=flashcards.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [flashcards[i],flashcards[j]]=[flashcards[j],flashcards[i]];
+  }
+  fcIndex=0;
+  renderCard();
+});
+renderCard();
+
+/* ---------- QUIZ DATA ---------- */
+const quizData = [
+  {
+    type:'mcq',
+    q:"Apa perbedaan utama antara TVD dan MD pada sumur yang berbelok (deviated well)?",
+    opts:[
+      "TVD dan MD selalu sama nilainya",
+      "TVD mengukur kedalaman vertikal lurus ke bawah, sedangkan MD mengikuti panjang lintasan sumur sesungguhnya sehingga MD ≥ TVD",
+      "MD hanya dipakai untuk sumur vertikal, TVD untuk sumur horizontal",
+      "TVD selalu lebih besar dari MD"
+    ],
+    correct:1
+  },
+  {
+    type:'mcq',
+    q:"Casing manakah yang PALING PERTAMA dipasang dan berfungsi menopang beban aksial seluruh sumur?",
+    opts:["Production Casing","Intermediate Casing","Conductor","Surface Casing"],
+    correct:2
+  },
+  {
+    type:'mcq',
+    q:"Sebuah sumur dikatakan 'Underbalanced' jika...",
+    opts:[
+      "Tekanan hidrostatik lumpur lebih besar dari tekanan formasi",
+      "Tekanan hidrostatik lumpur lebih kecil dari tekanan formasi",
+      "Tekanan hidrostatik lumpur sama dengan tekanan rekah",
+      "Berat lumpur sama dengan berat air tawar"
+    ],
+    correct:1
+  },
+  {
+    type:'mcq',
+    q:"Komponen BHA (Bottom Hole Assembly) berikut ini BUKAN termasuk bagian BHA, yaitu...",
+    opts:["Stabilizer","Drill Collar","Drill Pipe (bagian utama menuju permukaan)","HWDP"],
+    correct:2
+  },
+  {
+    type:'mcq',
+    q:"Bagian wellhead yang berfungsi sebagai 'panel kontrol' berisi valve dan gauge untuk mengelola aliran sumur disebut...",
+    opts:["Casing Spool","Tubing Head Adapter","Tree (Christmas Tree)","Casing Head"],
+    correct:2
+  },
+  {
+    type:'mcq',
+    q:"Mengapa bit size untuk mengebor interval terakhir harus SEDIKIT LEBIH BESAR dari OD connector casing produksi?",
+    opts:[
+      "Agar bit lebih cepat berputar",
+      "Agar casing bisa masuk dan tersedia ruang untuk mud cake, centralizer, dan scratcher",
+      "Karena aturan API mewajibkan bit selalu lebih besar dari casing manapun",
+      "Untuk mengurangi biaya pengeboran"
+    ],
+    correct:1
+  },
+  {
+    type:'mcq',
+    q:"Jenis trajektori sumur yang lintasannya kembali ke posisi vertikal setelah fase tangent disebut...",
+    opts:["Vertical Type","Slant (J) Type","\"S\" Type","Horizontal Type"],
+    correct:2
+  },
+  {
+    type:'calc',
+    q:"Hitung inklinasi rata-rata (dari vertikal) yang dibutuhkan untuk mencapai target reservoir yang berjarak 3.000 ft ke arah timur dengan TVD 8.000 ft. Gunakan rumus: Inklinasi(°) = arctan(Horizontal Distance / TVD)",
+    answer:"Inklinasi = arctan(3.000 / 8.000) = arctan(0,375) ≈ 20,6°.\n\nKarena ada area hutan lindung di permukaan (tidak bisa bor lurus turun), jenis lintasan yang paling sesuai adalah Slant/J-Type — cukup satu kali build ke sudut ~20,6° lalu tangent lurus ke target, tanpa perlu kembali vertikal (S-Type) atau mendatar penuh (Horizontal)."
+  },
+  {
+    type:'calc',
+    q:"Sebuah sumur memiliki gradien tekanan formasi 0,55 psi/ft pada kedalaman TVD 7.500 ft. Berapa tekanan hidrostatik formasi tersebut, dan berapa Equivalent Mud Weight (ppg) minimum agar sumur tetap overbalanced (gunakan HP = Mud Weight × 0,052 × TVD)?",
+    answer:"HP formasi = 0,55 psi/ft × 7.500 ft = 4.125 psi\n\nUntuk overbalanced, mud weight minimum dicari dari:\n4.125 = MW × 0,052 × 7.500\nMW = 4.125 / (0,052 × 7.500) = 4.125 / 390 ≈ 10,58 ppg\n\nJadi berat lumpur harus di atas ±10,58 ppg (dengan margin keamanan tambahan sesuai trip margin) agar sumur tetap overbalanced."
+  },
+  {
+    type:'essay',
+    q:"Jelaskan dengan kata-katamu sendiri mengapa urutan pemasangan casing dilakukan secara 'telescoping' (dari besar ke kecil, dari atas ke bawah), padahal perencanaan ukurannya justru dihitung dari bawah ke atas (bottom-up design)?",
+    answer:"Contoh jawaban: Karena setiap casing yang dipasang lebih dalam harus bisa melewati/masuk ke dalam casing yang sudah terpasang di atasnya, maka secara fisik ukurannya harus semakin kecil ke arah bawah (itulah sebabnya pemasangan terlihat seperti teleskop). Namun ukuran yang benar-benar 'wajib' dipenuhi berasal dari kebutuhan reservoir/produksi di titik paling dalam (misalnya ukuran production casing/liner yang harus pas dengan target komplesi) — sehingga perencana harus mulai menghitung dari ukuran itu, lalu menambah 'ruang' ke atas untuk bit & casing yang lebih besar di setiap interval sebelumnya."
+  }
+];
+
+const quizContainer = document.getElementById('quizContainer');
+let answered = 0;
+let totalMcq = quizData.filter(q=>q.type==='mcq').length;
+
+quizData.forEach((item, idx)=>{
+  const block = document.createElement('div');
+  block.className = 'q-block' + (item.type!=='mcq' ? ' calc' : '');
+
+  if(item.type === 'mcq'){
+    block.innerHTML = `
+      <div class="q-num">SOAL ${idx+1} · PILIHAN GANDA</div>
+      <div class="q-text">${item.q}</div>
+      <div class="opts" id="opts-${idx}"></div>
+    `;
+    const optsDiv = block.querySelector(`#opts-${idx}`);
+    item.opts.forEach((opt,oi)=>{
+      const o = document.createElement('div');
+      o.className='opt';
+      o.textContent = opt;
+      o.addEventListener('click', ()=>{
+        if(optsDiv.dataset.locked) return;
+        optsDiv.dataset.locked = "1";
+        [...optsDiv.children].forEach((c,ci)=>{
+          if(ci===item.correct) c.classList.add('correct');
+          else if(ci===oi) c.classList.add('wrong');
+        });
+        answered++;
+        document.getElementById('scoreDisplay').textContent = `${answered} / ${totalMcq} dijawab`;
+      });
+      optsDiv.appendChild(o);
+    });
+  } else if(item.type === 'calc'){
+    block.innerHTML = `
+      <div class="q-num">SOAL ${idx+1} · HITUNGAN</div>
+      <div class="q-text">${item.q.replace(/\n/g,'<br>')}</div>
+      <textarea class="essay-input" placeholder="Tuliskan langkah perhitunganmu di sini..."></textarea>
+      <button class="reveal-btn">Lihat Jawaban</button>
+      <div class="answer-box">${item.answer.replace(/\n/g,'<br>')}</div>
+    `;
+    const btn = block.querySelector('.reveal-btn');
+    const ans = block.querySelector('.answer-box');
+    btn.addEventListener('click', ()=>{
+      ans.classList.toggle('show');
+      btn.textContent = ans.classList.contains('show') ? 'Sembunyikan Jawaban' : 'Lihat Jawaban';
+    });
+  } else {
+    block.innerHTML = `
+      <div class="q-num">SOAL ${idx+1} · ESAI</div>
+      <div class="q-text">${item.q}</div>
+      <textarea class="essay-input" placeholder="Tulis jawabanmu di sini..."></textarea>
+      <button class="reveal-btn">Lihat Contoh Jawaban</button>
+      <div class="answer-box">${item.answer}</div>
+    `;
+    const btn = block.querySelector('.reveal-btn');
+    const ans = block.querySelector('.answer-box');
+    btn.addEventListener('click', ()=>{
+      ans.classList.toggle('show');
+      btn.textContent = ans.classList.contains('show') ? 'Sembunyikan Jawaban' : 'Lihat Contoh Jawaban';
+    });
+  }
+  quizContainer.appendChild(block);
+});
+document.getElementById('scoreDisplay').textContent = `0 / ${totalMcq} dijawab`;
+</script>
+</body>
+</html>
