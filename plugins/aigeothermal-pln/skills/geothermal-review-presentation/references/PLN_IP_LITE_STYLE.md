@@ -35,25 +35,19 @@ The rasterized backgrounds are intentional: they preserve the approved corporate
 - Body: Helvetica Regular; labels / metrics may use Helvetica Bold.
 - Do not bundle font files.
 
-## Approved lightweight palette
+## Palet (mengikuti skill presentasi-pln-ip)
 
-| Name | Hex | Typical use |
+| Token | Hex | Pakai |
 |---|---|---|
-| Deep Teal | `#1F7292` | strong emphasis |
-| PLN Blue | `#006699` | titles, charts, outlines |
-| Energy Teal | `#0DAD8E` | positive/complete status |
-| Light Aqua | `#68CFD6` | secondary fills, technical callouts |
-| Dark Teal | `#205A72` | cover title, executive framing |
-| PLN Yellow | `#FFFF00` | very limited highlight only |
-| Sky Blue | `#3CAFF2` | chart/data accent |
+| PRIMARY | `#008AAC` | Bagian topik pada judul, garis judul kolom/header tabel, seri chart yang disorot |
+| DARK | `#05365B` | Angka kunci, seri chart kedua, teks beraksen |
+| TINT | `#D1EDF3` | Latar panel tanpa garis tepi, sel "—", seri pembanding |
+| A1 / A4 | `#1B4F60` / `#29537B` | Seri chart tambahan |
+| Abu / Outline | `#4D4D4D` / `#C0C0C0` | Keterangan, nomor halaman / garis antarbaris |
+| Lampu lalu lintas | `#22B44A` `#EFCF06` `#E00102` | **Hanya** penanda status (selesai / dalam proses / terbuka) di satu kolom, dengan legenda |
+| Tingkat risiko | `#1B7F3B` `#22B44A` `#EFCF06` `#F08C00` `#E00102` | **Hanya** matriks risiko 5×5 |
 
-Neutrals: white, near-white, light gray, charcoal.
-
-### Review severity colors
-Only for technical-review severity, not as corporate branding:
-- High: `#C00000`
-- Medium: `#FFC000`
-- Low / positive: `#0DAD8E`
+Prioritas temuan ditulis sebagai teks (Tinggi/Sedang/Rendah). Teks tidak diwarnai merah/kuning, karena warna lampu lalu lintas khusus untuk kolom status.
 
 ## Content-slide safe area
 
@@ -66,7 +60,7 @@ Do not cover the top-right logos or the subtle bottom master artwork.
 
 ## Relevant frameworks only
 
-1. Executive review summary: 3–5 messages + compact KPI cards.
+1. Ringkasan eksekutif: deret 2–4 angka kunci tanpa kartu berwarna (`add_kpi_row`) + 3–5 pesan utama.
 2. Scope / evidence basis: scope, coverage, basis, revision.
 3. Findings overview: ID, issue, priority, confidence, target locator, KB basis.
 4. Detailed finding: finding, potential impact, evidence/comparator, recommendation.

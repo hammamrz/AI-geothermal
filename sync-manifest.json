@@ -31,8 +31,8 @@
     },
     {
       "path": "geothermal-knowledge/references/GAYA_BAHASA.md",
-      "sha256": "b7d38f20c41b546e7e488e77a2f77a0989ba9563c390664ee5938c2301b9890b",
-      "size": 5418
+      "sha256": "832e21f644d45f48c0dd6527be2c753513d3a5949c62484636734a72031961c5",
+      "size": 7525
     },
     {
       "path": "geothermal-knowledge/references/KB/KB_INDEX.md",
@@ -43,6 +43,11 @@
       "path": "geothermal-knowledge/references/KB/KB_MANIFEST.json",
       "sha256": "56ef72e4a33c4b66ed743b2333b4f25095affaadd711df2d4bfc6cebb85ebe71",
       "size": 24773
+    },
+    {
+      "path": "geothermal-knowledge/references/kosakata-anti-ai.md",
+      "sha256": "db69d51032ad12f71bf9218ebe636ee2a707cbdbc4b26bb9852b471baff97c21",
+      "size": 7442
     },
     {
       "path": "geothermal-knowledge/scripts/kb_fetch.py",
@@ -71,8 +76,363 @@
     },
     {
       "path": "geothermal-review-presentation/SKILL.md",
-      "sha256": "84c0e2306ed97771fc050f24bf25d35cd5cbe4b38ab49fb26f2689a85a1edeb6",
-      "size": 10495
+      "sha256": "1db934d4dc482095f572b2bda47753479b952772f6bc7d33bf3a210869b3efec",
+      "size": 14684
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/LISENSI.md",
+      "sha256": "da0aab36b41544b26d8d3c22a41f7fa47376905e4c7d7e759381b483a1bdc3a6",
+      "size": 1169
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/KATALOG.md",
+      "sha256": "048938f921596e15b296418db6b4f76c2c83a6cc2f2c736f887ce9281b5224cc",
+      "size": 3848
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/LICENSE-tabler.txt",
+      "sha256": "b740a1d46122672da62833e97f7e7c8a13fa85cbc7445b584b297cc00dde93db",
+      "size": 1073
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/air.svg",
+      "sha256": "c5c43685cd44d30442361c2050777c6796f40bf25c7997d2573d05d6810cb2a9",
+      "size": 575
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/anggaran.svg",
+      "sha256": "4f08d6965f6d9bd97ecd94eb78432631fbd2fb0e4061ec8629ad420735020052",
+      "size": 493
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/beban-listrik.svg",
+      "sha256": "73603bbe07c146c952a94788cf455f40dd8cbfccd3e9d59eae41413e3f7a9898",
+      "size": 556
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/bess.svg",
+      "sha256": "63182f2cc94e64b60a320cdd9e03675b4b116c0d38d20c486bbd0d944802b1ec",
+      "size": 598
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/biaya.svg",
+      "sha256": "e95bc6abd9d8db7f4132ca936bcc2aae9e33454842d197dfb6f2d9de1354e86f",
+      "size": 765
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/bisnis.svg",
+      "sha256": "e3bf4e397b34b5dcfc4efa2444b35bbc8872490145a4b747764e3a7929f57292",
+      "size": 571
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/daftar-periksa.svg",
+      "sha256": "89706ae4425e15044e28e3abadd596e236974a2ccb8c46e5175131eccdd54865",
+      "size": 506
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/daur-ulang.svg",
+      "sha256": "0f4a8638dcae5d0998929acce8a1ed111e315fcbcfc556db81108d36b51bb6fb",
+      "size": 689
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/dokumen.svg",
+      "sha256": "b76d018034764160f7661768f56a38003ed208a20843781a0a04aaae01dcbf66",
+      "size": 547
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/durasi.svg",
+      "sha256": "532f64e0527e85cf01f2b6ba90ce56806203c2bf59c59e56a2455e1c9a32b125",
+      "size": 530
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/ebt.svg",
+      "sha256": "b661e18f1dc686659f811ea050b13aade9cd7a31962fd5b3ebb89e6222bab61a",
+      "size": 490
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/gas.svg",
+      "sha256": "c538208d9e75d5e75bbaa9e83f2c95274aa444fafe4c7e4d7fb6dbd008a1d68f",
+      "size": 599
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/global.svg",
+      "sha256": "ab71e6f58782ae4b2aa099ca869627c6051840f95e727d261f0d994c9fac7619",
+      "size": 542
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/grafik-batang.svg",
+      "sha256": "5fbe60a66fbebaf0a06d4b5bede3af05301d9f580c4f8f7bd65a39077389e4ae",
+      "size": 668
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/grafik-garis.svg",
+      "sha256": "0a2ec43a92e585dfc29e515cedaf1fc656c466bab5a6b9e0aa0a56f0c384f88a",
+      "size": 428
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/grafik-pai.svg",
+      "sha256": "d92006fee8c7b33a807afba8825d4645efefd17a3b8604494c0a7642a7379e33",
+      "size": 531
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/grafik-sebar.svg",
+      "sha256": "7927f23a6218e25fa4075be7e3133f0f803a0328a20eb058b7fba04f0cb6573b",
+      "size": 624
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/ide.svg",
+      "sha256": "3617f3cd3f835b03b9d8d4feeaa180fa3d436a01de8e109ced052e419f9fa7e0",
+      "size": 518
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/investasi.svg",
+      "sha256": "5c6606eedeb7590f678152615c1bc71edc3cae567d8cc73d1dd0ebe95ab68261",
+      "size": 699
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/jadwal.svg",
+      "sha256": "f4f100a6d558a176becb265b2fd2210e7fd6ffbbd205223d6be9a47b656eb19a",
+      "size": 589
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/kajian.svg",
+      "sha256": "e579b69a4b978f702908a48b1bef74d9ac73df4679cb1a6074c567bec2748c41",
+      "size": 422
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/kas.svg",
+      "sha256": "c07d07c4e372ee1c1377078cf40844a6e66d6acc5f7b234b2c11b151049935ac",
+      "size": 580
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/keamanan.svg",
+      "sha256": "19ef0a4888688ea415b611b7c9e085134683a7fbdce5517be1f722a65e28928d",
+      "size": 548
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/keberlanjutan.svg",
+      "sha256": "29eae909b201bfd47859e379a9ff72a379d4d191193af6251f47528f41fc9283",
+      "size": 551
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/kemitraan.svg",
+      "sha256": "217aae10c0f6e16bb72df00c49087f350f35786aef1f88ea03a2bfe43170253a",
+      "size": 617
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/kinerja.svg",
+      "sha256": "b226d26b9b8f030d9ce66d58cdd25f5a287ebf9fffbd7f24c9da7c0e4fa7ca87",
+      "size": 526
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/laporan.svg",
+      "sha256": "d58847492f890b8beedc7eff543860219e0f382e46d2c2695107d64ae434b9ba",
+      "size": 618
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/listrik.svg",
+      "sha256": "f18f1b4476d1f1ba018219131fee671f2a7ac286c9eb3aa83ea72274e17f34e5",
+      "size": 402
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/lokasi.svg",
+      "sha256": "980c1cccd35d4244cf1625306e900d9b54f512e1ba253c61ffb2b1374746f04d",
+      "size": 491
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/masyarakat.svg",
+      "sha256": "bc0b74ab0d5f6ab82ffbbab5e1f751d23105606fd5bcac81ccf868130cc68c5f",
+      "size": 595
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/mesin.svg",
+      "sha256": "37f5bafee6840a1c1e2faa26955284b90ef8ef829290202bef79a5ab6d940ac4",
+      "size": 664
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/milestone.svg",
+      "sha256": "2f6eff19f8284b3379d4330b264376e7ae5496e12b8da970b3537b36f795c881",
+      "size": 457
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/mitigasi.svg",
+      "sha256": "9c3d5fac4793c7df5b3f2418037f16cd2bb7ba217ca5ee619e17b715b2720364",
+      "size": 502
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/operasi.svg",
+      "sha256": "d71136dfd83ad19efe1777d01768a5d23d7b295de5dde3b1fccc50806809a423",
+      "size": 944
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/paparan.svg",
+      "sha256": "c6dccc252ebb4236ec36093d7edfd989671026d47a394cfb47d364f5ed58d32c",
+      "size": 536
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/pemantauan.svg",
+      "sha256": "49dc6603fb775c31b004431972b66075b1a239dc98489f638db73c66386702e4",
+      "size": 532
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/pembangkit.svg",
+      "sha256": "335e85dc75bde07fde91a933ced2f77d9d30b77743a6a793d7348356e967b1e1",
+      "size": 579
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/pemeliharaan.svg",
+      "sha256": "aac6ae77bd7d24d3819ed1ccc7262ca1b57444b541fc3dc90ee837bbbe6a6e7c",
+      "size": 575
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/penanggung-jawab.svg",
+      "sha256": "69f816170b084ba12a60bfcf706e0fa7ac7ebc3ff850e15591c90244b45b9bd8",
+      "size": 473
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/pendanaan.svg",
+      "sha256": "ba532c2d12e97465ee586d59cb824fd2ecfa351cbfc055d87df4ef775a1e17e4",
+      "size": 575
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/percepatan.svg",
+      "sha256": "bd4cd3e27278d3c5a84b9480437d9c8bb10907540d01824ae2b0da6a16a0e84b",
+      "size": 585
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/perhitungan.svg",
+      "sha256": "8579ecd4981afe130e70240b3776534f1b76faefa3cf09d116409078d87115dc",
+      "size": 715
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/persentase.svg",
+      "sha256": "f14f110278bb96f3f4c02da05728bdc6901cc878928d0de4694d39c589dd6b27",
+      "size": 488
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/persetujuan.svg",
+      "sha256": "339eb6deb19f8933157abf194ab5d1915cc18d5eed463488f8a63c16117e3d23",
+      "size": 561
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/pertukaran.svg",
+      "sha256": "b37e7394c5fbeb57fd6303a77415c579d914d267dde77641f3399d91ab457a8a",
+      "size": 415
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/peta-jalan.svg",
+      "sha256": "3f6c02674686366d6c6a4753f4428062da544a046edef644d29061f218201cb4",
+      "size": 527
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/pltb.svg",
+      "sha256": "c3c6e653d3c8533893407a4286ee985a3b772113599fd17a20fa52477e3bb5f9",
+      "size": 621
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/plts.svg",
+      "sha256": "9e483c4a5493a1f17f3ae194be91bc75c50928030e4083b6ff5d6cc202ce8920",
+      "size": 730
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/portofolio.svg",
+      "sha256": "6a8c582d98be904df095ace2d05c60bea39a3aaf42ca7bd461ca6cec0f299042",
+      "size": 457
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/regulasi.svg",
+      "sha256": "fa9014a74954947839e8087974a8d35dd12c76fa67a1bfe344f79cf6f2d8e0a6",
+      "size": 498
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/risiko.svg",
+      "sha256": "fc82f02dc9702293cb8609a8aed3242c0fe5f5b3337d79d341aa9343b4526ad4",
+      "size": 563
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/siklus.svg",
+      "sha256": "12927e445fd886d0e0fd538ba60fbea56ff8a456204481e233f77ad322e65062",
+      "size": 475
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/sistem.svg",
+      "sha256": "bc5ca95d7c1fdfb98dfb0cc91c87f3e2faccd9e8263c6d28f19120cd0fde8b3d",
+      "size": 694
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/struktur-organisasi.svg",
+      "sha256": "afeb36b8b42a5a6c3229b2038d12b14e0df856cb9b4f45d206f7e1ec9d1c1d31",
+      "size": 744
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/surat.svg",
+      "sha256": "5f27eaf548faab23f994093fa56cc9011b8457a1f2b26dc50e7ed5afe95727df",
+      "size": 485
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/tabel.svg",
+      "sha256": "e60f7b59ea11f99bc5f2a14be14eed7b54dc64b75ce3ad19012c9218d5241442",
+      "size": 502
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/tagihan.svg",
+      "sha256": "208759bfe80417013207cb1d07ccdd8ead398b51ec49abb1333de8356bfb0dfa",
+      "size": 460
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/target.svg",
+      "sha256": "a4849dde7384523b8f68f26ed69d38b49d9af51be3ccb0f833ceb7591ad5e689",
+      "size": 555
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/tim.svg",
+      "sha256": "2d196e620662a694bf579893db6a4d3b42557a2a6484174fe46029f2bcbae731",
+      "size": 657
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/transmisi.svg",
+      "sha256": "a8c190eb812b83ffb70e2dd26abd26e83243ff92bbfdc98bff92730561fef6a0",
+      "size": 589
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/tren-naik.svg",
+      "sha256": "9895747ef9c2c05b2a9fc67ae9e5366252769ee7b3951e97eb20c5253b9f29ce",
+      "size": 416
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/tren-turun.svg",
+      "sha256": "3d37c7375c8c0306c9f609814b8dc5982e50b81ce6c867004dc127919fcd9ffa",
+      "size": 421
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/icons/svg/waktu.svg",
+      "sha256": "0c005862acb00c423d3e72619d938c518675a4f6deff13bf5368fac5ad943105",
+      "size": 452
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/maps/indonesia.json",
+      "sha256": "5d056d8d45349a260d12d062bbba7d94ebc4ea1252aebff5697a0eccd510d09b",
+      "size": 109394
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/plnip_deck.py",
+      "sha256": "5410494c336c315bcfe279e3587eec9823e641bbca66db6a3b38cf1a1733639d",
+      "size": 45884
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/plnip_grafis.py",
+      "sha256": "416a8fa74c8101b287d121806a19282c1a3f1237e34ae925b0100355deffa99e",
+      "size": 62090
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/svg_render.py",
+      "sha256": "7308cb87ba6b4440ca23faa5a216c774b20fd695604cca52ea46bd99434fe81a",
+      "size": 9896
+    },
+    {
+      "path": "geothermal-review-presentation/assets/pustaka/tvv_deck.py",
+      "sha256": "bad531b0c7c02caa1217781e6573224b71d9a97cccee3b4e0b34e25989adbebc",
+      "size": 51774
     },
     {
       "path": "geothermal-review-presentation/references/MASTER_ASSET_PROVENANCE.md",
@@ -86,13 +446,33 @@
     },
     {
       "path": "geothermal-review-presentation/references/PLN_IP_LITE_STYLE.md",
-      "sha256": "f6fa29c71a387c94197e78a530f4b51db8ae151440a382af71745d86a0c2b4e7",
-      "size": 4011
+      "sha256": "cde01f6aa665f7bd8a36ce9f242b7d9e53b726620a02839370b30779e85dd13c",
+      "size": 4280
     },
     {
       "path": "geothermal-review-presentation/references/TECHNICAL_REVIEW_PPT_STRUCTURE.md",
       "sha256": "308d64ce120c8483ef711744a988bd5afecdde9c3e41e835fafec8d9e7e76bc3",
       "size": 3476
+    },
+    {
+      "path": "geothermal-review-presentation/references/aturan-slide.md",
+      "sha256": "b6df0f4c02475c5ef4311d035b3c18beeb88b97d05c6edaafc78f8f1f0d6fcac",
+      "size": 26491
+    },
+    {
+      "path": "geothermal-review-presentation/references/aturan-tvv.md",
+      "sha256": "c053e2eee72fca06da03d388452340ac4bea5169ad6abb8114252bda6006270c",
+      "size": 6023
+    },
+    {
+      "path": "geothermal-review-presentation/references/galeri/galeri-grafis-plnip.jpg",
+      "sha256": "5b1695a5b4de6560911b8b21db7a87d6c5c5601e10f070882b29aa77a8cdd0a0",
+      "size": 252405
+    },
+    {
+      "path": "geothermal-review-presentation/references/galeri/galeri-tvv.jpg",
+      "sha256": "54718ab804845dacf5a91676b27e41bd2c240c85baff08531f3f349b5966d046",
+      "size": 332972
     },
     {
       "path": "geothermal-review-presentation/references/master_assets/MASTER_CLOSING.jpg",
@@ -110,9 +490,24 @@
       "size": 284692
     },
     {
+      "path": "geothermal-review-presentation/references/pedoman-plnip.md",
+      "sha256": "0c4d34000f01d7d5d5abb336e0cff1d1ed6e9082ec92b2a55a0364fbaf2de778",
+      "size": 6184
+    },
+    {
+      "path": "geothermal-review-presentation/references/pola-layout.md",
+      "sha256": "31fd6f30d1ef9174a4bda72e8de338658583be2ed668c91302ded234792f09e6",
+      "size": 20849
+    },
+    {
       "path": "geothermal-review-presentation/scripts/build_review_ppt.py",
-      "sha256": "5f4e1980f482f6c2888e3abaf3a1c5ad9c79376109ed5c09826965e06b0d66b1",
-      "size": 32541
+      "sha256": "c42dc1204c5efe0031b8f57cbee41bfc8ba9f3c11f58a2d397e86f44236bdb3e",
+      "size": 31097
+    },
+    {
+      "path": "geothermal-review-presentation/scripts/check_deck.py",
+      "sha256": "ac0154d11cdd61c3924433029cf056360e60333c6f0072991943bd50883cbe5c",
+      "size": 32673
     }
   ]
 }

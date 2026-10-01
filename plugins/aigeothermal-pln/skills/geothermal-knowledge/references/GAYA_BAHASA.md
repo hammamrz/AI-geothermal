@@ -33,6 +33,9 @@ Tulislah seperti seorang *engineer* senior PLN Indonesia Power yang menyusun lap
 ## 4. Angka, satuan, dan rujukan
 
 - Ikuti angka dan satuan pada sumber. Beri spasi di antara angka dan satuan (250 °C, 15 bar-g, 2.100 m MD).
+- Format angka Indonesia: desimal koma (1,2), ribuan titik (2.100), dan "Rp 410 miliar".
+- Singkatan ditulis lengkap pada pemakaian pertama, misalnya *non-productive time* (NPT) atau *blowout preventer* (BOP).
+- Jangan memakai *em dash* (—) untuk menyambung kalimat. Gunakan titik, koma, atau titik dua. Tanda pisah pendek (–) hanya untuk rentang ("hal. 45–47").
 - Rujukan sumber ditulis ringkas: "GEO-0007, hal. 21" atau "Drilling Program Rev. 1, Bab 4.2, hal. 18".
 
 ## 5. Contoh sebelum dan sesudah
@@ -73,3 +76,21 @@ Tulislah seperti seorang *engineer* senior PLN Indonesia Power yang menyusun lap
 | reinjection | reinjeksi |
 | deliverability | *deliverability* |
 | review | kajian atau *review* (pilih satu dan gunakan secara konsisten) |
+
+## 7. Kosakata yang terasa "AI" (dari skill presentasi-pln-ip dan presentasi-tvv)
+
+Daftar lengkap ada di `kosakata-anti-ai.md` (folder yang sama). Ringkasnya:
+
+- **Hapus atau ganti kata besar yang kosong**: komprehensif, holistik, sinergi, optimalisasi, transformasi, krusial, esensial, "memainkan peran penting", "secara signifikan" (tanpa angka), "dalam rangka", "yang mana", "hal ini". Ganti dengan cakupan, angka, atau kata kerja biasa.
+- **Pakai istilah Inggris yang lazim, bukan padanan yang jarang dipakai**: *milestone* (bukan tonggak), *timeline* (bukan linimasa), *online*/*offline* (bukan daring/luring), *email*, *link*, *dashboard*, *platform*, *software*. Istilah Indonesia yang memang lazim tetap dipakai (pembangkit, sumur, pemboran, pengadaan, perizinan, kajian).
+- **Teks pendamping grafis** cukup menjelaskan apa yang ditampilkan dan cara membacanya, tanpa "Implikasi:", "Hal ini menunjukkan bahwa …", atau kolom "*Insight*".
+- **Hindari pola struktur mesin**: "tidak hanya X, tetapi juga Y" yang berulang, tiga serangkai kata sifat, kata sambung di setiap awal kalimat, kalimat pasif beruntun tanpa pelaku, serta penghalus berlebihan ("dapat dikatakan", "berpotensi untuk dapat").
+- **Tampilan**: tanpa emoji atau simbol penanda (✅ 🚀 ↔), dan huruf tebal hanya untuk satu hal terpenting per paragraf.
+
+### Swa-periksa sebelum menyerahkan jawaban atau dokumen
+
+1. Sudahkah kata-kata kosong di atas dan kata sambung yang tidak perlu dihapus?
+2. Apakah setiap kata penilaian ("signifikan", "memadai") punya angka atau bukti?
+3. Bila dibacakan, apakah terdengar seperti *engineer* PLN IP yang sedang menjelaskan di rapat?
+4. Apakah istilah Inggris dicetak miring dan padanan yang jarang dipakai sudah dihindari?
+
