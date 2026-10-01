@@ -50,7 +50,13 @@ def build(out: Path) -> Path:
         for f in sorted(SKILLS.rglob("*")):
             rel = f.relative_to(SKILLS)
             if f.is_file() and not skip(rel) and rel.parts[: len(KB_FILES)] != KB_FILES:
-                z.write(f, f"{ARC}/modules/{rel.as_posix()}")
+                # Hanya boleh ada satu SKILL.md di ZIP skill claude.ai; sync.py memetakannya kembali.
+                arc_rel = rel.with_name("MODULE.md") if rel.name == "SKILL.md" else rel
+                z.write(f, f"{ARC}/modules/{arc_rel.as_posix()}")
+    with zipfile.ZipFile(zpath) as z:
+        skill_md = [n for n in z.namelist() if n.rsplit("/", 1)[-1].lower() == "skill.md"]
+    if skill_md != [f"{ARC}/SKILL.md"]:
+        raise SystemExit(f"ZIP harus berisi tepat satu SKILL.md, ditemukan: {skill_md}")
     print(f"{zpath}\t{zpath.stat().st_size / 1024 / 1024:.2f} MiB" + ("\t(berisi token baca)" if config.get("token") else ""))
     return zpath
 

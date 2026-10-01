@@ -29,13 +29,16 @@ from pathlib import Path
 
 SKILL_DIR = Path(__file__).resolve().parents[1]
 KB_DIR = SKILL_DIR / "references" / "KB"
-FILES_DIR = KB_DIR / "files"
 MANIFEST = KB_DIR / "KB_MANIFEST.json"
 INDEX = KB_DIR / "KB_INDEX.md"
 PLUGIN_ROOT = SKILL_DIR.parents[1]
 CHANGELOG = PLUGIN_ROOT / "CHANGELOG.md"
 REPO_ROOT = PLUGIN_ROOT.parents[1]
 DEFAULT_INBOX = REPO_ROOT / "kb-inbox"
+# File KB mentah disimpan di luar plugin (<repo>/kb/files/) agar plugin tetap kecil;
+# entri manifest menyimpan path relatif terhadap <repo>/kb/ (mis. "files/GEO-0001__x.pdf").
+KB_STORE = REPO_ROOT / "kb"
+FILES_DIR = KB_STORE / "files"
 
 # GitHub menolak file >100 MB; beri margin.
 MAX_FILE_BYTES = 95 * 1024 * 1024
@@ -94,7 +97,7 @@ def save_manifest(data: dict) -> None:
     active = [e for e in entries if e.get("status", "ACTIVE") == "ACTIVE"]
     lines = [
         "# Geothermal Embedded Knowledge Base Index", "",
-        "Status: ACTIVE", "Index mode: LIGHT / ROUTING ONLY", "Knowledge base root: `references/KB/files/`",
+        "Status: ACTIVE", "Index mode: LIGHT / ROUTING ONLY", "Knowledge base root: `kb/files/` di repo GitHub (diunduh per ID dengan `scripts/kb_fetch.py`)",
         f"KB revision: {data.get('kb_revision', 0)} (updated {data.get('updated_at', 'n/a')})", "",
         "Metadata router only; original source files are the source of truth. Files are added and indexed without deep-reading their contents.",
         "Index ini dibangun ulang otomatis oleh `scripts/kb_manager.py`; jangan edit manual.", "",
@@ -188,7 +191,7 @@ def add_source(src: Path, data: dict, meta: dict, supersedes: str | None = None)
     new_id = next_id(data["entries"])
     # Prefix ID mencegah tabrakan nama sambil mempertahankan basename asli.
     relative = Path("files") / f"{new_id}__{safe_name(src.name)}"
-    dest = KB_DIR / relative
+    dest = KB_STORE / relative
     shutil.copy2(src, dest)
     entry = {
         "id": new_id, "file": relative.as_posix(), "title": meta.pop("title", None) or src.stem,
@@ -353,11 +356,14 @@ def ingest(inbox: Path, data: dict, dry_run: bool = False) -> dict:
 
 def validate(data: dict) -> list[str]:
     errs, seen = [], {}
+    if not FILES_DIR.exists():
+        # Salinan plugin terinstal tidak membawa file KB mentah; hanya repo/CI yang memvalidasi file.
+        return errs
     ids = [e.get("id") for e in data.get("entries", [])]
     for dup in sorted({i for i in ids if ids.count(i) > 1}):
         errs.append(f"ID duplikat: {dup}")
     for e in data.get("entries", []):
-        path = KB_DIR / e.get("file", "")
+        path = KB_STORE / e.get("file", "")
         if not path.is_file():
             errs.append(f"{e.get('id')}: file hilang: {e.get('file')}")
             continue
@@ -369,10 +375,10 @@ def validate(data: dict) -> list[str]:
         if actual_hash in seen:
             errs.append(f"Hash duplikat: {seen[actual_hash]} dan {e.get('id')}")
         seen[actual_hash] = e.get("id")
-    tracked = {str((KB_DIR / e["file"]).resolve()) for e in data.get("entries", [])}
+    tracked = {str((KB_STORE / e["file"]).resolve()) for e in data.get("entries", [])}
     for p in FILES_DIR.rglob("*") if FILES_DIR.exists() else []:
         if p.is_file() and p.name != ".gitkeep" and str(p.resolve()) not in tracked:
-            errs.append(f"File tidak terdaftar di manifest: {p.relative_to(KB_DIR)}")
+            errs.append(f"File tidak terdaftar di manifest: {p.relative_to(KB_STORE)}")
     return errs
 
 

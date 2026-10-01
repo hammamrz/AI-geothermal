@@ -1,6 +1,6 @@
 ---
 name: geothermal-comment-sheet-report
-description: Generate a structured PLN Indonesia Power-style DOCX comment sheet / technical review report from geothermal subsurface, drilling, and well review findings, with automatic TOC, list of figures, list of tables, traceable findings, data gaps, action plan, and closeout status.
+description: Buat comment sheet / technical review report DOCX bergaya KKP PLN IP dari hasil review geothermal: TOC otomatis, tabel temuan, data gap, action plan, dan status closeout.
 ---
 
 # Geothermal Comment Sheet Report

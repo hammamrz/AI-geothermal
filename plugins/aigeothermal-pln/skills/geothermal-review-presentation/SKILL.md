@@ -1,6 +1,6 @@
 ---
 name: geothermal-review-presentation
-description: Buat PowerPoint editable hasil technical review subsurface, drilling, dan well geothermal dengan 3-layout master PLN Indonesia Power. Struktur deck mengikuti backbone formal Technical Review / Comment Sheet Report: scope, document register, methodology, findings/comments, cross-discipline risks, data gaps, action plan, closeout status, dan source traceability.
+description: Buat presentasi PPTX technical review geothermal dengan 3-layout master PLN IP: ringkasan, temuan, risiko lintas disiplin, data gap, action plan, closeout, dan sumber.
 ---
 
 # Geothermal Review Presentation

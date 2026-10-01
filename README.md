@@ -1,6 +1,6 @@
-# AIGeothermal-PLN — skill Claude
+# AIGeothermal-PLN
 
-**AIGeothermal-PLN** adalah satu skill Claude untuk technical review geothermal PLN Indonesia Power. Skill ini berisi empat modul, dan Claude memilih modul yang relevan secara otomatis:
+**AIGeothermal-PLN** adalah asisten Claude untuk technical review geothermal PLN Indonesia Power. Ada empat modul, dan Claude memilih modul yang relevan secara otomatis:
 
 | Modul | Fungsi |
 |---|---|
@@ -9,38 +9,39 @@
 | `geothermal-comment-sheet-report` | DOCX comment sheet / technical review report (shell KKP PLN IP) |
 | `geothermal-review-presentation` | PPTX technical review (3-layout master PLN IP) |
 
-Skill bisa dipakai oleh **akun individual masing-masing, termasuk Free, Pro, dan Max**, tanpa perlu organisasi Claude.
+AIGeothermal-PLN dipakai di akun Claude masing-masing, tanpa perlu organisasi Claude. Cara pasangnya bergantung pada paket akun:
 
-## Cara kerja update otomatis
+| Akun | Cara pasang | Update |
+|---|---|---|
+| **Pro / Max** | **Plugin** dari marketplace GitHub (bagian 1A) | Otomatis (*Sync automatically*) |
+| **Free** | **Skill ZIP** (bagian 1B), karena plugin tidak tersedia di paket Free | Otomatis: setiap percakapan mengambil modul dan index KB terbaru dari GitHub |
 
-```
- Admin ── upload file ke kb-inbox/ (GitHub web) ──► main
-                                                     │
-                     workflow "KB ingest & sync manifest"
-                     (ID GEO-xxxx, KB_INDEX, CHANGELOG, sync-manifest.json)
-                                                     │
-                                                     ▼
- Akun pengguna (skill AIGeothermal-PLN, di-upload sekali)
-   └─ setiap percakapan: sync.py update ──► ambil modul + index KB terbaru dari GitHub
-   └─ saat butuh sumber:  sync.py kb-get GEO-xxxx ──► unduh file KB itu saja
-```
-
-- ZIP skill cukup di-upload **sekali** per akun.
-- Instruksi modul dan KB diambil versi terbarunya dari repo ini di awal setiap percakapan. Perubahan dari admin sampai ke semua akun tanpa upload ulang.
-- Bila GitHub tidak terjangkau, skill memakai salinan bawaan dan memberi tahu pengguna.
-- Upload ulang ZIP hanya perlu bila folder `standalone/` (SKILL.md induk atau `sync.py`) berubah. Hal ini jarang terjadi dan akan dicatat di `CHANGELOG`.
+File KB mentah disimpan di folder `kb/` repo dan **tidak** ikut di dalam plugin maupun ZIP. Claude hanya mengunduh file KB yang dibutuhkan saat menjawab, sehingga plugin dan ZIP tetap kecil (±3 MB) walaupun KB terus bertambah.
 
 ---
 
-## 1. Untuk pengguna: memasang skill (sekali saja)
+## 1. Untuk anggota tim: memasang AIGeothermal-PLN (sekali saja)
+
+Syarat untuk semua akun: di claude.ai, buka **Settings → Capabilities**, lalu aktifkan **Code execution and file creation**. Akses jaringan cukup yang default, karena sudah mencakup GitHub.
+
+### 1A. Akun Pro / Max: pasang sebagai plugin
+
+1. Buka **Customize → Plugins → Add → Add marketplace**.
+2. Isi `hammamrz/AI-geothermal`, lalu tambahkan.
+3. Di daftar plugin, pilih **AIGeothermal-PLN** → **Add**.
+4. Buka marketplace tersebut, lalu aktifkan **Sync automatically** agar update dari admin otomatis masuk. Bisa juga ditarik manual lewat **Check for updates**.
+5. Uji dengan pertanyaan: *"Apa saja isi KB geothermal AIGeothermal-PLN?"*
+
+Plugin ini otomatis juga tersedia di Cowork dan Claude Code dengan akun yang sama.
+
+### 1B. Akun Free: pasang sebagai skill ZIP
 
 1. Unduh **[AIGeothermal-PLN.zip](https://github.com/hammamrz/AI-geothermal/releases/download/skills-latest/AIGeothermal-PLN.zip)**. Link ini selalu mengarah ke versi terbaru dan bisa dibuka tanpa akun GitHub.
-2. Di claude.ai (web atau desktop): **Settings → Capabilities**, lalu pastikan **Code execution and file creation** aktif. Pada pengaturan akses jaringan, cukup yang default (*package managers*, sudah mencakup GitHub), atau izinkan `github.com`, `api.github.com`, dan `raw.githubusercontent.com`.
-3. Buka **Customize → Skills → + → Upload a skill**, lalu pilih `AIGeothermal-PLN.zip`.
-4. Pastikan skill **aigeothermal-pln** dalam keadaan aktif.
-5. Uji dengan pertanyaan: *"Apa saja isi KB geothermal AIGeothermal-PLN?"* Claude seharusnya menjalankan sinkronisasi dan menyebut `KB revision`.
+2. Buka **Customize → Skills → + → Upload a skill**, lalu pilih ZIP tadi. **Jangan diekstrak.**
+3. Pastikan skill **aigeothermal-pln** aktif.
+4. Uji dengan pertanyaan: *"Apa saja isi KB geothermal AIGeothermal-PLN?"* Claude menjalankan sinkronisasi lalu menyebut `KB revision`.
 
-Catatan untuk akun Free: skill dapat dipakai, tetapi batas penggunaan Free kecil. Membaca PDF besar atau membuat DOCX/PPTX lebih cepat menghabiskan kuota.
+ZIP cukup di-upload sekali. Upload ulang hanya perlu bila admin mengumumkan perubahan pada skill induk (folder `standalone/`), yang jarang terjadi. Batas pemakaian paket Free kecil, sehingga membaca PDF besar atau membuat DOCX/PPTX lebih cepat menghabiskan kuota.
 
 ### Pengguna Claude Code (opsional)
 
@@ -48,7 +49,7 @@ Catatan untuk akun Free: skill dapat dipakai, tetapi batas penggunaan Free kecil
 /plugin install aigeothermal-pln --marketplace hammamrz/AI-geothermal
 ```
 
-Setelah itu buka `/plugin` → **Marketplaces** → `aigeothermal-pln-marketplace` → **Enable auto-update**. Di Claude Code, keempat modul tampil sebagai skill terpisah di bawah plugin **AIGeothermal-PLN**, dan file KB ikut terunduh bersama plugin.
+Setelah itu buka `/plugin` → **Marketplaces** → `aigeothermal-pln-marketplace` → **Enable auto-update**.
 
 ---
 
@@ -67,7 +68,7 @@ Hanya admin yang menambah atau merevisi KB. File yang di-upload pengguna di chat
 
 File satuan tetap bisa di-upload langsung ke `kb-inbox/`, beserta sidecar `<nama-file>.meta.json` bila perlu. Detail format ada di [`kb-inbox/README.md`](kb-inbox/README.md). Untuk revisi dokumen lama, isi `supersedes` dengan ID lama (`GEO-xxxx`).
 
-Workflow tersebut menghitung SHA-256 (duplikat identik ditolak), memberi ID `GEO-xxxx`, memindahkan file ke `plugins/aigeothermal-pln/skills/geothermal-knowledge/references/KB/files/`, lalu membangun ulang `KB_MANIFEST.json`, `KB_INDEX.md`, `CHANGELOG.md`, dan `sync-manifest.json`. Entri lama yang direvisi tidak dihapus, hanya ditandai `SUPERSEDED`.
+Workflow tersebut menghitung SHA-256 (duplikat identik ditolak), memberi ID `GEO-xxxx`, memindahkan file ke `kb/files/`, lalu membangun ulang `KB_MANIFEST.json`, `KB_INDEX.md`, `CHANGELOG.md`, dan `sync-manifest.json`, serta menaikkan versi plugin. Entri lama yang direvisi tidak dihapus, hanya ditandai `SUPERSEDED`.
 
 Batas ukuran: 25 MB per upload web ke `kb-inbox/`, 2 GB per aset release, dan ±95 MB per file KB setelah diekstrak (batas GitHub). **Jangan pakai Git LFS.**
 
@@ -85,18 +86,20 @@ Repo ini publik, sehingga skill di akun mana pun bisa mengambil update tanpa log
 ## 3. Struktur repo
 
 ```
-standalone/aigeothermal-pln/        skill induk yang di-upload ke claude.ai
+standalone/aigeothermal-pln/        skill ZIP untuk akun Free
   SKILL.md                          router + langkah sinkronisasi
   scripts/sync.py                   update / kb-get / kb-search dari GitHub
   config.json                       repo & branch sumber
-plugins/aigeothermal-pln/           plugin Claude Code + sumber 4 modul
+plugins/aigeothermal-pln/           plugin (Pro/Max, Claude Code) + sumber 4 modul
   skills/geothermal-knowledge/
-    references/KB/                  KB_INDEX.md, KB_MANIFEST.json, files/
-    scripts/kb_manager.py           ingest/add/update/search/check
+    references/KB/                  KB_INDEX.md, KB_MANIFEST.json (router KB)
+    scripts/kb_manager.py           ingest/add/update/search/check (admin & CI)
+    scripts/kb_fetch.py             unduh file KB per ID dari GitHub
   skills/geothermal-review/ …
   skills/geothermal-comment-sheet-report/ …
   skills/geothermal-review-presentation/ …
   CHANGELOG.md                      riwayat plugin + setiap revisi KB
+kb/files/                           file KB mentah (GEO-xxxx__nama), dikelola workflow
 kb-inbox/                           pintu masuk file/ZIP KB baru (admin)
 docs/kb-metadata-template.csv       template metadata.csv untuk upload ZIP
 sync-manifest.json                  daftar file modul + hash (dibuat otomatis)

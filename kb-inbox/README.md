@@ -4,9 +4,9 @@ Taruh file sumber KB (PDF, PPTX, DOCX, XLSX, CSV, TXT, MD, gambar), atau satu ZI
 Setelah file masuk ke branch `main`, workflow **KB ingest & sync manifest** otomatis:
 
 1. menghitung SHA-256 dan menolak duplikat identik;
-2. memindahkan file ke `plugins/aigeothermal-pln/skills/geothermal-knowledge/references/KB/files/` dengan ID `GEO-xxxx`;
+2. memindahkan file ke `kb/files/` dengan ID `GEO-xxxx`;
 3. membangun ulang `KB_MANIFEST.json`, `KB_INDEX.md`, `CHANGELOG.md`, dan `sync-manifest.json`;
-4. meng-commit hasilnya ke `main`, sehingga semua akun yang memakai skill AIGeothermal-PLN mendapat KB terbaru pada percakapan berikutnya.
+4. menaikkan versi plugin dan meng-commit hasilnya ke `main`, sehingga semua akun (plugin maupun skill ZIP) mendapat KB terbaru.
 
 ## Upload banyak file sekaligus (disarankan)
 

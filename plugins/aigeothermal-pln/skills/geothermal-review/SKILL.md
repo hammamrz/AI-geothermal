@@ -1,6 +1,6 @@
 ---
 name: geothermal-review
-description: Review dokumen dan desain subsurface atau drilling geothermal terhadap satu embedded knowledge base plugin dengan retrieval selektif. Gunakan untuk conceptual model, target/trajectory, well design, casing/cementing, drilling program, risiko, data gap, dan temuan teknis berbasis bukti.
+description: Review dokumen/desain geothermal subsurface, drilling, dan well berbasis bukti KB: conceptual model, target, casing/cementing, drilling program, risiko, data gap, dan temuan.
 ---
 
 # Geothermal Review

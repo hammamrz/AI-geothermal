@@ -4,7 +4,7 @@ name: KB validate
 # menjalankan ingest pada salinan workspace (tidak di-commit) dan validasi KB.
 on:
   pull_request:
-    paths: ["kb-inbox/**", "plugins/**", ".claude-plugin/**", "standalone/**", "scripts/**"]
+    paths: ["kb-inbox/**", "kb/**", "plugins/**", ".claude-plugin/**", "standalone/**", "scripts/**"]
 
 permissions:
   contents: read

@@ -2,8 +2,8 @@
 """Tulis sync-manifest.json: daftar file modul (skill) + hash, dibaca oleh sync.py
 pada skill claude.ai untuk mengambil versi terbaru dari GitHub.
 
-File KB mentah (references/KB/files/) tidak dicantumkan; sync.py mengunduhnya
-sesuai kebutuhan berdasarkan KB_MANIFEST.json. Output deterministik agar commit
+File KB mentah ada di <repo>/kb/files/ (di luar plugin) dan diunduh per ID oleh
+kb_fetch.py sesuai KB_MANIFEST.json. Output deterministik agar commit
 hanya terjadi bila isi berubah.
 
 Pemakaian: python scripts/build_sync_manifest.py [--check]

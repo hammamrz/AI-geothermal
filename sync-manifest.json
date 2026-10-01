@@ -6,8 +6,8 @@
   "files": [
     {
       "path": "geothermal-comment-sheet-report/SKILL.md",
-      "sha256": "166b6a3297222756666e438dfaa672ed4c531809a5b23004d8599cc05f463bdd",
-      "size": 7621
+      "sha256": "7ccdb973d310849a8c1f7be556a1fb7b200ed6534bc48004acebd28cf8355f0e",
+      "size": 7517
     },
     {
       "path": "geothermal-comment-sheet-report/references/PLN_IP_COMMENT_SHEET_REPORT_TEMPLATE.docx",
@@ -26,8 +26,8 @@
     },
     {
       "path": "geothermal-knowledge/SKILL.md",
-      "sha256": "0667cd9dc053bde6ff49fe151f3e229d140ee5bfc641dd1ce20aefc87daa6e29",
-      "size": 6197
+      "sha256": "a90e30468d4b80ea451eaa54d1ee1933d205c24ed7265099ac9c94e3ed6f15fe",
+      "size": 6273
     },
     {
       "path": "geothermal-knowledge/references/KB/KB_INDEX.md",
@@ -40,14 +40,19 @@
       "size": 24773
     },
     {
+      "path": "geothermal-knowledge/scripts/kb_fetch.py",
+      "sha256": "0cd1c8b8154b37b9c74d0f0c50bd8d88009532e7b8bd9560e6efbd57ceba17a5",
+      "size": 4212
+    },
+    {
       "path": "geothermal-knowledge/scripts/kb_manager.py",
-      "sha256": "c69e229d536e827a6370dc51df764cdff595530fd04ec0df651b32982d79b9dd",
-      "size": 23016
+      "sha256": "a19346c5b78acf88ebdef0d13cf94e5949031a366d240031ab946dcc890ebe8f",
+      "size": 23434
     },
     {
       "path": "geothermal-review/SKILL.md",
-      "sha256": "f19e23429ec7f0862e68e6305e174a3eed3b35a704904d64bee1a2e7682fda0a",
-      "size": 4421
+      "sha256": "3662334b736b69a895202cdf318d2ff71923ba164751bd2a3b5050b64b2d90a5",
+      "size": 4310
     },
     {
       "path": "geothermal-review/references/review-checklist.md",
@@ -56,8 +61,8 @@
     },
     {
       "path": "geothermal-review-presentation/SKILL.md",
-      "sha256": "9447de9619bd3ababa00a5be1cea457574a60983c0bd782e08613de9535e899d",
-      "size": 9712
+      "sha256": "5311a03b63c4b65a39e596150f8996e06f649a5bc3611a1e52262f7eb7fbf8b2",
+      "size": 9517
     },
     {
       "path": "geothermal-review-presentation/references/MASTER_ASSET_PROVENANCE.md",
