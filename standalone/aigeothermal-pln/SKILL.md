@@ -1,6 +1,6 @@
 ---
 name: aigeothermal-pln
-description: AIGeothermal-PLN — asisten technical review geothermal PLN Indonesia Power dengan knowledge base (KB) bersama yang selalu diambil versi terbarunya dari GitHub. Gunakan untuk pertanyaan geothermal berbasis KB (subsurface, reservoir, drilling, casing/cementing, completion, well testing, standards, case study), review dokumen/desain subsurface atau drilling, pembuatan comment sheet / technical review report DOCX (shell KKP PLN IP), dan presentasi technical review PPTX (master PLN IP). Gunakan juga saat pengguna menanyakan isi, daftar, atau revisi KB geothermal.
+description: Asisten technical review geothermal PLN IP: tanya KB geothermal, review dokumen subsurface/drilling/well, buat comment sheet DOCX dan presentasi PPTX. KB terbaru diambil dari GitHub.
 ---
 
 # AIGeothermal-PLN

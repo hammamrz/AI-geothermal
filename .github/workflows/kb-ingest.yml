@@ -41,6 +41,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: main
+          fetch-depth: 0
 
       - name: Download KB files from release
         if: github.event_name == 'release' || inputs.release_tag != ''
@@ -74,12 +75,32 @@ jobs:
       - name: Rebuild sync manifest
         run: python3 scripts/build_sync_manifest.py
 
+      - name: Bump plugin version
+        # claude.ai dan Claude Code mendeteksi update plugin dari perubahan "version".
+        env:
+          BEFORE: ${{ github.event.before }}
+          EVENT: ${{ github.event_name }}
+        run: |
+          pushed_plugin=0
+          if [ "$EVENT" = "push" ] && [ -n "$BEFORE" ] && ! git diff --quiet "$BEFORE" HEAD -- plugins 2>/dev/null; then pushed_plugin=1; fi
+          if [ -n "$(git status --porcelain -- plugins kb)" ] || [ "$pushed_plugin" = "1" ]; then
+            python3 - <<'PY'
+          import json, re
+          p = "plugins/aigeothermal-pln/.claude-plugin/plugin.json"
+          d = json.load(open(p))
+          a, b, c = (int(x) for x in re.fullmatch(r"(\d+)\.(\d+)\.(\d+)", d["version"]).groups())
+          d["version"] = f"{a}.{b}.{c + 1}"
+          open(p, "w").write(json.dumps(d, ensure_ascii=False, indent=2) + "\n")
+          print("Plugin version ->", d["version"])
+          PY
+          fi
+
       - name: Commit to main
         run: |
           if [ -z "$(git status --porcelain)" ]; then echo "Tidak ada perubahan."; exit 0; fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A kb-inbox plugins/aigeothermal-pln sync-manifest.json
+          git add -A kb-inbox kb plugins/aigeothermal-pln sync-manifest.json
           rev=$(python3 -c "import json;print(json.load(open('sync-manifest.json'))['kb_revision'])")
           git commit -m "KB: ingest & sync manifest (KB revision ${rev})"
           git push origin HEAD:main

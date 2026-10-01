@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.0 — 2026-10-01
+
+- Akun Pro/Max: pasang sebagai plugin lewat **Customize → Plugins → Add marketplace** (`hammamrz/AI-geothermal`). Versi plugin naik otomatis di setiap perubahan agar update tersinkron.
+- Akun Free: skill ZIP diperbaiki agar diterima claude.ai. ZIP kini hanya berisi satu `SKILL.md` (instruksi modul disimpan sebagai `MODULE.md`), dan semua deskripsi skill ≤ 200 karakter.
+- File KB mentah dipindah dari plugin ke `kb/files/` di repo dan diunduh per ID oleh `scripts/kb_fetch.py`, sehingga plugin dan ZIP tetap ±3 MB (batas plugin claude.ai 200 MB).
+
 ## KB rev 4 — 2026-09-30
 
 - Tambah GEO-0050 — MP 07-Pengoperasian PLTP IP'16 (`files/GEO-0050__MP 07-Pengoperasian PLTP IP_16.doc`, 7699968 bytes, SHA-256 `ac728104531c…`).

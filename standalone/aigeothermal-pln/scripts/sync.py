@@ -32,6 +32,19 @@ from pathlib import Path
 
 SKILL_DIR = Path(__file__).resolve().parents[1]
 BUNDLED = SKILL_DIR / "modules"
+# claude.ai menolak ZIP skill yang berisi lebih dari satu SKILL.md, jadi instruksi modul
+# di salinan bawaan disimpan sebagai MODULE.md dan dikembalikan ke SKILL.md di folder kerja.
+BUNDLED_NAME = {"SKILL.md": "MODULE.md"}
+
+
+def bundled_path(rel: Path) -> Path:
+    return BUNDLED / rel.with_name(BUNDLED_NAME.get(rel.name, rel.name))
+
+
+def workdir_rel(bundled_file: Path) -> Path:
+    rel = bundled_file.relative_to(BUNDLED)
+    back = {v: k for k, v in BUNDLED_NAME.items()}
+    return rel.with_name(back.get(rel.name, rel.name))
 CONFIG = json.loads((SKILL_DIR / "config.json").read_text(encoding="utf-8"))
 REPO = os.environ.get("AIGEO_REPO", CONFIG["repo"])
 BRANCH = os.environ.get("AIGEO_BRANCH", CONFIG.get("branch", "main"))
@@ -110,7 +123,7 @@ def use_bundled(reason: str) -> dict:
     MODULES.mkdir(parents=True, exist_ok=True)
     for f in BUNDLED.rglob("*"):
         if f.is_file():
-            dest = MODULES / f.relative_to(BUNDLED)
+            dest = MODULES / workdir_rel(f)
             if not dest.exists() or sha256_file(dest) != sha256_file(f):
                 dest.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copy2(f, dest)
@@ -135,7 +148,7 @@ def cmd_update(args: argparse.Namespace) -> int:
                 dest = MODULES / rel
                 if dest.exists() and sha256_file(dest) == item["sha256"]:
                     continue
-                bundled = BUNDLED / rel
+                bundled = bundled_path(rel)
                 if bundled.exists() and sha256_file(bundled) == item["sha256"]:
                     dest.parent.mkdir(parents=True, exist_ok=True)
                     shutil.copy2(bundled, dest)
@@ -150,10 +163,9 @@ def cmd_update(args: argparse.Namespace) -> int:
                 dest.parent.mkdir(parents=True, exist_ok=True)
                 dest.write_bytes(data)
                 downloaded += 1
-            # Buang modul yang sudah dihapus admin; file KB unduhan tetap disimpan sebagai cache.
-            kb_files = (MODULES / KB_REL / "files").resolve()
+            # Buang file modul yang sudah dihapus admin.
             for f in list(MODULES.rglob("*")):
-                if f.is_file() and f.relative_to(MODULES).as_posix() not in wanted and kb_files not in f.resolve().parents:
+                if f.is_file() and f.relative_to(MODULES).as_posix() not in wanted:
                     f.unlink()
             state = {"source": "github", "repo": REPO, "ref": ref, "files_downloaded": downloaded, "warnings": warnings,
                      "synced_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
@@ -180,36 +192,16 @@ def ensure_synced() -> None:
 
 
 def cmd_kb_get(args: argparse.Namespace) -> int:
+    """Delegasi ke kb_fetch.py milik modul geothermal-knowledge (satu implementasi untuk plugin & skill)."""
     ensure_synced()
-    entries = {e["id"]: e for e in kb_manifest().get("entries", [])}
-    state = load_state()
-    ref = state.get("ref") or BRANCH
-    base = f"plugins/aigeothermal-pln/skills/{KB_REL.as_posix()}"
-    results, code = [], 0
-    for kb_id in args.ids:
-        e = entries.get(kb_id.upper())
-        if not e:
-            results.append({"id": kb_id, "error": "ID tidak ada di KB_MANIFEST (cek KB_INDEX.md)"})
-            code = 2
-            continue
-        dest = MODULES / KB_REL / e["file"]
-        if not (dest.exists() and sha256_file(dest) == e["sha256"]):
-            try:
-                data = http_get(raw_url(ref, f"{base}/{e['file']}"))
-            except (urllib.error.URLError, OSError) as exc:
-                results.append({"id": e["id"], "error": f"gagal mengunduh dari GitHub: {explain(exc)}"})
-                code = 2
-                continue
-            if sha256_bytes(data) != e["sha256"]:
-                results.append({"id": e["id"], "error": "SHA-256 file unduhan tidak cocok dengan manifest"})
-                code = 2
-                continue
-            dest.parent.mkdir(parents=True, exist_ok=True)
-            dest.write_bytes(data)
-        results.append({"id": e["id"], "title": e.get("title"), "status": e.get("status"),
-                        "revision": e.get("revision"), "path": str(dest)})
-    print(json.dumps(results, ensure_ascii=False, indent=2))
-    return code
+    script = MODULES / "geothermal-knowledge" / "scripts" / "kb_fetch.py"
+    env = {**os.environ, "AIGEO_REPO": REPO, "AIGEO_BRANCH": BRANCH}
+    if TOKEN:
+        env["AIGEO_TOKEN"] = TOKEN
+    ref = load_state().get("ref")
+    if ref:
+        env["AIGEO_BRANCH"] = ref
+    return subprocess.call([sys.executable, str(script), *args.ids, "--out", str(WORK / "kb-cache")], env=env)
 
 
 def cmd_kb_search(args: argparse.Namespace) -> int:

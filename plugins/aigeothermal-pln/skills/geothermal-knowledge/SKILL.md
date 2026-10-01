@@ -1,17 +1,21 @@
 ---
 name: geothermal-knowledge
-description: Telusuri knowledge base (KB) geothermal bersama yang dikelola admin di repo GitHub plugin. Gunakan untuk mencari referensi subsurface, reservoir, drilling, completion, well testing, standards, case studies, tabel, formula, dan visual dari file KB tanpa memuat seluruh KB ke context. Gunakan juga ketika pengguna menanyakan isi/daftar/revisi KB atau ingin menambahkan dokumen ke KB.
+description: Cari dan kutip referensi dari KB geothermal PLN IP (subsurface, reservoir, drilling, well, standar). Gunakan untuk pertanyaan geothermal berbasis KB atau isi/daftar/revisi KB.
 ---
 
 # Geothermal Knowledge
 
-Gunakan bahasa Indonesia, pertahankan istilah teknis sumber bila lebih tepat. Knowledge base bersifat **embedded, bersama, dan dikelola admin melalui GitHub**: seluruh file sumber berada di `references/KB/files/` dan router tunggal berada di `references/KB/KB_INDEX.md`.
+Gunakan bahasa Indonesia, pertahankan istilah teknis sumber bila lebih tepat. Knowledge base bersifat **bersama dan dikelola admin melalui GitHub**. Router tunggal (index + manifest) ikut di skill ini di `references/KB/`. File sumber mentah disimpan di repo GitHub (`kb/files/`) dan **diunduh per ID hanya saat dibutuhkan**.
 
 ## Arsitektur wajib
 
-- Hanya ada **satu knowledge base**: `references/KB/`.
+- Hanya ada **satu knowledge base**: `references/KB/KB_INDEX.md` + `KB_MANIFEST.json` sebagai router, dan file mentah di repo.
 - `KB_INDEX.md` adalah katalog/routing layer, bukan salinan isi sumber.
-- `files/` berisi file mentah asli: PDF, PPT/PPTX, DOC/DOCX, XLS/XLSX, CSV, TXT, MD, atau gambar.
+- File mentah asli (PDF, PPT/PPTX, DOC/DOCX, XLS/XLSX, CSV, TXT, MD, atau gambar) diambil dengan:
+  ```bash
+  python scripts/kb_fetch.py GEO-0003 GEO-0007
+  ```
+  Skrip mengunduh dari GitHub, memverifikasi SHA-256, dan mencetak `path` lokal tiap file (JSON). Baca file dari path itu. Bila unduhan gagal, sebutkan ID dan alasannya sebagai keterbatasan cakupan.
 - File mentah adalah source of truth. Jangan membuat salinan Markdown penuh dari setiap dokumen.
 - Jangan membaca seluruh KB saat skill aktif.
 
@@ -20,7 +24,7 @@ Gunakan bahasa Indonesia, pertahankan istilah teknis sumber bila lebih tepat. Kn
 1. Baca `references/KB/KB_INDEX.md` terlebih dahulu (atau `python scripts/kb_manager.py search <istilah>` untuk menyaring metadata tanpa membaca seluruh index bila KB sudah besar). Gunakan hanya entri `ACTIVE` sebagai evidence final.
 2. Cocokkan pertanyaan dengan `topic`, `keywords`, `document_type`, `discipline`, dan locator yang tersedia.
 3. Pilih maksimal 5 sumber kandidat pada pass pertama.
-4. Buka hanya file kandidat yang relevan. Jangan membuka semua file dalam `files/`. Bila file kandidat belum ada secara lokal (skill claude.ai `aigeothermal-pln` hanya membawa index), unduh per ID dengan `sync.py kb-get <ID>` milik skill induk.
+4. Buka hanya file kandidat yang relevan. Jangan mengunduh semua file KB. Unduh hanya file kandidat itu dengan `scripts/kb_fetch.py <ID>`.
 5. Ambil maksimal 8 bagian/range relevan total pada pass pertama.
 6. Buka konteks sekitar hanya bila diperlukan. Default sekitar 12 halaman/slide total per pass.
 7. Periksa visual hanya jika diperlukan untuk menjawab atau menjadi dasar technical finding. Default maksimum 4 visual per pass.
