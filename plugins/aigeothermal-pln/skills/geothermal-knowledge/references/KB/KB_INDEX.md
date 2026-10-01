@@ -3,14 +3,14 @@
 Status: ACTIVE
 Index mode: LIGHT / ROUTING ONLY
 Knowledge base root: `kb/files/` di repo GitHub (diunduh per ID dengan `scripts/kb_fetch.py`)
-KB revision: 5 (updated 2026-10-01T15:36:09+00:00)
+KB revision: 6 (updated 2026-10-01T15:55:47+00:00)
 
 Metadata router only; original source files are the source of truth. Files are added and indexed without deep-reading their contents.
 Index ini dibangun ulang otomatis oleh `scripts/kb_manager.py`; jangan edit manual.
 
 ## Source register
 
-Aktif: 166 · Superseded: 0
+Aktif: 167 · Superseded: 0
 
 | ID | Status | Judul | File | Disiplin | Tipe | Revisi | Topik / keyword | Locator | SHA-256 (prefix) |
 |---|---|---|---|---|---|---|---|---|---|
@@ -180,6 +180,7 @@ Aktif: 166 · Superseded: 0
 | GEO-0164 | ACTIVE | 8. casing_design_learning_kit | files/GEO-0164__8. casing_design_learning_kit.html | other | other | unknown |  |  | add295c1dc09 |
 | GEO-0165 | ACTIVE | 9. paket_belajar_directional_drilling | files/GEO-0165__9. paket_belajar_directional_drilling.html | other | other | unknown |  |  | 0ded4e69a3cd |
 | GEO-0166 | ACTIVE | list Materi | files/GEO-0166__list Materi.xlsx | other | other | unknown |  |  | 25c8645fe0a7 |
+| GEO-0167 | ACTIVE | PPT_Phase-2_Mitra_Bumi_Geothermal_DPM_6_JDS_Batch_7_2026_Final_compressed | files/GEO-0167__PPT_Phase-2_Mitra_Bumi_Geothermal_DPM_6_JDS_Batch_7_2026_Final_compressed.pdf | other | other | unknown |  |  | 015c63047c4d |
 
 ## Retrieval defaults
 

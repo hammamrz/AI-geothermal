@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "kb_revision": 5,
+  "kb_revision": 6,
   "entries": [
     {
       "id": "GEO-0001",
@@ -2159,7 +2159,20 @@
       "sha256": "25c8645fe0a7c7ff5eaebf018ba4833750a4b47f77cdafb120e69f1c7a692b82",
       "added_at": "2026-10-01T15:36:08+00:00",
       "source_channel": "zip:Jakarta.Drilling.Society.zip"
+    },
+    {
+      "id": "GEO-0167",
+      "file": "files/GEO-0167__PPT_Phase-2_Mitra_Bumi_Geothermal_DPM_6_JDS_Batch_7_2026_Final_compressed.pdf",
+      "title": "PPT_Phase-2_Mitra_Bumi_Geothermal_DPM_6_JDS_Batch_7_2026_Final_compressed",
+      "discipline": "other",
+      "document_type": "other",
+      "revision": "unknown",
+      "status": "ACTIVE",
+      "size_bytes": 53143760,
+      "sha256": "015c63047c4d1059bf6486578849a29c7d36b416062fbbe3e6f39da31ba74147",
+      "added_at": "2026-10-01T15:55:47+00:00",
+      "source_channel": "github-inbox"
     }
   ],
-  "updated_at": "2026-10-01T15:36:09+00:00"
+  "updated_at": "2026-10-01T15:55:47+00:00"
 }

@@ -1,8 +1,8 @@
 {
   "schema": 1,
   "base_path": "plugins/aigeothermal-pln/skills",
-  "kb_revision": 5,
-  "kb_updated_at": "2026-10-01T15:36:09+00:00",
+  "kb_revision": 6,
+  "kb_updated_at": "2026-10-01T15:55:47+00:00",
   "files": [
     {
       "path": "geothermal-comment-sheet-report/SKILL.md",
@@ -36,13 +36,13 @@
     },
     {
       "path": "geothermal-knowledge/references/KB/KB_INDEX.md",
-      "sha256": "a996a200d8c29027ce48ef3e0cd33d161340725b310e1f40b93ef4f577ffff20",
-      "size": 29605
+      "sha256": "af7a4ad96e75ac18175f9d9ff5d8f67d7c4ccda493111962163bdb38bf07bcbf",
+      "size": 29846
     },
     {
       "path": "geothermal-knowledge/references/KB/KB_MANIFEST.json",
-      "sha256": "306baf7325b1da168c08dd3b5f483880a9cb7ebcfccef5d8c2ac4bd9f8148a9c",
-      "size": 84202
+      "sha256": "386b893b0062fe7d7ce41b5ce6ac06b3bf84b344a20c74d7a0c628aba0169a4b",
+      "size": 84758
     },
     {
       "path": "geothermal-knowledge/references/kosakata-anti-ai.md",

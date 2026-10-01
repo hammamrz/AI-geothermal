@@ -1,5 +1,9 @@
 # Changelog
 
+## KB rev 6 — 2026-10-01
+
+- Tambah GEO-0167 — PPT_Phase-2_Mitra_Bumi_Geothermal_DPM_6_JDS_Batch_7_2026_Final_compressed (`files/GEO-0167__PPT_Phase-2_Mitra_Bumi_Geothermal_DPM_6_JDS_Batch_7_2026_Final_compressed.pdf`, 53143760 bytes, SHA-256 `015c63047c4d…`).
+
 ## KB rev 5 — 2026-10-01
 
 - Tambah GEO-0051 — 04-Casing Running (`files/GEO-0051__04-Casing Running.pptx`, 4667356 bytes, SHA-256 `d171cc2de966…`).
