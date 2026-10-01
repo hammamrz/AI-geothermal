@@ -13,7 +13,7 @@ AIGeothermal-PLN dipakai di akun Claude masing-masing, tanpa perlu organisasi Cl
 
 | Akun | Cara pasang | Update |
 |---|---|---|
-| **Pro / Max** | **Plugin** dari marketplace GitHub (bagian 1A) | Otomatis (*Sync automatically*) |
+| **Pro / Max** | **Plugin** dengan upload ZIP (bagian 1A) | Otomatis: setiap percakapan mengambil modul dan index KB terbaru dari GitHub |
 | **Free** | **Skill ZIP** (bagian 1B), karena plugin tidak tersedia di paket Free | Otomatis: setiap percakapan mengambil modul dan index KB terbaru dari GitHub |
 
 File KB mentah disimpan di folder `kb/` repo dan **tidak** ikut di dalam plugin maupun ZIP. Claude hanya mengunduh file KB yang dibutuhkan saat menjawab, sehingga plugin dan ZIP tetap kecil (±3 MB) walaupun KB terus bertambah.
@@ -24,15 +24,16 @@ File KB mentah disimpan di folder `kb/` repo dan **tidak** ikut di dalam plugin 
 
 Syarat untuk semua akun: di claude.ai, buka **Settings → Capabilities**, lalu aktifkan **Code execution and file creation**. Akses jaringan cukup yang default, karena sudah mencakup GitHub.
 
-### 1A. Akun Pro / Max: pasang sebagai plugin
+### 1A. Akun Pro / Max: pasang sebagai plugin (upload ZIP)
 
-1. Buka **Customize → Plugins → Add → Add marketplace**.
-2. Isi `hammamrz/AI-geothermal`, lalu tambahkan.
-3. Di daftar plugin, pilih **AIGeothermal-PLN** → **Add**.
-4. Buka marketplace tersebut, lalu aktifkan **Sync automatically** agar update dari admin otomatis masuk. Bisa juga ditarik manual lewat **Check for updates**.
-5. Uji dengan pertanyaan: *"Apa saja isi KB geothermal AIGeothermal-PLN?"*
+1. Unduh **[AIGeothermal-PLN-plugin.zip](https://github.com/hammamrz/AI-geothermal/releases/download/skills-latest/AIGeothermal-PLN-plugin.zip)**.
+2. Buka **Customize → Plugins → Add → Upload plugin**, lalu pilih ZIP tadi (**jangan diekstrak**).
+3. Pastikan plugin **AIGeothermal-PLN** aktif.
+4. Uji dengan pertanyaan: *"Apa saja isi KB geothermal AIGeothermal-PLN?"*
 
-Plugin ini otomatis juga tersedia di Cowork dan Claude Code dengan akun yang sama.
+Plugin ini "tipis", sama seperti skill untuk akun Free: modul dan KB terbaru diambil dari GitHub setiap kali dipakai, sehingga plugin cukup di-upload sekali. Plugin juga otomatis tersedia di Cowork dan Claude Code dengan akun yang sama.
+
+> **Kenapa tidak lewat "Add marketplace"?** Repo ini menyimpan file KB (ratusan MB), sedangkan claude.ai menolak marketplace dari repo sebesar itu ("Failed to add marketplace"). Upload ZIP plugin tidak terpengaruh ukuran repo. Untuk Claude Code, perintah marketplace di bawah tetap berfungsi.
 
 ### 1B. Akun Free: pasang sebagai skill ZIP
 
@@ -41,7 +42,7 @@ Plugin ini otomatis juga tersedia di Cowork dan Claude Code dengan akun yang sam
 3. Pastikan skill **aigeothermal-pln** aktif.
 4. Uji dengan pertanyaan: *"Apa saja isi KB geothermal AIGeothermal-PLN?"* Claude menjalankan sinkronisasi lalu menyebut `KB revision`.
 
-ZIP cukup di-upload sekali. Upload ulang hanya perlu bila admin mengumumkan perubahan pada skill induk (folder `standalone/`), yang jarang terjadi. Batas pemakaian paket Free kecil, sehingga membaca PDF besar atau membuat DOCX/PPTX lebih cepat menghabiskan kuota.
+ZIP (skill maupun plugin) cukup di-upload sekali. Upload ulang hanya perlu bila admin mengumumkan perubahan pada skill pemuat (folder `standalone/`), yang jarang terjadi. Batas pemakaian paket Free kecil, sehingga membaca PDF besar atau membuat DOCX/PPTX lebih cepat menghabiskan kuota.
 
 ### Pengguna Claude Code (opsional)
 
@@ -103,7 +104,7 @@ kb/files/                           file KB mentah (GEO-xxxx__nama), dikelola wo
 kb-inbox/                           pintu masuk file/ZIP KB baru (admin)
 docs/kb-metadata-template.csv       template metadata.csv untuk upload ZIP
 sync-manifest.json                  daftar file modul + hash (dibuat otomatis)
-scripts/build_skill_zips.py         bangun AIGeothermal-PLN.zip
+scripts/build_skill_zips.py         bangun AIGeothermal-PLN.zip (skill) dan AIGeothermal-PLN-plugin.zip (plugin)
 scripts/build_sync_manifest.py      bangun sync-manifest.json
 .claude-plugin/marketplace.json     marketplace untuk Claude Code
 .github/workflows/                  kb-ingest, kb-validate, skill-zips

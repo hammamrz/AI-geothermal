@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.5.0 — 2026-10-01
+
+- Plugin tipis untuk akun Pro/Max: `AIGeothermal-PLN-plugin.zip` di-upload langsung lewat **Customize → Plugins → Add → Upload plugin**. Isinya skill pemuat yang sama dengan skill akun Free, sehingga modul dan KB terbaru diambil dari GitHub saat dipakai. Ini menggantikan "Add marketplace" di claude.ai, yang gagal karena repo berisi ±850 MB file KB.
+- Workflow **Skill ZIP** menerbitkan kedua ZIP (skill dan plugin) di release `skills-latest`.
+
 ## KB rev 6 — 2026-10-01
 
 - Tambah GEO-0167 — PPT_Phase-2_Mitra_Bumi_Geothermal_DPM_6_JDS_Batch_7_2026_Final_compressed (`files/GEO-0167__PPT_Phase-2_Mitra_Bumi_Geothermal_DPM_6_JDS_Batch_7_2026_Final_compressed.pdf`, 53143760 bytes, SHA-256 `015c63047c4d…`).
