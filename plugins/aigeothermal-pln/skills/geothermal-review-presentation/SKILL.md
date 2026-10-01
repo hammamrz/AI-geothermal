@@ -52,7 +52,8 @@ Aturan:
 - semua slide isi = CONTENT yang sama;
 - slide terakhir = CLOSING / Terima Kasih;
 - jangan memuat atau menyalin master lain dari `skill-pptplnip`;
-- semua teks, tabel, shape, diagram, dan chart review tetap editable di atas background master.
+- semua teks, tabel, shape, diagram, dan chart review tetap editable di atas background master;
+- model grafis dan tabel diambil dari pustaka `assets/pustaka/` (salinan dari skill presentasi-pln-ip dan presentasi-tvv tanpa master dan ilustrasi unDraw), diletakkan di atas master geothermal ini.
 
 ## Struktur deck default
 
@@ -208,64 +209,91 @@ Preferred wording:
 
 Gunakan approval wording lebih kuat hanya jika governance pengguna memang mendukungnya.
 
-## Framework pemilihan visual
+## Framework visual (dari skill presentasi-pln-ip dan presentasi-tvv)
 
-Gunakan hanya framework yang relevan:
-- executive summary / KPI cards;
-- document register;
-- review workflow / methodology flow;
-- findings matrix;
-- risk / priority matrix;
-- technical concept / annotated evidence;
-- target vs KB comparison;
-- cross-discipline interface map;
-- timeline / stage-gate;
-- action / comment-resolution register;
-- closeout status panel;
-- appendix traceability.
+Deck mengikuti framework konsultan PLN IP. Aturan lengkap ada di `references/aturan-slide.md`, `references/aturan-tvv.md`, dan `references/pedoman-plnip.md`. Katalog pola slide dan model grafis ("kapan dipakai / kapan jangan") ada di `references/pola-layout.md`, dengan bentuk visualnya di `references/galeri/galeri-grafis-plnip.jpg` dan `references/galeri/galeri-tvv.jpg`.
 
-## Action title
+Aturan inti:
+- **Judul dua warna**: topik biru `#008AAC` + sub-topik hitam, satu baris (maksimal dua), tanpa titik. Tidak ada label kecil (*kicker*) di atas judul dan tidak ada garis aksen di bawahnya.
+- **Satu slide, satu pesan.** Isi disusun kiri → kanan: grafis/data di kiri, keterangan atau isi pendamping di kanan.
+- **Keterangan grafis** berisi penjelasan singkat apa yang ditampilkan dan cara membacanya (arti warna, satuan, periode). Jangan menambah implikasi atau "*so what*" yang tidak didukung hasil review.
+- **Tabel bersumbu**: baris = item, kolom = aspek. Kolom pertama tebal, header bergaris bawah biru, tanpa zebra. Sel kosong diisi "—" berlatar biru muda. Status memakai **penanda bulat lampu lalu lintas** (hijau selesai, kuning dalam proses, merah terbuka) di satu kolom, dengan legenda.
+- **Dilarang**: sudut membulat, bayangan, gradien, deretan kartu berwarna, emoji/simbol dekoratif (✅ ⏳ ↔), dan pita warna di tepi kotak.
+- **Palet PLN IP**: PRIMARY `#008AAC`, DARK `#05365B`, TINT `#D1EDF3`, abu `#4D4D4D`/`#C0C0C0`. Lampu lalu lintas hanya untuk status, dan warna tingkat risiko hanya untuk matriks risiko.
+- **Satu baris sumber** (gaya TVV) boleh dipakai di slide yang memuat bukti teknis, misalnya rincian temuan.
 
-Setiap slide konten sebaiknya punya satu pesan utama. Gunakan action title bila evidence cukup.
+### Model grafis untuk kebutuhan review
 
-Contoh buruk: `Casing Design Review`
+| Kebutuhan pada deck review | Model | Helper |
+|---|---|---|
+| Angka kunci di ringkasan (total temuan, prioritas tinggi, terbuka, *data gap*) | Deret angka kunci tanpa kartu | `G.add_kpi_row` |
+| Tahapan metodologi review | Alur proses | `G.add_flow` |
+| Sebaran temuan per disiplin dan prioritas | Chart batang bertumpuk | `G.add_stacked_chart` |
+| Daftar temuan, *data gap*, tindak lanjut | Tabel bersumbu + penanda status | `T.add_tabel` (+ `G.add_legend`) |
+| Risiko dengan kemungkinan × dampak (skala 1–5) | Matriks risiko 5×5 | `T.add_matriks_risiko` |
+| Kemajuan penyelesaian temuan/tindak lanjut | Progres | `G.add_progress` |
+| Rencana tindak lanjut bertanggal | *Gantt* / *timeline* | `G.add_gantt`, `G.add_timeline` |
+| Tahapan proyek berpintu (FEED, pemboran, uji produksi) | *Stage-gate* | `G.add_stage_gate` |
+| Proses lintas pihak (operator, kontraktor, regulator) | *Swimlane* | `G.add_swimlane` |
+| Akar masalah suatu temuan | *Issue tree* | `G.add_issue_tree` |
+| Prioritas temuan dua sumbu (dampak × kemudahan) | Matriks 2×2 | `G.add_matrix_2x2` |
+| Penilaian kualitatif per aspek | *Harvey table* | `G.add_harvey_table` |
+| Lokasi sumur/wilayah kerja | Peta Indonesia | `G.add_map` |
+| Gambar bukti (render halaman KB, skema sumur) | Gambar dimuat proporsional | `T.fit_picture` |
 
-Contoh lebih baik: `Production casing basis belum menunjukkan verifikasi thermal load pada kondisi shut-in`
+Semua model dibangun dari bentuk dan chart asli PowerPoint, sehingga tetap bisa diedit.
 
-Jangan membuat action title lebih tegas daripada evidence.
+## Judul slide
+
+Judul memakai format **topik + sub-topik**, misalnya `Temuan Teknis` `Daftar Temuan dan Status`, atau `F-001` `Beban termal *production casing* belum dihitung untuk kondisi *shut-in*`. Untuk slide rincian temuan, sub-topik berisi inti temuan. Jangan membuat judul lebih tegas daripada bukti yang tersedia.
 
 ## Data integrity
 
-- Pertahankan MD/TVD/TVDSS, unit, datum, temperature/pressure basis, static/dynamic condition, dan revision.
+- Pertahankan MD/TVD/TVDSS, satuan, datum, basis temperatur/tekanan, kondisi statis/dinamis, dan revisi.
 - Jangan mengubah angka untuk membuat chart terlihat rapi.
-- Jika comparator tidak applicable atau evidence lemah, tampilkan sebagai clarification/data gap, bukan nonconformance.
-- `confirmed nonconformance` hanya boleh digunakan bila comparator authoritative dan applicable.
-- Status, PIC, due date, dan closure evidence jangan diisi dengan tebakan.
+- Jika acuan pembanding tidak berlaku atau bukti lemah, tampilkan sebagai klarifikasi/*data gap*, bukan ketidaksesuaian.
+- Status, PIC, tanggal target, dan bukti penyelesaian jangan diisi dengan tebakan.
 
 ## Pembuatan PPTX
 
 Utamakan output **editable PPTX**.
 
-Gunakan `scripts/build_review_ppt.py` sebagai baseline generator dari JSON terstruktur. Generator v0.5.2 menerima struktur JSON technical review report dan tetap backward-compatible dengan key lama dari presentation skill.
+1. Susun JSON hasil review (format di docstring `scripts/build_review_ppt.py`), lalu jalankan:
+   ```bash
+   python scripts/build_review_ppt.py review.json output.pptx
+   ```
+   Generator sudah memakai master geothermal dan pustaka grafis di atas. Teks mendukung `*miring*` dan `**tebal**`. Untuk matriks risiko 5×5, isi `likelihood` dan `severity` (1–5) pada `key_risks`.
+2. Untuk slide tambahan yang tidak dibuat generator (mis. *gantt* tindak lanjut, *stage-gate*, peta lokasi), tulis fungsi kecil dan berikan ke `build(..., extra=...)`; slide akan disisipkan sebelum kesimpulan:
+   ```python
+   import json, sys; sys.path.insert(0, 'scripts')
+   import build_review_ppt as B          # sekaligus memuat pustaka: B.P, B.G, B.T
 
-Jangan memasukkan seluruh dokumen sumber ke JSON. Masukkan hanya hasil review dan evidence yang benar-benar dipakai.
+   def tambahan(prs, data):
+       s = B.content_slide(prs, 'Rencana Tindak Lanjut', 'Jadwal Penyelesaian')
+       B.G.add_gantt(s, periode, baris, B.L, B.BODY_TOP, B.CW)
+       B.caption(s, 'Batang menunjukkan rentang waktu tiap tindak lanjut; garis tegak = hari ini.')
+
+   B.build(json.load(open('review.json')), 'output.pptx', extra=tambahan)
+   ```
+   Lihat docstring tiap fungsi di `assets/pustaka/plnip_grafis.py` dan `tvv_deck.py` untuk parameternya. Ikon dari `assets/pustaka/icons/` memerlukan `cairosvg` (`pip install cairosvg`). Bila tidak tersedia, jangan memakai ikon.
+3. Jangan memasukkan seluruh dokumen sumber ke JSON. Masukkan hanya hasil review dan bukti yang benar-benar dipakai.
 
 ## Quality check
 
-Periksa:
-- 16:9;
-- Helvetica pada editable text;
-- cover/content/closing memakai master yang benar;
-- logo Danantara + PLN IP pada content master tidak tertutup;
-- urutan slide konsisten dengan technical review report;
-- documents reviewed dan revision tidak tertukar;
-- methodology tidak mengklaim reference yang tidak digunakan;
-- priority, status, dan confidence tidak tertukar;
-- locator sumber tersedia untuk klaim teknis material;
-- cross-discipline risks bukan sekadar duplikasi finding;
-- setiap material open finding punya closure path atau gap yang jelas;
-- angka / unit / dates match source;
-- daftar sumber hanya berisi sumber yang benar-benar digunakan;
-- closeout status tidak melebihi authority/evidence;
-- tidak ada overflow / clipped text / overlap;
-- closing Terima Kasih berada paling akhir.
+1. Jalankan `python scripts/check_deck.py output.pptx` sampai **0 FAIL** (pemeriksa dari skill presentasi-tvv). Baca setiap WARN dan perbaiki kecuali disengaja. Peringatan "tanpa slide outline" dan "judul tidak ditemukan" pada slide penutup boleh diabaikan.
+2. Render setiap slide menjadi gambar dan periksa:
+   - logo Danantara + PLN IP tidak tertutup;
+   - teks tidak terpotong atau bertumpuk;
+   - penanda status berada di tengah sel;
+   - label chart terbaca;
+   - tidak ada setengah slide yang kosong tanpa alasan.
+3. Periksa isi:
+   - urutan slide konsisten dengan laporan review;
+   - prioritas, status, dan tingkat keyakinan tidak tertukar;
+   - setiap klaim teknis material punya lokasi sumber;
+   - risiko lintas disiplin bukan sekadar mengulang temuan;
+   - setiap temuan material yang masih terbuka punya tindak lanjut atau *data gap* yang jelas;
+   - angka, satuan, dan tanggal sesuai sumber;
+   - daftar sumber hanya berisi sumber yang benar-benar dipakai;
+   - status penyelesaian tidak melampaui kewenangan atau bukti;
+   - slide penutup Terima Kasih berada paling akhir.

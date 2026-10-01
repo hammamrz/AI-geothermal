@@ -1,100 +1,87 @@
 #!/usr/bin/env python3
-"""Build a lightweight PLN IP-style geothermal technical review PPTX from structured JSON.
+"""Membangun PPTX technical review geothermal bergaya PLN IP dari JSON terstruktur.
 
-The generator mirrors the formal Technical Review / Comment Sheet Report backbone:
-cover -> executive summary -> agenda -> review control (optional) -> scope/basis ->
-documents reviewed -> methodology -> findings -> cross-discipline risks -> data gaps ->
-action/comment resolution -> conclusion/closeout -> sources -> closing.
+Struktur deck mengikuti tulang punggung Technical Review / Comment Sheet Report:
+cover -> ringkasan eksekutif -> agenda -> pengendalian dokumen (opsional) -> tujuan/lingkup ->
+dokumen yang dikaji -> metodologi -> sebaran temuan -> daftar temuan -> rincian temuan ->
+risiko antardisiplin -> data gap -> tindak lanjut -> kesimpulan -> sumber -> penutup.
 
-Usage:
+Tampilan mengikuti framework skill presentasi-pln-ip dan presentasi-tvv (pustaka di
+assets/pustaka): judul dua warna (topik biru + sub-topik hitam) tanpa label kecil di atasnya,
+tanpa garis aksen, tanpa sudut membulat/bayangan/gradien, tanpa deretan kartu; tabel bersumbu
+dengan penanda status bulat; model grafis asli PowerPoint (deret angka kunci, alur proses,
+chart bertumpuk, matriks risiko 5x5, progres). Teks mendukung *miring* dan **tebal**.
+
+Pemakaian:
     python build_review_ppt.py review.json output.pptx
 
-Preferred JSON (v0.5.2):
+Format JSON (kunci lama tetap diterima):
 {
-  "report_title": "TECHNICAL REVIEW PRESENTATION",
-  "project_name": "Project / Field Name",
-  "report_no": "TR-001",
-  "revision": "0",
-  "date": "30 September 2026",
-  "prepared_by": "...",
-  "reviewed_by": "...",
-  "approved_by": "...",
+  "report_title": "Kajian Teknis Drilling Program Sumur X",
+  "project_name": "Lapangan / proyek",
+  "report_no": "TR-001", "revision": "0", "date": "30 September 2026",
+  "prepared_by": "...", "reviewed_by": "...", "approved_by": "...",
   "executive_summary": ["...", "..."],
-  "objective": "...",
-  "scope": ["..."],
-  "review_basis": ["..."],
-  "documents_reviewed": [
-    {"title":"...","number":"...","revision":"...","date":"...","discipline":"Drilling","scope":"..."}
-  ],
-  "findings": [
-    {
-      "id":"F-001","discipline":"Drilling","location":"Doc A p.34",
-      "finding":"...","comment":"...","impact":"...","basis":"...",
-      "source":"KB file p.20-22","priority":"High","status":"Open",
-      "confidence":"High","image_path":null
-    }
-  ],
-  "key_risks": [
-    {"risk":"Resource confirmation below development target","interface":"Subsurface ↔ Development","impact":"Staging basis may need revision","related_findings":"F-001"}
-  ],
-  "data_gaps": [
-    {"id":"DG-01","gap":"...","impact":"...","required":"...","owner":"...","status":"Open"}
-  ],
-  "actions": [
-    {"id":"A-01","finding_id":"F-001","action":"...","pic":"...","due":"...","evidence":"...","status":"Open"}
-  ],
-  "conclusion":"...",
-  "overall_status":"Revision Required",
-  "references_used":["..."]
+  "objective": "...", "scope": ["..."], "review_basis": ["..."], "limitations": ["..."],
+  "methodology": ["..."],                              # opsional, 3-5 langkah
+  "documents_reviewed": [{"title","number","revision","date","discipline","scope"}],
+  "findings": [{"id","discipline","location","title","finding","comment","impact","basis",
+                "source","priority","status","confidence","image_path"}],
+  "key_risks": [{"interface","risk","impact","mitigation","related_findings",
+                 "likelihood": 1-5, "severity": 1-5}],   # likelihood+severity -> matriks 5x5
+  "data_gaps": [{"id","gap","impact","required","owner","status"}],
+  "actions": [{"id","finding_id","action","pic","due","evidence","status"}],
+  "conclusion": "...", "conditions_to_proceed": ["..."],
+  "overall_status": "Perlu revisi", "references_used": ["..."]
 }
-
-Backward-compatible aliases from the previous presentation generator are also accepted.
 """
 from __future__ import annotations
 
 import json
 import os
-import re
 import sys
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any
 
-from pptx import Presentation
-from pptx.enum.shapes import MSO_SHAPE
-from pptx.enum.text import PP_ALIGN, MSO_ANCHOR
-from pptx.dml.color import RGBColor
-from pptx.util import Inches, Pt
+PUSTAKA = Path(__file__).resolve().parent.parent / "assets" / "pustaka"
+sys.path.insert(0, str(PUSTAKA))
 
-C = {
-    "deep_teal": "1F7292", "pln_blue": "006699", "energy_teal": "0DAD8E",
-    "light_aqua": "68CFD6", "dark_teal": "205A72", "yellow": "FFFF00",
-    "sky_blue": "3CAFF2", "white": "FFFFFF", "near_white": "F6F8F9",
-    "light_gray": "D9E2E6", "mid_gray": "7A8790", "charcoal": "263238",
-    "high": "C00000", "medium": "FFC000", "low": "0DAD8E",
-}
-FONT = "Helvetica"
+import plnip_deck as P  # noqa: E402  palet, teks, bullet, judul kolom
+import plnip_grafis as G  # noqa: E402  model grafis
+import tvv_deck as T  # noqa: E402  tabel berpenanda status, matriks risiko, gambar
+
+from pptx import Presentation  # noqa: E402
+from pptx.enum.text import PP_ALIGN, MSO_ANCHOR  # noqa: E402
+from pptx.util import Inches  # noqa: E402
+
 SW, SH = 13.333, 7.5
 ASSET_DIR = Path(__file__).resolve().parent.parent / "references" / "master_assets"
 MASTER_COVER = ASSET_DIR / "MASTER_COVER.jpg"
 MASTER_CONTENT = ASSET_DIR / "MASTER_CONTENT.jpg"
 MASTER_CLOSING = ASSET_DIR / "MASTER_CLOSING.jpg"
 
+# Grid untuk master isi geothermal (logo Danantara + PLN IP di kanan atas mulai x ±9,3)
+L, R = 0.55, 12.78
+CW = R - L
+TITLE_X, TITLE_Y, TITLE_W = 0.55, 0.32, 8.45
+BODY_TOP, BODY_BOTTOM = 1.4, 6.75
+LEFT_X, LEFT_W = L, 6.55
+RIGHT_X, RIGHT_W = 7.5, R - 7.5
+TABLE_PT = 11
+_PAGED: set[int] = set()  # slide_id slide isi yang diberi nomor halaman
+STATUS_PENANDA = [("Selesai", P.TL_GREEN), ("Dalam proses", P.TL_YELLOW), ("Terbuka", P.TL_RED)]
 
-def rgb(hexstr: str) -> RGBColor:
-    return RGBColor.from_string(hexstr.replace("#", ""))
 
-
+# ----------------------------------------------------------------- data
 def as_list(value: Any) -> list[Any]:
     if value is None:
         return []
-    if isinstance(value, list):
-        return value
-    if isinstance(value, tuple):
+    if isinstance(value, (list, tuple)):
         return list(value)
     return [value]
 
 
-def text_of(value: Any, sep: str = " • ") -> str:
+def text_of(value: Any, sep: str = "; ") -> str:
     if value is None:
         return ""
     if isinstance(value, str):
@@ -106,130 +93,18 @@ def text_of(value: Any, sep: str = " • ") -> str:
 
 def compact(value: Any, limit: int = 180) -> str:
     s = " ".join(text_of(value).split())
-    return s if len(s) <= limit else s[: max(0, limit - 1)].rstrip() + "…"
-
-
-def add_master_background(slide, master_path: Path):
-    if not master_path.exists():
-        raise FileNotFoundError(f"Missing bundled master asset: {master_path}")
-    slide.shapes.add_picture(str(master_path), 0, 0, width=Inches(SW), height=Inches(SH))
-
-
-def add_text(slide, text: str, x: float, y: float, w: float, h: float,
-             size: float = 18, bold: bool = False, color: str = C["charcoal"],
-             align=PP_ALIGN.LEFT, valign=MSO_ANCHOR.TOP):
-    box = slide.shapes.add_textbox(Inches(x), Inches(y), Inches(w), Inches(h))
-    tf = box.text_frame
-    tf.clear(); tf.word_wrap = True; tf.vertical_anchor = valign
-    p = tf.paragraphs[0]; p.alignment = align
-    add_rich_runs(p, text, size, bold, color)
-    return box
-
-
-# Markup ringan: *istilah* -> miring (istilah Inggris), **teks** -> tebal.
-_RICH = re.compile(r"(\*\*[^*]+\*\*|\*[^*\s][^*]*\*)")
-
-
-def add_rich_runs(p, text: Any, size: float, bold: bool, color: str):
-    for part in _RICH.split(str(text or "")):
-        if not part:
-            continue
-        italic, run_bold = False, bold
-        if part.startswith("**") and part.endswith("**") and len(part) > 4:
-            part, run_bold = part[2:-2], True
-        elif part.startswith("*") and part.endswith("*") and len(part) > 2:
-            part, italic = part[1:-1], True
-        else:
-            part = part.replace("*", "")  # sisa markup yang terpotong oleh compact()
-        r = p.add_run(); r.text = part
-        r.font.name = FONT; r.font.size = Pt(size); r.font.bold = run_bold; r.font.italic = italic
-        r.font.color.rgb = rgb(color)
-
-
-def add_rect(slide, x, y, w, h, fill, line=None, radius=False):
-    shape_type = MSO_SHAPE.ROUNDED_RECTANGLE if radius else MSO_SHAPE.RECTANGLE
-    sh = slide.shapes.add_shape(shape_type, Inches(x), Inches(y), Inches(w), Inches(h))
-    sh.fill.solid(); sh.fill.fore_color.rgb = rgb(fill); sh.line.color.rgb = rgb(line or fill)
-    return sh
-
-
-def add_header(slide, title: str, section: str | None = None):
-    if section:
-        add_text(slide, section.upper(), 0.55, 0.17, 2.65, 0.24, 7.0, True, C["deep_teal"])
-    add_text(slide, title, 0.55, 0.42, 8.35, 0.62, 22, True, C["dark_teal"])
-    add_rect(slide, 0.55, 1.07, 8.35, 0.035, C["light_aqua"])
-
-
-def add_footer(slide, page_num: int, source_text: str = ""):
-    if source_text:
-        add_text(slide, compact(source_text, 210), 0.55, 7.03, 10.95, 0.24, 6.6, False, C["mid_gray"])
-    add_text(slide, str(page_num), 12.2, 7.03, 0.55, 0.22, 7, True, C["deep_teal"], PP_ALIGN.RIGHT)
-
-
-def priority_level(priority: str) -> str:
-    """Kenali prioritas dalam bahasa Inggris maupun Indonesia."""
-    p = (priority or "").strip().lower()
-    if p.startswith(("h", "critical", "major", "tinggi", "kritis")):
-        return "high"
-    if p.startswith(("m", "sedang")):
-        return "medium"
-    return "low"
-
-
-def priority_color(priority: str) -> str:
-    return C[priority_level(priority)]
-
-
-def status_color(status: str) -> str:
-    s = (status or "").strip().lower()
-    if "closed" in s or "no material" in s:
-        return C["energy_teal"]
-    if "conditional" in s:
-        return C["pln_blue"]
-    if "revision" in s or "open" in s:
-        return C["high"]
-    return C["deep_teal"]
-
-
-def add_bullet_list(slide, items: Iterable[Any], x: float, y: float, w: float, h: float,
-                    size: float = 11.0, color: str = C["charcoal"], max_items: int = 6):
-    items = [compact(i, 220) for i in list(items)[:max_items] if text_of(i).strip()]
-    if not items:
-        items = ["Belum tersedia"]
-    box = slide.shapes.add_textbox(Inches(x), Inches(y), Inches(w), Inches(h))
-    tf = box.text_frame; tf.clear(); tf.word_wrap = True
-    for i, item in enumerate(items):
-        p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
-        add_rich_runs(p, f"• {item}", size, False, color)
-        p.space_after = Pt(5)
-    return box
-
-
-def add_table(slide, cols: list[tuple[str, float]], rows: list[list[str]], x: float, y: float,
-              header_h: float = 0.44, row_h: float = 0.62, font_size: float = 7.8,
-              priority_col: int | None = None, status_col: int | None = None):
-    xx = x
-    for name, width in cols:
-        add_rect(slide, xx, y, width, header_h, C["dark_teal"])
-        add_text(slide, name, xx + 0.06, y + 0.07, width - 0.12, header_h - 0.09, font_size + 0.5, True, C["white"])
-        xx += width
-    for ri, row in enumerate(rows):
-        yy = y + header_h + ri * row_h
-        xx = x; fill = C["white"] if ri % 2 == 0 else C["near_white"]
-        for ci, ((_, width), val) in enumerate(zip(cols, row)):
-            add_rect(slide, xx, yy, width, row_h, fill, C["light_gray"])
-            color = C["charcoal"]
-            if priority_col is not None and ci == priority_col:
-                color = priority_color(val)
-            if status_col is not None and ci == status_col:
-                color = status_color(val)
-            add_text(slide, compact(val, 145), xx + 0.05, yy + 0.07, width - 0.1, row_h - 0.1,
-                     font_size, ci in tuple(i for i in (priority_col, status_col) if i is not None), color)
-            xx += width
+    if len(s) <= limit:
+        return s
+    s = s[: max(0, limit - 1)].rstrip()
+    if " " in s[limit // 2:]:  # potong di batas kata, bukan di tengah kata
+        s = s[: s.rfind(" ")].rstrip(" ,;:")
+    if s.count("*") % 2:  # jangan memotong markup miring di tengah
+        s = s[: s.rfind("*")].rstrip()
+    return s + "…"
 
 
 def report_title(d: dict[str, Any]) -> str:
-    return d.get("report_title") or d.get("title") or "Geothermal Technical Review"
+    return d.get("report_title") or d.get("title") or "Kajian Teknis Geothermal"
 
 
 def project_name(d: dict[str, Any]) -> str:
@@ -257,366 +132,479 @@ def normalize_finding(f: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def add_cover(prs: Presentation, d: dict[str, Any]):
-    slide = prs.slides.add_slide(prs.slide_layouts[6]); add_master_background(slide, MASTER_COVER)
-    add_text(slide, report_title(d), 0.67, 1.15, 7.75, 1.55, 28, True, C["dark_teal"])
-    add_text(slide, project_name(d), 0.69, 3.16, 6.8, 0.58, 14.5, False, C["charcoal"])
-    meta = " | ".join(x for x in [f"No. {d.get('report_no')}" if d.get('report_no') else "",
-                                     f"Rev. {d.get('revision')}" if d.get('revision') not in (None, "") else "",
-                                     text_of(d.get("date"))] if x)
-    add_text(slide, meta, 0.69, 4.02, 6.8, 0.35, 9.5, True, C["deep_teal"])
+def findings_of(d: dict[str, Any]) -> list[dict[str, Any]]:
+    return [normalize_finding(f) for f in as_list(d.get("findings")) if isinstance(f, dict)]
 
 
-def add_summary(prs: Presentation, d: dict[str, Any], page: int):
-    slide = prs.slides.add_slide(prs.slide_layouts[6]); add_master_background(slide, MASTER_CONTENT)
-    add_header(slide, "Ringkasan eksekutif kajian", "Ringkasan")
-    findings = [normalize_finding(f) for f in as_list(d.get("findings")) if isinstance(f, dict)]
-    high_count = sum(1 for f in findings if priority_level(f.get("priority", "")) == "high")
-    open_count = sum(1 for f in findings if "closed" not in str(f.get("status", "")).lower())
-    cards = [
-        ("Total temuan", len(findings), C["pln_blue"]),
-        ("Prioritas tinggi", high_count, C["high"]),
-        ("Masih terbuka", open_count, C["medium"]),
-        ("*Data gap*", len(as_list(d.get("data_gaps"))), C["energy_teal"]),
-    ]
-    for i, (label, val, col) in enumerate(cards):
-        x = 0.65 + i * 3.05
-        add_rect(slide, x, 1.35, 2.65, 1.05, C["near_white"], C["light_gray"], True)
-        add_rect(slide, x, 1.35, 0.08, 1.05, col)
-        add_text(slide, str(val), x + 0.2, 1.48, 0.8, 0.45, 24, True, col)
-        add_text(slide, label, x + 1.0, 1.6, 1.4, 0.35, 9.5, True, C["charcoal"])
+def priority_level(priority: str) -> str:
+    """Kenali prioritas dalam bahasa Inggris maupun Indonesia."""
+    p = (priority or "").strip().lower()
+    if p.startswith(("h", "critical", "major", "tinggi", "kritis")):
+        return "high"
+    if p.startswith(("m", "sedang")):
+        return "medium"
+    return "low"
+
+
+def status_key(status: str) -> str:
+    """Petakan status bebas ke penanda: ok (selesai), proses, belum (terbuka)."""
+    s = (status or "").strip().lower()
+    if any(k in s for k in ("closed", "selesai", "tutup", "no material", "accepted", "diterima")):
+        return "ok"
+    if any(k in s for k in ("progress", "proses", "conditional", "bersyarat", "partial", "sebagian")):
+        return "proses"
+    return "belum"
+
+
+def is_closed(status: str) -> bool:
+    return status_key(status) == "ok"
+
+
+# ----------------------------------------------------------------- slide dasar
+def background(slide, path: Path):
+    if not path.exists():
+        raise FileNotFoundError(f"Aset master tidak ditemukan: {path}")
+    slide.shapes.add_picture(str(path), 0, 0, width=Inches(SW), height=Inches(SH))
+
+
+def content_slide(prs, topik: str, subtopik: str = ""):
+    """Slide isi: master geothermal + judul dua warna (topik biru, sub-topik hitam)."""
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    background(slide, MASTER_CONTENT)
+    teks = f"{topik} {subtopik}".strip()
+    size = 22
+    if P._title_lines(teks, TITLE_W, size) > 2:
+        size = 18
+    box = slide.shapes.add_textbox(Inches(TITLE_X), Inches(TITLE_Y), Inches(TITLE_W), Inches(0.9))
+    tf = box.text_frame
+    tf.word_wrap = True
+    tf.margin_left = tf.margin_right = tf.margin_top = tf.margin_bottom = 0
+    p = tf.paragraphs[0]
+    P._fill_runs(p, topik, size, P.PRIMARY, bold=True)
+    if subtopik:
+        P._fill_runs(p, " " + subtopik, size, P.INK, bold=True)
+    _PAGED.add(slide.slide_id)
+    return slide
+
+
+def add_source(slide, teks: str):
+    """Satu baris sumber (pola TVV) untuk slide yang memuat bukti teknis."""
+    if teks:
+        T.add_sumber(slide, compact(teks, 200))
+
+
+def caption(slide, teks: str, x: float = L, w: float = CW):
+    """Keterangan singkat cara membaca grafis, di bawah konten (pola PLN IP)."""
+    P.add_keterangan_bawah(slide, teks, x=x, w=w, size=12)
+
+
+def clean(teks: Any) -> str:
+    """Simbol panah/dekoratif dari input diganti tanda baca biasa (aturan anti-dekorasi)."""
+    out = text_of(teks)
+    for sym, rep_ in (("↔", " / "), ("→", " ke "), ("⇒", " ke "), ("✅", ""), ("⏳", ""), ("❌", "")):
+        out = out.replace(sym, rep_)
+    return " ".join(out.split())
+
+
+def status_legend(slide, x: float, y: float):
+    G.add_legend(slide, [(lab, col, "bulat") for lab, col in STATUS_PENANDA], x, y, size=10)
+
+
+def status_cell(status: str) -> dict[str, Any]:
+    return {"text": "", "status": status_key(status)}
+
+
+def table_pages(rows: list, per_page: int) -> list[list]:
+    return [rows[i:i + per_page] for i in range(0, len(rows), per_page)] or [[]]
+
+
+def text_height(teks: str, w_in: float, pt: float) -> float:
+    """Perkiraan tinggi teks (inci) agar bagian berikutnya tidak berjarak terlalu jauh."""
+    chars = max(20, int(w_in * 72 / (pt * 0.5)))
+    lines = max(1, -(-len(teks) // chars))
+    return lines * pt * 1.25 / 72 + 0.05
+
+
+def number_pages(prs):
+    n = 0
+    for slide in prs.slides:
+        n += 1
+        if slide.slide_id in _PAGED:
+            P.add_text(slide, str(n), 12.0, 7.08, 0.78, 0.22, size=9, color=P.GRAY, align=PP_ALIGN.RIGHT)
+
+
+# ----------------------------------------------------------------- slide
+def add_cover(prs, d: dict[str, Any]):
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    background(slide, MASTER_COVER)
+    P.add_text(slide, report_title(d), 0.67, 1.15, 7.75, 1.55, size=28, color=P.DARK, bold=True)
+    if project_name(d):
+        P.add_text(slide, project_name(d), 0.69, 3.16, 6.8, 0.58, size=15, color=P.INK)
+    meta = " | ".join(x for x in [f"No. {d.get('report_no')}" if d.get("report_no") else "",
+                                    f"Rev. {d.get('revision')}" if d.get("revision") not in (None, "") else "",
+                                    text_of(d.get("date"))] if x)
+    if meta:
+        P.add_text(slide, meta, 0.69, 4.02, 6.8, 0.35, size=11, color=P.PRIMARY, bold=True)
+
+
+def add_summary(prs, d: dict[str, Any]):
+    slide = content_slide(prs, "Ringkasan Eksekutif", "Hasil Kajian Teknis")
+    findings = findings_of(d)
+    high = sum(1 for f in findings if priority_level(f.get("priority", "")) == "high")
+    open_n = sum(1 for f in findings if not is_closed(f.get("status", "")))
+    gaps = as_list(d.get("data_gaps"))
+    G.add_kpi_row(slide, [
+        {"nilai": str(len(findings)), "label": "Total temuan", "ket": "seluruh disiplin"},
+        {"nilai": str(high), "label": "Prioritas tinggi", "ket": "perlu diselesaikan lebih dulu"},
+        {"nilai": str(open_n), "label": "Masih terbuka", "ket": "belum ada bukti penyelesaian"},
+        {"nilai": str(len(gaps)), "label": "Data gap", "ket": "data atau klarifikasi yang diperlukan"},
+    ], L, BODY_TOP, CW, h=1.45, size=32)
     msgs = executive_messages(d) or ["Kajian dilakukan terhadap dokumen yang tersedia dengan bukti terpilih dari *knowledge base*."]
-    y = 2.78
-    for n, msg in enumerate(msgs[:4], 1):
-        add_rect(slide, 0.75, y, 0.42, 0.42, C["deep_teal"], radius=True)
-        add_text(slide, str(n), 0.75, y + 0.03, 0.42, 0.30, 9, True, C["white"], PP_ALIGN.CENTER, MSO_ANCHOR.MIDDLE)
-        add_text(slide, compact(msg, 240), 1.35, y - 0.01, 8.85, 0.65, 12.3, False, C["charcoal"])
-        y += 0.78
+    y = P.add_column_head(slide, "Pesan utama", L, 3.15, CW)
+    items: list[Any] = [compact(m, 230) for m in msgs[:4]]
     overall = text_of(d.get("overall_status"))
     if overall:
-        col = status_color(overall)
-        add_rect(slide, 10.25, 2.8, 2.35, 1.55, C["near_white"], C["light_gray"], True)
-        add_text(slide, "STATUS PENYELESAIAN", 10.48, 3.02, 1.9, 0.24, 7.5, True, C["mid_gray"])
-        add_text(slide, overall, 10.48, 3.35, 1.85, 0.75, 12.0, True, col, PP_ALIGN.CENTER, MSO_ANCHOR.MIDDLE)
-    add_footer(slide, page, "Sumber: temuan, *data gap*, tindak lanjut, dan bukti yang benar-benar digunakan")
+        items.append({"text": f"Status kajian: {overall}", "bold": True})
+    P.add_bullets(slide, items, L, y, CW, 0.42 * len(items) + 0.2, size=13)
+    caption(slide, "Angka kunci dihitung dari daftar temuan dan *data gap* pada kajian ini.")
 
 
-def add_agenda(prs: Presentation, page: int):
-    slide = prs.slides.add_slide(prs.slide_layouts[6]); add_master_background(slide, MASTER_CONTENT)
-    add_header(slide, "Struktur kajian teknis", "Agenda")
-    items = [
-        ("01", "Tujuan, Lingkup, dan Dasar Kajian"), ("02", "Dokumen yang Dikaji"),
-        ("03", "Metodologi Kajian dan Klasifikasi Komentar"), ("04", "Temuan Teknis dan Komentar Reviewer"),
-        ("05", "Risiko Utama dan Keterkaitan Antardisiplin"), ("06", "*Data Gap*, Klarifikasi, dan Asumsi"),
-        ("07", "Rencana Tindak Lanjut dan Penyelesaian Komentar"), ("08", "Kesimpulan dan Status Penyelesaian"),
-    ]
-    for i, (num, label) in enumerate(items):
-        col = i % 2; row = i // 2; x = 0.8 + col * 6.05; y = 1.45 + row * 1.25
-        add_rect(slide, x, y, 0.62, 0.62, C["deep_teal"], radius=True)
-        add_text(slide, num, x, y + 0.11, 0.62, 0.28, 8.5, True, C["white"], PP_ALIGN.CENTER, MSO_ANCHOR.MIDDLE)
-        add_text(slide, label, x + 0.82, y + 0.05, 4.95, 0.55, 11.5, True, C["charcoal"], valign=MSO_ANCHOR.MIDDLE)
-    add_footer(slide, page)
+def add_agenda(prs):
+    slide = content_slide(prs, "Agenda", "Struktur Kajian Teknis")
+    items = ["Tujuan, Lingkup, dan Dasar Kajian", "Dokumen yang Dikaji", "Metodologi dan Klasifikasi Komentar",
+             "Temuan Teknis dan Komentar Reviewer", "Risiko Utama dan Keterkaitan Antardisiplin",
+             "*Data Gap*, Klarifikasi, dan Asumsi", "Rencana Tindak Lanjut", "Kesimpulan dan Status Penyelesaian"]
+    for i, label in enumerate(items):
+        col, row = i % 2, i // 2
+        x = L + col * 6.2
+        y = BODY_TOP + 0.15 + row * 1.15
+        P.add_text(slide, f"{i + 1:02d}", x, y, 0.8, 0.5, size=24, color=P.PRIMARY, bold=True, anchor=MSO_ANCHOR.MIDDLE)
+        P.add_text(slide, label, x + 0.9, y, 5.0, 0.5, size=15, color=P.INK, bold=True, anchor=MSO_ANCHOR.MIDDLE)
+        G._line(slide.shapes, x, y + 0.72, x + 5.8, y + 0.72, P.OUTLINE, 0.75)
 
 
 def has_control(d: dict[str, Any]) -> bool:
     return any(d.get(k) not in (None, "", []) for k in ("report_no", "revision", "prepared_by", "reviewed_by", "approved_by"))
 
 
-def add_control(prs: Presentation, d: dict[str, Any], page: int):
-    slide = prs.slides.add_slide(prs.slide_layouts[6]); add_master_background(slide, MASTER_CONTENT)
-    add_header(slide, "Pengendalian dan revisi dokumen", "Pengendalian")
-    fields = [
-        ("No. Laporan / Kajian", d.get("report_no", "Tidak disebutkan")),
-        ("Revisi", d.get("revision", "Tidak disebutkan")),
-        ("Tanggal terbit", d.get("date", "Tidak disebutkan")),
-        ("Disusun oleh", d.get("prepared_by", "Tidak disebutkan")),
-        ("Diperiksa oleh", d.get("reviewed_by", "Tidak disebutkan")),
-        ("Disetujui oleh", d.get("approved_by", "Tidak disebutkan")),
-    ]
-    for i, (lab, val) in enumerate(fields):
-        col = i % 2; row = i // 2; x = 0.8 + col * 6.05; y = 1.45 + row * 1.42
-        add_rect(slide, x, y, 5.5, 1.0, C["near_white"], C["light_gray"], True)
-        add_text(slide, lab.upper(), x + 0.18, y + 0.14, 1.65, 0.22, 7.2, True, C["mid_gray"])
-        add_text(slide, compact(val, 120), x + 1.95, y + 0.13, 3.2, 0.55, 11.2, True, C["deep_teal"], valign=MSO_ANCHOR.MIDDLE)
-    add_footer(slide, page)
+def add_control(prs, d: dict[str, Any]):
+    slide = content_slide(prs, "Pengendalian Dokumen", "Identitas dan Revisi Kajian")
+    rows = [[lab, text_of(d.get(k)) or {"text": "", "na": True}] for lab, k in [
+        ("No. laporan / kajian", "report_no"), ("Revisi", "revision"), ("Tanggal terbit", "date"),
+        ("Disusun oleh", "prepared_by"), ("Diperiksa oleh", "reviewed_by"), ("Disetujui oleh", "approved_by")]]
+    T.add_tabel(slide, ["Parameter", "Keterangan"], rows, L, BODY_TOP, 8.0, col_w=[2.6, 5.4], size=13)
 
 
-def add_scope(prs: Presentation, d: dict[str, Any], page: int):
-    slide = prs.slides.add_slide(prs.slide_layouts[6]); add_master_background(slide, MASTER_CONTENT)
-    add_header(slide, "Tujuan, lingkup, dan dasar kajian", "Lingkup")
-    objective = d.get("objective") or "Tidak disebutkan"
-    add_rect(slide, 0.72, 1.35, 12.0, 0.9, C["near_white"], C["light_gray"], True)
-    add_rect(slide, 0.72, 1.35, 0.11, 0.9, C["pln_blue"])
-    add_text(slide, "TUJUAN", 1.0, 1.55, 1.5, 0.22, 8.0, True, C["pln_blue"])
-    add_text(slide, compact(objective, 260), 2.45, 1.47, 9.85, 0.52, 11.5, False, C["charcoal"])
-    add_text(slide, "LINGKUP KAJIAN", 0.82, 2.55, 4.6, 0.3, 9.0, True, C["energy_teal"])
-    scope = d.get("scope") or d.get("coverage") or ["Tidak disebutkan"]
-    add_bullet_list(slide, as_list(scope), 0.9, 2.92, 5.55, 2.8, 10.5, max_items=7)
-    add_text(slide, "DASAR KAJIAN DAN KETERBATASAN", 6.75, 2.55, 4.6, 0.3, 9.0, True, C["deep_teal"])
-    basis = d.get("review_basis") or d.get("evidence_basis") or ["Dokumen yang dikaji dan bukti terpilih dari *knowledge base* geothermal"]
-    basis_items = as_list(basis) + as_list(d.get("limitations"))
-    add_bullet_list(slide, basis_items, 6.82, 2.92, 5.45, 2.8, 10.5, max_items=7)
-    add_footer(slide, page)
+def add_scope(prs, d: dict[str, Any]):
+    slide = content_slide(prs, "Tujuan dan Lingkup", "Dasar Pelaksanaan Kajian")
+    y = P.add_column_head(slide, "Tujuan kajian", L, BODY_TOP, CW)
+    P.add_text(slide, compact(d.get("objective") or "Tujuan kajian belum disebutkan.", 300), L, y, CW, 0.8, size=13)
+    y2 = BODY_TOP + 1.65
+    ya = P.add_column_head(slide, "Lingkup kajian", LEFT_X, y2, LEFT_W - 0.3)
+    scope = as_list(d.get("scope") or d.get("coverage")) or ["Lingkup belum disebutkan"]
+    P.add_bullets(slide, [compact(x, 160) for x in scope[:7]], LEFT_X, ya, LEFT_W - 0.3, 3.0, size=13)
+    yb = P.add_column_head(slide, "Dasar kajian dan keterbatasan", RIGHT_X - 0.4, y2, RIGHT_W + 0.4)
+    basis = as_list(d.get("review_basis") or d.get("evidence_basis")) or [
+        "Dokumen yang dikaji dan bukti terpilih dari *knowledge base* geothermal"]
+    items = [compact(x, 160) for x in basis[:5]] + [{"text": "Keterbatasan: " + compact(x, 150)} for x in as_list(d.get("limitations"))[:2]]
+    P.add_bullets(slide, items, RIGHT_X - 0.4, yb, RIGHT_W + 0.4, 3.0, size=13)
 
 
-def add_documents(prs: Presentation, d: dict[str, Any], page: int):
-    slide = prs.slides.add_slide(prs.slide_layouts[6]); add_master_background(slide, MASTER_CONTENT)
-    add_header(slide, "Dokumen yang dikaji", "Daftar dokumen")
+def add_documents(prs, d: dict[str, Any]):
     docs = [x for x in as_list(d.get("documents_reviewed")) if isinstance(x, dict)]
-    cols = [("Judul", 4.0), ("No./Kode", 1.7), ("Rev.", 0.7), ("Tanggal", 1.2), ("Disiplin", 1.35), ("Lingkup / status kajian", 3.2)]
-    rows = []
-    for doc in docs[:7]:
-        rows.append([
-            text_of(doc.get("title")), text_of(doc.get("number") or doc.get("code")), text_of(doc.get("revision")),
-            text_of(doc.get("date")), text_of(doc.get("discipline")), text_of(doc.get("scope") or doc.get("status")),
-        ])
+    rows = [[text_of(x.get("title")), text_of(x.get("number") or x.get("code")) or {"text": "", "na": True},
+             text_of(x.get("revision")) or {"text": "", "na": True}, text_of(x.get("date")) or {"text": "", "na": True},
+             text_of(x.get("discipline")), text_of(x.get("scope") or x.get("status"))] for x in docs]
     if not rows:
-        rows = [["Dokumen yang dikaji belum dicatat secara terpisah pada data input", "", "", "", "", ""]]
-    add_table(slide, cols, rows, 0.5, 1.35, row_h=0.67, font_size=7.3)
-    if len(docs) > 7:
-        add_text(slide, f"+ {len(docs)-7} dokumen lainnya dicantumkan pada lampiran keterlacakan sumber", 0.62, 6.65, 7.5, 0.25, 8.2, True, C["deep_teal"])
-    add_footer(slide, page)
+        rows = [["Dokumen yang dikaji belum dicatat pada data input", "", "", "", "", ""]]
+    pages = table_pages(rows, 8)
+    for i, chunk in enumerate(pages):
+        sub = "Daftar Dokumen" + (f" ({i + 1}/{len(pages)})" if len(pages) > 1 else "")
+        slide = content_slide(prs, "Dokumen yang Dikaji", sub)
+        T.add_tabel(slide, ["Judul dokumen", "No./kode", "Rev.", "Tanggal", "Disiplin", "Lingkup / status kajian"],
+                    chunk, L, BODY_TOP, CW, col_w=[4.2, 1.8, 0.7, 1.4, 1.5, 2.6], size=TABLE_PT, gaya="data")
 
 
-def add_methodology(prs: Presentation, d: dict[str, Any], page: int):
-    slide = prs.slides.add_slide(prs.slide_layouts[6]); add_master_background(slide, MASTER_CONTENT)
-    add_header(slide, "Metodologi kajian dan klasifikasi komentar", "Metodologi")
-    methods = as_list(d.get("methodology")) or [
-        "Membaca dokumen yang dikaji dan mengidentifikasi klaim atau keputusan teknis yang perlu diperiksa",
-        "Mengambil bukti yang relevan saja dari *knowledge base*",
-        "Memeriksa kesesuaian narasi, tabel, gambar, perhitungan, satuan, dan revisi",
-        "Mengklasifikasikan temuan, *data gap*, dan tindak lanjut dengan keterlacakan yang jelas",
-    ]
-    for i, item in enumerate(methods[:4]):
-        x = 0.75 + i * 3.05
-        add_rect(slide, x, 1.45, 2.65, 2.05, C["near_white"], C["light_gray"], True)
-        add_rect(slide, x + 0.18, 1.65, 0.5, 0.5, C["deep_teal"], radius=True)
-        add_text(slide, str(i + 1), x + 0.18, 1.71, 0.5, 0.25, 9, True, C["white"], PP_ALIGN.CENTER, MSO_ANCHOR.MIDDLE)
-        add_text(slide, compact(item, 155), x + 0.22, 2.32, 2.2, 0.86, 10.2, False, C["charcoal"], PP_ALIGN.CENTER)
-    add_text(slide, "KLASIFIKASI KOMENTAR", 0.8, 4.02, 3.2, 0.25, 8.2, True, C["dark_teal"])
+def add_methodology(prs, d: dict[str, Any]):
+    slide = content_slide(prs, "Metodologi Kajian", "Alur Pemeriksaan dan Klasifikasi")
+    custom = [text_of(x) for x in as_list(d.get("methodology")) if text_of(x)]
+    if custom:
+        langkah = [{"judul": f"Langkah {i + 1}", "sub": compact(t, 110)} for i, t in enumerate(custom[:5])]
+    else:
+        langkah = [
+            {"judul": "Pahami dokumen", "sub": "Identifikasi klaim dan keputusan teknis yang perlu diperiksa"},
+            {"judul": "Telusuri KB", "sub": "Ambil bukti yang relevan saja dari *knowledge base*"},
+            {"judul": "Uji konsistensi", "sub": "Narasi, tabel, gambar, perhitungan, satuan, dan revisi"},
+            {"judul": "Klasifikasi", "sub": "Temuan, *data gap*, dan tindak lanjut yang dapat ditelusuri"},
+        ]
+    G.add_flow(slide, langkah, L, BODY_TOP + 0.1, CW, h=1.45)
     classes = d.get("comment_classification")
     if isinstance(classes, dict):
-        items = [(k, text_of(v)) for k, v in classes.items()]
+        rows = [[k, text_of(v)] for k, v in classes.items()]
+        header = ["Klasifikasi", "Arti"]
+        col_w = [2.6, 9.6]
     else:
-        items = [("High", "Isu teknis material yang memengaruhi keputusan"), ("Medium", "Perlu perbaikan atau klarifikasi sebelum dinyatakan selesai"),
-                 ("Low", "Perbaikan minor yang tidak material"), ("Data Gap", "Bukti belum cukup untuk kesimpulan yang pasti")]
-    for i, (lab, desc) in enumerate(items[:4]):
-        x = 0.8 + i * 3.0; col = priority_color(lab) if lab.lower() != "data gap" else C["pln_blue"]
-        add_rect(slide, x, 4.42, 2.55, 1.18, C["white"], C["light_gray"], True)
-        add_rect(slide, x, 4.42, 2.55, 0.1, col)
-        add_text(slide, lab, x + 0.16, 4.62, 0.75, 0.25, 9, True, col)
-        add_text(slide, compact(desc, 100), x + 0.95, 4.53, 1.43, 0.72, 8.2, False, C["charcoal"])
-    add_footer(slide, page)
+        header = ["Klasifikasi", "Arti", "Perlakuan"]
+        col_w = [2.4, 5.4, 4.4]
+        rows = [
+            ["Prioritas tinggi", "Isu teknis material yang memengaruhi keselamatan, integritas sumur, atau keputusan utama", "Diselesaikan sebelum tahap berikutnya"],
+            ["Prioritas sedang", "Perlu perbaikan atau klarifikasi yang memengaruhi desain, biaya, atau jadwal", "Diselesaikan sebelum dinyatakan selesai"],
+            ["Prioritas rendah", "Perbaikan minor yang tidak mengubah dasar keputusan", "Dicatat untuk revisi berikutnya"],
+            ["*Data gap*", "Bukti belum cukup untuk kesimpulan yang pasti", "Dilengkapi oleh pemilik data"],
+        ]
+    T.add_tabel(slide, header, rows, L, BODY_TOP + 2.0, CW, col_w=col_w, size=12)
+    caption(slide, "Alur di atas menunjukkan urutan pemeriksaan; tabel menjelaskan arti setiap klasifikasi komentar.")
 
 
-def add_findings_overview(prs: Presentation, d: dict[str, Any], page: int):
-    slide = prs.slides.add_slide(prs.slide_layouts[6]); add_master_background(slide, MASTER_CONTENT)
-    add_header(slide, "Temuan teknis dan komentar reviewer", "Temuan")
-    findings = [normalize_finding(f) for f in as_list(d.get("findings")) if isinstance(f, dict)]
-    cols = [("ID", 0.6), ("Disiplin", 1.3), ("Temuan", 4.35), ("Prioritas", 1.05), ("Status", 1.35), ("Lokasi", 3.45)]
-    rows = []
-    for f in findings[:7]:
-        rows.append([f.get("id", ""), f.get("discipline", ""), f.get("title") or f.get("finding", ""),
-                     f.get("priority", ""), f.get("status", ""), f.get("location", "")])
+def add_distribution(prs, d: dict[str, Any]):
+    findings = findings_of(d)
+    if len(findings) < 2:
+        return
+    disciplines: list[str] = []
+    for f in findings:
+        key = f.get("discipline") or "Lainnya"
+        if key not in disciplines:
+            disciplines.append(key)
+    levels = [("Tinggi", "high"), ("Sedang", "medium"), ("Rendah", "low")]
+    series = [(lab, [sum(1 for f in findings if (f.get("discipline") or "Lainnya") == disc
+                         and priority_level(f.get("priority", "")) == lv) for disc in disciplines])
+              for lab, lv in levels]
+    series = [s for s in series if sum(s[1])] or series[:1]
+    slide = content_slide(prs, "Sebaran Temuan", "per Disiplin dan Prioritas")
+    y = P.add_column_head(slide, "Jumlah temuan per disiplin", LEFT_X, BODY_TOP, LEFT_W + 0.4)
+    h = min(4.9, 0.75 + 0.55 * len(disciplines))
+    colors = {"Tinggi": P.DARK, "Sedang": P.PRIMARY, "Rendah": P.TINT}
+    G.add_stacked_chart(slide, disciplines, series, LEFT_X, y, LEFT_W + 0.4, h, horizontal=True,
+                        colors=[colors[s[0]] for s in series])
+    top = sorted(((sum(1 for f in findings if (f.get("discipline") or "Lainnya") == disc), disc) for disc in disciplines), reverse=True)
+    ket = [f"Batang menunjukkan jumlah temuan per disiplin, dipisah menurut prioritas.",
+           f"Disiplin dengan temuan terbanyak: {top[0][1]} ({top[0][0]} temuan)."]
+    P.add_keterangan(slide, ket, RIGHT_X + 0.1, BODY_TOP + 0.6, RIGHT_W - 0.1)
+
+
+def add_findings_overview(prs, d: dict[str, Any]):
+    findings = findings_of(d)
+    order = {"high": 0, "medium": 1, "low": 2}
+    findings = sorted(findings, key=lambda f: order[priority_level(f.get("priority", ""))])
+    rows = [[f.get("id", ""), f.get("discipline", ""), compact(f.get("title") or f.get("finding", ""), 150),
+             f.get("priority", "") or {"text": "", "na": True}, status_cell(f.get("status", "")),
+             compact(f.get("location", ""), 70)] for f in findings]
     if not rows:
-        rows = [["-", "-", "Belum ada temuan pada data hasil kajian", "-", "-", "-"]]
-    add_table(slide, cols, rows, 0.5, 1.35, row_h=0.68, font_size=7.3, priority_col=3, status_col=4)
-    if len(findings) > 7:
-        add_text(slide, f"+ {len(findings)-7} temuan lainnya dirinci pada slide berikut / lampiran", 0.62, 6.65, 6.5, 0.25, 8.2, True, C["deep_teal"])
-    add_footer(slide, page)
+        rows = [["—", "—", "Belum ada temuan pada data hasil kajian", "—", {"text": "", "na": True}, "—"]]
+    pages = table_pages(rows, 6)
+    for i, chunk in enumerate(pages):
+        sub = "Daftar Temuan dan Status" + (f" ({i + 1}/{len(pages)})" if len(pages) > 1 else "")
+        slide = content_slide(prs, "Temuan Teknis", sub)
+        t = T.add_tabel(slide, ["ID", "Disiplin", "Temuan", "Prioritas", "Status", "Lokasi di dokumen"], chunk,
+                        L, BODY_TOP, CW, col_w=[0.8, 1.5, 5.0, 1.2, 0.9, 2.8], size=TABLE_PT,
+                        rata=["l", "l", "l", "l", "c", "l"])
+        status_legend(slide, L, min(t["bawah"] + 0.15, 6.55))
 
 
-def add_finding_detail(prs: Presentation, f0: dict[str, Any], page: int):
+def add_finding_detail(prs, f0: dict[str, Any]):
     f = normalize_finding(f0)
-    slide = prs.slides.add_slide(prs.slide_layouts[6]); add_master_background(slide, MASTER_CONTENT)
-    title = f.get("title") or f.get("finding") or "Temuan teknis"
-    add_header(slide, compact(title, 110), f.get("id", "Finding"))
-    pcol = priority_color(f.get("priority", "")); scol = status_color(f.get("status", ""))
-    chips = [
-        ("Disiplin", f.get("discipline") or "Belum dinyatakan", C["pln_blue"]),
-        ("Prioritas", f.get("priority") or "Belum dinilai", pcol),
-        ("Status", f.get("status") or "Open", scol),
-        ("Lokasi", f.get("location") or "Belum dinyatakan", C["deep_teal"]),
-    ]
-    x = 0.65
-    for label, val, col in chips:
-        add_rect(slide, x, 1.28, 2.35, 0.52, C["near_white"], C["light_gray"], True)
-        add_text(slide, label, x + 0.08, 1.34, 0.64, 0.18, 6.6, True, C["mid_gray"])
-        add_text(slide, compact(val, 55), x + 0.72, 1.32, 1.52, 0.27, 8.4, True, col)
-        x += 2.55
-    sections = [
-        ("Temuan / observasi", f.get("finding", ""), C["pln_blue"]),
-        ("Komentar dan rekomendasi reviewer", f.get("comment", ""), C["energy_teal"]),
-        ("Alasan dan potensi dampak", f.get("impact", ""), pcol),
-    ]
-    y = 2.03
-    for lab, body, col in sections:
-        add_text(slide, lab.upper(), 0.7, y, 2.7, 0.23, 7.8, True, col)
-        add_text(slide, compact(body or "Belum dinyatakan", 420), 0.7, y + 0.27, 5.55, 0.86, 10.4, False, C["charcoal"])
-        y += 1.36
-    add_rect(slide, 6.55, 2.0, 6.1, 4.55, C["near_white"], C["light_gray"], True)
-    add_text(slide, "DASAR TEKNIS DAN BUKTI", 6.85, 2.25, 3.8, 0.28, 9.2, True, C["dark_teal"])
+    title = compact(f.get("title") or f.get("finding") or "Temuan teknis", 95)
+    slide = content_slide(prs, f.get("id") or "Temuan", title)
+    T.add_tabel(slide, ["Disiplin", "Prioritas", "Status", "Tingkat keyakinan", "Lokasi di dokumen"],
+                [[f.get("discipline") or {"text": "", "na": True}, f.get("priority") or {"text": "", "na": True},
+                  f.get("status") or "Open", f.get("confidence") or {"text": "", "na": True},
+                  compact(f.get("location"), 80) or {"text": "", "na": True}]],
+                L, BODY_TOP, CW, col_w=[1.8, 1.4, 1.4, 1.8, 5.8], size=TABLE_PT)
+    y = BODY_TOP + 1.05
+    for head, body in [("Temuan / observasi", f.get("finding")), ("Komentar dan rekomendasi reviewer", f.get("comment")),
+                       ("Alasan dan potensi dampak", f.get("impact"))]:
+        y2 = P.add_column_head(slide, head, LEFT_X, y, LEFT_W, size=13)
+        teks = compact(body or "Belum dinyatakan.", 330)
+        h = text_height(teks, LEFT_W, 12)
+        P.add_text(slide, teks, LEFT_X, y2, LEFT_W, h, size=12)
+        y = y2 + h + 0.3
+    yr = P.add_column_head(slide, "Dasar teknis dan bukti", RIGHT_X, BODY_TOP + 1.05, RIGHT_W, size=13)
     img = f.get("image_path")
     if img and os.path.exists(str(img)):
-        try:
-            slide.shapes.add_picture(str(img), Inches(6.85), Inches(2.68), width=Inches(5.5), height=Inches(2.18))
-            evidence_y = 5.02
-        except Exception:
-            evidence_y = 2.75
-    else:
-        evidence_y = 2.75
-    basis = f.get("basis", ""); source = f.get("source", "")
-    add_text(slide, compact(basis or "Belum dinyatakan", 320), 6.85, evidence_y, 5.45, 1.15, 9.8, False, C["charcoal"])
-    if source:
-        add_text(slide, compact(source, 185), 6.85, 6.05, 5.45, 0.32, 7.2, True, C["deep_teal"])
-    add_footer(slide, page, f"Lokasi: {f.get('location','')} | Bukti: {source}".strip())
+        T.fit_picture(slide, str(img), RIGHT_X, yr, RIGHT_W, 2.3)
+        yr += 2.45
+    P.add_text(slide, compact(f.get("basis") or "Belum dinyatakan.", 300), RIGHT_X, yr, RIGHT_W, 1.6, size=12)
+    add_source(slide, ("Sumber: " + f["source"]) if f.get("source") else "")
 
 
-def add_risks(prs: Presentation, d: dict[str, Any], page: int):
-    slide = prs.slides.add_slide(prs.slide_layouts[6]); add_master_background(slide, MASTER_CONTENT)
-    add_header(slide, "Risiko utama dan keterkaitan antardisiplin", "Antardisiplin")
+def add_risks(prs, d: dict[str, Any]):
     risks = as_list(d.get("key_risks"))
+    slide = content_slide(prs, "Risiko Utama", "Keterkaitan Antardisiplin")
     if not risks:
-        risks = ["Belum ada risiko keterkaitan antardisiplin yang dicatat secara terpisah pada data hasil kajian."]
-    for i, risk in enumerate(risks[:6]):
-        col = i % 2; row = i // 2; x = 0.72 + col * 6.05; y = 1.38 + row * 1.66
-        add_rect(slide, x, y, 5.55, 1.36, C["near_white"], C["light_gray"], True)
-        add_rect(slide, x, y, 0.09, 1.36, C["deep_teal"])
-        if isinstance(risk, dict):
-            label = risk.get("interface") or risk.get("title") or f"Interface {i+1}"
-            main = risk.get("risk") or risk.get("issue") or ""
-            impact = risk.get("impact") or risk.get("consequence") or ""
-            rel = risk.get("related_findings") or risk.get("finding_id") or ""
-            add_text(slide, compact(label, 70), x + 0.2, y + 0.12, 2.15, 0.24, 8.1, True, C["deep_teal"])
-            add_text(slide, compact(main, 145), x + 0.2, y + 0.4, 5.05, 0.44, 9.4, True, C["charcoal"])
-            add_text(slide, compact(impact, 125), x + 0.2, y + 0.86, 4.4, 0.3, 8.2, False, C["mid_gray"])
-            if rel:
-                add_text(slide, compact(rel, 45), x + 4.65, y + 0.1, 0.7, 0.22, 7.0, True, C["pln_blue"], PP_ALIGN.RIGHT)
-        else:
-            add_text(slide, f"Interface {i+1}", x + 0.2, y + 0.14, 1.15, 0.22, 7.8, True, C["deep_teal"])
-            add_text(slide, compact(risk, 220), x + 0.2, y + 0.47, 5.0, 0.55, 10.0, False, C["charcoal"])
-    add_footer(slide, page)
-
-
-def add_gaps(prs: Presentation, d: dict[str, Any], page: int):
-    slide = prs.slides.add_slide(prs.slide_layouts[6]); add_master_background(slide, MASTER_CONTENT)
-    add_header(slide, "*Data gap*, klarifikasi, dan asumsi", "*Data gap*")
-    gaps = as_list(d.get("data_gaps"))
-    rows: list[list[str]] = []
-    for i, g in enumerate(gaps[:7]):
-        if isinstance(g, dict):
-            rows.append([text_of(g.get("id") or f"DG-{i+1:02d}"), text_of(g.get("gap") or g.get("item")),
-                         text_of(g.get("impact")), text_of(g.get("required") or g.get("evidence")),
-                         text_of(g.get("owner") or g.get("pic")), text_of(g.get("status"))])
-        else:
-            rows.append([f"DG-{i+1:02d}", text_of(g), "", "", "", "Open"])
-    if not rows:
-        rows = [["-", "Tidak ada *data gap* material yang tercatat", "", "", "", "-"]]
-    cols = [("ID", 0.75), ("Data yang belum tersedia / belum jelas", 3.4), ("Dampak", 2.25), ("Bukti yang diperlukan", 2.75), ("PIC", 1.2), ("Status", 1.35)]
-    add_table(slide, cols, rows, 0.48, 1.35, row_h=0.68, font_size=7.1, status_col=5)
-    add_footer(slide, page)
-
-
-def add_actions(prs: Presentation, d: dict[str, Any], page: int):
-    slide = prs.slides.add_slide(prs.slide_layouts[6]); add_master_background(slide, MASTER_CONTENT)
-    add_header(slide, "Rencana tindak lanjut dan penyelesaian komentar", "Tindak lanjut")
-    actions = as_list(d.get("actions"))
+        P.add_text(slide, "Belum ada risiko keterkaitan antardisiplin yang dicatat pada data hasil kajian.",
+                   L, BODY_TOP, CW, 0.5, size=13)
+        return
+    dict_risks = [r for r in risks if isinstance(r, dict)]
+    scored = [r for r in dict_risks if str(r.get("likelihood") or r.get("kemungkinan") or "").isdigit()
+              and str(r.get("severity") or r.get("dampak_level") or "").isdigit()]
     rows = []
-    for i, a in enumerate(actions[:7]):
-        if isinstance(a, dict):
-            rows.append([text_of(a.get("id") or f"A-{i+1:02d}"), text_of(a.get("finding_id") or a.get("related_findings")),
-                         text_of(a.get("action")), text_of(a.get("pic") or a.get("owner")), text_of(a.get("due") or a.get("timing")),
-                         text_of(a.get("evidence") or a.get("closure_evidence")), text_of(a.get("status"))])
+    for i, r in enumerate(risks[:6], 1):
+        if isinstance(r, dict):
+            rows.append([str(i), compact(clean(r.get("interface") or r.get("title") or "—"), 60),
+                         compact(clean(r.get("risk") or r.get("issue") or ""), 140),
+                         compact(r.get("impact") or r.get("consequence") or "", 110) or {"text": "", "na": True},
+                         compact(r.get("mitigation") or r.get("mitigasi") or "", 120) or {"text": "", "na": True},
+                         text_of(r.get("related_findings") or r.get("finding_id")) or {"text": "", "na": True}])
         else:
-            rows.append([f"A-{i+1:02d}", "", text_of(a), "TBD", "TBD", "", "Open"])
+            rows.append([str(i), "—", compact(r, 160), {"text": "", "na": True}, {"text": "", "na": True}, {"text": "", "na": True}])
+    if scored:
+        sebaran: dict[tuple[int, int], list[int]] = {}
+        for i, r in enumerate(risks[:6], 1):
+            if r in scored:
+                k = int(r.get("likelihood") or r.get("kemungkinan"))
+                s = int(r.get("severity") or r.get("dampak_level"))
+                sebaran.setdefault((max(1, min(5, k)), max(1, min(5, s))), []).append(i)
+        T.add_matriks_risiko(slide, sebaran, L, BODY_TOP, 5.2, 5.2, judul="Peta risiko (nomor = baris tabel)")
+        T.add_tabel(slide, ["No.", "Keterkaitan", "Risiko", "Mitigasi"], [[r[0], r[1], r[2], r[4]] for r in rows],
+                    6.0, BODY_TOP, R - 6.0, col_w=[0.5, 1.5, 2.6, 2.2], size=10)
+        caption(slide, "Nomor pada peta merujuk baris tabel; warna sel menunjukkan tingkat risiko dari rendah (hijau) "
+                       "hingga tinggi (merah).", x=6.0, w=R - 6.0)
+    else:
+        T.add_tabel(slide, ["No.", "Keterkaitan", "Risiko", "Dampak", "Mitigasi", "Temuan terkait"], rows,
+                    L, BODY_TOP, CW, col_w=[0.5, 1.9, 3.4, 2.5, 2.8, 1.1], size=TABLE_PT)
+
+
+def add_gaps(prs, d: dict[str, Any]):
+    rows = []
+    for i, g in enumerate(as_list(d.get("data_gaps"))):
+        if isinstance(g, dict):
+            rows.append([text_of(g.get("id") or f"DG-{i + 1:02d}"), compact(g.get("gap") or g.get("item"), 140),
+                         compact(g.get("impact"), 110) or {"text": "", "na": True},
+                         compact(g.get("required") or g.get("evidence"), 110) or {"text": "", "na": True},
+                         text_of(g.get("owner") or g.get("pic")) or {"text": "", "na": True}, status_cell(text_of(g.get("status"))) ])
+        else:
+            rows.append([f"DG-{i + 1:02d}", compact(g, 140), {"text": "", "na": True}, {"text": "", "na": True},
+                         {"text": "", "na": True}, status_cell("open")])
     if not rows:
-        rows = [["A-01", "", "Tetapkan tindak lanjut untuk temuan material dan *data gap*", "TBD", "TBD", "", "Open"]]
-    cols = [("ID", 0.72), ("Temuan", 0.78), ("Tindakan yang diperlukan", 4.05), ("PIC", 1.35), ("Target", 1.25), ("Bukti penyelesaian", 2.6), ("Status", 1.3)]
-    add_table(slide, cols, rows, 0.4, 1.35, row_h=0.68, font_size=6.95, status_col=6)
-    add_footer(slide, page)
+        rows = [["—", "Tidak ada *data gap* material yang tercatat", "—", "—", "—", {"text": "", "na": True}]]
+    pages = table_pages(rows, 6)
+    for i, chunk in enumerate(pages):
+        sub = "Klarifikasi dan Asumsi" + (f" ({i + 1}/{len(pages)})" if len(pages) > 1 else "")
+        slide = content_slide(prs, "*Data Gap*", sub)
+        t = T.add_tabel(slide, ["ID", "Data yang belum tersedia / belum jelas", "Dampak bila tidak dipenuhi",
+                                "Bukti yang diperlukan", "PIC", "Status"], chunk, L, BODY_TOP, CW,
+                        col_w=[0.8, 3.7, 2.8, 2.8, 1.3, 0.8], size=TABLE_PT, rata=["l", "l", "l", "l", "l", "c"])
+        status_legend(slide, L, min(t["bawah"] + 0.15, 6.55))
 
 
-def add_conclusion(prs: Presentation, d: dict[str, Any], page: int):
-    slide = prs.slides.add_slide(prs.slide_layouts[6]); add_master_background(slide, MASTER_CONTENT)
-    add_header(slide, "Kesimpulan dan status penyelesaian", "Kesimpulan")
+def add_actions(prs, d: dict[str, Any]):
+    rows = []
+    for i, a in enumerate(as_list(d.get("actions"))):
+        if isinstance(a, dict):
+            rows.append([text_of(a.get("id") or f"A-{i + 1:02d}"), text_of(a.get("finding_id") or a.get("related_findings")) or {"text": "", "na": True},
+                         compact(a.get("action"), 150), text_of(a.get("pic") or a.get("owner")) or {"text": "", "na": True},
+                         text_of(a.get("due") or a.get("timing")) or {"text": "", "na": True},
+                         compact(a.get("evidence") or a.get("closure_evidence"), 100) or {"text": "", "na": True},
+                         status_cell(text_of(a.get("status")))])
+        else:
+            rows.append([f"A-{i + 1:02d}", {"text": "", "na": True}, compact(a, 150), {"text": "", "na": True},
+                         {"text": "", "na": True}, {"text": "", "na": True}, status_cell("open")])
+    if not rows:
+        rows = [["A-01", "—", "Tetapkan tindak lanjut untuk temuan material dan *data gap*", "—", "—", "—", status_cell("open")]]
+    pages = table_pages(rows, 6)
+    for i, chunk in enumerate(pages):
+        sub = "Penyelesaian Komentar" + (f" ({i + 1}/{len(pages)})" if len(pages) > 1 else "")
+        slide = content_slide(prs, "Rencana Tindak Lanjut", sub)
+        t = T.add_tabel(slide, ["ID", "Temuan", "Tindakan yang diperlukan", "PIC", "Target", "Bukti penyelesaian", "Status"],
+                        chunk, L, BODY_TOP, CW, col_w=[0.8, 0.9, 4.2, 1.5, 1.3, 2.6, 0.9], size=TABLE_PT,
+                        rata=["l", "l", "l", "l", "l", "l", "c"])
+        status_legend(slide, L, min(t["bawah"] + 0.15, 6.55))
+
+
+def add_conclusion(prs, d: dict[str, Any]):
+    slide = content_slide(prs, "Kesimpulan", "Status Penyelesaian Kajian")
+    findings = findings_of(d)
+    actions = [a for a in as_list(d.get("actions"))]
+    gaps = [g for g in as_list(d.get("data_gaps"))]
+
+    def done(items, key="status"):
+        return sum(1 for x in items if isinstance(x, dict) and is_closed(text_of(x.get(key))))
+
+    y = P.add_column_head(slide, "Kemajuan penyelesaian", LEFT_X, BODY_TOP, LEFT_W)
+    baris = []
+    for label, items in (("Temuan", findings), ("Tindak lanjut", actions), ("*Data gap*", gaps)):
+        if items:
+            n_done = done(items)
+            baris.append({"label": label, "nilai": round(100 * n_done / len(items)),
+                          "ket": f"{n_done} dari {len(items)} selesai"})
+    if baris:
+        G.add_progress(slide, baris, LEFT_X, y + 0.1, LEFT_W, row_h=0.62, label_w=1.8, nilai_w=0.8)
+        y += 0.25 + 0.62 * len(baris)
+        P.add_keterangan(slide, "Persentase item berstatus selesai terhadap seluruh item pada tiap kelompok.",
+                         LEFT_X, y + 0.05, LEFT_W, size=11)
+        y += 0.3
     status = text_of(d.get("overall_status")) or "Belum dinyatakan"
-    col = status_color(status)
-    add_rect(slide, 0.8, 1.45, 3.35, 1.55, C["near_white"], C["light_gray"], True)
-    add_text(slide, "STATUS KAJIAN", 1.1, 1.74, 2.7, 0.25, 8, True, C["mid_gray"], PP_ALIGN.CENTER)
-    add_text(slide, status, 1.05, 2.12, 2.85, 0.65, 14.5, True, col, PP_ALIGN.CENTER, MSO_ANCHOR.MIDDLE)
-    findings = [normalize_finding(f) for f in as_list(d.get("findings")) if isinstance(f, dict)]
-    open_material = [f for f in findings if "closed" not in str(f.get("status", "")).lower() and priority_level(f.get("priority", "")) in ("high", "medium")]
-    add_rect(slide, 4.45, 1.45, 2.2, 1.55, C["near_white"], C["light_gray"], True)
-    add_text(slide, str(len(open_material)), 4.8, 1.76, 1.5, 0.48, 25, True, C["high"], PP_ALIGN.CENTER)
-    add_text(slide, "KOMENTAR MATERIAL\nYANG MASIH TERBUKA", 4.75, 2.27, 1.6, 0.5, 8.2, True, C["charcoal"], PP_ALIGN.CENTER)
-    add_rect(slide, 6.95, 1.45, 2.2, 1.55, C["near_white"], C["light_gray"], True)
-    add_text(slide, str(len(as_list(d.get("data_gaps")))), 7.3, 1.76, 1.5, 0.48, 25, True, C["pln_blue"], PP_ALIGN.CENTER)
-    add_text(slide, "DATA GAP", 7.3, 2.35, 1.5, 0.3, 8.2, True, C["charcoal"], PP_ALIGN.CENTER)
-    add_rect(slide, 9.45, 1.45, 2.2, 1.55, C["near_white"], C["light_gray"], True)
-    open_actions = sum(1 for a in as_list(d.get("actions")) if not isinstance(a, dict) or "closed" not in str(a.get("status", "")).lower())
-    add_text(slide, str(open_actions), 9.8, 1.76, 1.5, 0.48, 25, True, C["medium"], PP_ALIGN.CENTER)
-    add_text(slide, "TINDAK LANJUT\nTERBUKA", 9.8, 2.35, 1.5, 0.3, 8.2, True, C["charcoal"], PP_ALIGN.CENTER)
-    add_text(slide, "KESIMPULAN KAJIAN", 0.82, 3.48, 2.5, 0.28, 8.5, True, C["dark_teal"])
-    add_text(slide, compact(d.get("conclusion") or "Kesimpulan belum disertakan.", 560), 0.85, 3.86, 11.4, 1.1, 12.0, False, C["charcoal"])
+    P.add_text(slide, f"Status kajian: **{status}**", LEFT_X, y + 0.35, LEFT_W, 0.35, size=14, color=P.INK)
+    yr = P.add_column_head(slide, "Kesimpulan kajian", RIGHT_X - 0.2, BODY_TOP, RIGHT_W + 0.2)
+    P.add_text(slide, compact(d.get("conclusion") or "Kesimpulan belum disertakan.", 420), RIGHT_X - 0.2, yr,
+               RIGHT_W + 0.2, 2.0, size=13)
     conditions = as_list(d.get("conditions_to_proceed") or d.get("closeout_conditions"))
     if conditions:
-        add_text(slide, "SYARAT UNTUK MELANJUTKAN DAN KETERBATASAN", 0.82, 5.15, 3.8, 0.28, 8.5, True, C["energy_teal"])
-        add_bullet_list(slide, conditions, 0.9, 5.5, 11.3, 1.0, 9.4, max_items=4)
-    add_footer(slide, page)
+        yc = P.add_column_head(slide, "Syarat untuk melanjutkan", RIGHT_X - 0.2, BODY_TOP + 2.75, RIGHT_W + 0.2)
+        P.add_bullets(slide, [compact(c, 140) for c in conditions[:4]], RIGHT_X - 0.2, yc, RIGHT_W + 0.2, 2.2, size=12)
 
 
-def add_references(prs: Presentation, d: dict[str, Any], page: int):
-    slide = prs.slides.add_slide(prs.slide_layouts[6]); add_master_background(slide, MASTER_CONTENT)
-    add_header(slide, "Sumber yang digunakan dan keterlacakan kajian", "Lampiran")
-    refs = as_list(d.get("references_used") or d.get("references"))
+def add_references(prs, d: dict[str, Any]):
+    refs = [text_of(r) for r in as_list(d.get("references_used") or d.get("references")) if text_of(r)]
     if not refs:
-        refs = sorted({normalize_finding(f).get("source", "") for f in as_list(d.get("findings")) if isinstance(f, dict) and normalize_finding(f).get("source")})
-    y = 1.38
-    for i, r in enumerate(refs[:12], 1):
-        add_text(slide, f"{i:02d}", 0.7, y, 0.45, 0.3, 8.5, True, C["deep_teal"])
-        add_text(slide, compact(r, 220), 1.25, y, 11.0, 0.38, 9.2, False, C["charcoal"])
-        y += 0.43
-    if not refs:
-        add_text(slide, "Daftar sumber belum disertakan pada data hasil kajian.", 0.85, 1.65, 10.5, 0.45, 11, False, C["charcoal"])
-    add_text(slide, "Hanya sumber yang benar-benar dibuka dan digunakan sebagai bukti teknis yang dicantumkan, lengkap dengan nama file serta halaman, slide, sheet, atau bagian bila tersedia.", 0.7, 6.62, 11.5, 0.38, 8.0, True, C["mid_gray"])
-    add_footer(slide, page)
+        refs = sorted({f.get("source", "") for f in findings_of(d) if f.get("source")})
+    slide = content_slide(prs, "Lampiran", "Sumber yang Digunakan")
+    if refs:
+        rows = [[f"{i:02d}", compact(r, 200)] for i, r in enumerate(refs[:12], 1)]
+        T.add_tabel(slide, ["No.", "Sumber (file dan halaman/slide)"], rows, L, BODY_TOP, CW, col_w=[0.7, 11.5],
+                    size=TABLE_PT, sumbu=False)
+    else:
+        P.add_text(slide, "Daftar sumber belum disertakan pada data hasil kajian.", L, BODY_TOP, CW, 0.4, size=13)
+    add_source(slide, "Hanya sumber yang benar-benar dibuka dan dipakai sebagai bukti teknis yang dicantumkan.")
 
 
-def add_closing(prs: Presentation):
-    slide = prs.slides.add_slide(prs.slide_layouts[6]); add_master_background(slide, MASTER_CLOSING)
+def add_closing(prs):
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    background(slide, MASTER_CLOSING)
 
 
-def build(data: dict[str, Any], out_path: str):
-    prs = Presentation(); prs.slide_width = Inches(SW); prs.slide_height = Inches(SH)
+def build(data: dict[str, Any], out_path: str, extra=None):
+    """extra: fungsi opsional extra(prs, data) untuk menyisipkan slide tambahan
+    (gantt, stage-gate, peta, dll.) sebelum slide kesimpulan."""
+    prs = Presentation()
+    prs.slide_width = Inches(SW)
+    prs.slide_height = Inches(SH)
     add_cover(prs, data)
-    page = 2
-    add_summary(prs, data, page); page += 1
+    add_summary(prs, data)
     if data.get("include_agenda", True):
-        add_agenda(prs, page); page += 1
+        add_agenda(prs)
     if has_control(data) and data.get("include_review_control", True):
-        add_control(prs, data, page); page += 1
-    add_scope(prs, data, page); page += 1
-    add_documents(prs, data, page); page += 1
-    add_methodology(prs, data, page); page += 1
-    add_findings_overview(prs, data, page); page += 1
+        add_control(prs, data)
+    add_scope(prs, data)
+    add_documents(prs, data)
+    add_methodology(prs, data)
+    add_distribution(prs, data)
+    add_findings_overview(prs, data)
     detail_limit = int(data.get("ppt_detail_limit", 6) or 6)
     for f in [x for x in as_list(data.get("findings")) if isinstance(x, dict)][:detail_limit]:
-        add_finding_detail(prs, f, page); page += 1
-    add_risks(prs, data, page); page += 1
-    add_gaps(prs, data, page); page += 1
-    add_actions(prs, data, page); page += 1
-    add_conclusion(prs, data, page); page += 1
-    add_references(prs, data, page); page += 1
+        add_finding_detail(prs, f)
+    add_risks(prs, data)
+    add_gaps(prs, data)
+    add_actions(prs, data)
+    if extra:
+        extra(prs, data)
+    add_conclusion(prs, data)
+    add_references(prs, data)
     add_closing(prs)
-    Path(out_path).parent.mkdir(parents=True, exist_ok=True); prs.save(out_path)
+    number_pages(prs)
+    Path(out_path).parent.mkdir(parents=True, exist_ok=True)
+    prs.save(out_path)
 
 
 def main() -> int:
     if len(sys.argv) != 3:
-        print(__doc__); return 2
+        print(__doc__)
+        return 2
     with open(sys.argv[1], "r", encoding="utf-8") as f:
         data = json.load(f)
-    build(data, sys.argv[2]); print(sys.argv[2]); return 0
+    build(data, sys.argv[2])
+    print(sys.argv[2])
+    return 0
 
 
 if __name__ == "__main__":

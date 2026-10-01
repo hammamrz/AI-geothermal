@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.4.0 — 2026-10-01
+
+- Presentasi review mengikuti framework skill **presentasi-pln-ip** dan **presentasi-tvv**:
+  - judul dua warna (topik + sub-topik) tanpa *kicker* dan tanpa garis aksen;
+  - tanpa sudut membulat dan tanpa deretan kartu;
+  - tabel bersumbu dengan penanda status bulat dan legenda;
+  - keterangan cara membaca grafis.
+- Model grafis baru di generator PPTX: deret angka kunci (ringkasan), alur proses (metodologi), chart bertumpuk sebaran temuan per disiplin dan prioritas (slide baru), matriks risiko 5×5 (bila `likelihood`/`severity` diisi), dan bar progres penyelesaian. Tabel panjang otomatis dipecah ke beberapa slide.
+- Pustaka `geothermal-review-presentation/assets/pustaka/` disalin dari kedua skill tanpa master dan tanpa ilustrasi unDraw: `plnip_deck`, `plnip_grafis`, `tvv_deck`, ikon Tabler, dan peta Indonesia. Disertakan pula referensi `pola-layout.md`, `aturan-slide.md`, `aturan-tvv.md`, `pedoman-plnip.md`, galeri model grafis, dan pemeriksa `scripts/check_deck.py`.
+- `build(..., extra=fungsi)` untuk menyisipkan slide tambahan (*gantt*, *stage-gate*, peta) sebelum kesimpulan.
+- Gaya bahasa: `GAYA_BAHASA.md` ditambah aturan kosakata anti-AI, format angka Indonesia, dan larangan *em dash*. `kosakata-anti-ai.md` disalin ke `geothermal-knowledge/references/`.
+
 ## 1.3.0 — 2026-10-01
 
 - Gaya bahasa: panduan baru `geothermal-knowledge/references/GAYA_BAHASA.md` (bahasa Indonesia formal yang natural, istilah Inggris dicetak miring, contoh sebelum/sesudah, dan daftar istilah) yang wajib diikuti keempat modul.
