@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.0 — 2026-10-01
+
+- Visual KB bisa dilihat dan ditampilkan: `geothermal-knowledge/scripts/kb_render.py` merender halaman/slide (PDF, PPT/PPTX, DOC/DOCX, XLS/XLSX) menjadi PNG. Sebelumnya ekstraksi teks hanya membaca caption. Claude membuka PNG untuk analisis visual dan dapat menyalinnya ke folder output agar tampil ke pengguna. Konversi Office di-cache.
+- `kb_fetch.py` kini menyediakan fungsi `fetch()` yang dipakai ulang oleh `kb_render.py`.
+
 ## 1.1.0 — 2026-10-01
 
 - Akun Pro/Max: pasang sebagai plugin lewat **Customize → Plugins → Add marketplace** (`hammamrz/AI-geothermal`). Versi plugin naik otomatis di setiap perubahan agar update tersinkron.

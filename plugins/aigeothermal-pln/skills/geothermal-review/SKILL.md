@@ -27,7 +27,7 @@ Untuk setiap isu/topik:
 2. Pilih maksimal 5 sumber kandidat.
 3. Ambil maksimal 8 snippet/range relevan total pada pass awal.
 4. Buka konteks seperlunya, default sekitar maksimum 12 halaman/slide sumber per pass.
-5. Periksa maksimum 4 visual relevan per pass secara default.
+5. Periksa maksimum 4 visual relevan per pass secara default. Untuk melihat isi gambar (bukan hanya caption), render halamannya dengan `geothermal-knowledge/scripts/kb_render.py` lalu buka PNG-nya. Cara yang sama berlaku untuk gambar di dokumen target.
 6. Jika bukti belum cukup, lakukan pass kedua yang lebih sempit.
 7. Jangan membaca semua file KB untuk memastikan coverage.
 

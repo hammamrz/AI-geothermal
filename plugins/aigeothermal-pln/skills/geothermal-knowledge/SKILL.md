@@ -31,15 +31,28 @@ Gunakan bahasa Indonesia, pertahankan istilah teknis sumber bila lebih tepat. Kn
 8. Jika evidence belum cukup, lakukan pass kedua yang lebih terarah. Jangan mengganti retrieval dengan full-KB read.
 9. Untuk angka, formula, batas desain, tabel, atau klaim safety-critical, verifikasi kembali ke sumber asli dan locator-nya.
 
-## Visual
+## Visual (gambar, foto, diagram)
 
-Visual penting dapat berupa well schematic, casing design, BHA, geological cross-section, conceptual model, log, pressure-temperature plot, drilling curve, map, seismic/MT section, trajectory, cementing diagram, atau tabel yang tidak terekstrak baik sebagai teks.
+Visual penting dapat berupa foto lapangan/manifestasi, well schematic, casing design, BHA, geological cross-section, conceptual model, log, pressure-temperature plot, drilling curve, peta, seismic/MT section, trajectory, cementing diagram, atau tabel yang tidak terekstrak baik sebagai teks.
 
-Saat visual diperlukan:
-- buka hanya halaman/slide terkait;
-- identifikasi caption, legenda, unit, sumbu, label, anotasi dan keterbacaan;
-- pisahkan observasi langsung dari interpretasi;
-- jangan mengklaim detail yang tidak terbaca.
+**Ekstraksi teks hanya membaca caption, bukan isi gambar.** Bila halaman/slide berisi gambar yang relevan, atau pengguna meminta melihat/menampilkan gambar, **render halamannya menjadi PNG lalu lihat gambarnya**:
+
+```bash
+python scripts/kb_render.py GEO-0007 --pages 20-22          # PDF / PPT(X) / DOC(X) / XLS(X)
+python scripts/kb_render.py GEO-0007 --info                 # jumlah halaman
+python scripts/kb_render.py /path/dokumen-target.pdf --pages 5   # juga untuk dokumen yang sedang direview
+```
+
+1. Output JSON berisi `images[].path`. **Buka setiap PNG dengan tool untuk melihat gambar** (mis. tool `view`/membaca file gambar) sebelum menarik kesimpulan visual. Jangan menilai visual hanya dari teks/caption.
+2. Detail kecil (label sumbu, angka di skema, legenda) tidak terbaca → render ulang halaman itu dengan `--dpi 160`–`200`.
+3. **Tampilkan gambar kepada pengguna** bila diminta atau bila gambar menjadi dasar jawaban/temuan: salin PNG ke folder output yang bisa dilihat pengguna (di claude.ai: `/mnt/user-data/outputs/`, mis. `GEO-0007_hal21.png`) dan sebutkan nama filenya, atau sisipkan ke DOCX/PPTX bila sedang membuat laporan/presentasi. Beri keterangan: `Sumber: GEO-0007 "<judul>", hal. 21`.
+4. Batas default: maksimum 4 visual per pass (skrip membatasi 6 halaman per panggilan). Render hanya halaman kandidat, bukan seluruh dokumen.
+
+Saat menganalisis visual:
+- identifikasi caption, legenda, unit, sumbu, label, skala, anotasi, dan keterbacaan;
+- pisahkan observasi langsung ("terlihat kolom lumpur mendidih dengan gelembung") dari interpretasi;
+- jangan mengklaim detail yang tidak terbaca walau sudah dirender; sebutkan bila resolusi tidak cukup;
+- jangan memperkirakan angka presisi dari piksel; labeli sebagai estimasi visual.
 
 ## Bila index belum lengkap
 

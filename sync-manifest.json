@@ -26,8 +26,8 @@
     },
     {
       "path": "geothermal-knowledge/SKILL.md",
-      "sha256": "a90e30468d4b80ea451eaa54d1ee1933d205c24ed7265099ac9c94e3ed6f15fe",
-      "size": 6273
+      "sha256": "4c437ea19dc49d8af45b0011f8e857dcac85eeb8365c7e176198b8811a74a4c1",
+      "size": 7849
     },
     {
       "path": "geothermal-knowledge/references/KB/KB_INDEX.md",
@@ -41,8 +41,8 @@
     },
     {
       "path": "geothermal-knowledge/scripts/kb_fetch.py",
-      "sha256": "0cd1c8b8154b37b9c74d0f0c50bd8d88009532e7b8bd9560e6efbd57ceba17a5",
-      "size": 4212
+      "sha256": "4514c0c639a2de2adb90e86224c6e1355a3335ba6e85980d37aeed5f11af6a73",
+      "size": 4618
     },
     {
       "path": "geothermal-knowledge/scripts/kb_manager.py",
@@ -50,9 +50,14 @@
       "size": 23434
     },
     {
+      "path": "geothermal-knowledge/scripts/kb_render.py",
+      "sha256": "525f58f269ec1c86ff86c9ee0446ec088d12eff04da0f5e66893671d031515c5",
+      "size": 8141
+    },
+    {
       "path": "geothermal-review/SKILL.md",
-      "sha256": "3662334b736b69a895202cdf318d2ff71923ba164751bd2a3b5050b64b2d90a5",
-      "size": 4310
+      "sha256": "1c9c9f657dac97d0fe36528d39ac93f6273b8b3a7773690a47523a60ab1d4d7a",
+      "size": 4501
     },
     {
       "path": "geothermal-review/references/review-checklist.md",
