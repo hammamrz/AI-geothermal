@@ -7,6 +7,15 @@ description: Buat presentasi PPTX technical review geothermal dengan 3-layout ma
 
 Gunakan skill ini ketika pengguna meminta hasil review geothermal dalam bentuk **PowerPoint/PPT/PPTX**, bahan paparan, technical review deck, comment review presentation, checkpoint presentation, atau management review.
 
+## Gaya bahasa (wajib)
+
+Sebelum menulis jawaban, tabel, laporan, atau slide, baca `../geothermal-knowledge/references/GAYA_BAHASA.md` dan ikuti aturannya. Ringkasnya:
+- Gunakan bahasa Indonesia baku yang natural, seperti laporan resmi seorang *engineer* senior. Jangan menyusun kalimat dengan pola terjemahan kata demi kata dari bahasa Inggris.
+- Istilah Inggris yang padanannya kurang pas tetap dipakai dan **dicetak miring** dengan `*istilah*` (mis. *shut-in*, *casing*, *siting*, *reservoir engineer*, *data gap*). Akronim, nama dokumen, dan kata serapan baku tidak dimiringkan.
+- Pakai padanan Indonesia yang lazim bila tepat: sumur (bukan *well*), pemboran, temuan, ahli geokimia.
+- Nada lugas dan profesional, tanpa frasa pengisi ("Tentu!", "Berikut adalah …", "Penting untuk dicatat …").
+- Contoh: "Apabila hasil ini digunakan sebagai dasar penentuan lokasi (*siting*) atau perencanaan sumur, perlu dilakukan verifikasi oleh ahli geokimia dan *reservoir engineer*."
+
 ## Prinsip utama
 
 PowerPoint harus menjadi **versi presentasi dari technical review report**, bukan storyline yang berbeda.

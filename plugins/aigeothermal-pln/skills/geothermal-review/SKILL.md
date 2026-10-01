@@ -7,6 +7,15 @@ description: Review dokumen/desain geothermal subsurface, drilling, dan well ber
 
 Hasilkan review berbahasa Indonesia yang dapat ditelusuri ke bukti. Selalu gunakan pola **route -> retrieve -> inspect -> reason**, bukan memuat seluruh knowledge base.
 
+## Gaya bahasa (wajib)
+
+Sebelum menulis jawaban, tabel, laporan, atau slide, baca `../geothermal-knowledge/references/GAYA_BAHASA.md` dan ikuti aturannya. Ringkasnya:
+- Gunakan bahasa Indonesia baku yang natural, seperti laporan resmi seorang *engineer* senior. Jangan menyusun kalimat dengan pola terjemahan kata demi kata dari bahasa Inggris.
+- Istilah Inggris yang padanannya kurang pas tetap dipakai dan **dicetak miring** dengan `*istilah*` (mis. *shut-in*, *casing*, *siting*, *reservoir engineer*, *data gap*). Akronim, nama dokumen, dan kata serapan baku tidak dimiringkan.
+- Pakai padanan Indonesia yang lazim bila tepat: sumur (bukan *well*), pemboran, temuan, ahli geokimia.
+- Nada lugas dan profesional, tanpa frasa pengisi ("Tentu!", "Berikut adalah …", "Penting untuk dicatat …").
+- Contoh: "Apabila hasil ini digunakan sebagai dasar penentuan lokasi (*siting*) atau perencanaan sumur, perlu dilakukan verifikasi oleh ahli geokimia dan *reservoir engineer*."
+
 ## Sumber knowledge
 
 Gunakan skill `geothermal-knowledge` sebagai router ke **satu embedded KB** di `skills/geothermal-knowledge/references/KB/`. Jangan mencari atau meminta Google Drive/Library sebagai default bila sumber yang dibutuhkan sudah ada dalam embedded KB.
@@ -39,10 +48,10 @@ Dokumen target boleh dibaca lebih luas karena memang objek review. Untuk dokumen
 
 1. Bedakan regulatory/standard requirement, project design criteria, training material, vendor guidance, case example, dan interpretasi AI.
 2. Periksa formula, input, unit, datum, asumsi, dan basis desain. Pisahkan misalnya MD/TVD/TVDSS, gauge/absolute pressure, temperature/gradient, static/dynamic condition, dan unit conversion.
-3. Klasifikasikan hasil sebagai: `confirmed nonconformance`, `potential risk/inconsistency`, `data gap`, `clarification`, atau `improvement opportunity`.
-4. `Confirmed nonconformance` wajib memiliki bukti target + comparator applicable yang jelas. Tanpa comparator applicable, jangan menyebut pelanggaran.
+3. Klasifikasikan setiap hasil ke salah satu jenis berikut (tulis label Indonesianya di jawaban): **ketidaksesuaian terkonfirmasi**, **potensi risiko/inkonsistensi**, ***data gap***, **perlu klarifikasi**, atau **peluang perbaikan**.
+4. Ketidaksesuaian terkonfirmasi wajib didukung bukti dari dokumen yang dikaji dan acuan pembanding yang berlaku. Tanpa acuan pembanding yang berlaku, jangan menyebutnya sebagai pelanggaran.
 5. Prioritas High/Medium/Low harus dijelaskan berdasarkan potensi dampak. Jangan mengarang probabilitas atau skor.
-6. Pisahkan severity dari confidence evidence.
+6. Pisahkan tingkat keparahan (prioritas) dari tingkat keyakinan terhadap bukti.
 7. Untuk well integrity, well control, H2S, pressure control, barrier, atau safety-critical issue, tandai kebutuhan verifikasi engineer dan jangan mengeluarkan approval operasi final.
 
 ## Bila KB tidak cukup
@@ -57,9 +66,9 @@ Jika pengguna meminta hasil review sebagai PPT/PPTX/presentation, setelah techni
 
 ## Keluaran default
 
-Mulai dengan ringkasan findings utama dan coverage. Gunakan tabel:
+Mulai dengan ringkasan temuan utama dan cakupan kajian, lalu sajikan tabel:
 
-| ID | Lokasi target | Temuan & jenis | Dasar & sumber KB | Dampak & prioritas | Rekomendasi & verifikasi | Confidence |
+| ID | Lokasi di dokumen | Temuan dan jenisnya | Dasar dan sumber KB | Dampak dan prioritas | Rekomendasi dan verifikasi | Tingkat keyakinan |
 |---|---|---|---|---|---|---|
 
 Untuk evidence visual, sebutkan file + page/slide + objek visual yang diperiksa. Akhiri dengan:

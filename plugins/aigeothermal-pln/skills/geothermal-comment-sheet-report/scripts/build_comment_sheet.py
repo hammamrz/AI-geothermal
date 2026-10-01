@@ -8,7 +8,7 @@ The generated DOCX contains real Word fields for TOC, List of Figures,
 List of Tables, and page numbers. Word is instructed to update fields on open.
 """
 from __future__ import annotations
-import json, sys
+import json, re, sys
 from pathlib import Path
 from datetime import date
 from docx import Document
@@ -112,7 +112,7 @@ def add_caption(doc, label, title):
     txt = OxmlElement('w:t'); txt.text = '1'
     end = OxmlElement('w:fldChar'); end.set(qn('w:fldCharType'), 'end')
     seq._r.extend([begin, instr, sep, txt, end])
-    p.add_run(f'. {title}')
+    p.add_run('. '); add_rich(p, title)
     return p
 
 
@@ -207,9 +207,36 @@ def set_header_footer(section, meta):
     rr.italic=True; rr.font.name='Arial'; rr.font.size=Pt(6.5)
 
 
+# Markup ringan di teks input/default: *istilah* -> miring (istilah Inggris), **teks** -> tebal.
+_RICH = re.compile(r'(\*\*[^*]+\*\*|\*[^*\s][^*]*\*)')
+
+
+def add_rich(p, text):
+    for part in _RICH.split(str(text)):
+        if not part:
+            continue
+        if part.startswith('**') and part.endswith('**') and len(part) > 4:
+            r = p.add_run(part[2:-2]); r.bold = True
+        elif part.startswith('*') and part.endswith('*') and len(part) > 2:
+            r = p.add_run(part[1:-1]); r.italic = True
+        else:
+            p.add_run(part)
+    return p
+
+
+def set_rich(cell, text):
+    cell.text = ''
+    add_rich(cell.paragraphs[0], text)
+
+
+def add_para(doc, text):
+    p = doc.add_paragraph()
+    return add_rich(p, text)
+
+
 def add_title(doc, text, level=1):
     p=doc.add_paragraph(style=f'Heading {level}')
-    p.add_run(text)
+    add_rich(p, text)
     return p
 
 
@@ -219,7 +246,7 @@ def add_bullet(doc, text, level=0):
     p=doc.add_paragraph(style='Normal')
     p.paragraph_format.left_indent = Mm(7 + 5*level)
     p.paragraph_format.first_line_indent = Mm(-4)
-    p.add_run('• ' + str(text))
+    p.add_run('• '); add_rich(p, text)
     return p
 
 
@@ -235,7 +262,7 @@ def add_kv_table(doc, rows, caption=None, widths=None):
         for r in c.paragraphs[0].runs: r.bold=True; r.font.size=Pt(9)
     set_repeat_table_header(tbl.rows[0])
     for k,v in rows:
-        cells=tbl.add_row().cells; cells[0].text=str(k); cells[1].text=str(v)
+        cells=tbl.add_row().cells; set_rich(cells[0], k); set_rich(cells[1], v)
     set_table_borders(tbl)
     for row in tbl.rows:
         for c in row.cells:
@@ -246,17 +273,17 @@ def add_kv_table(doc, rows, caption=None, widths=None):
 
 
 def add_documents_table(doc, documents):
-    add_caption(doc,'Tabel','Daftar Dokumen yang Diperiksa')
+    add_caption(doc,'Tabel','Daftar Dokumen yang Dikaji')
     tbl=doc.add_table(rows=1, cols=6); tbl.alignment=WD_TABLE_ALIGNMENT.CENTER; tbl.autofit=False
     headers=['No.','Judul Dokumen','No./Kode Dokumen','Revisi','Tanggal','Lingkup Review']
     for i,h in enumerate(headers):
-        tbl.cell(0,i).text=h; set_cell_shading(tbl.cell(0,i), LIGHT_GRAY)
+        set_rich(tbl.cell(0,i), h); set_cell_shading(tbl.cell(0,i), LIGHT_GRAY)
         for r in tbl.cell(0,i).paragraphs[0].runs: r.bold=True; r.font.size=Pt(8.5)
     set_repeat_table_header(tbl.rows[0])
     for idx,d in enumerate(documents,1):
         vals=[idx,d.get('title',''),d.get('number',''),d.get('revision',''),d.get('date',''),d.get('scope','')]
         cells=tbl.add_row().cells
-        for i,v in enumerate(vals): cells[i].text=str(v)
+        for i,v in enumerate(vals): set_rich(cells[i], v)
     set_table_borders(tbl)
     for row in tbl.rows:
         for c in row.cells:
@@ -275,12 +302,12 @@ def priority_fill(value):
 
 
 def add_findings_table(doc, findings):
-    add_caption(doc,'Tabel','Detailed Findings and Reviewer Comments')
+    add_caption(doc,'Tabel','Rincian Temuan dan Komentar Reviewer')
     tbl=doc.add_table(rows=1, cols=8); tbl.alignment=WD_TABLE_ALIGNMENT.CENTER; tbl.autofit=False
-    headers=['ID','Discipline','Dokumen / Lokasi','Finding / Observation','Reviewer Comment / Recommendation','Technical Basis / Reference','Priority','Status']
+    headers=['ID','Disiplin','Dokumen / Lokasi','Temuan / Observasi','Komentar dan Rekomendasi Reviewer','Dasar Teknis / Referensi','Prioritas','Status']
     widths=[Mm(12),Mm(21),Mm(36),Mm(48),Mm(56),Mm(38),Mm(18),Mm(18)]
     for i,h in enumerate(headers):
-        c=tbl.cell(0,i); c.text=h; set_cell_shading(c, PLN_BLUE)
+        c=tbl.cell(0,i); set_rich(c, h); set_cell_shading(c, PLN_BLUE)
         for r in c.paragraphs[0].runs: r.bold=True; r.font.color.rgb=RGBColor(255,255,255); r.font.size=Pt(7.5)
         c.width=widths[i]
     set_repeat_table_header(tbl.rows[0])
@@ -288,7 +315,7 @@ def add_findings_table(doc, findings):
         vals=[f.get('id',f'F-{idx:03d}'),f.get('discipline',''),f.get('location',''),f.get('finding',''),f.get('comment',f.get('recommendation','')),f.get('basis',''),f.get('priority',''),f.get('status','Open')]
         cells=tbl.add_row().cells
         for i,v in enumerate(vals):
-            cells[i].text=str(v); cells[i].width=widths[i]
+            set_rich(cells[i], v); cells[i].width=widths[i]
         set_cell_shading(cells[6], priority_fill(vals[6]))
     set_table_borders(tbl)
     for row in tbl.rows:
@@ -301,17 +328,17 @@ def add_findings_table(doc, findings):
 
 
 def add_data_gaps_table(doc, gaps):
-    add_caption(doc,'Tabel','Data Gaps / Clarifications Required')
+    add_caption(doc,'Tabel','*Data Gap* dan Klarifikasi yang Diperlukan')
     tbl=doc.add_table(rows=1, cols=5); tbl.alignment=WD_TABLE_ALIGNMENT.CENTER
-    headers=['ID','Data / Clarification Required','Why It Matters / Impact','Required Evidence / Deliverable','Status']
+    headers=['ID','Data / Klarifikasi yang Diperlukan','Dampak bila Tidak Dipenuhi','Bukti / Dokumen yang Diperlukan','Status']
     for i,h in enumerate(headers):
-        c=tbl.cell(0,i); c.text=h; set_cell_shading(c,LIGHT_GRAY)
+        c=tbl.cell(0,i); set_rich(c, h); set_cell_shading(c,LIGHT_GRAY)
         for r in c.paragraphs[0].runs: r.bold=True; r.font.size=Pt(8)
     set_repeat_table_header(tbl.rows[0])
     for idx,g in enumerate(gaps,1):
         vals=[g.get('id',f'DG-{idx:02d}'),g.get('gap',''),g.get('impact',''),g.get('required',''),g.get('status','Open')]
         cells=tbl.add_row().cells
-        for i,v in enumerate(vals): cells[i].text=str(v)
+        for i,v in enumerate(vals): set_rich(cells[i], v)
     set_table_borders(tbl)
     for row in tbl.rows:
         for c in row.cells:
@@ -322,17 +349,17 @@ def add_data_gaps_table(doc, gaps):
 
 
 def add_actions_table(doc, actions):
-    add_caption(doc,'Tabel','Action Plan / Comment Resolution Register')
+    add_caption(doc,'Tabel','Rencana Tindak Lanjut dan Penyelesaian Komentar')
     tbl=doc.add_table(rows=1, cols=7); tbl.alignment=WD_TABLE_ALIGNMENT.CENTER
-    headers=['ID','Related Finding','Required Action','PIC / Owner','Target Date','Evidence for Closure','Status']
+    headers=['ID','Temuan Terkait','Tindakan yang Diperlukan','PIC','Target Waktu','Bukti Penyelesaian','Status']
     for i,h in enumerate(headers):
-        c=tbl.cell(0,i); c.text=h; set_cell_shading(c,PLN_BLUE)
+        c=tbl.cell(0,i); set_rich(c, h); set_cell_shading(c,PLN_BLUE)
         for r in c.paragraphs[0].runs: r.bold=True; r.font.color.rgb=RGBColor(255,255,255); r.font.size=Pt(8)
     set_repeat_table_header(tbl.rows[0])
     for idx,a in enumerate(actions,1):
         vals=[a.get('id',f'A-{idx:02d}'),a.get('finding_id',''),a.get('action',''),a.get('pic',''),a.get('due',''),a.get('evidence',''),a.get('status','Open')]
         cells=tbl.add_row().cells
-        for i,v in enumerate(vals): cells[i].text=str(v)
+        for i,v in enumerate(vals): set_rich(cells[i], v)
     set_table_borders(tbl)
     for row in tbl.rows:
         for c in row.cells:
@@ -419,26 +446,26 @@ def build(data, out_path):
     p=doc.add_paragraph(); p.alignment=WD_ALIGN_PARAGRAPH.CENTER
     r=p.add_run(f"No: {data.get('report_no','-')}\nRevisi {data.get('revision','0')}"); r.bold=True; r.font.name='Arial'; r.font.size=Pt(11)
 
-    add_title(doc,'DOCUMENT CONTROL',1)
-    rows=[('Judul Laporan',data.get('report_title','Technical Review & Comment Sheet Report')),('Proyek',data.get('project_name','-')),('No. Dokumen',data.get('report_no','-')),('Revisi',data.get('revision','0')),('Tanggal',data.get('date',date.today().isoformat())),('Disusun oleh',data.get('prepared_by','-')),('Diperiksa oleh',data.get('reviewed_by','-')),('Disetujui oleh',data.get('approved_by','-'))]
-    add_kv_table(doc,rows,'Document Control')
-    add_title(doc,'Revision History',2)
-    add_kv_table(doc,[('Rev. '+str(data.get('revision','0')),data.get('revision_note','Initial issue'))],'Revision History')
+    add_title(doc,'PENGENDALIAN DOKUMEN',1)
+    rows=[('Judul Laporan',data.get('report_title','Laporan Kajian Teknis dan *Comment Sheet*')),('Proyek',data.get('project_name','-')),('No. Dokumen',data.get('report_no','-')),('Revisi',data.get('revision','0')),('Tanggal',data.get('date',date.today().isoformat())),('Disusun oleh',data.get('prepared_by','-')),('Diperiksa oleh',data.get('reviewed_by','-')),('Disetujui oleh',data.get('approved_by','-'))]
+    add_kv_table(doc,rows,'Pengendalian Dokumen')
+    add_title(doc,'Riwayat Revisi',2)
+    add_kv_table(doc,[('Rev. '+str(data.get('revision','0')),data.get('revision_note','Terbitan awal'))],'Riwayat Revisi')
 
     # Executive Summary
     doc.add_page_break(); add_title(doc,'RINGKASAN EKSEKUTIF',1)
-    summary=data.get('executive_summary') or 'Ringkasan hasil review teknis, temuan material, risiko utama, data gap, dan tindak lanjut yang diperlukan.'
-    doc.add_paragraph(summary)
+    summary=data.get('executive_summary') or 'Bagian ini merangkum hasil kajian teknis, temuan material, risiko utama, *data gap*, serta tindak lanjut yang diperlukan.'
+    add_para(doc, summary)
     findings=data.get('findings',[])
     counts={}
     for f in findings: counts[str(f.get('priority','Unrated')).title()]=counts.get(str(f.get('priority','Unrated')).title(),0)+1
     if findings:
-        doc.add_paragraph('Ringkasan findings:')
-        for k,v in counts.items(): add_bullet(doc,f'{k}: {v} finding(s)')
+        add_para(doc, 'Jumlah temuan berdasarkan prioritas:')
+        for k,v in counts.items(): add_bullet(doc,f'{k}: {v} temuan')
 
     # Automatic front matter
     doc.add_page_break(); add_title(doc,'DAFTAR ISI',1)
-    p=doc.add_paragraph(); add_field(p,' TOC \\o "1-3" \\h \\z \\u ','Daftar isi diperbarui otomatis saat field Word di-update.')
+    p=doc.add_paragraph(); add_field(p,' TOC \\o "1-3" \\h \\z \\u ','Daftar isi akan diperbarui otomatis saat dokumen dibuka (tekan Ctrl+A lalu F9 bila belum berubah).')
     doc.add_page_break(); add_title(doc,'DAFTAR GAMBAR',1)
     p=doc.add_paragraph(); add_field(p,' TOC \\h \\z \\c "Gambar" ','Daftar gambar diperbarui otomatis.')
     doc.add_page_break(); add_title(doc,'DAFTAR TABEL',1)
@@ -448,58 +475,58 @@ def build(data, out_path):
     sec_main=doc.add_section(WD_SECTION.NEW_PAGE)
     body_section_setup(sec_main, False); link_exact_header_footer(sec_main); set_page_numbering(sec_main,'decimal',1)
 
-    add_title(doc,'1. TUJUAN, LINGKUP, DAN BASIS REVIEW',1)
-    doc.add_paragraph(data.get('objective','Melakukan review teknis terhadap dokumen yang diperiksa untuk mengidentifikasi inkonsistensi, risiko teknis, data gap, serta tindakan yang diperlukan sebelum dokumen dapat digunakan sebagai basis keputusan atau tahap pekerjaan berikutnya.'))
-    add_title(doc,'1.1 Lingkup Review',2)
-    scopes=data.get('scope',[]) or ['Subsurface / resource basis','Drilling / well design','Cross-discipline interfaces','Consistency, completeness, assumptions, and technical risks']
+    add_title(doc,'1. TUJUAN, LINGKUP, DAN DASAR KAJIAN',1)
+    add_para(doc, data.get('objective','Kajian ini bertujuan memeriksa dokumen secara teknis untuk mengidentifikasi ketidaksesuaian, risiko teknis, *data gap*, dan tindak lanjut yang perlu diselesaikan sebelum dokumen digunakan sebagai dasar pengambilan keputusan atau tahap pekerjaan berikutnya.'))
+    add_title(doc,'1.1 Lingkup Kajian',2)
+    scopes=data.get('scope',[]) or ['Aspek *subsurface* dan dasar penilaian sumber daya','Aspek pemboran dan desain sumur','Keterkaitan antardisiplin','Konsistensi, kelengkapan, asumsi, dan risiko teknis']
     for x in scopes: add_bullet(doc,x)
-    add_title(doc,'1.2 Basis dan Kriteria Review',2)
-    basis=data.get('review_basis',[]) or ['Target document and its stated design basis','Embedded geothermal knowledge base and applicable project references','Internal consistency across text, tables, figures, calculations, and assumptions','Engineering good practice; external standards only when explicitly provided or requested']
+    add_title(doc,'1.2 Dasar dan Kriteria Kajian',2)
+    basis=data.get('review_basis',[]) or ['Dokumen yang dikaji beserta dasar desain yang dinyatakan di dalamnya','*Knowledge base* geothermal dan referensi proyek yang relevan','Konsistensi antara teks, tabel, gambar, perhitungan, dan asumsi','Praktik keteknikan yang baik (*good engineering practice*); standar eksternal hanya digunakan bila disediakan atau diminta']
     for x in basis: add_bullet(doc,x)
 
-    add_title(doc,'2. DOKUMEN YANG DIPERIKSA',1)
-    add_documents_table(doc,data.get('documents_reviewed',[]) or [{'title':'[Dokumen target]','number':'-','revision':'-','date':'-','scope':'Technical review'}])
+    add_title(doc,'2. DOKUMEN YANG DIKAJI',1)
+    add_documents_table(doc,data.get('documents_reviewed',[]) or [{'title':'[Dokumen yang dikaji]','number':'-','revision':'-','date':'-','scope':'Kajian teknis'}])
 
-    add_title(doc,'3. METODOLOGI REVIEW DAN KLASIFIKASI KOMENTAR',1)
-    doc.add_paragraph('Review dilakukan dengan pendekatan evidence-based dan retrieval-first. Setiap komentar harus dapat ditelusuri ke lokasi dokumen target dan, bila digunakan, ke sumber knowledge base atau referensi teknis yang mendasarinya.')
-    add_kv_table(doc,[('Critical / High','Dapat mempengaruhi keselamatan, well integrity, resource confidence, operability, atau keputusan utama; perlu ditutup sebelum approval/gate berikutnya.'),('Major / Medium','Temuan material yang dapat mempengaruhi desain, biaya, jadwal, reliability, atau kualitas keputusan; memerlukan tindakan atau klarifikasi.'),('Minor / Low','Perbaikan, konsistensi, atau klarifikasi yang tidak mengubah basis keputusan utama.'),('Observation','Catatan good practice, opportunity for improvement, atau informasi tambahan tanpa kewajiban closeout.')],'Klasifikasi Priority / Severity')
+    add_title(doc,'3. METODOLOGI KAJIAN DAN KLASIFIKASI KOMENTAR',1)
+    add_para(doc, 'Kajian dilakukan berbasis bukti. Setiap komentar dapat ditelusuri ke lokasi pada dokumen yang dikaji dan, bila digunakan, ke sumber *knowledge base* atau referensi teknis yang menjadi dasarnya.')
+    add_kv_table(doc,[('Tinggi (*Critical / High*)','Berpotensi memengaruhi keselamatan, integritas sumur (*well integrity*), keyakinan terhadap sumber daya, kemampuan operasi, atau keputusan utama. Harus diselesaikan sebelum persetujuan atau tahap (*gate*) berikutnya.'),('Sedang (*Major / Medium*)','Temuan material yang dapat memengaruhi desain, biaya, jadwal, keandalan, atau kualitas keputusan. Memerlukan tindakan atau klarifikasi.'),('Rendah (*Minor / Low*)','Perbaikan konsistensi atau klarifikasi yang tidak mengubah dasar keputusan utama.'),('Catatan (*Observation*)','Catatan praktik baik, peluang perbaikan, atau informasi tambahan tanpa kewajiban penyelesaian.')],'Klasifikasi Prioritas Temuan')
 
     # Landscape register pages still inherit the exact KKP header/footer.
     sec_land=doc.add_section(WD_SECTION.NEW_PAGE); body_section_setup(sec_land, True); link_exact_header_footer(sec_land)
-    add_title(doc,'4. TECHNICAL FINDINGS AND REVIEWER COMMENTS',1)
-    doc.add_paragraph('Findings dikelompokkan berdasarkan disiplin dan diberi ID unik agar dapat ditelusuri sampai tahap closure.')
-    add_findings_table(doc, findings or [{'id':'F-001','discipline':'[Discipline]','location':'[Document / section / page]','finding':'[Finding / observation]','comment':'[Reviewer comment / recommendation]','basis':'[Technical basis / KB source]','priority':'Medium','status':'Open'}])
+    add_title(doc,'4. TEMUAN TEKNIS DAN KOMENTAR REVIEWER',1)
+    add_para(doc, 'Temuan dikelompokkan per disiplin dan diberi nomor identitas (ID) agar dapat ditelusuri hingga tahap penyelesaian (*closure*).')
+    add_findings_table(doc, findings or [{'id':'F-001','discipline':'[Disiplin]','location':'[Dokumen / bagian / halaman]','finding':'[Temuan / observasi]','comment':'[Komentar dan rekomendasi reviewer]','basis':'[Dasar teknis / sumber KB]','priority':'Sedang','status':'Open'}])
 
     sec_p=doc.add_section(WD_SECTION.NEW_PAGE); body_section_setup(sec_p, False); link_exact_header_footer(sec_p)
-    add_title(doc,'5. KEY RISKS DAN CROSS-DISCIPLINE INTERFACES',1)
-    risks=data.get('key_risks',[]) or ['[Summarize material technical risks and interfaces identified during review.]']
+    add_title(doc,'5. RISIKO UTAMA DAN KETERKAITAN ANTARDISIPLIN',1)
+    risks=data.get('key_risks',[]) or ['[Uraikan risiko teknis material dan keterkaitan antardisiplin yang teridentifikasi selama kajian.]']
     for x in risks: add_bullet(doc,x)
 
-    add_title(doc,'6. DATA GAPS, CLARIFICATIONS, DAN ASSUMPTIONS',1)
-    add_data_gaps_table(doc,data.get('data_gaps',[]) or [{'id':'DG-01','gap':'[Missing data / clarification]','impact':'[Impact if unresolved]','required':'[Required evidence]','status':'Open'}])
+    add_title(doc,'6. *DATA GAP*, KLARIFIKASI, DAN ASUMSI',1)
+    add_data_gaps_table(doc,data.get('data_gaps',[]) or [{'id':'DG-01','gap':'[Data yang belum tersedia / perlu klarifikasi]','impact':'[Dampak bila tidak dipenuhi]','required':'[Bukti yang diperlukan]','status':'Open'}])
 
     sec_a=doc.add_section(WD_SECTION.NEW_PAGE); body_section_setup(sec_a, True); link_exact_header_footer(sec_a)
-    add_title(doc,'7. ACTION PLAN DAN COMMENT RESOLUTION REGISTER',1)
-    add_actions_table(doc,data.get('actions',[]) or [{'id':'A-01','finding_id':'F-001','action':'[Required action]','pic':'[PIC]','due':'[Target date]','evidence':'[Closure evidence]','status':'Open'}])
+    add_title(doc,'7. RENCANA TINDAK LANJUT DAN PENYELESAIAN KOMENTAR',1)
+    add_actions_table(doc,data.get('actions',[]) or [{'id':'A-01','finding_id':'F-001','action':'[Tindakan yang diperlukan]','pic':'[PIC]','due':'[Target waktu]','evidence':'[Bukti penyelesaian]','status':'Open'}])
 
     sec_c=doc.add_section(WD_SECTION.NEW_PAGE); body_section_setup(sec_c, False); link_exact_header_footer(sec_c)
-    add_title(doc,'8. KESIMPULAN DAN CLOSEOUT STATUS',1)
-    doc.add_paragraph(data.get('conclusion','Secara keseluruhan, status penerimaan dokumen ditentukan berdasarkan closure atas findings material, penyelesaian data gaps, serta verifikasi evidence yang disepakati pada action plan.'))
+    add_title(doc,'8. KESIMPULAN DAN STATUS PENYELESAIAN',1)
+    add_para(doc, data.get('conclusion','Status penerimaan dokumen ditentukan oleh penyelesaian temuan material, terpenuhinya *data gap*, dan verifikasi bukti sesuai rencana tindak lanjut.'))
     status=data.get('overall_status','Open for Comment / Revision Required')
-    p=doc.add_paragraph(); r=p.add_run('Overall Review Status: ' + status); r.bold=True; r.font.size=Pt(12); r.font.color.rgb=RGBColor(0,102,153)
+    p=doc.add_paragraph(); r=p.add_run('Status Kajian: ' + status); r.bold=True; r.font.size=Pt(12); r.font.color.rgb=RGBColor(0,102,153)
     add_title(doc,'8.1 Penutup',2)
-    doc.add_paragraph(data.get('closing','Dokumen comment sheet ini merupakan catatan review teknis berdasarkan informasi yang tersedia pada saat review. Perubahan data, revisi dokumen, atau bukti teknis baru dapat memerlukan pembaruan terhadap findings dan status closure.'))
+    add_para(doc, data.get('closing','*Comment sheet* ini disusun berdasarkan informasi yang tersedia pada saat kajian. Perubahan data, revisi dokumen, atau bukti teknis baru dapat memerlukan pemutakhiran temuan dan status penyelesaiannya.'))
 
     doc.add_page_break(); add_title(doc,'LAMPIRAN',1)
-    add_title(doc,'Lampiran A - Discipline-Specific Review Coverage',2)
+    add_title(doc,'Lampiran A – Cakupan Kajian per Disiplin',2)
     disciplines=data.get('discipline_coverage',[]) or [
-        'Subsurface: geology, geochemistry, geophysics, conceptual model, resource estimate, uncertainty, well targeting.',
-        'Drilling/Well: objectives, well architecture, trajectory, casing/cement, fluids/hydraulics, well control/BOP, BHA, lost circulation, testing/completion, HSE, time/cost and contingencies.',
-        'Cross-discipline: production/reinjection strategy, fluid chemistry, scaling/corrosion, surface-upstream interfaces, operability, and data consistency.'
+        '*Subsurface*: geologi, geokimia, geofisika, model konseptual, estimasi sumber daya, ketidakpastian, dan penentuan target sumur.',
+        'Pemboran dan sumur: tujuan sumur, arsitektur sumur, *trajectory*, *casing* dan penyemenan, fluida pemboran dan hidrolika, *well control*/BOP, BHA, *lost circulation*, pengujian dan komplesi, K3L, serta waktu, biaya, dan kontinjensi.',
+        'Antardisiplin: strategi produksi dan reinjeksi, kimia fluida, *scaling* dan korosi, keterkaitan fasilitas permukaan dengan *upstream*, kemampuan operasi, dan konsistensi data.'
     ]
     for x in disciplines: add_bullet(doc,x)
-    add_title(doc,'Lampiran B - Reference / Knowledge Base Sources Used',2)
-    for x in data.get('references_used',[]) or ['[List only references actually used in the review, including exact page/slide where available.]']:
+    add_title(doc,'Lampiran B – Referensi dan Sumber *Knowledge Base* yang Digunakan',2)
+    for x in data.get('references_used',[]) or ['[Cantumkan hanya referensi yang benar-benar digunakan dalam kajian, termasuk halaman/slide bila tersedia.]']:
         add_bullet(doc,x)
 
     out_path=Path(out_path); out_path.parent.mkdir(parents=True,exist_ok=True)
