@@ -64,23 +64,25 @@ def explain(exc: Exception) -> str:
     return str(exc)
 
 
-def main() -> int:
-    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("ids", nargs="+", help="ID entri KB, mis. GEO-0003")
-    ap.add_argument("--out", type=Path, default=Path(os.environ.get("AIGEO_KB_CACHE", Path(tempfile.gettempdir()) / "aigeothermal-kb")))
-    ap.add_argument("--manifest", type=Path, default=MANIFEST, help=argparse.SUPPRESS)
-    args = ap.parse_args()
+def default_cache() -> Path:
+    return Path(os.environ.get("AIGEO_KB_CACHE", Path(tempfile.gettempdir()) / "aigeothermal-kb"))
 
-    entries = {e["id"]: e for e in json.loads(args.manifest.read_text(encoding="utf-8")).get("entries", [])}
+
+def load_entries(manifest: Path = MANIFEST) -> dict:
+    return {e["id"]: e for e in json.loads(manifest.read_text(encoding="utf-8")).get("entries", [])}
+
+
+def fetch(ids: list[str], out: Path, manifest: Path = MANIFEST) -> list[dict]:
+    """Unduh entri KB per ID; kembalikan daftar hasil (path atau error) per ID."""
+    entries = load_entries(manifest)
     ref = None
-    results, code = [], 0
-    for kb_id in args.ids:
+    results = []
+    for kb_id in ids:
         e = entries.get(kb_id.strip().upper())
         if not e:
             results.append({"id": kb_id, "error": "ID tidak ada di KB_MANIFEST (cek KB_INDEX.md)"})
-            code = 2
             continue
-        dest = args.out / Path(e["file"]).name
+        dest = out / Path(e["file"]).name
         if not (dest.exists() and hashlib.sha256(dest.read_bytes()).hexdigest() == e["sha256"]):
             ref = ref or resolve_ref()
             url = f"https://raw.githubusercontent.com/{REPO}/{ref}/{urllib.parse.quote(KB_REPO_DIR + '/' + e['file'])}"
@@ -88,18 +90,28 @@ def main() -> int:
                 data = http_get(url)
             except (urllib.error.URLError, OSError) as exc:
                 results.append({"id": e["id"], "error": f"gagal mengunduh: {explain(exc)}"})
-                code = 2
                 continue
             if hashlib.sha256(data).hexdigest() != e["sha256"]:
                 results.append({"id": e["id"], "error": "SHA-256 file unduhan tidak cocok dengan KB_MANIFEST"})
-                code = 2
                 continue
             dest.parent.mkdir(parents=True, exist_ok=True)
             dest.write_bytes(data)
         results.append({"id": e["id"], "title": e.get("title"), "status": e.get("status"),
-                        "revision": e.get("revision"), "path": str(dest)})
+                        "revision": e.get("revision"), "sha256": e["sha256"], "path": str(dest)})
+    return results
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("ids", nargs="+", help="ID entri KB, mis. GEO-0003")
+    ap.add_argument("--out", type=Path, default=default_cache())
+    ap.add_argument("--manifest", type=Path, default=MANIFEST, help=argparse.SUPPRESS)
+    args = ap.parse_args()
+    results = fetch(args.ids, args.out, args.manifest)
+    for r in results:
+        r.pop("sha256", None)
     print(json.dumps(results, ensure_ascii=False, indent=2))
-    return code
+    return 2 if any("error" in r for r in results) else 0
 
 
 if __name__ == "__main__":
