@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.3.0 — 2026-10-01
+
+- Gaya bahasa: panduan baru `geothermal-knowledge/references/GAYA_BAHASA.md` (bahasa Indonesia formal yang natural, istilah Inggris dicetak miring, contoh sebelum/sesudah, dan daftar istilah) yang wajib diikuti keempat modul.
+- Generator DOCX dan PPTX mendukung markup `*miring*` dan `**tebal**`. Judul bab, kepala tabel, dan teks bawaan diganti ke bahasa Indonesia formal.
+- Label klasifikasi temuan di modul review memakai bahasa Indonesia, misalnya "ketidaksesuaian terkonfirmasi" dan "tingkat keyakinan".
+- Perbaikan PPTX: prioritas berbahasa Indonesia ("Tinggi", "Sedang") kini dihitung dan diberi warna dengan benar di ringkasan dan slide temuan.
+
 ## 1.2.0 — 2026-10-01
 
 - Visual KB bisa dilihat dan ditampilkan: `geothermal-knowledge/scripts/kb_render.py` merender halaman/slide (PDF, PPT/PPTX, DOC/DOCX, XLS/XLSX) menjadi PNG. Sebelumnya ekstraksi teks hanya membaca caption. Claude membuka PNG untuk analisis visual dan dapat menyalinnya ke folder output agar tampil ke pengguna. Konversi Office di-cache.

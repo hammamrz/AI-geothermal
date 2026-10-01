@@ -5,7 +5,16 @@ description: Cari dan kutip referensi dari KB geothermal PLN IP (subsurface, res
 
 # Geothermal Knowledge
 
-Gunakan bahasa Indonesia, pertahankan istilah teknis sumber bila lebih tepat. Knowledge base bersifat **bersama dan dikelola admin melalui GitHub**. Router tunggal (index + manifest) ikut di skill ini di `references/KB/`. File sumber mentah disimpan di repo GitHub (`kb/files/`) dan **diunduh per ID hanya saat dibutuhkan**.
+Knowledge base bersifat **bersama dan dikelola admin melalui GitHub**. Router tunggal (index + manifest) ikut di skill ini di `references/KB/`. File sumber mentah disimpan di repo GitHub (`kb/files/`) dan **diunduh per ID hanya saat dibutuhkan**.
+
+## Gaya bahasa (wajib)
+
+Sebelum menulis jawaban, tabel, laporan, atau slide, baca `references/GAYA_BAHASA.md` dan ikuti aturannya. Ringkasnya:
+- Gunakan bahasa Indonesia baku yang natural, seperti laporan resmi seorang *engineer* senior. Jangan menyusun kalimat dengan pola terjemahan kata demi kata dari bahasa Inggris.
+- Istilah Inggris yang padanannya kurang pas tetap dipakai dan **dicetak miring** dengan `*istilah*` (mis. *shut-in*, *casing*, *siting*, *reservoir engineer*, *data gap*). Akronim, nama dokumen, dan kata serapan baku tidak dimiringkan.
+- Pakai padanan Indonesia yang lazim bila tepat: sumur (bukan *well*), pemboran, temuan, ahli geokimia.
+- Nada lugas dan profesional, tanpa frasa pengisi ("Tentu!", "Berikut adalah …", "Penting untuk dicatat …").
+- Contoh: "Apabila hasil ini digunakan sebagai dasar penentuan lokasi (*siting*) atau perencanaan sumur, perlu dilakukan verifikasi oleh ahli geokimia dan *reservoir engineer*."
 
 ## Arsitektur wajib
 
