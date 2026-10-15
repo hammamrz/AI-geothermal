@@ -22,6 +22,7 @@ Pakai:
 Semua ukuran dalam inci. Kanvas 13,333 x 7,5 (16:9).
 """
 import os
+import re
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -30,7 +31,7 @@ if HERE not in sys.path:
 
 import plnip_deck as _pd  # noqa: E402
 from plnip_deck import *  # noqa: E402,F401,F403
-from plnip_deck import (_run, _fill_runs, _set_border, _cell_fill, _bullet, _no_bullet,  # noqa: E402
+from plnip_deck import (_run, _fill_runs, _set_border, _cell_fill, _bullet, _no_bullet, _nomor,  # noqa: E402
                         _move_slide, _drop_slide, _strip_part, _title_lines)
 import plnip_grafis as _g  # noqa: E402
 from plnip_grafis import _group, _rect, _tb, _line, _vtb, LIGHT  # noqa: E402
@@ -618,10 +619,18 @@ def _isi_sel(cell, teks, size, color, bold, align, anchor):
     tf = cell.text_frame
     tf.word_wrap = True
     items = teks if isinstance(teks, (list, tuple)) else [teks]
+    # Tambahan AIGeothermal-PLN: daftar yang tiap butirnya diawali "1." / "2)" ditampilkan
+    # dengan penomoran otomatis PowerPoint (angka di teks dibuang) untuk langkah penyelesaian.
+    nomor = [re.match(r'^(\d+)[.)]\s+', str(t)) for t in items]
+    bernomor = all(nomor)
     for k, t in enumerate(items):
         p = tf.paragraphs[0] if k == 0 else tf.add_paragraph()
         p.alignment = align
-        if len(items) > 1:
+        if bernomor:
+            _nomor(p, int(nomor[k].group(1)))
+            t = str(t)[nomor[k].end():]
+            p.space_after = Pt(2)
+        elif len(items) > 1:
             _bullet(p, '•', 0)
             p.space_after = Pt(2)
         _fill_runs(p, str(t), size, color, bold)

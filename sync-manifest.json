@@ -6,8 +6,8 @@
   "files": [
     {
       "path": "geothermal-comment-sheet-report/SKILL.md",
-      "sha256": "76316d3f6aa16ef24f083215b021d869e7b7472cbf7ac60a97bf5b2e2158e2c0",
-      "size": 8495
+      "sha256": "b04b46b1d40c70f46ac8960312ae9bdd089746e019490b100e1b349892619020",
+      "size": 9502
     },
     {
       "path": "geothermal-comment-sheet-report/references/PLN_IP_COMMENT_SHEET_REPORT_TEMPLATE.docx",
@@ -16,13 +16,13 @@
     },
     {
       "path": "geothermal-comment-sheet-report/references/REPORT_STRUCTURE.md",
-      "sha256": "b8f4667026795035b583c1beebac653281002346ad74b0fc9e4d642519d92ee4",
-      "size": 5763
+      "sha256": "3f000fb83ebdfd85c88a07549341cf5c0bbfb9cd688376112ad0974377303caa",
+      "size": 7399
     },
     {
       "path": "geothermal-comment-sheet-report/scripts/build_comment_sheet.py",
-      "sha256": "f14aa71ebb80e31717e856dabec638ab5cd2f9e494f0f116a65152a5c867a0af",
-      "size": 27735
+      "sha256": "5a1cc23eab0d0b405d5fcebb3aae2fa82af04b71df5f459b46e79a1f99e08748",
+      "size": 34836
     },
     {
       "path": "geothermal-knowledge/SKILL.md",
@@ -66,8 +66,8 @@
     },
     {
       "path": "geothermal-review/SKILL.md",
-      "sha256": "bc600a624ca9fe9779ddfb54b8b85e608466344d2b7c7366b4dfd7ffbe124e0b",
-      "size": 5663
+      "sha256": "b23ea14939619618ea59aef5e72db056175f237f243d09faf916402268da0a8b",
+      "size": 7836
     },
     {
       "path": "geothermal-review/references/review-checklist.md",
@@ -76,8 +76,8 @@
     },
     {
       "path": "geothermal-review-presentation/SKILL.md",
-      "sha256": "1db934d4dc482095f572b2bda47753479b952772f6bc7d33bf3a210869b3efec",
-      "size": 14684
+      "sha256": "10523d88b8a61ed8997bf1fdda80129940d42982268b9726288b392d3e5f3038",
+      "size": 15829
     },
     {
       "path": "geothermal-review-presentation/assets/pustaka/LISENSI.md",
@@ -416,8 +416,8 @@
     },
     {
       "path": "geothermal-review-presentation/assets/pustaka/plnip_deck.py",
-      "sha256": "5410494c336c315bcfe279e3587eec9823e641bbca66db6a3b38cf1a1733639d",
-      "size": 45884
+      "sha256": "2ee1ec8459a5e3b532089eea611727f3cd4bc02e2c513a193a72dc906f09817f",
+      "size": 46521
     },
     {
       "path": "geothermal-review-presentation/assets/pustaka/plnip_grafis.py",
@@ -431,8 +431,8 @@
     },
     {
       "path": "geothermal-review-presentation/assets/pustaka/tvv_deck.py",
-      "sha256": "bad531b0c7c02caa1217781e6573224b71d9a97cccee3b4e0b34e25989adbebc",
-      "size": 51774
+      "sha256": "9b6ea6e54bf93c652818402af9bbcac359d16a93a5284db33bd5fc5ef159e955",
+      "size": 52211
     },
     {
       "path": "geothermal-review-presentation/references/MASTER_ASSET_PROVENANCE.md",
@@ -451,8 +451,8 @@
     },
     {
       "path": "geothermal-review-presentation/references/TECHNICAL_REVIEW_PPT_STRUCTURE.md",
-      "sha256": "308d64ce120c8483ef711744a988bd5afecdde9c3e41e835fafec8d9e7e76bc3",
-      "size": 3476
+      "sha256": "bf8ca72f2222cc6e96a03deeb2ffdcc177197d914e4b23e27a15743a0fadbb24",
+      "size": 4027
     },
     {
       "path": "geothermal-review-presentation/references/aturan-slide.md",
@@ -501,8 +501,8 @@
     },
     {
       "path": "geothermal-review-presentation/scripts/build_review_ppt.py",
-      "sha256": "c42dc1204c5efe0031b8f57cbee41bfc8ba9f3c11f58a2d397e86f44236bdb3e",
-      "size": 31097
+      "sha256": "5ffc895a71a656cb277172a9e89ae1d4067d0f73a160da70395f766415d3bd48",
+      "size": 35148
     },
     {
       "path": "geothermal-review-presentation/scripts/check_deck.py",

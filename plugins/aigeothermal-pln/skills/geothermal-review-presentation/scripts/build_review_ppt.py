@@ -4,13 +4,19 @@
 Struktur deck mengikuti tulang punggung Technical Review / Comment Sheet Report:
 cover -> ringkasan eksekutif -> agenda -> pengendalian dokumen (opsional) -> tujuan/lingkup ->
 dokumen yang dikaji -> metodologi -> sebaran temuan -> daftar temuan -> rincian temuan ->
-risiko antardisiplin -> data gap -> tindak lanjut -> kesimpulan -> sumber -> penutup.
+risiko antardisiplin -> data gap -> langkah penyelesaian -> kesimpulan dan langkah selanjutnya ->
+sumber -> penutup.
+
+Setiap item review disajikan berurutan: DATA EKSISTING (apa yang tertulis/tersedia di dokumen,
+apa adanya) -> KOMENTAR REVIEW (penilaian reviewer + dasar KB) -> LANGKAH PENYELESAIAN (langkah
+konkret bernomor: tindakan, keluaran yang bisa diperiksa, pihak yang mengerjakan). Deck tidak
+menampilkan persentase/status penyelesaian kajian.
 
 Tampilan mengikuti framework skill presentasi-pln-ip dan presentasi-tvv (pustaka di
 assets/pustaka): judul dua warna (topik biru + sub-topik hitam) tanpa label kecil di atasnya,
-tanpa garis aksen, tanpa sudut membulat/bayangan/gradien, tanpa deretan kartu; tabel bersumbu
-dengan penanda status bulat; model grafis asli PowerPoint (deret angka kunci, alur proses,
-chart bertumpuk, matriks risiko 5x5, progres). Teks mendukung *miring* dan **tebal**.
+tanpa garis aksen, tanpa sudut membulat/bayangan/gradien, tanpa deretan kartu; tabel
+bersumbu; model grafis asli PowerPoint (deret angka kunci, alur proses, chart bertumpuk,
+matriks risiko 5x5). Teks mendukung *miring* dan **tebal**.
 
 Pemakaian:
     python build_review_ppt.py review.json output.pptx
@@ -25,20 +31,27 @@ Format JSON (kunci lama tetap diterima):
   "objective": "...", "scope": ["..."], "review_basis": ["..."], "limitations": ["..."],
   "methodology": ["..."],                              # opsional, 3-5 langkah
   "documents_reviewed": [{"title","number","revision","date","discipline","scope"}],
-  "findings": [{"id","discipline","location","title","finding","comment","impact","basis",
-                "source","priority","status","confidence","image_path"}],
+  "findings": [{"id","discipline","location","title",
+                "existing": "data eksisting apa adanya dari dokumen (angka, asumsi, metode)",
+                "finding": "komentar review: apa yang kurang/tidak konsisten/berisiko",
+                "comment": "rekomendasi singkat", "impact","basis","source","priority","confidence",
+                "resolution_steps": ["Hitung ulang ...", {"step": "...", "pic": "...",
+                                     "due": "...", "evidence": "..."}],
+                "image_path"}],
   "key_risks": [{"interface","risk","impact","mitigation","related_findings",
                  "likelihood": 1-5, "severity": 1-5}],   # likelihood+severity -> matriks 5x5
-  "data_gaps": [{"id","gap","impact","required","owner","status"}],
-  "actions": [{"id","finding_id","action","pic","due","evidence","status"}],
-  "conclusion": "...", "conditions_to_proceed": ["..."],
-  "overall_status": "Perlu revisi", "references_used": ["..."]
+  "data_gaps": [{"id","gap","impact","required","owner","resolution_steps": ["..."]}],
+  "actions": [{"id","finding_id","action","pic","due","evidence"}],  # dipakai bila temuan tanpa
+                                                                    # resolution_steps
+  "conclusion": "...", "next_steps": ["langkah prioritas 1", "..."],  # alias: conditions_to_proceed
+  "overall_status": "Perlu revisi (ditampilkan sebagai rekomendasi)", "references_used": ["..."]
 }
 """
 from __future__ import annotations
 
 import json
 import os
+import re
 import sys
 from pathlib import Path
 from typing import Any
@@ -69,7 +82,6 @@ LEFT_X, LEFT_W = L, 6.55
 RIGHT_X, RIGHT_W = 7.5, R - 7.5
 TABLE_PT = 11
 _PAGED: set[int] = set()  # slide_id slide isi yang diberi nomor halaman
-STATUS_PENANDA = [("Selesai", P.TL_GREEN), ("Dalam proses", P.TL_YELLOW), ("Terbuka", P.TL_RED)]
 
 
 # ----------------------------------------------------------------- data
@@ -124,12 +136,44 @@ def normalize_finding(f: dict[str, Any]) -> dict[str, Any]:
         **f,
         "discipline": f.get("discipline", ""),
         "location": f.get("location") or f.get("target_location") or "",
+        "existing": f.get("existing") or f.get("existing_data") or f.get("data_eksisting") or "",
         "comment": f.get("comment") or f.get("recommendation") or "",
         "basis": f.get("basis", ""),
         "source": f.get("source") or f.get("technical_basis") or "",
-        "status": f.get("status", "Open"),
         "impact": f.get("impact") or f.get("potential_impact") or "",
     }
+
+
+def tanpa_tindakan(f: dict[str, Any]) -> bool:
+    """Item yang menurut reviewer sudah memadai (komentar 'tidak ada tindakan')."""
+    return bool(re.search(r"(?i)tidak (ada|perlu) tindak|no (further )?action", text_of(f.get("comment"))))
+
+
+def steps_of(f: dict[str, Any], d: dict[str, Any] | None = None) -> list[dict[str, str]]:
+    """Langkah penyelesaian suatu temuan: resolution_steps; bila kosong, actions yang merujuk ID
+    temuan; bila masih kosong, rekomendasi (comment) sebagai satu langkah."""
+    raw = as_list(f.get("resolution_steps") or f.get("langkah_penyelesaian") or f.get("steps"))
+    steps = []
+    for r in raw:
+        if isinstance(r, dict):
+            steps.append({"step": text_of(r.get("step") or r.get("action") or r.get("langkah")),
+                          "pic": text_of(r.get("pic") or r.get("owner")), "due": text_of(r.get("due")),
+                          "evidence": text_of(r.get("evidence") or r.get("closure_evidence"))})
+        elif text_of(r):
+            steps.append({"step": text_of(r), "pic": "", "due": "", "evidence": ""})
+    if not steps and d is not None and f.get("id"):
+        for a in as_list(d.get("actions")):
+            if isinstance(a, dict) and f["id"] in text_of(a.get("finding_id") or a.get("related_findings")):
+                steps.append({"step": text_of(a.get("action")), "pic": text_of(a.get("pic") or a.get("owner")),
+                              "due": text_of(a.get("due") or a.get("timing")),
+                              "evidence": text_of(a.get("evidence") or a.get("closure_evidence"))})
+    if not steps and f.get("comment") and not tanpa_tindakan(f):
+        steps.append({"step": text_of(f["comment"]), "pic": "", "due": "", "evidence": ""})
+    return [x for x in steps if x["step"]]
+
+
+def numbered(items: list[str], limit: int = 150) -> list[str]:
+    return [f"{i}. {compact(t, limit)}" for i, t in enumerate(items, 1)]
 
 
 def findings_of(d: dict[str, Any]) -> list[dict[str, Any]]:
@@ -144,20 +188,6 @@ def priority_level(priority: str) -> str:
     if p.startswith(("m", "sedang")):
         return "medium"
     return "low"
-
-
-def status_key(status: str) -> str:
-    """Petakan status bebas ke penanda: ok (selesai), proses, belum (terbuka)."""
-    s = (status or "").strip().lower()
-    if any(k in s for k in ("closed", "selesai", "tutup", "no material", "accepted", "diterima")):
-        return "ok"
-    if any(k in s for k in ("progress", "proses", "conditional", "bersyarat", "partial", "sebagian")):
-        return "proses"
-    return "belum"
-
-
-def is_closed(status: str) -> bool:
-    return status_key(status) == "ok"
 
 
 # ----------------------------------------------------------------- slide dasar
@@ -206,14 +236,6 @@ def clean(teks: Any) -> str:
     return " ".join(out.split())
 
 
-def status_legend(slide, x: float, y: float):
-    G.add_legend(slide, [(lab, col, "bulat") for lab, col in STATUS_PENANDA], x, y, size=10)
-
-
-def status_cell(status: str) -> dict[str, Any]:
-    return {"text": "", "status": status_key(status)}
-
-
 def table_pages(rows: list, per_page: int) -> list[list]:
     return [rows[i:i + per_page] for i in range(0, len(rows), per_page)] or [[]]
 
@@ -251,29 +273,29 @@ def add_summary(prs, d: dict[str, Any]):
     slide = content_slide(prs, "Ringkasan Eksekutif", "Hasil Kajian Teknis")
     findings = findings_of(d)
     high = sum(1 for f in findings if priority_level(f.get("priority", "")) == "high")
-    open_n = sum(1 for f in findings if not is_closed(f.get("status", "")))
+    n_steps = sum(len(steps_of(f, d)) for f in findings)
     gaps = as_list(d.get("data_gaps"))
     G.add_kpi_row(slide, [
-        {"nilai": str(len(findings)), "label": "Total temuan", "ket": "seluruh disiplin"},
-        {"nilai": str(high), "label": "Prioritas tinggi", "ket": "perlu diselesaikan lebih dulu"},
-        {"nilai": str(open_n), "label": "Masih terbuka", "ket": "belum ada bukti penyelesaian"},
+        {"nilai": str(len(findings)), "label": "Item review", "ket": "seluruh disiplin"},
+        {"nilai": str(high), "label": "Prioritas tinggi", "ket": "diselesaikan lebih dulu"},
         {"nilai": str(len(gaps)), "label": "Data gap", "ket": "data atau klarifikasi yang diperlukan"},
+        {"nilai": str(n_steps), "label": "Langkah penyelesaian", "ket": "tindakan konkret yang diusulkan"},
     ], L, BODY_TOP, CW, h=1.45, size=32)
     msgs = executive_messages(d) or ["Kajian dilakukan terhadap dokumen yang tersedia dengan bukti terpilih dari *knowledge base*."]
     y = P.add_column_head(slide, "Pesan utama", L, 3.15, CW)
     items: list[Any] = [compact(m, 230) for m in msgs[:4]]
     overall = text_of(d.get("overall_status"))
     if overall:
-        items.append({"text": f"Status kajian: {overall}", "bold": True})
+        items.append({"text": f"Rekomendasi kajian: {overall}", "bold": True})
     P.add_bullets(slide, items, L, y, CW, 0.42 * len(items) + 0.2, size=13)
-    caption(slide, "Angka kunci dihitung dari daftar temuan dan *data gap* pada kajian ini.")
+    caption(slide, "Angka kunci dihitung dari daftar item review, *data gap*, dan langkah penyelesaian pada kajian ini.")
 
 
 def add_agenda(prs):
     slide = content_slide(prs, "Agenda", "Struktur Kajian Teknis")
     items = ["Tujuan, Lingkup, dan Dasar Kajian", "Dokumen yang Dikaji", "Metodologi dan Klasifikasi Komentar",
-             "Temuan Teknis dan Komentar Reviewer", "Risiko Utama dan Keterkaitan Antardisiplin",
-             "*Data Gap*, Klarifikasi, dan Asumsi", "Rencana Tindak Lanjut", "Kesimpulan dan Status Penyelesaian"]
+             "Data Eksisting dan Komentar Review", "Risiko Utama dan Keterkaitan Antardisiplin",
+             "*Data Gap*, Klarifikasi, dan Asumsi", "Langkah Penyelesaian", "Kesimpulan dan Langkah Selanjutnya"]
     for i, label in enumerate(items):
         col, row = i % 2, i // 2
         x = L + col * 6.2
@@ -321,7 +343,7 @@ def add_documents(prs, d: dict[str, Any]):
     for i, chunk in enumerate(pages):
         sub = "Daftar Dokumen" + (f" ({i + 1}/{len(pages)})" if len(pages) > 1 else "")
         slide = content_slide(prs, "Dokumen yang Dikaji", sub)
-        T.add_tabel(slide, ["Judul dokumen", "No./kode", "Rev.", "Tanggal", "Disiplin", "Lingkup / status kajian"],
+        T.add_tabel(slide, ["Judul dokumen", "No./kode", "Rev.", "Tanggal", "Disiplin", "Lingkup kajian"],
                     chunk, L, BODY_TOP, CW, col_w=[4.2, 1.8, 0.7, 1.4, 1.5, 2.6], size=TABLE_PT, gaya="data")
 
 
@@ -386,44 +408,67 @@ def add_findings_overview(prs, d: dict[str, Any]):
     findings = findings_of(d)
     order = {"high": 0, "medium": 1, "low": 2}
     findings = sorted(findings, key=lambda f: order[priority_level(f.get("priority", ""))])
-    rows = [[f.get("id", ""), f.get("discipline", ""), compact(f.get("title") or f.get("finding", ""), 150),
-             f.get("priority", "") or {"text": "", "na": True}, status_cell(f.get("status", "")),
-             compact(f.get("location", ""), 70)] for f in findings]
+    rows = []
+    for f in findings:
+        existing = compact(f.get("existing"), 150) or "Belum dicatat pada data hasil kajian"
+        if f.get("location"):
+            existing += f" ({compact(f['location'], 45)})"
+        rows.append([f.get("id", ""), f.get("discipline", ""), existing,
+                     compact(f.get("title") or f.get("finding", ""), 150),
+                     f.get("priority", "") or {"text": "", "na": True}])
     if not rows:
-        rows = [["—", "—", "Belum ada temuan pada data hasil kajian", "—", {"text": "", "na": True}, "—"]]
-    pages = table_pages(rows, 6)
+        rows = [["—", "—", "Belum ada item review pada data hasil kajian", "—", "—"]]
+    pages = table_pages(rows, 5)
     for i, chunk in enumerate(pages):
-        sub = "Daftar Temuan dan Status" + (f" ({i + 1}/{len(pages)})" if len(pages) > 1 else "")
-        slide = content_slide(prs, "Temuan Teknis", sub)
-        t = T.add_tabel(slide, ["ID", "Disiplin", "Temuan", "Prioritas", "Status", "Lokasi di dokumen"], chunk,
-                        L, BODY_TOP, CW, col_w=[0.8, 1.5, 5.0, 1.2, 0.9, 2.8], size=TABLE_PT,
-                        rata=["l", "l", "l", "l", "c", "l"])
-        status_legend(slide, L, min(t["bawah"] + 0.15, 6.55))
+        sub = "Data Eksisting dan Komentar Review" + (f" ({i + 1}/{len(pages)})" if len(pages) > 1 else "")
+        slide = content_slide(prs, "Item Review", sub)
+        T.add_tabel(slide, ["ID", "Disiplin", "Data eksisting (lokasi)", "Komentar review", "Prioritas"], chunk,
+                    L, BODY_TOP, CW, col_w=[0.8, 1.4, 4.6, 4.4, 1.0], size=TABLE_PT)
 
 
-def add_finding_detail(prs, f0: dict[str, Any]):
+def add_finding_detail(prs, f0: dict[str, Any], d: dict[str, Any] | None = None):
     f = normalize_finding(f0)
-    title = compact(f.get("title") or f.get("finding") or "Temuan teknis", 95)
-    slide = content_slide(prs, f.get("id") or "Temuan", title)
-    T.add_tabel(slide, ["Disiplin", "Prioritas", "Status", "Tingkat keyakinan", "Lokasi di dokumen"],
+    title = compact(f.get("title") or f.get("finding") or "Item review", 95)
+    slide = content_slide(prs, f.get("id") or "Item", title)
+    T.add_tabel(slide, ["Disiplin", "Prioritas", "Tingkat keyakinan", "Lokasi di dokumen"],
                 [[f.get("discipline") or {"text": "", "na": True}, f.get("priority") or {"text": "", "na": True},
-                  f.get("status") or "Open", f.get("confidence") or {"text": "", "na": True},
-                  compact(f.get("location"), 80) or {"text": "", "na": True}]],
-                L, BODY_TOP, CW, col_w=[1.8, 1.4, 1.4, 1.8, 5.8], size=TABLE_PT)
+                  f.get("confidence") or {"text": "", "na": True},
+                  compact(f.get("location"), 90) or {"text": "", "na": True}]],
+                L, BODY_TOP, CW, col_w=[2.0, 1.6, 2.0, 6.6], size=TABLE_PT)
+    steps = steps_of(f, d)
+    review = f.get("finding") or ""
+    if f.get("comment") and f.get("resolution_steps"):
+        review = f"{review} {f['comment']}".strip()
     y = BODY_TOP + 1.05
-    for head, body in [("Temuan / observasi", f.get("finding")), ("Komentar dan rekomendasi reviewer", f.get("comment")),
-                       ("Alasan dan potensi dampak", f.get("impact"))]:
+    for head, body in [("Data eksisting", f.get("existing") or "Belum dicatat pada data hasil kajian."),
+                       ("Komentar review", review or "Belum dinyatakan."),
+                       ("Dampak bila tidak diselesaikan", f.get("impact") or "Belum dinyatakan.")]:
         y2 = P.add_column_head(slide, head, LEFT_X, y, LEFT_W, size=13)
-        teks = compact(body or "Belum dinyatakan.", 330)
+        teks = compact(body, 330)
         h = text_height(teks, LEFT_W, 12)
         P.add_text(slide, teks, LEFT_X, y2, LEFT_W, h, size=12)
         y = y2 + h + 0.3
-    yr = P.add_column_head(slide, "Dasar teknis dan bukti", RIGHT_X, BODY_TOP + 1.05, RIGHT_W, size=13)
+    yr = P.add_column_head(slide, "Langkah penyelesaian", RIGHT_X, BODY_TOP + 1.05, RIGHT_W, size=13)
+    lines = []
+    for i, st in enumerate(steps[:5], 1):
+        extra = "; ".join(x for x in (f"oleh {st['pic']}" if st["pic"] else "", f"target {st['due']}" if st["due"] else "",
+                                       f"bukti: {st['evidence']}" if st["evidence"] else "") if x)
+        lines.append(compact(st['step'], 160) + (f" ({extra})" if extra else ""))
+    if lines:
+        box = P.add_text(slide, lines, RIGHT_X, yr, RIGHT_W, 2.6, size=12, space_after=6)
+        for i, para in enumerate(box.text_frame.paragraphs, 1):
+            P._nomor(para, i)  # penomoran otomatis PowerPoint
+    else:
+        lines = ["Tidak ada langkah yang diperlukan; data eksisting sudah memadai." if tanpa_tindakan(f)
+                 else "Langkah penyelesaian belum dirumuskan."]
+        P.add_text(slide, lines, RIGHT_X, yr, RIGHT_W, 0.4, size=12)
+    yb = yr + sum(text_height(t, RIGHT_W - 0.3, 12) + 0.08 for t in lines) + 0.25
+    yb = P.add_column_head(slide, "Dasar teknis", RIGHT_X, yb, RIGHT_W, size=13)
     img = f.get("image_path")
     if img and os.path.exists(str(img)):
-        T.fit_picture(slide, str(img), RIGHT_X, yr, RIGHT_W, 2.3)
-        yr += 2.45
-    P.add_text(slide, compact(f.get("basis") or "Belum dinyatakan.", 300), RIGHT_X, yr, RIGHT_W, 1.6, size=12)
+        T.fit_picture(slide, str(img), RIGHT_X, yb, RIGHT_W, 1.6)
+        yb += 1.7
+    P.add_text(slide, compact(f.get("basis") or "Belum dinyatakan.", 220), RIGHT_X, yb, RIGHT_W, 0.9, size=11)
     add_source(slide, ("Sumber: " + f["source"]) if f.get("source") else "")
 
 
@@ -464,84 +509,103 @@ def add_risks(prs, d: dict[str, Any]):
                     L, BODY_TOP, CW, col_w=[0.5, 1.9, 3.4, 2.5, 2.8, 1.1], size=TABLE_PT)
 
 
+def gap_steps(g: dict[str, Any]) -> list[str] | str:
+    """Langkah melengkapi data gap: resolution_steps/action bila ada, selain itu data yang diminta."""
+    steps = [text_of(x.get("step") if isinstance(x, dict) else x)
+             for x in as_list(g.get("resolution_steps") or g.get("steps") or g.get("action"))]
+    steps = [x for x in steps if x]
+    if steps:
+        return numbered(steps[:4], 110) if len(steps) > 1 else compact(steps[0], 130)
+    req = text_of(g.get("required") or g.get("evidence"))
+    return compact(f"Sediakan {req}", 130) if req else ""
+
+
 def add_gaps(prs, d: dict[str, Any]):
     rows = []
     for i, g in enumerate(as_list(d.get("data_gaps"))):
         if isinstance(g, dict):
             rows.append([text_of(g.get("id") or f"DG-{i + 1:02d}"), compact(g.get("gap") or g.get("item"), 140),
                          compact(g.get("impact"), 110) or {"text": "", "na": True},
-                         compact(g.get("required") or g.get("evidence"), 110) or {"text": "", "na": True},
-                         text_of(g.get("owner") or g.get("pic")) or {"text": "", "na": True}, status_cell(text_of(g.get("status"))) ])
+                         gap_steps(g) or {"text": "", "na": True},
+                         text_of(g.get("owner") or g.get("pic")) or {"text": "", "na": True}])
         else:
             rows.append([f"DG-{i + 1:02d}", compact(g, 140), {"text": "", "na": True}, {"text": "", "na": True},
-                         {"text": "", "na": True}, status_cell("open")])
+                         {"text": "", "na": True}])
     if not rows:
-        rows = [["—", "Tidak ada *data gap* material yang tercatat", "—", "—", "—", {"text": "", "na": True}]]
+        rows = [["—", "Tidak ada *data gap* material yang tercatat", "—", "—", "—"]]
     pages = table_pages(rows, 6)
     for i, chunk in enumerate(pages):
-        sub = "Klarifikasi dan Asumsi" + (f" ({i + 1}/{len(pages)})" if len(pages) > 1 else "")
+        sub = "Data yang Perlu Dilengkapi" + (f" ({i + 1}/{len(pages)})" if len(pages) > 1 else "")
         slide = content_slide(prs, "*Data Gap*", sub)
-        t = T.add_tabel(slide, ["ID", "Data yang belum tersedia / belum jelas", "Dampak bila tidak dipenuhi",
-                                "Bukti yang diperlukan", "PIC", "Status"], chunk, L, BODY_TOP, CW,
-                        col_w=[0.8, 3.7, 2.8, 2.8, 1.3, 0.8], size=TABLE_PT, rata=["l", "l", "l", "l", "l", "c"])
-        status_legend(slide, L, min(t["bawah"] + 0.15, 6.55))
+        T.add_tabel(slide, ["ID", "Data yang belum tersedia / belum jelas", "Dampak bila tidak dipenuhi",
+                            "Langkah untuk melengkapi", "PIC"], chunk, L, BODY_TOP, CW,
+                    col_w=[0.8, 3.7, 2.8, 3.6, 1.3], size=TABLE_PT)
 
 
 def add_actions(prs, d: dict[str, Any]):
+    """Langkah penyelesaian per item review (menggantikan register status tindak lanjut)."""
+    findings = findings_of(d)
+    order = {"high": 0, "medium": 1, "low": 2}
+    findings = sorted(findings, key=lambda f: order[priority_level(f.get("priority", ""))])
     rows = []
+    for f in findings:
+        steps = steps_of(f, d)
+        if not steps:
+            continue
+        pics = sorted({s["pic"] for s in steps if s["pic"]})
+        dues = [s["due"] for s in steps if s["due"]]
+        evid = [s["evidence"] for s in steps if s["evidence"]]
+        rows.append([f.get("id", ""), compact(f.get("title") or f.get("finding"), 90),
+                     numbered([s["step"] for s in steps[:5]], 130),
+                     ", ".join(pics) or {"text": "", "na": True}, "; ".join(dues) or {"text": "", "na": True},
+                     compact("; ".join(evid), 120) or {"text": "", "na": True}])
+    linked = {f.get("id") for f in findings}
     for i, a in enumerate(as_list(d.get("actions"))):
-        if isinstance(a, dict):
-            rows.append([text_of(a.get("id") or f"A-{i + 1:02d}"), text_of(a.get("finding_id") or a.get("related_findings")) or {"text": "", "na": True},
-                         compact(a.get("action"), 150), text_of(a.get("pic") or a.get("owner")) or {"text": "", "na": True},
-                         text_of(a.get("due") or a.get("timing")) or {"text": "", "na": True},
-                         compact(a.get("evidence") or a.get("closure_evidence"), 100) or {"text": "", "na": True},
-                         status_cell(text_of(a.get("status")))])
-        else:
-            rows.append([f"A-{i + 1:02d}", {"text": "", "na": True}, compact(a, 150), {"text": "", "na": True},
-                         {"text": "", "na": True}, {"text": "", "na": True}, status_cell("open")])
+        ref = text_of(a.get("finding_id") or a.get("related_findings")) if isinstance(a, dict) else ""
+        if isinstance(a, dict) and any(fid and fid in ref for fid in linked):
+            continue
+        a = a if isinstance(a, dict) else {"action": text_of(a)}
+        rows.append([text_of(a.get("id") or f"A-{i + 1:02d}"), compact(ref, 60) or {"text": "", "na": True},
+                     numbered([text_of(a.get("action"))], 130), text_of(a.get("pic") or a.get("owner")) or {"text": "", "na": True},
+                     text_of(a.get("due") or a.get("timing")) or {"text": "", "na": True},
+                     compact(a.get("evidence") or a.get("closure_evidence"), 120) or {"text": "", "na": True}])
     if not rows:
-        rows = [["A-01", "—", "Tetapkan tindak lanjut untuk temuan material dan *data gap*", "—", "—", "—", status_cell("open")]]
-    pages = table_pages(rows, 6)
+        rows = [["—", "—", ["1. Rumuskan langkah penyelesaian untuk setiap item review dan *data gap*."], "—", "—", "—"]]
+    pages = table_pages(rows, 4)
     for i, chunk in enumerate(pages):
-        sub = "Penyelesaian Komentar" + (f" ({i + 1}/{len(pages)})" if len(pages) > 1 else "")
-        slide = content_slide(prs, "Rencana Tindak Lanjut", sub)
-        t = T.add_tabel(slide, ["ID", "Temuan", "Tindakan yang diperlukan", "PIC", "Target", "Bukti penyelesaian", "Status"],
-                        chunk, L, BODY_TOP, CW, col_w=[0.8, 0.9, 4.2, 1.5, 1.3, 2.6, 0.9], size=TABLE_PT,
-                        rata=["l", "l", "l", "l", "l", "l", "c"])
-        status_legend(slide, L, min(t["bawah"] + 0.15, 6.55))
+        sub = "Langkah Konkret per Item Review" + (f" ({i + 1}/{len(pages)})" if len(pages) > 1 else "")
+        slide = content_slide(prs, "Langkah Penyelesaian", sub)
+        T.add_tabel(slide, ["ID", "Item review", "Langkah penyelesaian", "PIC", "Target", "Bukti penyelesaian"],
+                    chunk, L, BODY_TOP, CW, col_w=[0.7, 2.4, 5.0, 1.5, 1.1, 1.8], size=10.5)
 
 
 def add_conclusion(prs, d: dict[str, Any]):
-    slide = content_slide(prs, "Kesimpulan", "Status Penyelesaian Kajian")
-    findings = findings_of(d)
-    actions = [a for a in as_list(d.get("actions"))]
-    gaps = [g for g in as_list(d.get("data_gaps"))]
-
-    def done(items, key="status"):
-        return sum(1 for x in items if isinstance(x, dict) and is_closed(text_of(x.get(key))))
-
-    y = P.add_column_head(slide, "Kemajuan penyelesaian", LEFT_X, BODY_TOP, LEFT_W)
-    baris = []
-    for label, items in (("Temuan", findings), ("Tindak lanjut", actions), ("*Data gap*", gaps)):
-        if items:
-            n_done = done(items)
-            baris.append({"label": label, "nilai": round(100 * n_done / len(items)),
-                          "ket": f"{n_done} dari {len(items)} selesai"})
-    if baris:
-        G.add_progress(slide, baris, LEFT_X, y + 0.1, LEFT_W, row_h=0.62, label_w=1.8, nilai_w=0.8)
-        y += 0.25 + 0.62 * len(baris)
-        P.add_keterangan(slide, "Persentase item berstatus selesai terhadap seluruh item pada tiap kelompok.",
-                         LEFT_X, y + 0.05, LEFT_W, size=11)
-        y += 0.3
-    status = text_of(d.get("overall_status")) or "Belum dinyatakan"
-    P.add_text(slide, f"Status kajian: **{status}**", LEFT_X, y + 0.35, LEFT_W, 0.35, size=14, color=P.INK)
-    yr = P.add_column_head(slide, "Kesimpulan kajian", RIGHT_X - 0.2, BODY_TOP, RIGHT_W + 0.2)
-    P.add_text(slide, compact(d.get("conclusion") or "Kesimpulan belum disertakan.", 420), RIGHT_X - 0.2, yr,
-               RIGHT_W + 0.2, 2.0, size=13)
-    conditions = as_list(d.get("conditions_to_proceed") or d.get("closeout_conditions"))
-    if conditions:
-        yc = P.add_column_head(slide, "Syarat untuk melanjutkan", RIGHT_X - 0.2, BODY_TOP + 2.75, RIGHT_W + 0.2)
-        P.add_bullets(slide, [compact(c, 140) for c in conditions[:4]], RIGHT_X - 0.2, yc, RIGHT_W + 0.2, 2.2, size=12)
+    slide = content_slide(prs, "Kesimpulan", "Langkah Selanjutnya")
+    y = P.add_column_head(slide, "Kesimpulan kajian", LEFT_X, BODY_TOP, LEFT_W)
+    teks = compact(d.get("conclusion") or "Kesimpulan belum disertakan.", 520)
+    h = text_height(teks, LEFT_W, 13)
+    P.add_text(slide, teks, LEFT_X, y, LEFT_W, h, size=13)
+    overall = text_of(d.get("overall_status"))
+    if overall:
+        P.add_text(slide, f"Rekomendasi kajian: **{overall}**", LEFT_X, y + h + 0.25, LEFT_W, 0.5, size=13)
+    nxt = [text_of(x) for x in as_list(d.get("next_steps") or d.get("conditions_to_proceed") or d.get("closeout_conditions")) if text_of(x)]
+    if not nxt:  # turunkan dari langkah pertama tiap item prioritas tertinggi
+        order = {"high": 0, "medium": 1, "low": 2}
+        for f in sorted(findings_of(d), key=lambda f: order[priority_level(f.get("priority", ""))]):
+            st = steps_of(f, d)
+            if st:
+                nxt.append(f"{st[0]['step']} ({f.get('id', '')})")
+            if len(nxt) == 5:
+                break
+    yr = P.add_column_head(slide, "Langkah selanjutnya (berurutan)", RIGHT_X - 0.2, BODY_TOP, RIGHT_W + 0.2)
+    for i, t in enumerate(nxt[:6], 1):
+        body = compact(t, 170)
+        hh = max(0.45, text_height(body, RIGHT_W - 0.45, 12))
+        P.add_text(slide, f"{i}", RIGHT_X - 0.2, yr, 0.4, 0.35, size=16, color=P.PRIMARY, bold=True)
+        P.add_text(slide, body, RIGHT_X + 0.25, yr + 0.03, RIGHT_W - 0.45, hh, size=12)
+        yr += hh + 0.15
+    if not nxt:
+        P.add_text(slide, "Langkah selanjutnya belum dirumuskan.", RIGHT_X - 0.2, yr, RIGHT_W, 0.4, size=12)
 
 
 def add_references(prs, d: dict[str, Any]):
@@ -582,7 +646,7 @@ def build(data: dict[str, Any], out_path: str, extra=None):
     add_findings_overview(prs, data)
     detail_limit = int(data.get("ppt_detail_limit", 6) or 6)
     for f in [x for x in as_list(data.get("findings")) if isinstance(x, dict)][:detail_limit]:
-        add_finding_detail(prs, f)
+        add_finding_detail(prs, f, data)
     add_risks(prs, data)
     add_gaps(prs, data)
     add_actions(prs, data)

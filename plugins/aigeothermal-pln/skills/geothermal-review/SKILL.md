@@ -54,6 +54,22 @@ Dokumen target boleh dibaca lebih luas karena memang objek review. Untuk dokumen
 6. Pisahkan tingkat keparahan (prioritas) dari tingkat keyakinan terhadap bukti.
 7. Untuk well integrity, well control, H2S, pressure control, barrier, atau safety-critical issue, tandai kebutuhan verifikasi engineer dan jangan mengeluarkan approval operasi final.
 
+## Struktur setiap item review (wajib)
+
+Setiap item review disajikan dalam urutan tetap. Pembaca harus melihat lebih dulu apa yang sudah ada, baru kemudian penilaian reviewer:
+
+1. **Data eksisting.** Apa yang tertulis atau tersedia saat ini di dokumen/data yang dikaji, disajikan apa adanya: angka, satuan, asumsi, metode, dan lokasinya (dokumen, bab, halaman, tabel, gambar). Bila datanya memang tidak ada, tulis "Tidak tersedia di dokumen" beserta bagian yang sudah diperiksa. Jangan memasukkan penilaian di bagian ini.
+2. **Komentar review.** Penilaian reviewer atas data eksisting tersebut: apa yang kurang, tidak konsisten, atau berisiko. Sertakan dasar pembandingnya (sumber KB + halaman, kriteria proyek, atau konsistensi internal), jenis temuan, dan prioritasnya.
+3. **Langkah penyelesaian.** Langkah konkret dan berurutan untuk menyelesaikan item tersebut. Setiap langkah:
+   - diawali kata kerja tindakan (hitung ulang, lengkapi, verifikasi, revisi, ambil data, jalankan uji);
+   - menyebut objek yang spesifik (parameter, dokumen, bab, sumur, interval kedalaman);
+   - menyebut keluaran yang bisa diperiksa (lampiran perhitungan, log, revisi dokumen, berita acara);
+   - menyebut pihak yang paling tepat mengerjakan bila dapat diketahui dari konteks (mis. *drilling engineer*, ahli geokimia, *reservoir engineer*). Jangan mengarang nama orang atau tanggal.
+
+   Hindari langkah yang kabur seperti "perlu dikaji lebih lanjut", "perlu perhatian", atau "dioptimalkan". Ganti dengan tindakan nyata, misalnya: "Hitung ulang beban *collapse* dan *burst* *production casing* 13⅜" untuk kondisi *shut-in* pada temperatur statis 280 °C; lampirkan perhitungan dan *grade* casing terpilih."
+
+Jangan menampilkan persentase atau status penyelesaian kajian (mis. "0 dari 12 selesai"). Fokus keluaran adalah cara menyelesaikan setiap item.
+
 ## Bila KB tidak cukup
 
 Nyatakan bahwa evidence relevan tidak ditemukan pada cakupan embedded KB yang diperiksa. Jika pengguna mengizinkan sumber eksternal, pisahkan sumber eksternal dari KB. Jangan otomatis memasukkan jawaban AI atau sumber eksternal ke embedded KB.
@@ -68,11 +84,16 @@ Jika pengguna meminta hasil review sebagai PPT/PPTX/presentation, setelah techni
 
 Mulai dengan ringkasan temuan utama dan cakupan kajian, lalu sajikan tabel:
 
-| ID | Lokasi di dokumen | Temuan dan jenisnya | Dasar dan sumber KB | Dampak dan prioritas | Rekomendasi dan verifikasi | Tingkat keyakinan |
-|---|---|---|---|---|---|---|
+| ID | Data eksisting (dan lokasinya) | Komentar review (jenis, dasar, sumber KB) | Prioritas | Langkah penyelesaian |
+|---|---|---|---|---|
 
-Untuk evidence visual, sebutkan file + page/slide + objek visual yang diperiksa. Akhiri dengan:
+- Kolom "Data eksisting" selalu diisi lebih dulu dan hanya berisi fakta dari dokumen/data.
+- Kolom "Langkah penyelesaian" berisi langkah bernomor sesuai aturan di atas.
+- Tingkat keyakinan terhadap bukti disebutkan di dalam komentar review bila relevan.
+
+Untuk bukti visual, sebutkan file, halaman/slide, dan objek visual yang diperiksa. Akhiri dengan:
+- langkah selanjutnya yang diprioritaskan (3–5 langkah terpenting dari seluruh item, berurutan);
 - data tambahan yang dibutuhkan;
 - konflik sumber bila ada;
-- bagian review yang selesai/belum;
+- bagian dokumen yang sudah dan belum dikaji;
 - daftar referensi KB yang benar-benar dibuka.

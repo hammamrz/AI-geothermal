@@ -4,6 +4,16 @@
 Usage:
   python build_comment_sheet.py input.json output.docx
 
+Setiap item review disajikan berurutan: data eksisting (apa yang tertulis di dokumen) ->
+komentar review (penilaian reviewer dan dasarnya) -> langkah penyelesaian (langkah konkret
+bernomor). Laporan tidak menampilkan status atau persentase penyelesaian kajian.
+
+Kunci JSON tambahan pada setiap temuan: "existing" (alias "existing_data"/"data_eksisting") dan
+"resolution_steps" (daftar string atau {"step","pic","due","evidence"}). Bila resolution_steps
+kosong, langkah diambil dari "actions" yang finding_id-nya cocok, lalu dari "comment".
+Data gap boleh memuat "resolution_steps"; kesimpulan memakai "next_steps"
+(alias "conditions_to_proceed"). Kunci "status" lama diabaikan.
+
 The generated DOCX contains real Word fields for TOC, List of Figures,
 List of Tables, and page numbers. Word is instructed to update fields on open.
 """
@@ -301,21 +311,85 @@ def priority_fill(value):
     return LIGHT_GRAY
 
 
-def add_findings_table(doc, findings):
-    add_caption(doc,'Tabel','Rincian Temuan dan Komentar Reviewer')
+def _text(v):
+    if v is None: return ''
+    if isinstance(v,(list,tuple)): return '; '.join(_text(x) for x in v if _text(x))
+    return str(v).strip()
+
+
+def no_action(f):
+    """Item yang menurut reviewer sudah memadai (komentar 'tidak ada tindakan')."""
+    return bool(re.search(r'(?i)tidak (ada|perlu) tindak|no (further )?action', _text(f.get('comment'))))
+
+
+def steps_of(f, data=None):
+    """Langkah penyelesaian: resolution_steps; bila kosong, actions yang merujuk ID temuan;
+    bila masih kosong, rekomendasi (comment) sebagai satu langkah."""
+    raw=f.get('resolution_steps') or f.get('langkah_penyelesaian') or f.get('steps') or []
+    raw=raw if isinstance(raw,(list,tuple)) else [raw]
+    steps=[]
+    for r in raw:
+        if isinstance(r,dict):
+            steps.append({'step':_text(r.get('step') or r.get('action') or r.get('langkah')),'pic':_text(r.get('pic') or r.get('owner')),
+                          'due':_text(r.get('due')),'evidence':_text(r.get('evidence') or r.get('closure_evidence'))})
+        elif _text(r):
+            steps.append({'step':_text(r),'pic':'','due':'','evidence':''})
+    if not steps and data and f.get('id'):
+        for a in data.get('actions',[]) or []:
+            if isinstance(a,dict) and f['id'] in _text(a.get('finding_id') or a.get('related_findings')):
+                steps.append({'step':_text(a.get('action')),'pic':_text(a.get('pic') or a.get('owner')),
+                              'due':_text(a.get('due') or a.get('timing')),'evidence':_text(a.get('evidence') or a.get('closure_evidence'))})
+    if not steps and _text(f.get('comment') or f.get('recommendation')) and not no_action(f):
+        steps.append({'step':_text(f.get('comment') or f.get('recommendation')),'pic':'','due':'','evidence':''})
+    return [x for x in steps if x['step']]
+
+
+def existing_of(f):
+    return _text(f.get('existing') or f.get('existing_data') or f.get('data_eksisting')) or 'Belum dicatat.'
+
+
+def review_of(f):
+    """Komentar review = temuan reviewer; rekomendasi ditambahkan bila langkah dirumuskan terpisah."""
+    parts=[_text(f.get('finding') or f.get('observation'))]
+    if f.get('resolution_steps') or no_action(f):
+        parts.append(_text(f.get('comment') or f.get('recommendation')))
+    return ' '.join(x for x in parts if x) or _text(f.get('title')) or '-'
+
+
+def set_steps(cell, steps, empty='-'):
+    """Isi sel dengan daftar langkah bernomor (satu paragraf per langkah, indentasi gantung)."""
+    cell.text=''
+    if not steps:
+        add_rich(cell.paragraphs[0], empty); return
+    for i,st in enumerate(steps,1):
+        p=cell.paragraphs[0] if i==1 else cell.add_paragraph()
+        p.paragraph_format.left_indent=Mm(4); p.paragraph_format.first_line_indent=Mm(-4)
+        p.add_run(f'{i}. ')
+        add_rich(p, st if isinstance(st,str) else st['step'])
+
+
+def add_findings_table(doc, findings, data=None):
+    add_caption(doc,'Tabel','Data Eksisting, Komentar Review, dan Langkah Penyelesaian')
     tbl=doc.add_table(rows=1, cols=8); tbl.alignment=WD_TABLE_ALIGNMENT.CENTER; tbl.autofit=False
-    headers=['ID','Disiplin','Dokumen / Lokasi','Temuan / Observasi','Komentar dan Rekomendasi Reviewer','Dasar Teknis / Referensi','Prioritas','Status']
-    widths=[Mm(12),Mm(21),Mm(36),Mm(48),Mm(56),Mm(38),Mm(18),Mm(18)]
+    headers=['ID','Disiplin','Lokasi di Dokumen','Data Eksisting','Komentar Review','Dasar Teknis / Referensi','Prioritas','Langkah Penyelesaian']
+    widths=[Mm(11),Mm(18),Mm(24),Mm(44),Mm(46),Mm(31),Mm(15),Mm(58)]
     for i,h in enumerate(headers):
         c=tbl.cell(0,i); set_rich(c, h); set_cell_shading(c, PLN_BLUE)
         for r in c.paragraphs[0].runs: r.bold=True; r.font.color.rgb=RGBColor(255,255,255); r.font.size=Pt(7.5)
         c.width=widths[i]
     set_repeat_table_header(tbl.rows[0])
     for idx,f in enumerate(findings,1):
-        vals=[f.get('id',f'F-{idx:03d}'),f.get('discipline',''),f.get('location',''),f.get('finding',''),f.get('comment',f.get('recommendation','')),f.get('basis',''),f.get('priority',''),f.get('status','Open')]
+        basis=_text(f.get('basis'))
+        if f.get('source') and _text(f.get('source')) not in basis:
+            basis=(basis+' Sumber: '+_text(f.get('source'))).strip()
+        vals=[f.get('id',f'F-{idx:03d}'),f.get('discipline',''),f.get('location',''),existing_of(f),review_of(f),basis,f.get('priority','')]
         cells=tbl.add_row().cells
         for i,v in enumerate(vals):
             set_rich(cells[i], v); cells[i].width=widths[i]
+        steps=steps_of(f, data)
+        set_steps(cells[7], [x['step'] for x in steps],
+                  'Tidak ada langkah yang diperlukan.' if no_action(f) else 'Langkah penyelesaian belum dirumuskan.')
+        cells[7].width=widths[7]
         set_cell_shading(cells[6], priority_fill(vals[6]))
     set_table_borders(tbl)
     for row in tbl.rows:
@@ -327,18 +401,33 @@ def add_findings_table(doc, findings):
     return tbl
 
 
+def gap_steps(g):
+    raw=g.get('resolution_steps') or g.get('steps') or g.get('action') or []
+    raw=raw if isinstance(raw,(list,tuple)) else [raw]
+    steps=[_text(x.get('step') if isinstance(x,dict) else x) for x in raw]
+    steps=[x for x in steps if x]
+    if steps: return steps
+    req=_text(g.get('required') or g.get('evidence'))
+    return [f'Sediakan {req}'] if req else []
+
+
 def add_data_gaps_table(doc, gaps):
-    add_caption(doc,'Tabel','*Data Gap* dan Klarifikasi yang Diperlukan')
+    add_caption(doc,'Tabel','*Data Gap* dan Langkah untuk Melengkapinya')
     tbl=doc.add_table(rows=1, cols=5); tbl.alignment=WD_TABLE_ALIGNMENT.CENTER
-    headers=['ID','Data / Klarifikasi yang Diperlukan','Dampak bila Tidak Dipenuhi','Bukti / Dokumen yang Diperlukan','Status']
+    headers=['ID','Data yang Belum Tersedia / Perlu Klarifikasi','Dampak bila Tidak Dipenuhi','Langkah untuk Melengkapi','PIC']
     for i,h in enumerate(headers):
         c=tbl.cell(0,i); set_rich(c, h); set_cell_shading(c,LIGHT_GRAY)
         for r in c.paragraphs[0].runs: r.bold=True; r.font.size=Pt(8)
     set_repeat_table_header(tbl.rows[0])
     for idx,g in enumerate(gaps,1):
-        vals=[g.get('id',f'DG-{idx:02d}'),g.get('gap',''),g.get('impact',''),g.get('required',''),g.get('status','Open')]
+        if not isinstance(g,dict): g={'gap':_text(g)}
+        vals=[g.get('id',f'DG-{idx:02d}'),g.get('gap',g.get('item','')),g.get('impact',''),None,g.get('owner',g.get('pic',''))]
         cells=tbl.add_row().cells
-        for i,v in enumerate(vals): set_rich(cells[i], v)
+        for i,v in enumerate(vals):
+            if v is not None: set_rich(cells[i], v)
+        st=gap_steps(g)
+        if len(st)>1: set_steps(cells[3], st)
+        else: set_rich(cells[3], st[0] if st else '-')
     set_table_borders(tbl)
     for row in tbl.rows:
         for c in row.cells:
@@ -348,18 +437,36 @@ def add_data_gaps_table(doc, gaps):
     return tbl
 
 
-def add_actions_table(doc, actions):
-    add_caption(doc,'Tabel','Rencana Tindak Lanjut dan Penyelesaian Komentar')
-    tbl=doc.add_table(rows=1, cols=7); tbl.alignment=WD_TABLE_ALIGNMENT.CENTER
-    headers=['ID','Temuan Terkait','Tindakan yang Diperlukan','PIC','Target Waktu','Bukti Penyelesaian','Status']
+def add_steps_table(doc, findings, data):
+    """Langkah penyelesaian per item review (menggantikan register status tindak lanjut)."""
+    add_caption(doc,'Tabel','Langkah Penyelesaian per Item Review')
+    tbl=doc.add_table(rows=1, cols=6); tbl.alignment=WD_TABLE_ALIGNMENT.CENTER
+    headers=['ID','Item Review','Langkah Penyelesaian','PIC','Target Waktu','Bukti Penyelesaian']
     for i,h in enumerate(headers):
         c=tbl.cell(0,i); set_rich(c, h); set_cell_shading(c,PLN_BLUE)
         for r in c.paragraphs[0].runs: r.bold=True; r.font.color.rgb=RGBColor(255,255,255); r.font.size=Pt(8)
     set_repeat_table_header(tbl.rows[0])
-    for idx,a in enumerate(actions,1):
-        vals=[a.get('id',f'A-{idx:02d}'),a.get('finding_id',''),a.get('action',''),a.get('pic',''),a.get('due',''),a.get('evidence',''),a.get('status','Open')]
+    order={'h':0,'c':0,'t':0,'k':0,'m':1,'s':1}
+    rows=[]
+    for f in sorted(findings, key=lambda f: order.get(_text(f.get('priority')).lower()[:1],2)):
+        st=steps_of(f, data)
+        if st: rows.append((f.get('id',''), f.get('title') or f.get('finding',''), st))
+    linked={f.get('id') for f in findings if f.get('id')}
+    for idx,a in enumerate(data.get('actions',[]) or [],1):
+        a=a if isinstance(a,dict) else {'action':_text(a)}
+        ref=_text(a.get('finding_id') or a.get('related_findings'))
+        if any(fid in ref for fid in linked): continue
+        rows.append((a.get('id',f'A-{idx:02d}'), ref or '-', [{'step':_text(a.get('action')),'pic':_text(a.get('pic') or a.get('owner')),
+                     'due':_text(a.get('due')),'evidence':_text(a.get('evidence'))}]))
+    if not rows:
+        rows=[('F-001','[Item review]',[{'step':'[Langkah konkret: tindakan, objek, dan keluaran yang bisa diperiksa]','pic':'[PIC]','due':'[Target waktu]','evidence':'[Bukti penyelesaian]'}])]
+    for rid,title,st in rows:
         cells=tbl.add_row().cells
-        for i,v in enumerate(vals): set_rich(cells[i], v)
+        set_rich(cells[0], rid); set_rich(cells[1], title)
+        set_steps(cells[2], [x['step'] for x in st])
+        set_rich(cells[3], ', '.join(sorted({x['pic'] for x in st if x['pic']})) or '-')
+        set_rich(cells[4], '; '.join(x['due'] for x in st if x['due']) or '-')
+        set_rich(cells[5], '; '.join(x['evidence'] for x in st if x['evidence']) or '-')
     set_table_borders(tbl)
     for row in tbl.rows:
         for c in row.cells:
@@ -454,7 +561,7 @@ def build(data, out_path):
 
     # Executive Summary
     doc.add_page_break(); add_title(doc,'RINGKASAN EKSEKUTIF',1)
-    summary=data.get('executive_summary') or 'Bagian ini merangkum hasil kajian teknis, temuan material, risiko utama, *data gap*, serta tindak lanjut yang diperlukan.'
+    summary=data.get('executive_summary') or 'Bagian ini merangkum hasil kajian teknis, temuan material, risiko utama, *data gap*, serta langkah penyelesaian yang diperlukan.'
     add_para(doc, summary)
     findings=data.get('findings',[])
     counts={}
@@ -493,29 +600,48 @@ def build(data, out_path):
 
     # Landscape register pages still inherit the exact KKP header/footer.
     sec_land=doc.add_section(WD_SECTION.NEW_PAGE); body_section_setup(sec_land, True); link_exact_header_footer(sec_land)
-    add_title(doc,'4. TEMUAN TEKNIS DAN KOMENTAR REVIEWER',1)
-    add_para(doc, 'Temuan dikelompokkan per disiplin dan diberi nomor identitas (ID) agar dapat ditelusuri hingga tahap penyelesaian (*closure*).')
-    add_findings_table(doc, findings or [{'id':'F-001','discipline':'[Disiplin]','location':'[Dokumen / bagian / halaman]','finding':'[Temuan / observasi]','comment':'[Komentar dan rekomendasi reviewer]','basis':'[Dasar teknis / sumber KB]','priority':'Sedang','status':'Open'}])
+    add_title(doc,'4. DATA EKSISTING DAN KOMENTAR REVIEW',1)
+    add_para(doc, 'Setiap item review disajikan berurutan: data eksisting sebagaimana tertulis di dokumen, komentar reviewer atas data tersebut, lalu langkah konkret untuk menyelesaikannya. Item dikelompokkan per disiplin dan diberi nomor identitas (ID) agar mudah ditelusuri.')
+    add_findings_table(doc, findings or [{'id':'F-001','discipline':'[Disiplin]','location':'[Dokumen / bagian / halaman]','existing':'[Data eksisting apa adanya: angka, satuan, asumsi, metode]','finding':'[Komentar review atas data eksisting]','basis':'[Dasar teknis / sumber KB]','priority':'Sedang','resolution_steps':['[Langkah konkret 1]','[Langkah konkret 2]']}], data)
 
     sec_p=doc.add_section(WD_SECTION.NEW_PAGE); body_section_setup(sec_p, False); link_exact_header_footer(sec_p)
     add_title(doc,'5. RISIKO UTAMA DAN KETERKAITAN ANTARDISIPLIN',1)
     risks=data.get('key_risks',[]) or ['[Uraikan risiko teknis material dan keterkaitan antardisiplin yang teridentifikasi selama kajian.]']
-    for x in risks: add_bullet(doc,x)
+    for x in risks:
+        if isinstance(x,dict):
+            head=': '.join(_text(x.get(k)) for k in ('interface','risk') if _text(x.get(k)))
+            tail='; '.join(f'{lab} {_text(x.get(k))}' for k,lab in (('impact','dampak:'),('mitigation','mitigasi:'),('related_findings','item terkait:')) if _text(x.get(k)))
+            x=(head + (f'. {tail[0].upper()}{tail[1:]}.' if tail else '')).replace('↔','/')
+        add_bullet(doc,x)
 
     add_title(doc,'6. *DATA GAP*, KLARIFIKASI, DAN ASUMSI',1)
-    add_data_gaps_table(doc,data.get('data_gaps',[]) or [{'id':'DG-01','gap':'[Data yang belum tersedia / perlu klarifikasi]','impact':'[Dampak bila tidak dipenuhi]','required':'[Bukti yang diperlukan]','status':'Open'}])
+    add_data_gaps_table(doc,data.get('data_gaps',[]) or [{'id':'DG-01','gap':'[Data yang belum tersedia / perlu klarifikasi]','impact':'[Dampak bila tidak dipenuhi]','resolution_steps':['[Langkah untuk melengkapi]'],'owner':'[PIC]'}])
 
     sec_a=doc.add_section(WD_SECTION.NEW_PAGE); body_section_setup(sec_a, True); link_exact_header_footer(sec_a)
-    add_title(doc,'7. RENCANA TINDAK LANJUT DAN PENYELESAIAN KOMENTAR',1)
-    add_actions_table(doc,data.get('actions',[]) or [{'id':'A-01','finding_id':'F-001','action':'[Tindakan yang diperlukan]','pic':'[PIC]','due':'[Target waktu]','evidence':'[Bukti penyelesaian]','status':'Open'}])
+    add_title(doc,'7. LANGKAH PENYELESAIAN ITEM REVIEW',1)
+    add_para(doc, 'Tabel berikut merinci langkah konkret untuk menyelesaikan setiap item review, diurutkan dari prioritas tertinggi. Setiap langkah menyebut tindakan, objek, dan keluaran yang dapat diperiksa.')
+    add_steps_table(doc, findings, data)
 
     sec_c=doc.add_section(WD_SECTION.NEW_PAGE); body_section_setup(sec_c, False); link_exact_header_footer(sec_c)
-    add_title(doc,'8. KESIMPULAN DAN STATUS PENYELESAIAN',1)
-    add_para(doc, data.get('conclusion','Status penerimaan dokumen ditentukan oleh penyelesaian temuan material, terpenuhinya *data gap*, dan verifikasi bukti sesuai rencana tindak lanjut.'))
-    status=data.get('overall_status','Open for Comment / Revision Required')
-    p=doc.add_paragraph(); r=p.add_run('Status Kajian: ' + status); r.bold=True; r.font.size=Pt(12); r.font.color.rgb=RGBColor(0,102,153)
-    add_title(doc,'8.1 Penutup',2)
-    add_para(doc, data.get('closing','*Comment sheet* ini disusun berdasarkan informasi yang tersedia pada saat kajian. Perubahan data, revisi dokumen, atau bukti teknis baru dapat memerlukan pemutakhiran temuan dan status penyelesaiannya.'))
+    add_title(doc,'8. KESIMPULAN DAN LANGKAH SELANJUTNYA',1)
+    add_para(doc, data.get('conclusion','Dokumen dapat digunakan sebagai dasar tahap berikutnya setelah langkah penyelesaian untuk item prioritas tinggi dilaksanakan dan *data gap* material dilengkapi.'))
+    rekom=_text(data.get('overall_status'))
+    if rekom:
+        p=doc.add_paragraph(); r=p.add_run('Rekomendasi kajian: ' + rekom); r.bold=True; r.font.size=Pt(12); r.font.color.rgb=RGBColor(0,102,153)
+    add_title(doc,'8.1 Langkah Selanjutnya',2)
+    nxt=[_text(x) for x in (data.get('next_steps') or data.get('conditions_to_proceed') or []) if _text(x)]
+    if not nxt:
+        order={'h':0,'c':0,'t':0,'k':0,'m':1,'s':1}
+        for f in sorted(findings, key=lambda f: order.get(_text(f.get('priority')).lower()[:1],2)):
+            st=steps_of(f, data)
+            if st: nxt.append(f"{st[0]['step']} ({f.get('id','')})")
+            if len(nxt)==5: break
+    for i,x in enumerate(nxt or ['[Rumuskan 3–5 langkah prioritas berikutnya.]'],1):
+        p=doc.add_paragraph(style='Normal')
+        p.paragraph_format.left_indent=Mm(7); p.paragraph_format.first_line_indent=Mm(-5)
+        p.add_run(f'{i}. '); add_rich(p, x)
+    add_title(doc,'8.2 Penutup',2)
+    add_para(doc, data.get('closing','*Comment sheet* ini disusun berdasarkan informasi yang tersedia pada saat kajian. Perubahan data, revisi dokumen, atau bukti teknis baru dapat memerlukan pemutakhiran item review dan langkah penyelesaiannya.'))
 
     doc.add_page_break(); add_title(doc,'LAMPIRAN',1)
     add_title(doc,'Lampiran A – Cakupan Kajian per Disiplin',2)

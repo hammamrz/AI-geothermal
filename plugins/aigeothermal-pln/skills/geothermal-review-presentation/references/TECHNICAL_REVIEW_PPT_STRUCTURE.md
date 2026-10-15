@@ -16,11 +16,11 @@ The PPT must preserve the same review logic and traceability while compressing d
 | 1. Tujuan, Lingkup, dan Basis Review | Objectives, Scope & Review Basis |
 | 2. Dokumen yang Diperiksa | Documents Reviewed register |
 | 3. Metodologi Review dan Klasifikasi Komentar | Review Methodology & Comment Classification |
-| 4. Technical Findings and Reviewer Comments | Findings Overview + Material Finding Detail slides |
+| 4. Data Eksisting dan Komentar Review | Item Review overview + one detail slide per item (existing data → review comment → resolution steps) |
 | 5. Key Risks and Cross-Discipline Interfaces | Key Risks & Cross-Discipline Interfaces |
-| 6. Data Gaps, Clarifications, and Assumptions | Data Gaps / Clarifications / Assumptions |
-| 7. Action Plan and Comment Resolution Register | Action Plan & Comment Resolution |
-| 8. Kesimpulan and Closeout Status | Conclusion & Closeout Status |
+| 6. Data Gaps, Clarifications, and Assumptions | Data Gap and steps to complete it |
+| 7. Langkah Penyelesaian Item Review | Langkah Penyelesaian per Item Review |
+| 8. Kesimpulan dan Langkah Selanjutnya | Kesimpulan dan Langkah Selanjutnya |
 | Appendix / references | Sources Used & Review Traceability |
 | Penutup | Terima Kasih |
 
@@ -33,36 +33,36 @@ The PPT must preserve the same review logic and traceability while compressing d
 5. Objectives, Scope & Review Basis
 6. Documents Reviewed
 7. Review Methodology & Comment Classification
-8. Findings Overview
-9. Material Findings & Reviewer Comments, one or more slides
-10. Key Risks & Cross-Discipline Interfaces
-11. Data Gaps, Clarifications & Assumptions
-12. Action Plan & Comment Resolution
-13. Conclusion & Closeout Status
-14. Sources Used & Review Traceability
-15. Terima Kasih
+8. Findings distribution by discipline and priority
+9. Item Review: Data Eksisting dan Komentar Review
+10. One detail slide per material item: existing data → review comment → resolution steps
+11. Key Risks & Cross-Discipline Interfaces
+12. Data Gap and steps to complete it
+13. Langkah Penyelesaian per Item Review
+14. Kesimpulan dan Langkah Selanjutnya
+15. Sources Used & Review Traceability
+16. Terima Kasih
 
 Do not force empty slides. If a chapter has no evidence, merge it with the nearest logical slide or mark it clearly as not provided.
 
 ## Content rules
 
-### Findings
-Keep the same semantic fields as the Word report:
+### Review items
+Every item is shown in a fixed reading order: **existing data → review comment → resolution steps**. Keep the same semantic fields as the Word report:
 - Finding ID
 - Discipline
 - exact target document / location
-- finding / observation
-- reviewer comment / recommendation
+- existing data (`existing`): what the document states now, as-is, without judgement
+- review comment (`finding`, plus `comment`): the reviewer's assessment of that data
 - technical basis / reference
 - priority
-- status
+- resolution steps (`resolution_steps`): numbered, concrete, verb-first, with a checkable output
 
 Optional when available:
 - confidence
 - potential impact
+- PIC, target date, evidence of completion (never guessed)
 - document owner response
-- reviewer closure comment
-- closure evidence
 
 ### Key risks and interfaces
 Prioritize cross-discipline issues such as:
@@ -79,24 +79,14 @@ Show:
 - Gap ID
 - missing/unclear data
 - impact if unresolved
-- required evidence/deliverable
-- owner/status
+- steps to complete the data
+- owner
 
-### Action plan
-Show:
-- Action ID
-- related finding(s)
-- action required
-- PIC / owner
-- target date
-- closure evidence
-- status
+### Resolution steps
+Show per item, ordered by priority:
+- item ID and short title
+- numbered resolution steps
+- PIC / owner, target date, evidence of completion (only when known)
 
-### Closeout status
-Preferred wording:
-- Open for Comment
-- Revision Required
-- Conditionally Acceptable subject to listed closure actions
-- Closed / No Material Open Comments
-
-Do not invent a stronger technical approval than the review evidence or governance supports.
+### Conclusion and next steps
+Show the conclusion, the review recommendation (`overall_status`), and 3–5 ordered next steps (`next_steps`). Do not show completion status, progress bars, or percentages. Do not invent a stronger technical approval than the review evidence or governance supports.

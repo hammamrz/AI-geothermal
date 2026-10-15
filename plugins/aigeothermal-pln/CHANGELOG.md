@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.6.0 — 2026-10-15
+
+- Setiap item review kini disajikan berurutan: **data eksisting** (apa yang tertulis di dokumen, apa adanya) → **komentar review** → **langkah penyelesaian** yang konkret dan bernomor. Berlaku untuk jawaban di chat, *comment sheet* DOCX, dan presentasi PPTX.
+- Status dan persentase penyelesaian kajian dihapus (termasuk bar progres di slide kesimpulan dan kolom Status di tabel). Penggantinya: slide/bab "Langkah Penyelesaian per Item Review" dan "Kesimpulan dan Langkah Selanjutnya" dengan rekomendasi kajian serta 3–5 langkah berikutnya.
+- Kunci JSON baru: `existing` dan `resolution_steps` pada temuan, `resolution_steps` pada *data gap*, dan `next_steps` (alias `conditions_to_proceed`). `actions` dan `status` format lama tetap diterima.
+- Daftar langkah di PPTX memakai penomoran otomatis PowerPoint (lolos `check_deck.py`).
+
 ## 1.5.0 — 2026-10-01
 
 - Plugin tipis untuk akun Pro/Max: `AIGeothermal-PLN-plugin.zip` di-upload langsung lewat **Customize → Plugins → Add → Upload plugin**. Isinya skill pemuat yang sama dengan skill akun Free, sehingga modul dan KB terbaru diambil dari GitHub saat dipakai. Ini menggantikan "Add marketplace" di claude.ai, yang gagal karena repo berisi ±850 MB file KB.

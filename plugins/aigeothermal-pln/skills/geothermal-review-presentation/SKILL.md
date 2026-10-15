@@ -1,6 +1,6 @@
 ---
 name: geothermal-review-presentation
-description: Buat presentasi PPTX technical review geothermal dengan 3-layout master PLN IP: ringkasan, temuan, risiko lintas disiplin, data gap, action plan, closeout, dan sumber.
+description: Buat presentasi PPTX technical review geothermal dengan master PLN IP: data eksisting, komentar review, langkah penyelesaian, risiko, data gap, dan sumber.
 ---
 
 # Geothermal Review Presentation
@@ -25,8 +25,9 @@ Gunakan struktur formal dari `../geothermal-comment-sheet-report/references/REPO
 Tujuannya:
 1. audiens langsung tahu apa yang diperiksa dan basis review-nya;
 2. setiap finding tetap traceable dan actionable;
-3. cross-discipline risk, data gap, action, dan closeout status tetap terlihat;
-4. deck tetap ringkas dan cocok dipresentasikan.
+3. setiap item review tampil berurutan: **data eksisting → komentar review → langkah penyelesaian**;
+4. cross-discipline risk dan data gap tetap terlihat, tanpa status atau persentase penyelesaian kajian;
+5. deck tetap ringkas dan cocok dipresentasikan.
 
 ## Sumber konten
 
@@ -67,14 +68,15 @@ Urutan yang digunakan:
 5. Objectives, Scope & Review Basis
 6. Documents Reviewed
 7. Review Methodology & Comment Classification
-8. Findings Overview
-9. Material Findings & Reviewer Comments, satu atau beberapa slide
-10. Key Risks & Cross-Discipline Interfaces
-11. Data Gaps, Clarifications & Assumptions
-12. Action Plan & Comment Resolution
-13. Conclusion & Closeout Status
-14. Sources Used & Review Traceability
-15. Terima Kasih
+8. Sebaran Temuan per Disiplin dan Prioritas
+9. Item Review: Data Eksisting dan Komentar Review
+10. Rincian per item review (data eksisting, komentar review, langkah penyelesaian), satu slide per item
+11. Key Risks & Cross-Discipline Interfaces
+12. Data Gap dan langkah untuk melengkapinya
+13. Langkah Penyelesaian per Item Review
+14. Kesimpulan dan Langkah Selanjutnya
+15. Sources Used & Review Traceability
+16. Terima Kasih
 
 Jangan memaksa slide kosong. Bagian tanpa data boleh digabung, ditandai `Not provided`, atau dihilangkan jika tidak material.
 
@@ -88,12 +90,14 @@ Jangan memaksa slide kosong. Bagian tanpa data boleh digabung, ditandai `Not pro
 ## Executive Review Summary
 
 Ringkas minimal:
-- total findings;
-- jumlah High / Medium atau priority lain yang digunakan;
-- jumlah open findings;
-- jumlah data gaps;
+- jumlah item review;
+- jumlah prioritas tinggi;
+- jumlah *data gap*;
+- jumlah langkah penyelesaian yang diusulkan;
 - 3–5 pesan utama;
-- overall closeout status jika sudah dapat dinyatakan dari evidence.
+- rekomendasi kajian (`overall_status`) jika sudah dapat dinyatakan dari bukti.
+
+Jangan menampilkan status atau persentase penyelesaian (mis. "0 dari 12 selesai").
 
 Jangan menampilkan status approval yang tidak didukung evidence/governance.
 
@@ -114,7 +118,7 @@ Buat register ringkas dengan field:
 - revision;
 - date;
 - discipline;
-- review scope/status.
+- review scope.
 
 Bila banyak dokumen, tampilkan dokumen utama pada slide dan sisanya di appendix/source traceability.
 
@@ -125,34 +129,30 @@ Jelaskan secara ringkas:
 - retrieval/selective embedded-KB usage;
 - cross-check text, table, figure, and calculation consistency;
 - priority/severity definitions;
-- comment closure rule.
+- struktur item review: data eksisting → komentar review → langkah penyelesaian.
 
 Jangan mengklaim standard/comparator digunakan jika sumber tersebut tidak benar-benar dibuka.
 
-## Findings Overview
+## Item Review: Data Eksisting dan Komentar Review
 
-Pertahankan field technical review report:
-- Finding ID;
-- Discipline;
-- Finding / observation;
-- Priority;
-- Status;
-- Target document / exact location.
+Tabel ringkas dengan kolom berurutan:
+- ID;
+- disiplin;
+- data eksisting (dan lokasinya di dokumen);
+- komentar review;
+- prioritas.
 
-Boleh tambahkan confidence sebagai field sekunder jika review engine memang menghasilkan confidence.
+## Rincian per item review
 
-## Detailed finding / reviewer comment
+Setiap item material mendapat satu slide dengan urutan baca yang tetap:
+- baris identitas: disiplin, prioritas, tingkat keyakinan (opsional), lokasi di dokumen;
+- **Data eksisting** (`existing`): apa yang tertulis atau tersedia di dokumen, apa adanya (angka, satuan, asumsi, metode). Bila tidak ada, tulis "Tidak tersedia di dokumen". Jangan memasukkan penilaian di sini;
+- **Komentar review** (`finding`, ditambah `comment`): penilaian reviewer atas data eksisting itu;
+- dampak bila tidak diselesaikan;
+- **Langkah penyelesaian** (`resolution_steps`): langkah konkret bernomor (penomoran otomatis PowerPoint), masing-masing diawali kata kerja tindakan, menyebut objek spesifik, dan menghasilkan keluaran yang bisa diperiksa. PIC, target, dan bukti ditulis hanya bila diketahui;
+- dasar teknis dan satu baris sumber (KB ID + halaman).
 
-Untuk finding material tampilkan:
-- Finding ID + discipline;
-- priority + status + optional confidence;
-- target document / exact location;
-- finding / observation;
-- reviewer comment / recommendation;
-- why it matters / potential impact bila relevan;
-- target-document evidence;
-- KB/comparator evidence dengan file + page/slide/section;
-- required clarification / closure evidence jika masih open.
+Item yang menurut reviewer sudah memadai cukup diberi komentar "tidak ada tindakan"; generator akan menulis "Tidak ada langkah yang diperlukan".
 
 Jika ada visual penting, prioritaskan satu gambar/diagram besar yang terbaca daripada banyak thumbnail.
 
@@ -175,39 +175,26 @@ Field minimum:
 - Gap ID;
 - missing/unclear data;
 - impact if unresolved;
-- required evidence/deliverable;
-- owner/status bila diketahui.
+- langkah untuk melengkapi (`resolution_steps`, atau `required` yang ditampilkan sebagai "Sediakan …");
+- PIC bila diketahui.
 
 Data yang belum tersedia tidak boleh dikonversi menjadi finding definitif.
 
-## Action Plan & Comment Resolution
+## Langkah Penyelesaian per Item Review
 
-Field minimum:
-- Action ID;
-- related finding(s);
-- action required;
-- PIC/owner;
-- target date;
-- closure evidence;
-- status.
+Tabel per item, diurutkan dari prioritas tertinggi: ID, item review, langkah penyelesaian bernomor, PIC, target, dan bukti penyelesaian. Kolom yang tidak diketahui diisi "—", bukan tebakan. `actions` (format lama) tetap diterima dan dipakai untuk item yang tidak punya `resolution_steps`.
 
-Pastikan setiap material open finding memiliki jalur closure yang jelas atau secara eksplisit dinyatakan belum memiliki action owner.
+Pastikan setiap item material punya langkah penyelesaian yang konkret. Hindari langkah kabur seperti "perlu dikaji lebih lanjut".
 
-## Conclusion & Closeout Status
+## Kesimpulan dan Langkah Selanjutnya
 
 Tampilkan:
-- overall status dokumen yang direview;
-- material comments yang masih open;
-- conditions to proceed ke tahap berikutnya;
-- limitations pada review conclusion.
+- kesimpulan atas dokumen yang dikaji;
+- rekomendasi kajian (`overall_status`), misalnya "Perlu revisi" atau "Dapat dilanjutkan setelah langkah prioritas tinggi diselesaikan", tanpa mengarang persetujuan teknis;
+- 3–5 langkah selanjutnya yang berurutan (`next_steps`, alias `conditions_to_proceed`). Bila kosong, generator mengambil langkah pertama dari item prioritas tertinggi;
+- keterbatasan kesimpulan kajian.
 
-Preferred wording:
-- Open for Comment
-- Revision Required
-- Conditionally Acceptable subject to listed closure actions
-- Closed / No Material Open Comments
-
-Gunakan approval wording lebih kuat hanya jika governance pengguna memang mendukungnya.
+Jangan menampilkan bar progres, status, atau persentase penyelesaian kajian.
 
 ## Framework visual (dari skill presentasi-pln-ip dan presentasi-tvv)
 
@@ -217,22 +204,21 @@ Aturan inti:
 - **Judul dua warna**: topik biru `#008AAC` + sub-topik hitam, satu baris (maksimal dua), tanpa titik. Tidak ada label kecil (*kicker*) di atas judul dan tidak ada garis aksen di bawahnya.
 - **Satu slide, satu pesan.** Isi disusun kiri → kanan: grafis/data di kiri, keterangan atau isi pendamping di kanan.
 - **Keterangan grafis** berisi penjelasan singkat apa yang ditampilkan dan cara membacanya (arti warna, satuan, periode). Jangan menambah implikasi atau "*so what*" yang tidak didukung hasil review.
-- **Tabel bersumbu**: baris = item, kolom = aspek. Kolom pertama tebal, header bergaris bawah biru, tanpa zebra. Sel kosong diisi "—" berlatar biru muda. Status memakai **penanda bulat lampu lalu lintas** (hijau selesai, kuning dalam proses, merah terbuka) di satu kolom, dengan legenda.
+- **Tabel bersumbu**: baris = item, kolom = aspek. Kolom pertama tebal, header bergaris bawah biru, tanpa zebra. Sel kosong diisi "—" berlatar biru muda. Daftar langkah di dalam sel memakai penomoran otomatis PowerPoint.
 - **Dilarang**: sudut membulat, bayangan, gradien, deretan kartu berwarna, emoji/simbol dekoratif (✅ ⏳ ↔), dan pita warna di tepi kotak.
-- **Palet PLN IP**: PRIMARY `#008AAC`, DARK `#05365B`, TINT `#D1EDF3`, abu `#4D4D4D`/`#C0C0C0`. Lampu lalu lintas hanya untuk status, dan warna tingkat risiko hanya untuk matriks risiko.
+- **Palet PLN IP**: PRIMARY `#008AAC`, DARK `#05365B`, TINT `#D1EDF3`, abu `#4D4D4D`/`#C0C0C0`. Warna tingkat risiko hanya untuk matriks risiko.
 - **Satu baris sumber** (gaya TVV) boleh dipakai di slide yang memuat bukti teknis, misalnya rincian temuan.
 
 ### Model grafis untuk kebutuhan review
 
 | Kebutuhan pada deck review | Model | Helper |
 |---|---|---|
-| Angka kunci di ringkasan (total temuan, prioritas tinggi, terbuka, *data gap*) | Deret angka kunci tanpa kartu | `G.add_kpi_row` |
+| Angka kunci di ringkasan (item review, prioritas tinggi, *data gap*, langkah penyelesaian) | Deret angka kunci tanpa kartu | `G.add_kpi_row` |
 | Tahapan metodologi review | Alur proses | `G.add_flow` |
 | Sebaran temuan per disiplin dan prioritas | Chart batang bertumpuk | `G.add_stacked_chart` |
-| Daftar temuan, *data gap*, tindak lanjut | Tabel bersumbu + penanda status | `T.add_tabel` (+ `G.add_legend`) |
+| Daftar item review, *data gap*, langkah penyelesaian | Tabel bersumbu | `T.add_tabel` |
 | Risiko dengan kemungkinan × dampak (skala 1–5) | Matriks risiko 5×5 | `T.add_matriks_risiko` |
-| Kemajuan penyelesaian temuan/tindak lanjut | Progres | `G.add_progress` |
-| Rencana tindak lanjut bertanggal | *Gantt* / *timeline* | `G.add_gantt`, `G.add_timeline` |
+| Langkah penyelesaian yang sudah bertanggal | *Gantt* / *timeline* | `G.add_gantt`, `G.add_timeline` |
 | Tahapan proyek berpintu (FEED, pemboran, uji produksi) | *Stage-gate* | `G.add_stage_gate` |
 | Proses lintas pihak (operator, kontraktor, regulator) | *Swimlane* | `G.add_swimlane` |
 | Akar masalah suatu temuan | *Issue tree* | `G.add_issue_tree` |
@@ -245,14 +231,14 @@ Semua model dibangun dari bentuk dan chart asli PowerPoint, sehingga tetap bisa 
 
 ## Judul slide
 
-Judul memakai format **topik + sub-topik**, misalnya `Temuan Teknis` `Daftar Temuan dan Status`, atau `F-001` `Beban termal *production casing* belum dihitung untuk kondisi *shut-in*`. Untuk slide rincian temuan, sub-topik berisi inti temuan. Jangan membuat judul lebih tegas daripada bukti yang tersedia.
+Judul memakai format **topik + sub-topik**, misalnya `Item Review` `Data Eksisting dan Komentar Review`, atau `F-001` `Beban termal *production casing* belum dihitung untuk kondisi *shut-in*`. Untuk slide rincian temuan, sub-topik berisi inti temuan. Jangan membuat judul lebih tegas daripada bukti yang tersedia.
 
 ## Data integrity
 
 - Pertahankan MD/TVD/TVDSS, satuan, datum, basis temperatur/tekanan, kondisi statis/dinamis, dan revisi.
 - Jangan mengubah angka untuk membuat chart terlihat rapi.
 - Jika acuan pembanding tidak berlaku atau bukti lemah, tampilkan sebagai klarifikasi/*data gap*, bukan ketidaksesuaian.
-- Status, PIC, tanggal target, dan bukti penyelesaian jangan diisi dengan tebakan.
+- PIC, tanggal target, dan bukti penyelesaian jangan diisi dengan tebakan.
 
 ## Pembuatan PPTX
 
@@ -263,15 +249,15 @@ Utamakan output **editable PPTX**.
    python scripts/build_review_ppt.py review.json output.pptx
    ```
    Generator sudah memakai master geothermal dan pustaka grafis di atas. Teks mendukung `*miring*` dan `**tebal**`. Untuk matriks risiko 5×5, isi `likelihood` dan `severity` (1–5) pada `key_risks`.
-2. Untuk slide tambahan yang tidak dibuat generator (mis. *gantt* tindak lanjut, *stage-gate*, peta lokasi), tulis fungsi kecil dan berikan ke `build(..., extra=...)`; slide akan disisipkan sebelum kesimpulan:
+2. Untuk slide tambahan yang tidak dibuat generator (mis. *gantt* langkah penyelesaian, *stage-gate*, peta lokasi), tulis fungsi kecil dan berikan ke `build(..., extra=...)`; slide akan disisipkan sebelum kesimpulan:
    ```python
    import json, sys; sys.path.insert(0, 'scripts')
    import build_review_ppt as B          # sekaligus memuat pustaka: B.P, B.G, B.T
 
    def tambahan(prs, data):
-       s = B.content_slide(prs, 'Rencana Tindak Lanjut', 'Jadwal Penyelesaian')
+       s = B.content_slide(prs, 'Langkah Penyelesaian', 'Jadwal Pelaksanaan')
        B.G.add_gantt(s, periode, baris, B.L, B.BODY_TOP, B.CW)
-       B.caption(s, 'Batang menunjukkan rentang waktu tiap tindak lanjut; garis tegak = hari ini.')
+       B.caption(s, 'Batang menunjukkan rentang waktu tiap langkah; garis tegak = hari ini.')
 
    B.build(json.load(open('review.json')), 'output.pptx', extra=tambahan)
    ```
@@ -284,16 +270,17 @@ Utamakan output **editable PPTX**.
 2. Render setiap slide menjadi gambar dan periksa:
    - logo Danantara + PLN IP tidak tertutup;
    - teks tidak terpotong atau bertumpuk;
-   - penanda status berada di tengah sel;
+   - langkah bernomor di dalam sel rata dan terbaca;
    - label chart terbaca;
    - tidak ada setengah slide yang kosong tanpa alasan.
 3. Periksa isi:
    - urutan slide konsisten dengan laporan review;
-   - prioritas, status, dan tingkat keyakinan tidak tertukar;
+   - setiap item tampil berurutan: data eksisting, komentar review, langkah penyelesaian;
+   - prioritas dan tingkat keyakinan tidak tertukar;
    - setiap klaim teknis material punya lokasi sumber;
    - risiko lintas disiplin bukan sekadar mengulang temuan;
-   - setiap temuan material yang masih terbuka punya tindak lanjut atau *data gap* yang jelas;
+   - setiap item material punya langkah penyelesaian yang konkret atau *data gap* yang jelas;
    - angka, satuan, dan tanggal sesuai sumber;
    - daftar sumber hanya berisi sumber yang benar-benar dipakai;
-   - status penyelesaian tidak melampaui kewenangan atau bukti;
+   - tidak ada status atau persentase penyelesaian kajian, dan rekomendasi kajian tidak melampaui kewenangan atau bukti;
    - slide penutup Terima Kasih berada paling akhir.
