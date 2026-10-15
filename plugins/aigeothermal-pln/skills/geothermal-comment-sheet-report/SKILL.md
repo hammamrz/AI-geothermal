@@ -1,6 +1,6 @@
 ---
 name: geothermal-comment-sheet-report
-description: Buat comment sheet / technical review report DOCX bergaya KKP PLN IP dari hasil review geothermal: TOC otomatis, tabel temuan, data gap, action plan, dan status closeout.
+description: Buat comment sheet / technical review report DOCX bergaya KKP PLN IP dari hasil review geothermal: TOC otomatis, data eksisting, komentar review, langkah penyelesaian, dan data gap.
 ---
 
 # Geothermal Comment Sheet Report
@@ -62,11 +62,11 @@ Use this structure unless the user explicitly asks otherwise:
 1. Tujuan, Lingkup, dan Basis Review
 2. Dokumen yang Diperiksa
 3. Metodologi Review dan Klasifikasi Komentar
-4. Technical Findings and Reviewer Comments
+4. Data Eksisting dan Komentar Review (register item review)
 5. Key Risks and Cross-Discipline Interfaces
-6. Data Gaps, Clarifications, and Assumptions
-7. Action Plan and Comment Resolution Register
-8. Kesimpulan and Closeout Status
+6. Data Gaps, Clarifications, and Assumptions (dengan langkah untuk melengkapinya)
+7. Langkah Penyelesaian Item Review
+8. Kesimpulan dan Langkah Selanjutnya
 
 ### Appendices
 - Discipline-specific review coverage
@@ -80,17 +80,19 @@ Every material finding should preserve:
 - unique finding ID
 - discipline
 - target document and exact section/page/table/figure where possible
-- finding / observation
-- reviewer comment and recommended action
+- **existing data** (`existing`): apa yang tertulis atau tersedia di dokumen saat ini, apa adanya (angka, satuan, asumsi, metode). Bila tidak ada, tulis "Tidak tersedia di dokumen".
+- **review comment** (`finding`, ditambah `comment` bila perlu): penilaian reviewer atas data eksisting tersebut
 - technical basis / source reference actually used
 - priority/severity
-- status
+- **resolution steps** (`resolution_steps`): langkah konkret dan berurutan untuk menyelesaikan item, masing-masing diawali kata kerja tindakan, menyebut objek spesifik, dan menghasilkan keluaran yang bisa diperiksa. Boleh berupa string atau `{"step","pic","due","evidence"}`; PIC, target, dan bukti hanya diisi bila diketahui.
+
+Urutan penyajian setiap item selalu: **data eksisting → komentar review → langkah penyelesaian**. Laporan tidak memuat kolom status atau persentase penyelesaian kajian. `overall_status` ditampilkan sebagai "Rekomendasi kajian", dan `next_steps` (alias `conditions_to_proceed`) sebagai daftar langkah selanjutnya di bab 8.
 
 Default priority taxonomy:
 - `Critical / High`: safety, well integrity, resource-confidence, operability, or approval-gate issue that should be closed before proceeding
 - `Major / Medium`: material design, cost, schedule, reliability, or decision-quality issue requiring action/clarification
 - `Minor / Low`: consistency, completeness, or improvement issue without material effect on the main decision basis
-- `Observation`: good-practice note or opportunity for improvement; no mandatory closeout unless requested
+- `Observation`: good-practice note or opportunity for improvement; tidak wajib memiliki langkah penyelesaian (tulis "tidak ada tindakan" pada komentar)
 
 Never invent a severity solely to make the report look complete. If review output did not establish severity, use `Unrated` or ask for classification.
 
@@ -170,4 +172,4 @@ See `references/REPORT_STRUCTURE.md` for the supported JSON schema and recommend
 - Do not lose page/section traceability from the review.
 - Do not manually type page numbers into TOC/List of Figures/List of Tables.
 - Do not make the report visually elaborate at the expense of technical readability.
-- Keep the report as a review/closeout instrument, not a marketing brochure.
+- Keep the report as a review instrument that tells the reader what to do next, not a marketing brochure.

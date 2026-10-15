@@ -629,6 +629,19 @@ def _bullet(p, char, level):
     pPr.append(font); pPr.append(bu)
 
 
+def _nomor(p, mulai=1, level=0):
+    """Penomoran otomatis PowerPoint (1., 2., ...), bukan angka yang diketik di dalam teks."""
+    p.level = level
+    pPr = p._pPr if p._pPr is not None else p._p.get_or_add_pPr()
+    pPr.set('marL', str(int((0.28 + 0.25 * level) * 914400)))
+    pPr.set('indent', str(int(-0.28 * 914400)))
+    for tag in ('a:buNone', 'a:buChar', 'a:buAutoNum', 'a:buFont'):
+        for el in pPr.findall(qn(tag)):
+            pPr.remove(el)
+    pPr.append(pPr.makeelement(qn('a:buFont'), {'typeface': 'Arial'}))
+    pPr.append(pPr.makeelement(qn('a:buAutoNum'), {'type': 'arabicPeriod', 'startAt': str(int(mulai))}))
+
+
 # ---------- Tabel ----------
 def _set_border(cell, edge, color, pt):
     tcPr = cell._tc.get_or_add_tcPr()

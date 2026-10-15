@@ -4,9 +4,9 @@
 For subsurface, drilling, and well reviews, a useful report must do three things at once:
 1. show what was reviewed and against what basis;
 2. make every technical comment traceable and actionable;
-3. make closure status easy to manage after the review meeting.
+3. tell the document owner exactly how to resolve each review item.
 
-A report that only has `finding -> comment` usually becomes hard to close because the owner, priority, due date, evidence, and review basis are separated or missing.
+Every review item is presented in the same order: **existing data → review comment → resolution steps**. The reader first sees what the document currently states (as-is), then the reviewer's assessment of it, then concrete, ordered steps to resolve it. A report that only has `finding -> comment` is hard to act on because the starting point and the concrete next steps are missing. Do not show completion status or completion percentages.
 
 ## Recommended chapters
 
@@ -36,7 +36,6 @@ Document register fields:
 - date
 - discipline
 - review scope
-- status if multiple revisions are compared
 
 ### 3. Metodologi Review dan Klasifikasi Komentar
 Describe:
@@ -44,23 +43,22 @@ Describe:
 - retrieval/selective KB usage
 - consistency checks across text/tables/figures
 - severity/priority definitions
-- closure rules
+- the item structure: existing data → review comment → resolution steps
 
-### 4. Technical Findings and Reviewer Comments
-Minimum fields:
+### 4. Data Eksisting dan Komentar Review
+Minimum fields, in this order:
 - Finding ID
 - Discipline
 - Target document / exact location
-- Finding / observation
-- Reviewer comment / recommendation
-- Technical basis / reference
+- **Existing data** (`existing`): what the document currently states, as-is: values, units, assumptions, method. Write "Tidak tersedia di dokumen" when absent. No judgement here.
+- **Review comment** (`finding`, plus `comment` if needed): the reviewer's assessment of that existing data and why it is insufficient, inconsistent, or acceptable
+- Technical basis / reference (KB ID + page)
 - Priority
-- Status
+- **Resolution steps** (`resolution_steps`): numbered, concrete steps
 
-Optional fields when the review is iterative:
+Optional when the review is iterative:
 - document owner response
-- reviewer closure comment
-- closure evidence/reference
+- reviewer response to the revision
 
 ### 5. Key Risks and Cross-Discipline Interfaces
 Use this for issues that cut across several comments or disciplines, for example:
@@ -77,33 +75,27 @@ Recommended fields:
 - Gap ID
 - missing/unclear data
 - impact if unresolved
-- evidence/deliverable required
-- owner/status
+- steps to complete the data (`resolution_steps`, or `required` rendered as "Sediakan …")
+- owner
 
-### 7. Action Plan and Comment Resolution Register
-Recommended fields:
-- Action ID
-- related finding(s)
-- action required
-- PIC/owner
-- target date
-- closure evidence
-- status
+### 7. Langkah Penyelesaian Item Review
+One row per review item, ordered by priority:
+- item ID and short title
+- numbered resolution steps
+- PIC/owner, target date, and evidence of completion, only when known (never guessed)
 
-### 8. Kesimpulan and Closeout Status
+Good steps start with an action verb, name the specific object, and produce a checkable output. Avoid vague steps such as "perlu dikaji lebih lanjut". Example: "Hitung ulang beban *collapse* dan *burst* *production casing* 13⅜\" untuk kasus *shut-in* (BHST 280 °C); lampirkan perhitungan dan *grade* casing terpilih."
+
+`actions` (legacy) is still accepted and used for an item that has no `resolution_steps`.
+
+### 8. Kesimpulan dan Langkah Selanjutnya
 State:
-- overall status of the reviewed document
-- whether material comments remain open
-- conditions to proceed to the next stage
+- conclusion on the reviewed document
+- review recommendation (`overall_status`, shown as "Rekomendasi kajian"), without inventing a technical approval, e.g. "Perlu revisi", "Dapat dilanjutkan setelah langkah prioritas tinggi diselesaikan", "Dapat diterima tanpa komentar material"
+- 3–5 ordered next steps (`next_steps`, alias `conditions_to_proceed`); when omitted, the generator takes the first step of the highest-priority items
 - any limitations on the review conclusion
 
-Suggested status wording, without inventing a technical approval:
-- Open for Comment
-- Revision Required
-- Conditionally Acceptable subject to listed closure actions
-- Closed / No Material Open Comments
-
-Use a stronger approval phrase only if the user's governance explicitly supports it.
+Do not report a completion status or percentage.
 
 ## Discipline-specific review coverage
 
@@ -176,22 +168,28 @@ Use a stronger approval phrase only if the user's governance explicitly supports
       "id":"F-001",
       "discipline":"Drilling",
       "location":"Doc A, Sec. 5.2, p. 34",
-      "finding":"...",
-      "comment":"...",
+      "existing":"Production casing 13-3/8in K-55 designed for circulating load only; shut-in case not listed",
+      "finding":"Review comment on the existing data",
+      "comment":"Short recommendation (optional)",
       "basis":"KB source / standard actually used",
+      "source":"GEO-0003, p. 45-47",
       "priority":"High",
-      "status":"Open"
+      "resolution_steps":[
+        "Recalculate ... (concrete step 1)",
+        {"step":"Revise section 4.2 and attach the calculation","pic":"Drilling team","due":"...","evidence":"DP Rev. 2"}
+      ]
     }
   ],
   "key_risks": ["..."],
   "data_gaps": [
-    {"id":"DG-01","gap":"...","impact":"...","required":"...","status":"Open"}
+    {"id":"DG-01","gap":"...","impact":"...","resolution_steps":["..."],"owner":"..."}
   ],
   "actions": [
-    {"id":"A-01","finding_id":"F-001","action":"...","pic":"...","due":"...","evidence":"...","status":"Open"}
+    {"id":"A-01","finding_id":"F-009","action":"...","pic":"...","due":"...","evidence":"..."}
   ],
   "conclusion":"...",
-  "overall_status":"Revision Required",
+  "overall_status":"Perlu revisi",
+  "next_steps":["...","..."],
   "closing":"...",
   "references_used":["..."]
 }
