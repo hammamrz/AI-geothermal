@@ -1,5 +1,11 @@
 # Changelog
 
+## KB rev 7 — 2026-10-16
+
+- Tambah GEO-0168 — 30_2Oct26NOV.JDS.Coring (`files/GEO-0168__30_2Oct26NOV.JDS.Coring.pdf`, 11477200 bytes, SHA-256 `b0382a59c07d…`).
+- Tambah GEO-0169 — Geothermal.Wireline.Logging.Services.Kadek._.JDS (`files/GEO-0169__Geothermal.Wireline.Logging.Services.Kadek._.JDS.pdf`, 11339575 bytes, SHA-256 `be5f559dd289…`).
+- Tambah GEO-0170 — NESR.JDS.Geothermal.Well.Testing.3Oct26 (`files/GEO-0170__NESR.JDS.Geothermal.Well.Testing.3Oct26.pdf`, 2659047 bytes, SHA-256 `e34db76564f5…`).
+
 ## 1.6.0 — 2026-10-15
 
 - Setiap item review kini disajikan berurutan: **data eksisting** (apa yang tertulis di dokumen, apa adanya) → **komentar review** → **langkah penyelesaian** yang konkret dan bernomor. Berlaku untuk jawaban di chat, *comment sheet* DOCX, dan presentasi PPTX.

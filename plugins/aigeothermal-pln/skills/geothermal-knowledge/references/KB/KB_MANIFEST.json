@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "kb_revision": 6,
+  "kb_revision": 7,
   "entries": [
     {
       "id": "GEO-0001",
@@ -2172,7 +2172,46 @@
       "sha256": "015c63047c4d1059bf6486578849a29c7d36b416062fbbe3e6f39da31ba74147",
       "added_at": "2026-10-01T15:55:47+00:00",
       "source_channel": "github-inbox"
+    },
+    {
+      "id": "GEO-0168",
+      "file": "files/GEO-0168__30_2Oct26NOV.JDS.Coring.pdf",
+      "title": "30_2Oct26NOV.JDS.Coring",
+      "discipline": "other",
+      "document_type": "other",
+      "revision": "unknown",
+      "status": "ACTIVE",
+      "size_bytes": 11477200,
+      "sha256": "b0382a59c07ddfab41c6cb75c81b446fa2b6a18f771325eecb7ec1a5e75fc77b",
+      "added_at": "2026-10-16T05:51:40+00:00",
+      "source_channel": "github-inbox"
+    },
+    {
+      "id": "GEO-0169",
+      "file": "files/GEO-0169__Geothermal.Wireline.Logging.Services.Kadek._.JDS.pdf",
+      "title": "Geothermal.Wireline.Logging.Services.Kadek._.JDS",
+      "discipline": "other",
+      "document_type": "other",
+      "revision": "unknown",
+      "status": "ACTIVE",
+      "size_bytes": 11339575,
+      "sha256": "be5f559dd2892bf925c80c4ec18d0fce1c7ff87a73283960e7305a99c6bf375d",
+      "added_at": "2026-10-16T05:51:40+00:00",
+      "source_channel": "github-inbox"
+    },
+    {
+      "id": "GEO-0170",
+      "file": "files/GEO-0170__NESR.JDS.Geothermal.Well.Testing.3Oct26.pdf",
+      "title": "NESR.JDS.Geothermal.Well.Testing.3Oct26",
+      "discipline": "other",
+      "document_type": "other",
+      "revision": "unknown",
+      "status": "ACTIVE",
+      "size_bytes": 2659047,
+      "sha256": "e34db76564f52efe9b48ff50f91bb98d6c4bdef7c5edb012f1d9ac992c977e37",
+      "added_at": "2026-10-16T05:51:40+00:00",
+      "source_channel": "github-inbox"
     }
   ],
-  "updated_at": "2026-10-01T15:55:47+00:00"
+  "updated_at": "2026-10-16T05:51:40+00:00"
 }
