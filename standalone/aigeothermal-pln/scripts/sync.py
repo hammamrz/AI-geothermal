@@ -11,8 +11,10 @@ Subcommand:
   kb-search KATA..   cari metadata KB (delegasi ke kb_manager.py search)
   where              cetak lokasi folder kerja dan status sinkronisasi terakhir
 
-Bila GitHub tidak dapat dijangkau, skrip memakai salinan bawaan dan melaporkannya.
-Hanya pustaka standar Python.
+Jalur unduh: raw.githubusercontent.com, lalu cadangan lewat protokol git ke github.com
+(clone dangkal tanpa isi file + sparse checkout) bila domain raw diblokir oleh pengaturan
+jaringan sandbox. Bila keduanya gagal, skrip memakai salinan bawaan dan melaporkannya
+beserta saran perbaikan (`hint`). Hanya pustaka standar Python (+ git bila ada).
 """
 from __future__ import annotations
 
@@ -54,6 +56,10 @@ MODULES = WORK / "modules"
 STATE = WORK / "STATE.json"
 KB_REL = Path("geothermal-knowledge") / "references" / "KB"
 TIMEOUT = 30
+NETWORK_HINT = ("Sandbox Claude tidak bisa menjangkau GitHub. Buka Settings → Capabilities, pastikan "
+                "'Code execution and file creation' aktif dan akses jaringan (network egress) diizinkan. "
+                "Bila daftar domain dibatasi, tambahkan github.com dan raw.githubusercontent.com atau pilih "
+                "'All domains', lalu mulai percakapan baru.")
 
 
 def sha256_bytes(data: bytes) -> str:
@@ -91,6 +97,31 @@ def raw_url(ref: str, repo_path: str) -> str:
     return f"https://raw.githubusercontent.com/{REPO}/{ref}/{urllib.parse.quote(repo_path)}"
 
 
+def git_snapshot(patterns: list[str]) -> tuple[Path, str]:
+    """Cadangan bila raw.githubusercontent.com diblokir: clone dangkal tanpa blob dari github.com,
+    lalu sparse checkout hanya pola yang diminta. Mengembalikan (folder repo, SHA commit)."""
+    git = shutil.which("git")
+    if not git:
+        raise OSError("git tidak tersedia untuk jalur cadangan github.com")
+    root = WORK / "git-snapshot"
+    shutil.rmtree(root, ignore_errors=True)
+    root.parent.mkdir(parents=True, exist_ok=True)
+    url = f"https://x-access-token:{TOKEN}@github.com/{REPO}.git" if TOKEN else f"https://github.com/{REPO}.git"
+    env = {**os.environ, "GIT_TERMINAL_PROMPT": "0"}
+
+    def run(*cmd: str, cwd: Path) -> str:
+        r = subprocess.run([git, *cmd], cwd=cwd, env=env, capture_output=True, text=True, timeout=600)
+        if r.returncode:
+            raise OSError(f"git {cmd[0]} gagal: {(r.stderr or r.stdout).strip()[-300:]}")
+        return r.stdout.strip()
+
+    run("clone", "--quiet", "--depth", "1", "--filter=blob:none", "--no-checkout", "--branch", BRANCH, url, str(root),
+        cwd=root.parent)
+    run("sparse-checkout", "set", "--no-cone", *patterns, cwd=root)
+    run("checkout", "--quiet", BRANCH, cwd=root)
+    return root, run("rev-parse", "HEAD", cwd=root)
+
+
 def load_state() -> dict:
     try:
         return json.loads(STATE.read_text(encoding="utf-8"))
@@ -110,6 +141,8 @@ def kb_manifest() -> dict:
 
 def explain(exc: Exception) -> str:
     code = getattr(exc, "code", None)
+    if code in (403, 407) and not TOKEN:
+        return f"akses ke GitHub diblokir oleh pengaturan jaringan sandbox (HTTP {code})"
     if code in (401, 403) and TOKEN:
         return f"token GitHub di config.json ditolak (HTTP {code}); kemungkinan kedaluwarsa/dicabut, minta ZIP terbaru ke admin"
     if code == 404 and not TOKEN:
@@ -119,7 +152,7 @@ def explain(exc: Exception) -> str:
     return str(exc)
 
 
-def use_bundled(reason: str) -> dict:
+def use_bundled(reason: str, hint: str = "") -> dict:
     MODULES.mkdir(parents=True, exist_ok=True)
     for f in BUNDLED.rglob("*"):
         if f.is_file():
@@ -129,6 +162,8 @@ def use_bundled(reason: str) -> dict:
                 shutil.copy2(f, dest)
     state = {"source": "bundled", "reason": reason, "synced_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
              "repo": REPO, "ref": None, "kb_revision": kb_manifest().get("kb_revision", 0)}
+    if hint:
+        state["hint"] = hint
     save_state(state)
     return state
 
@@ -138,8 +173,18 @@ def cmd_update(args: argparse.Namespace) -> int:
         state = use_bundled("mode --offline")
     else:
         try:
-            ref = resolve_ref()
-            manifest = json.loads(http_get(raw_url(ref, "sync-manifest.json")))
+            ref, via = resolve_ref(), "raw.githubusercontent.com"
+            try:
+                manifest = json.loads(http_get(raw_url(ref, "sync-manifest.json")))
+                get = lambda path: http_get(raw_url(ref, path))  # noqa: E731
+            except (urllib.error.URLError, OSError, ValueError) as raw_exc:
+                try:
+                    root, ref = git_snapshot(["/sync-manifest.json", "/plugins/"])
+                except (OSError, subprocess.SubprocessError) as git_exc:
+                    raise OSError(f"raw.githubusercontent.com: {explain(raw_exc)}; github.com (git): {git_exc}") from git_exc
+                via = "github.com (git)"
+                manifest = json.loads((root / "sync-manifest.json").read_text(encoding="utf-8"))
+                get = lambda path: (root / path).read_bytes()  # noqa: E731
             base = manifest["base_path"]
             wanted, warnings, downloaded = set(), [], 0
             for item in manifest["files"]:
@@ -153,7 +198,7 @@ def cmd_update(args: argparse.Namespace) -> int:
                     dest.parent.mkdir(parents=True, exist_ok=True)
                     shutil.copy2(bundled, dest)
                     continue
-                data = http_get(raw_url(ref, f"{base}/{rel.as_posix()}"))
+                data = get(f"{base}/{rel.as_posix()}")
                 if sha256_bytes(data) != item["sha256"]:
                     warnings.append(f"{rel}: hash tidak cocok (cache GitHub?), memakai salinan lama bila ada")
                     if not dest.exists() and bundled.exists():
@@ -167,12 +212,13 @@ def cmd_update(args: argparse.Namespace) -> int:
             for f in list(MODULES.rglob("*")):
                 if f.is_file() and f.relative_to(MODULES).as_posix() not in wanted:
                     f.unlink()
-            state = {"source": "github", "repo": REPO, "ref": ref, "files_downloaded": downloaded, "warnings": warnings,
+            state = {"source": "github", "via": via, "repo": REPO, "ref": ref, "files_downloaded": downloaded,
+                     "warnings": warnings,
                      "synced_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
                      "kb_revision": manifest.get("kb_revision", 0)}
             save_state(state)
         except (urllib.error.URLError, OSError, ValueError, KeyError) as exc:
-            state = use_bundled(f"Gagal mengambil versi terbaru dari GitHub: {explain(exc)}")
+            state = use_bundled(f"Gagal mengambil versi terbaru dari GitHub: {explain(exc)}", NETWORK_HINT)
     kb = kb_manifest()
     active = [e for e in kb.get("entries", []) if e.get("status") == "ACTIVE"]
     print(json.dumps({

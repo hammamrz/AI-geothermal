@@ -10,7 +10,10 @@ Pemakaian:
 
 Env opsional: AIGEO_REPO (default hammamrz/AI-geothermal), AIGEO_BRANCH (default main),
 AIGEO_TOKEN (hanya untuk repo privat), AIGEO_KB_CACHE (folder cache).
-Hanya pustaka standar Python.
+
+Jalur unduh: raw.githubusercontent.com, lalu cadangan lewat protokol git ke github.com (clone
+dangkal tanpa isi file; hanya blob yang diminta yang diunduh) bila domain raw diblokir oleh
+pengaturan jaringan sandbox. Hanya pustaka standar Python (+ git bila ada).
 """
 from __future__ import annotations
 
@@ -18,6 +21,9 @@ import argparse
 import hashlib
 import json
 import os
+import re
+import shutil
+import subprocess
 import sys
 import tempfile
 import urllib.error
@@ -32,6 +38,10 @@ BRANCH = os.environ.get("AIGEO_BRANCH", "main")
 TOKEN = os.environ.get("AIGEO_TOKEN") or None
 KB_REPO_DIR = "kb"
 TIMEOUT = 60
+NETWORK_HINT = ("Sandbox Claude tidak bisa menjangkau GitHub. Buka Settings → Capabilities, pastikan "
+                "'Code execution and file creation' aktif dan akses jaringan (network egress) diizinkan. "
+                "Bila daftar domain dibatasi, tambahkan github.com dan raw.githubusercontent.com atau pilih "
+                "'All domains', lalu mulai percakapan baru.")
 
 
 def http_get(url: str, accept: str | None = None) -> bytes:
@@ -55,8 +65,41 @@ def resolve_ref() -> str:
     return BRANCH
 
 
+class GitBlobs:
+    """Cadangan bila raw.githubusercontent.com diblokir: clone dangkal tanpa blob dari github.com
+    sekali per pemanggilan, lalu ambil isi file satu per satu (git mengunduh blob sesuai permintaan)."""
+
+    def __init__(self, cache: Path):
+        self.git = shutil.which("git")
+        self.root = cache / ".git-snapshot"
+        self.ready = False
+
+    def _run(self, *cmd: str, cwd: Path, binary: bool = False):
+        r = subprocess.run([self.git, *cmd], cwd=cwd, env={**os.environ, "GIT_TERMINAL_PROMPT": "0"},
+                           capture_output=True, timeout=900)
+        if r.returncode:
+            raise OSError(f"git {cmd[0]} gagal: {r.stderr.decode(errors='replace').strip()[-300:]}")
+        return r.stdout if binary else r.stdout.decode().strip()
+
+    def read(self, repo_path: str) -> bytes:
+        if not self.git:
+            raise OSError("git tidak tersedia untuk jalur cadangan github.com")
+        if not self.ready:
+            shutil.rmtree(self.root, ignore_errors=True)
+            self.root.parent.mkdir(parents=True, exist_ok=True)
+            url = f"https://x-access-token:{TOKEN}@github.com/{REPO}.git" if TOKEN else f"https://github.com/{REPO}.git"
+            # BRANCH bisa berupa SHA commit (dari sync.py); clone branch default, integritas dijaga SHA-256 manifest.
+            branch = [] if re.fullmatch(r"[0-9a-f]{40}", BRANCH) else ["--branch", BRANCH]
+            self._run("clone", "--quiet", "--depth", "1", "--filter=blob:none", "--no-checkout", *branch, url,
+                      str(self.root), cwd=self.root.parent)
+            self.ready = True
+        return self._run("cat-file", "blob", f"HEAD:{repo_path}", cwd=self.root, binary=True)
+
+
 def explain(exc: Exception) -> str:
     code = getattr(exc, "code", None)
+    if code in (403, 407) and not TOKEN:
+        return f"akses ke GitHub diblokir oleh pengaturan jaringan sandbox (HTTP {code})"
     if code == 404:
         return "file tidak ditemukan di GitHub (HTTP 404); KB lokal mungkin lebih baru/lama dari repo, atau repo privat"
     if code in (401, 403):
@@ -77,6 +120,8 @@ def fetch(ids: list[str], out: Path, manifest: Path = MANIFEST) -> list[dict]:
     entries = load_entries(manifest)
     ref = None
     results = []
+    git = GitBlobs(out)
+    raw_blocked = False
     for kb_id in ids:
         e = entries.get(kb_id.strip().upper())
         if not e:
@@ -84,12 +129,22 @@ def fetch(ids: list[str], out: Path, manifest: Path = MANIFEST) -> list[dict]:
             continue
         dest = out / Path(e["file"]).name
         if not (dest.exists() and hashlib.sha256(dest.read_bytes()).hexdigest() == e["sha256"]):
-            ref = ref or resolve_ref()
-            url = f"https://raw.githubusercontent.com/{REPO}/{ref}/{urllib.parse.quote(KB_REPO_DIR + '/' + e['file'])}"
-            try:
-                data = http_get(url)
-            except (urllib.error.URLError, OSError) as exc:
-                results.append({"id": e["id"], "error": f"gagal mengunduh: {explain(exc)}"})
+            repo_path = f"{KB_REPO_DIR}/{e['file']}"
+            data, errors = None, []
+            if not raw_blocked:
+                ref = ref or resolve_ref()
+                try:
+                    data = http_get(f"https://raw.githubusercontent.com/{REPO}/{ref}/{urllib.parse.quote(repo_path)}")
+                except (urllib.error.URLError, OSError) as exc:
+                    errors.append(f"raw.githubusercontent.com: {explain(exc)}")
+                    raw_blocked = getattr(exc, "code", None) != 404
+            if data is None:
+                try:
+                    data = git.read(repo_path)
+                except (OSError, subprocess.SubprocessError) as exc:
+                    errors.append(f"github.com (git): {exc}")
+            if data is None:
+                results.append({"id": e["id"], "error": "gagal mengunduh: " + "; ".join(errors), "hint": NETWORK_HINT})
                 continue
             if hashlib.sha256(data).hexdigest() != e["sha256"]:
                 results.append({"id": e["id"], "error": "SHA-256 file unduhan tidak cocok dengan KB_MANIFEST"})
