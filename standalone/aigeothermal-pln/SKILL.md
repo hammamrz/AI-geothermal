@@ -17,7 +17,7 @@ python scripts/sync.py update
 
 Output JSON memberi:
 - `workdir`: folder modul terbaru. **Semua path modul di bawah ini relatif terhadap `workdir`**, bukan terhadap folder skill ini.
-- `source`: `github` (terbaru) atau `bundled` (GitHub tidak terjangkau, memakai salinan bawaan skill). Bila `bundled`, sebutkan sekali kepada pengguna bahwa KB mungkin bukan versi terbaru, beserta alasannya.
+- `source`: `github` (terbaru) atau `bundled` (GitHub tidak terjangkau, memakai salinan bawaan skill). Skrip sudah mencoba dua jalur (raw.githubusercontent.com, lalu protokol git ke github.com). Bila hasilnya `bundled`, sampaikan sekali kepada pengguna di awal jawaban bahwa sandbox tidak bisa menjangkau GitHub sehingga KB bukan versi terbaru dan file sumber KB tidak bisa dibuka, lalu salin isi `hint` (cara memperbaiki pengaturan jaringan) apa adanya.
 - `kb_revision` dan jumlah entri KB aktif. Sebutkan `KB revision` sebagai batas cakupan saat memberi jawaban berbasis KB.
 
 Jangan menjalankan ulang `update` di percakapan yang sama kecuali pengguna meminta atau admin baru saja menambah KB.
@@ -45,6 +45,8 @@ python scripts/sync.py kb-get GEO-0003 GEO-0007        # unduh file, verifikasi 
 ```
 
 Baca file dari `path` yang dicetak. Jangan mengunduh seluruh KB.
+
+Bila `kb-get` mengembalikan `error`, jangan diam-diam menjawab dari pengetahuan umum. Nyatakan dengan jelas bahwa file KB tidak bisa dibuka, sebutkan ID-nya, sampaikan `hint` kepada pengguna, dan tandai bagian jawaban yang tidak berbasis KB sebagai pengetahuan umum.
 
 ## Aturan KB
 

@@ -26,8 +26,8 @@
     },
     {
       "path": "geothermal-knowledge/SKILL.md",
-      "sha256": "25a4f343c5aa2e00930b3b04907477e3b97a6e1af208933c6c26d05791246cfe",
-      "size": 8725
+      "sha256": "79a723dba15beb5a90bfbe58d9531b57f7be728047b0a732debadc0b7b61a8f0",
+      "size": 8978
     },
     {
       "path": "geothermal-knowledge/references/GAYA_BAHASA.md",
@@ -51,8 +51,8 @@
     },
     {
       "path": "geothermal-knowledge/scripts/kb_fetch.py",
-      "sha256": "4514c0c639a2de2adb90e86224c6e1355a3335ba6e85980d37aeed5f11af6a73",
-      "size": 4618
+      "sha256": "675b0f32cf8aa8c829007efab18238d4f9d8b968b3e123769c7726887dbab254",
+      "size": 7695
     },
     {
       "path": "geothermal-knowledge/scripts/kb_manager.py",

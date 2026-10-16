@@ -22,7 +22,9 @@ File KB mentah disimpan di folder `kb/` repo dan **tidak** ikut di dalam plugin 
 
 ## 1. Untuk anggota tim: memasang AIGeothermal-PLN (sekali saja)
 
-Syarat untuk semua akun: di claude.ai, buka **Settings → Capabilities**, lalu aktifkan **Code execution and file creation**. Akses jaringan cukup yang default, karena sudah mencakup GitHub.
+Syarat untuk semua akun: di claude.ai, buka **Settings → Capabilities**, lalu aktifkan **Code execution and file creation** beserta akses jaringannya (*network egress*). Skill mengambil data dari GitHub lewat `raw.githubusercontent.com`, atau lewat `github.com` bila domain pertama diblokir, sehingga cukup salah satu yang diizinkan.
+
+> **Bila Claude menyebut "salinan bawaan" atau "file KB tidak dapat diunduh karena akses jaringan tidak tersedia"**, sandbox di akun itu tidak bisa menjangkau GitHub. Buka **Settings → Capabilities**, pastikan akses jaringan aktif. Bila daftar domain dibatasi, tambahkan `github.com` dan `raw.githubusercontent.com` atau pilih **All domains**, lalu mulai percakapan baru.
 
 ### 1A. Akun Pro / Max: pasang sebagai plugin (upload ZIP)
 

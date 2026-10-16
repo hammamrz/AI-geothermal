@@ -24,7 +24,7 @@ Sebelum menulis jawaban, tabel, laporan, atau slide, baca `references/GAYA_BAHAS
   ```bash
   python scripts/kb_fetch.py GEO-0003 GEO-0007
   ```
-  Skrip mengunduh dari GitHub, memverifikasi SHA-256, dan mencetak `path` lokal tiap file (JSON). Baca file dari path itu. Bila unduhan gagal, sebutkan ID dan alasannya sebagai keterbatasan cakupan.
+  Skrip mengunduh dari GitHub, memverifikasi SHA-256, dan mencetak `path` lokal tiap file (JSON). Baca file dari path itu. Skrip mencoba raw.githubusercontent.com, lalu protokol git ke github.com bila domain raw diblokir. Bila unduhan tetap gagal, sebutkan ID dan alasannya sebagai keterbatasan cakupan, sampaikan `hint` (cara memperbaiki pengaturan jaringan) kepada pengguna, dan tandai bagian jawaban yang tidak berbasis KB sebagai pengetahuan umum.
 - File mentah adalah source of truth. Jangan membuat salinan Markdown penuh dari setiap dokumen.
 - Jangan membaca seluruh KB saat skill aktif.
 

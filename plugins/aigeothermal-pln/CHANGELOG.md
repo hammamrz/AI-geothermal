@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.6.1 — 2026-10-16
+
+- Sinkronisasi modul dan unduhan file KB kini punya jalur cadangan lewat protokol git ke `github.com` (clone dangkal tanpa isi file, lalu hanya file yang diminta yang diunduh) bila `raw.githubusercontent.com` diblokir oleh pengaturan jaringan sandbox.
+- Bila GitHub sama sekali tidak terjangkau, `sync.py` dan `kb_fetch.py` mengembalikan `hint` berisi cara memperbaiki pengaturan jaringan, dan Claude diminta menyampaikannya kepada pengguna alih-alih diam-diam menjawab dari pengetahuan umum.
+
 ## KB rev 7 — 2026-10-16
 
 - Tambah GEO-0168 — 30_2Oct26NOV.JDS.Coring (`files/GEO-0168__30_2Oct26NOV.JDS.Coring.pdf`, 11477200 bytes, SHA-256 `b0382a59c07d…`).
