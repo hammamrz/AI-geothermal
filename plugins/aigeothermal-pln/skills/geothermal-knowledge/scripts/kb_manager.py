@@ -6,6 +6,7 @@ Subcommand:
   update   simpan revisi baru; entri lama menjadi SUPERSEDED (tidak ditimpa)
   ingest   proses folder inbox (default: <repo>/kb-inbox): file lepas, ZIP batch,
            metadata.csv, dan sidecar .meta.json
+  remove   hapus entri dari KB (file + manifest); SHA-256-nya dicatat agar tidak ter-ingest ulang
   search   cari entri berdasarkan kata kunci pada metadata (routing ringan)
   list     tampilkan katalog + validasi
   check    validasi file, ukuran, hash, dan duplikasi
@@ -136,8 +137,9 @@ def changelog(lines: list[str], kb_revision: int) -> None:
     CHANGELOG.write_text(new.rstrip() + "\n", encoding="utf-8")
 
 
-def next_id(entries: list[dict]) -> str:
-    nums = [int(m.group(1)) for e in entries if (m := re.fullmatch(r"GEO-(\d+)", e.get("id", "")))]
+def next_id(entries: list[dict], removed: list[dict] | None = None) -> str:
+    # ID entri yang sudah dihapus tidak dipakai ulang agar rujukan lama tidak tertukar.
+    nums = [int(m.group(1)) for e in entries + (removed or []) if (m := re.fullmatch(r"GEO-(\d+)", e.get("id", "")))]
     return f"GEO-{(max(nums, default=0) + 1):04d}"
 
 
@@ -176,6 +178,9 @@ def add_source(src: Path, data: dict, meta: dict, supersedes: str | None = None)
     for e in data["entries"]:
         if e["sha256"] == digest:
             return e, "duplicate"
+    for r in data.get("removed", []):
+        if r.get("sha256") == digest:
+            return r, "removed"
     meta = clean_meta(meta)
     if supersedes:
         previous = next((e for e in data["entries"] if e["id"] == supersedes), None)
@@ -188,7 +193,7 @@ def add_source(src: Path, data: dict, meta: dict, supersedes: str | None = None)
             if k not in meta and previous.get(k) not in (None, "", [], "other"):
                 meta[k] = previous[k]
     FILES_DIR.mkdir(parents=True, exist_ok=True)
-    new_id = next_id(data["entries"])
+    new_id = next_id(data["entries"], data.get("removed"))
     # Prefix ID mencegah tabrakan nama sambil mempertahankan basename asli.
     relative = Path("files") / f"{new_id}__{safe_name(src.name)}"
     dest = KB_STORE / relative
@@ -287,6 +292,8 @@ def ingest_dir(root: Path, data: dict, dry_run: bool, label: str, consume: bool)
             continue
         if status == "duplicate":
             result["duplicates"].append({"file": shown, "existing_id": entry["id"]})
+        elif status == "removed":
+            result["warnings"].append({"file": shown, "warning": f"file ini pernah dihapus dari KB ({entry['id']}); tidak ditambahkan ulang"})
         else:
             result["added"].append({"file": shown, "id": entry["id"], "title": entry["title"],
                                     "supersedes": entry.get("supersedes")})
@@ -382,6 +389,35 @@ def validate(data: dict) -> list[str]:
     return errs
 
 
+def remove(data: dict, ids: list[str], reason: str) -> list[str]:
+    """Hapus entri dan filenya dari KB. Hanya ID, SHA-256, tanggal, dan alasan yang dicatat (tanpa judul/nama
+    file) agar informasi sensitif tidak tertinggal; baris CHANGELOG lama untuk ID itu ikut disamarkan."""
+    wanted = {i.strip().upper() for i in ids}
+    found = {e["id"]: e for e in data["entries"] if e["id"] in wanted}
+    missing = sorted(wanted - set(found))
+    if missing:
+        raise ValueError(f"ID tidak ada di manifest: {', '.join(missing)}")
+    for kb_id, e in found.items():
+        path = KB_STORE / e["file"]
+        if path.is_file():
+            path.unlink()
+        for other in data["entries"]:  # putuskan rujukan revisi ke entri yang dihapus
+            if other.get("supersedes") == kb_id:
+                other.pop("supersedes")
+            if other.get("superseded_by") == kb_id:
+                other.pop("superseded_by")
+                other["status"] = "ACTIVE"
+        data.setdefault("removed", []).append({"id": kb_id, "sha256": e["sha256"], "removed_at": now_iso(),
+                                               "reason": reason})
+    data["entries"] = [e for e in data["entries"] if e["id"] not in found]
+    if CHANGELOG.exists():
+        text = CHANGELOG.read_text(encoding="utf-8")
+        for kb_id in found:
+            text = re.sub(rf"^(- (?:Tambah|Revisi \S+ →) {re.escape(kb_id)}) — .*$", rf"\1 — [dihapus dari KB]", text, flags=re.M)
+        CHANGELOG.write_text(text, encoding="utf-8")
+    return [f"- Hapus {kb_id} dari KB ({reason})." for kb_id in sorted(found)]
+
+
 def search(data: dict, terms: list[str], include_superseded: bool) -> list[tuple[int, dict]]:
     terms = [t.lower() for t in terms if t.strip()]
     hits = []
@@ -429,6 +465,9 @@ def main() -> int:
     p.add_argument("--summary", type=Path, help="tulis ringkasan Markdown (mis. untuk body PR)")
     p.add_argument("--json", action="store_true", help="cetak hasil sebagai JSON")
     p.add_argument("--dry-run", action="store_true")
+    p = sub.add_parser("remove")
+    p.add_argument("ids", nargs="+", help="ID entri, mis. GEO-0071")
+    p.add_argument("--reason", required=True, help="alasan singkat (tercatat di CHANGELOG), tanpa data sensitif")
     p = sub.add_parser("search")
     p.add_argument("terms", nargs="+")
     p.add_argument("--all", action="store_true", help="sertakan entri SUPERSEDED")
@@ -444,6 +483,8 @@ def main() -> int:
             e, status = add_source(args.source, data, meta, args.id if args.command == "update" else None)
             if status == "duplicate":
                 print(f"Duplikat identik; tidak ditambahkan: {e['id']} {e['file']}")
+            elif status == "removed":
+                print(f"File ini pernah dihapus dari KB ({e['id']}); tidak ditambahkan ulang.")
             else:
                 commit_changes(data, [log_line(e)])
                 print(f"Tersimpan: {e['id']} {e['file']} ({e['size_bytes']} bytes, SHA-256 {e['sha256']})")
@@ -470,6 +511,10 @@ def main() -> int:
             if res["errors"]:
                 show_report(data)
                 return 1
+        elif args.command == "remove":
+            lines = remove(data, args.ids, args.reason)
+            commit_changes(data, lines)
+            print("\n".join(lines))
         elif args.command == "search":
             hits = search(data, args.terms, args.all)[: args.limit]
             if not hits:

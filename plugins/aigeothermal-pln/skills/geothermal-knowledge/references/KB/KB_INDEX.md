@@ -3,14 +3,14 @@
 Status: ACTIVE
 Index mode: LIGHT / ROUTING ONLY
 Knowledge base root: `kb/files/` di repo GitHub (diunduh per ID dengan `scripts/kb_fetch.py`)
-KB revision: 7 (updated 2026-10-16T05:51:40+00:00)
+KB revision: 8 (updated 2026-10-17T01:43:13+00:00)
 
 Metadata router only; original source files are the source of truth. Files are added and indexed without deep-reading their contents.
 Index ini dibangun ulang otomatis oleh `scripts/kb_manager.py`; jangan edit manual.
 
 ## Source register
 
-Aktif: 170 · Superseded: 0
+Aktif: 168 · Superseded: 0
 
 | ID | Status | Judul | File | Disiplin | Tipe | Revisi | Topik / keyword | Locator | SHA-256 (prefix) |
 |---|---|---|---|---|---|---|---|---|---|
@@ -60,7 +60,6 @@ Aktif: 170 · Superseded: 0
 | GEO-0044 | ACTIVE | Introduction to Geothermal Project Feasibility for Indonesia Power | files/GEO-0044__Introduction to Geothermal Project Feasibility for Indonesia Power.pdf | other | other | unknown |  |  | f9b23734669a |
 | GEO-0045 | ACTIVE | Level 1 - Geothermal - Introduction to Reservoir and Drilling_9226_20250228_114359_38582 | files/GEO-0045__Level 1 - Geothermal - Introduction to Reservoir and Drilling_9226_20250228_114359_38582.pdf | other | other | unknown |  |  | 84693a968139 |
 | GEO-0046 | ACTIVE | PLTP | files/GEO-0046__PLTP.docx | other | other | unknown |  |  | 26bb1647cfeb |
-| GEO-0047 | ACTIVE | Proposal RKAB MCG - Blawan Ijen Tahun 2023 rev 3_1 (1) | files/GEO-0047__Proposal RKAB MCG - Blawan Ijen Tahun 2023 rev 3_1 (1).pdf | other | other | unknown |  |  | 393d70438f05 |
 | GEO-0048 | ACTIVE | Site Visit PLTP Ijen - Combined Cycle Power Plant Study | files/GEO-0048__Site Visit PLTP Ijen - Combined Cycle Power Plant Study.pdf | other | other | unknown |  |  | 728b9a0844dd |
 | GEO-0049 | ACTIVE | ucp5-grem-progress-factsheet | files/GEO-0049__ucp5-grem-progress-factsheet.pdf | other | other | unknown |  |  | de9b8e376bb0 |
 | GEO-0050 | ACTIVE | MP 07-Pengoperasian PLTP IP'16 | files/GEO-0050__MP 07-Pengoperasian PLTP IP_16.doc | other | other | unknown |  |  | ac728104531c |
@@ -84,7 +83,6 @@ Aktif: 170 · Superseded: 0
 | GEO-0068 | ACTIVE | 1_W1_1Mei_Well Construction Principle_JDS Batch 7 | files/GEO-0068__1_W1_1Mei_Well Construction Principle_JDS Batch 7.pdf | other | other | unknown |  |  | efc4962ada72 |
 | GEO-0069 | ACTIVE | 20_25Jul_Drilling Fluid_25Jul26 | files/GEO-0069__20_25Jul_Drilling Fluid_25Jul26.pdf | other | other | unknown |  |  | c47e929c8ecd |
 | GEO-0070 | ACTIVE | 21_8Aug26_JDS Level 1 UBD & MPD Introduction | files/GEO-0070__21_8Aug26_JDS Level 1 UBD _ MPD Introduction.pdf | other | other | unknown |  |  | ded30458b2ec |
-| GEO-0071 | ACTIVE | 2260743_Hammam-UTS Essay | files/GEO-0071__2260743_Hammam-UTS Essay.pdf | other | other | unknown |  |  | 7c9e657accbf |
 | GEO-0072 | ACTIVE | 22_15Aug26_Aerated_Drilling_Fundamentals_FInal | files/GEO-0072__22_15Aug26_Aerated_Drilling_Fundamentals_FInal.pdf | other | other | unknown |  |  | ecce602335fd |
 | GEO-0073 | ACTIVE | 23_15Aug26_Fishing Tool and Services Training_JDS 2026 | files/GEO-0073__23_15Aug26_Fishing Tool and Services Training_JDS 2026.pdf | other | other | unknown |  |  | 31bf47df4461 |
 | GEO-0074 | ACTIVE | 24_21Aug26_Cutting sample & lithology | files/GEO-0074__24_21Aug26_Cutting sample _ lithology.pdf | other | other | unknown |  |  | 5774b1b084bf |

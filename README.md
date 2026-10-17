@@ -73,6 +73,14 @@ File satuan tetap bisa di-upload langsung ke `kb-inbox/`, beserta sidecar `<nama
 
 Workflow tersebut menghitung SHA-256 (duplikat identik ditolak), memberi ID `GEO-xxxx`, memindahkan file ke `kb/files/`, lalu membangun ulang `KB_MANIFEST.json`, `KB_INDEX.md`, `CHANGELOG.md`, dan `sync-manifest.json`, serta menaikkan versi plugin. Entri lama yang direvisi tidak dihapus, hanya ditandai `SUPERSEDED`.
 
+**Menghapus entri KB** (mis. berisi data pribadi atau dokumen yang tidak boleh publik), jalankan di clone repo lalu commit dan push:
+
+```bash
+python plugins/aigeothermal-pln/skills/geothermal-knowledge/scripts/kb_manager.py remove GEO-0071 --reason "data pribadi"
+```
+
+File dan entrinya dihapus, judulnya disamarkan di CHANGELOG, dan SHA-256-nya dicatat agar file yang sama tidak masuk lagi bila ZIP lama ter-upload ulang. File tetap ada di riwayat git dan di aset Release lama sampai keduanya dibersihkan terpisah.
+
 Batas ukuran: 25 MB per upload web ke `kb-inbox/`, 2 GB per aset release, dan ±95 MB per file KB setelah diekstrak (batas GitHub). **Jangan pakai Git LFS.**
 
 ### Pengaturan repo (sekali saja)

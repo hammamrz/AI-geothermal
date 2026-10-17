@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "kb_revision": 7,
+  "kb_revision": 8,
   "entries": [
     {
       "id": "GEO-0001",
@@ -601,19 +601,6 @@
       "source_channel": "zip:Geothermal.zip"
     },
     {
-      "id": "GEO-0047",
-      "file": "files/GEO-0047__Proposal RKAB MCG - Blawan Ijen Tahun 2023 rev 3_1 (1).pdf",
-      "title": "Proposal RKAB MCG - Blawan Ijen Tahun 2023 rev 3_1 (1)",
-      "discipline": "other",
-      "document_type": "other",
-      "revision": "unknown",
-      "status": "ACTIVE",
-      "size_bytes": 5872283,
-      "sha256": "393d70438f05a755e30bc3ee9423a37fb2cbfcef88254aa11cbcee673783a492",
-      "added_at": "2026-09-30T23:42:09+00:00",
-      "source_channel": "zip:Geothermal.zip"
-    },
-    {
       "id": "GEO-0048",
       "file": "files/GEO-0048__Site Visit PLTP Ijen - Combined Cycle Power Plant Study.pdf",
       "title": "Site Visit PLTP Ijen - Combined Cycle Power Plant Study",
@@ -909,19 +896,6 @@
       "status": "ACTIVE",
       "size_bytes": 24606909,
       "sha256": "ded30458b2ec323238559345e882712ef1068a9ba133d1f4e771427e0965b929",
-      "added_at": "2026-10-01T15:36:07+00:00",
-      "source_channel": "zip:Jakarta.Drilling.Society.zip"
-    },
-    {
-      "id": "GEO-0071",
-      "file": "files/GEO-0071__2260743_Hammam-UTS Essay.pdf",
-      "title": "2260743_Hammam-UTS Essay",
-      "discipline": "other",
-      "document_type": "other",
-      "revision": "unknown",
-      "status": "ACTIVE",
-      "size_bytes": 4265712,
-      "sha256": "7c9e657accbfe2fdaaa17d22faceed0819c2b4e77da7a1dd8460ff95c3c542a6",
       "added_at": "2026-10-01T15:36:07+00:00",
       "source_channel": "zip:Jakarta.Drilling.Society.zip"
     },
@@ -2213,5 +2187,19 @@
       "source_channel": "github-inbox"
     }
   ],
-  "updated_at": "2026-10-16T05:51:40+00:00"
+  "updated_at": "2026-10-17T01:43:13+00:00",
+  "removed": [
+    {
+      "id": "GEO-0047",
+      "sha256": "393d70438f05a755e30bc3ee9423a37fb2cbfcef88254aa11cbcee673783a492",
+      "removed_at": "2026-10-17T01:43:13+00:00",
+      "reason": "berisi data pribadi atau dokumen internal pihak lain"
+    },
+    {
+      "id": "GEO-0071",
+      "sha256": "7c9e657accbfe2fdaaa17d22faceed0819c2b4e77da7a1dd8460ff95c3c542a6",
+      "removed_at": "2026-10-17T01:43:13+00:00",
+      "reason": "berisi data pribadi atau dokumen internal pihak lain"
+    }
+  ]
 }
