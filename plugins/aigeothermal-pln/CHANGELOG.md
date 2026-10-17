@@ -1,5 +1,10 @@
 # Changelog
 
+## KB rev 8 — 2026-10-17
+
+- Hapus GEO-0047 dari KB (berisi data pribadi atau dokumen internal pihak lain).
+- Hapus GEO-0071 dari KB (berisi data pribadi atau dokumen internal pihak lain).
+
 ## 1.6.1 — 2026-10-16
 
 - Sinkronisasi modul dan unduhan file KB kini punya jalur cadangan lewat protokol git ke `github.com` (clone dangkal tanpa isi file, lalu hanya file yang diminta yang diunduh) bila `raw.githubusercontent.com` diblokir oleh pengaturan jaringan sandbox.
@@ -49,7 +54,7 @@
 - Tambah GEO-0068 — 1_W1_1Mei_Well Construction Principle_JDS Batch 7 (`files/GEO-0068__1_W1_1Mei_Well Construction Principle_JDS Batch 7.pdf`, 6667403 bytes, SHA-256 `efc4962ada72…`).
 - Tambah GEO-0069 — 20_25Jul_Drilling Fluid_25Jul26 (`files/GEO-0069__20_25Jul_Drilling Fluid_25Jul26.pdf`, 7133712 bytes, SHA-256 `c47e929c8ecd…`).
 - Tambah GEO-0070 — 21_8Aug26_JDS Level 1 UBD & MPD Introduction (`files/GEO-0070__21_8Aug26_JDS Level 1 UBD _ MPD Introduction.pdf`, 24606909 bytes, SHA-256 `ded30458b2ec…`).
-- Tambah GEO-0071 — 2260743_Hammam-UTS Essay (`files/GEO-0071__2260743_Hammam-UTS Essay.pdf`, 4265712 bytes, SHA-256 `7c9e657accbf…`).
+- Tambah GEO-0071 — [dihapus dari KB]
 - Tambah GEO-0072 — 22_15Aug26_Aerated_Drilling_Fundamentals_FInal (`files/GEO-0072__22_15Aug26_Aerated_Drilling_Fundamentals_FInal.pdf`, 2096840 bytes, SHA-256 `ecce602335fd…`).
 - Tambah GEO-0073 — 23_15Aug26_Fishing Tool and Services Training_JDS 2026 (`files/GEO-0073__23_15Aug26_Fishing Tool and Services Training_JDS 2026.pdf`, 17523757 bytes, SHA-256 `31bf47df4461…`).
 - Tambah GEO-0074 — 24_21Aug26_Cutting sample & lithology (`files/GEO-0074__24_21Aug26_Cutting sample _ lithology.pdf`, 5066347 bytes, SHA-256 `5774b1b084bf…`).
@@ -187,7 +192,7 @@
 - Tambah GEO-0044 — Introduction to Geothermal Project Feasibility for Indonesia Power (`files/GEO-0044__Introduction to Geothermal Project Feasibility for Indonesia Power.pdf`, 2422514 bytes, SHA-256 `f9b23734669a…`).
 - Tambah GEO-0045 — Level 1 - Geothermal - Introduction to Reservoir and Drilling_9226_20250228_114359_38582 (`files/GEO-0045__Level 1 - Geothermal - Introduction to Reservoir and Drilling_9226_20250228_114359_38582.pdf`, 3730795 bytes, SHA-256 `84693a968139…`).
 - Tambah GEO-0046 — PLTP (`files/GEO-0046__PLTP.docx`, 10426580 bytes, SHA-256 `26bb1647cfeb…`).
-- Tambah GEO-0047 — Proposal RKAB MCG - Blawan Ijen Tahun 2023 rev 3_1 (1) (`files/GEO-0047__Proposal RKAB MCG - Blawan Ijen Tahun 2023 rev 3_1 (1).pdf`, 5872283 bytes, SHA-256 `393d70438f05…`).
+- Tambah GEO-0047 — [dihapus dari KB]
 - Tambah GEO-0048 — Site Visit PLTP Ijen - Combined Cycle Power Plant Study (`files/GEO-0048__Site Visit PLTP Ijen - Combined Cycle Power Plant Study.pdf`, 4074012 bytes, SHA-256 `728b9a0844dd…`).
 - Tambah GEO-0049 — ucp5-grem-progress-factsheet (`files/GEO-0049__ucp5-grem-progress-factsheet.pdf`, 321470 bytes, SHA-256 `de9b8e376bb0…`).
 
