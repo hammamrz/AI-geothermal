@@ -8,6 +8,7 @@ Subcommand:
            metadata.csv, dan sidecar .meta.json
   remove   hapus entri dari KB (file + manifest); SHA-256-nya dicatat agar tidak ter-ingest ulang
   search   cari entri berdasarkan kata kunci pada metadata (routing ringan)
+  tidy-titles  rapikan judul dari nama aset release (titik pengganti spasi, sisa ekstensi Office)
   list     tampilkan katalog + validasi
   check    validasi file, ukuran, hash, dan duplikasi
 
@@ -71,6 +72,21 @@ def safe_name(name: str) -> str:
     name = Path(name).name
     name = re.sub(r"[^A-Za-z0-9._()\- ]+", "_", name).strip(" .")
     return name or "source"
+
+
+def title_from_name(stem: str) -> str:
+    """Judul default dari nama file. GitHub mengganti spasi di nama aset release dengan titik
+    (mis. `Well.Intervention.JDS.pdf`); titik pemisah itu dikembalikan menjadi spasi, kecuali titik
+    desimal di antara angka (`3.1`). Sisa ekstensi Office pada file hasil konversi PDF ikut dibuang."""
+    title = re.sub(r"\.(pptx?|docx?|xlsx?)$", "", stem, flags=re.I)
+    if " " not in title and "." in title:
+        title = re.sub(r"(?<!\d)\.|\.(?!\d)", " ", title)
+    return re.sub(r"\s+", " ", title).strip() or stem
+
+
+def norm_text(text: str) -> str:
+    """Samakan pemisah kata (`.`, `_`, `-`, `/`) dengan spasi agar pencarian frasa tidak bergantung pada nama file."""
+    return re.sub(r"\s+", " ", re.sub(r"[._\-/]+", " ", text.lower())).strip()
 
 
 def load_manifest() -> dict:
@@ -199,7 +215,7 @@ def add_source(src: Path, data: dict, meta: dict, supersedes: str | None = None)
     dest = KB_STORE / relative
     shutil.copy2(src, dest)
     entry = {
-        "id": new_id, "file": relative.as_posix(), "title": meta.pop("title", None) or src.stem,
+        "id": new_id, "file": relative.as_posix(), "title": meta.pop("title", None) or title_from_name(src.stem),
         "discipline": meta.pop("discipline", None) or "other",
         "document_type": meta.pop("document_type", None) or "other",
         "revision": meta.pop("revision", None) or "unknown", "status": "ACTIVE",
@@ -419,17 +435,32 @@ def remove(data: dict, ids: list[str], reason: str) -> list[str]:
 
 
 def search(data: dict, terms: list[str], include_superseded: bool) -> list[tuple[int, dict]]:
-    terms = [t.lower() for t in terms if t.strip()]
+    terms = [norm_text(t) for t in terms if norm_text(t)]
     hits = []
     for e in data.get("entries", []):
         if e.get("status") != "ACTIVE" and not include_superseded:
             continue
         hay = " ".join(cell(e.get(k)) for k in ("id", "title", "file", "discipline", "document_type", "revision",
-                                                  "topics", "keywords", "useful_locators", "visual_content", "notes")).lower()
-        score = sum(hay.count(t) for t in terms)
+                                                  "topics", "keywords", "useful_locators", "visual_content", "notes"))
+        hay = norm_text(hay)
+        # Frasa utuh diberi bobot lebih; kata-kata penyusunnya tetap dihitung bila frasa tidak berurutan.
+        score = sum(2 * hay.count(t) + (sum(hay.count(w) for w in t.split()) if " " in t else 0) for t in terms)
         if score:
             hits.append((score, e))
     return sorted(hits, key=lambda x: -x[0])
+
+
+def tidy_titles(data: dict) -> list[str]:
+    """Perbaiki judul default yang masih berupa nama aset release (judul dari metadata tidak disentuh)."""
+    lines = []
+    for e in data["entries"]:
+        stem = Path(e["file"]).stem.split("__", 1)[-1]
+        title = e.get("title", "")
+        new = title_from_name(title)
+        if title in (stem, Path(stem).stem) and new != title:
+            e["title"] = new
+            lines.append(f"- Rapikan judul {e['id']}: {title} → {new}.")
+    return lines
 
 
 def show_report(data: dict) -> None:
@@ -472,6 +503,7 @@ def main() -> int:
     p.add_argument("terms", nargs="+")
     p.add_argument("--all", action="store_true", help="sertakan entri SUPERSEDED")
     p.add_argument("--limit", type=int, default=10)
+    sub.add_parser("tidy-titles")
     sub.add_parser("list")
     sub.add_parser("check")
     args = ap.parse_args()
@@ -515,6 +547,11 @@ def main() -> int:
             lines = remove(data, args.ids, args.reason)
             commit_changes(data, lines)
             print("\n".join(lines))
+        elif args.command == "tidy-titles":
+            lines = tidy_titles(data)
+            if lines:
+                commit_changes(data, lines)
+            print("\n".join(lines) or "Semua judul sudah rapi.")
         elif args.command == "search":
             hits = search(data, args.terms, args.all)[: args.limit]
             if not hits:

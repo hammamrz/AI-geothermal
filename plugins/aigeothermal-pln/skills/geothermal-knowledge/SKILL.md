@@ -86,6 +86,7 @@ python scripts/kb_manager.py ingest            # proses kb-inbox/ (dipakai workf
 python scripts/kb_manager.py add /path/source.pdf --title "..." --discipline subsurface --document-type training
 python scripts/kb_manager.py update /path/revisi.pdf --id GEO-0001 --revision "Rev 2"
 python scripts/kb_manager.py search casing cement   # juga berguna saat retrieval
+python scripts/kb_manager.py tidy-titles        # rapikan judul dari nama aset release
 python scripts/kb_manager.py list
 python scripts/kb_manager.py check
 ```

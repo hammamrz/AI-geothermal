@@ -104,7 +104,7 @@ standalone/aigeothermal-pln/        skill ZIP untuk akun Free
 plugins/aigeothermal-pln/           plugin (Pro/Max, Claude Code) + sumber 4 modul
   skills/geothermal-knowledge/
     references/KB/                  KB_INDEX.md, KB_MANIFEST.json (router KB)
-    scripts/kb_manager.py           ingest/add/update/search/check (admin & CI)
+    scripts/kb_manager.py           ingest/add/update/remove/tidy-titles/search/check (admin & CI)
     scripts/kb_fetch.py             unduh file KB per ID dari GitHub
   skills/geothermal-review/ …
   skills/geothermal-comment-sheet-report/ …

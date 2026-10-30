@@ -1,5 +1,33 @@
 # Changelog
 
+## KB rev 10 — 2026-10-30
+
+- Rapikan judul GEO-0004: 04  Intro Kegiatan Eksp dan Utilisasi 2024 → 04 Intro Kegiatan Eksp dan Utilisasi 2024.
+- Rapikan judul GEO-0067: 19_24Jul_Drilling  BHA → 19_24Jul_Drilling BHA.
+- Rapikan judul GEO-0094: 3_W3_23Mei_Modul 1 Introduction  Phase-1 Project Initiation R1 → 3_W3_23Mei_Modul 1 Introduction Phase-1 Project Initiation R1.
+- Rapikan judul GEO-0101: 9_W4_6Juni_Introduction to Directional Drilling_ June6 2026  → 9_W4_6Juni_Introduction to Directional Drilling_ June6 2026.
+- Rapikan judul GEO-0168: 30_2Oct26NOV.JDS.Coring → 30_2Oct26NOV JDS Coring.
+- Rapikan judul GEO-0169: Geothermal.Wireline.Logging.Services.Kadek._.JDS → Geothermal Wireline Logging Services Kadek _ JDS.
+- Rapikan judul GEO-0170: NESR.JDS.Geothermal.Well.Testing.3Oct26 → NESR JDS Geothermal Well Testing 3Oct26.
+- Rapikan judul GEO-0171: 00-Pedoman.Efisiensi.Biaya.Pengeboram.Sumur.Panas.Bumi.-.Oct.27 → 00-Pedoman Efisiensi Biaya Pengeboram Sumur Panas Bumi - Oct 27.
+- Rapikan judul GEO-0172: 01-Onshore.Drilling.WellPad.Design-Rev4.pptx → 01-Onshore Drilling WellPad Design-Rev4.
+- Rapikan judul GEO-0173: 03-.Geothermal.Drilling.Operation.Rev.241026 → 03- Geothermal Drilling Operation Rev 241026.
+- Rapikan judul GEO-0174: 3.1-BHA.study.Rev-13.Dec.06.-.BP → 3.1-BHA study Rev-13 Dec 06 - BP.
+- Rapikan judul GEO-0175: BEYOND.THE.STEAM.-.AGDYA.YOGANDARI.pptx → BEYOND THE STEAM - AGDYA YOGANDARI.
+- Rapikan judul GEO-0176: BP_at.JDS.30102026 → BP_at JDS 30102026.
+- Rapikan judul GEO-0177: Drilling.Cost.Saving.Initiatives → Drilling Cost Saving Initiatives.
+- Rapikan judul GEO-0178: Modul-3.Phase-3.Execution.Monitoring.and.Phase-4.Closing → Modul-3 Phase-3 Execution Monitoring and Phase-4 Closing.
+- Rapikan judul GEO-0179: Rig.HP.for.Drilling.NIL → Rig HP for Drilling NIL.
+- Rapikan judul GEO-0180: T.Box.vs.Flow.T → T Box vs Flow T.
+- Rapikan judul GEO-0181: Well.Intervention.JDS.16102026 → Well Intervention JDS 16102026.
+
+## 1.6.2 — 2026-10-30
+
+- Pencarian KB (`kb_manager.py search` dan `sync.py kb-search`) kini menganggap `.`, `_`, `-`, dan `/` sama dengan spasi, sehingga frasa seperti "well intervention" menemukan file bernama `Well.Intervention.JDS…`.
+- Judul default saat ingest dirapikan: titik pengganti spasi dari nama aset GitHub Release diubah kembali menjadi spasi (titik desimal seperti `3.1` dipertahankan), dan sisa ekstensi Office (`.pptx` pada file `….pptx.pdf`) dibuang.
+- Subcommand baru `kb_manager.py tidy-titles` untuk merapikan judul entri lama yang masih berupa nama file; sudah dijalankan untuk GEO-0168–GEO-0181 (KB rev 10).
+- Nomor `version` di `plugin.json` diselaraskan dengan CHANGELOG (sebelumnya tertinggal di 1.1.x).
+
 ## KB rev 9 — 2026-10-30
 
 - Tambah GEO-0171 — 00-Pedoman.Efisiensi.Biaya.Pengeboram.Sumur.Panas.Bumi.-.Oct.27 (`files/GEO-0171__00-Pedoman.Efisiensi.Biaya.Pengeboram.Sumur.Panas.Bumi.-.Oct.27.pptx`, 36983497 bytes, SHA-256 `1298d1913c76…`).

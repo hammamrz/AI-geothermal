@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "kb_revision": 9,
+  "kb_revision": 10,
   "entries": [
     {
       "id": "GEO-0001",
@@ -44,7 +44,7 @@
     {
       "id": "GEO-0004",
       "file": "files/GEO-0004__04  Intro Kegiatan Eksp dan Utilisasi 2024.pdf",
-      "title": "04  Intro Kegiatan Eksp dan Utilisasi 2024",
+      "title": "04 Intro Kegiatan Eksp dan Utilisasi 2024",
       "discipline": "other",
       "document_type": "other",
       "revision": "unknown",
@@ -850,7 +850,7 @@
     {
       "id": "GEO-0067",
       "file": "files/GEO-0067__19_24Jul_Drilling  BHA.pdf",
-      "title": "19_24Jul_Drilling  BHA",
+      "title": "19_24Jul_Drilling BHA",
       "discipline": "other",
       "document_type": "other",
       "revision": "unknown",
@@ -1188,7 +1188,7 @@
     {
       "id": "GEO-0094",
       "file": "files/GEO-0094__3_W3_23Mei_Modul 1 Introduction  Phase-1 Project Initiation R1.pdf",
-      "title": "3_W3_23Mei_Modul 1 Introduction  Phase-1 Project Initiation R1",
+      "title": "3_W3_23Mei_Modul 1 Introduction Phase-1 Project Initiation R1",
       "discipline": "other",
       "document_type": "other",
       "revision": "unknown",
@@ -1279,7 +1279,7 @@
     {
       "id": "GEO-0101",
       "file": "files/GEO-0101__9_W4_6Juni_Introduction to Directional Drilling_ June6 2026 .pdf",
-      "title": "9_W4_6Juni_Introduction to Directional Drilling_ June6 2026 ",
+      "title": "9_W4_6Juni_Introduction to Directional Drilling_ June6 2026",
       "discipline": "other",
       "document_type": "other",
       "revision": "unknown",
@@ -2150,7 +2150,7 @@
     {
       "id": "GEO-0168",
       "file": "files/GEO-0168__30_2Oct26NOV.JDS.Coring.pdf",
-      "title": "30_2Oct26NOV.JDS.Coring",
+      "title": "30_2Oct26NOV JDS Coring",
       "discipline": "other",
       "document_type": "other",
       "revision": "unknown",
@@ -2163,7 +2163,7 @@
     {
       "id": "GEO-0169",
       "file": "files/GEO-0169__Geothermal.Wireline.Logging.Services.Kadek._.JDS.pdf",
-      "title": "Geothermal.Wireline.Logging.Services.Kadek._.JDS",
+      "title": "Geothermal Wireline Logging Services Kadek _ JDS",
       "discipline": "other",
       "document_type": "other",
       "revision": "unknown",
@@ -2176,7 +2176,7 @@
     {
       "id": "GEO-0170",
       "file": "files/GEO-0170__NESR.JDS.Geothermal.Well.Testing.3Oct26.pdf",
-      "title": "NESR.JDS.Geothermal.Well.Testing.3Oct26",
+      "title": "NESR JDS Geothermal Well Testing 3Oct26",
       "discipline": "other",
       "document_type": "other",
       "revision": "unknown",
@@ -2189,7 +2189,7 @@
     {
       "id": "GEO-0171",
       "file": "files/GEO-0171__00-Pedoman.Efisiensi.Biaya.Pengeboram.Sumur.Panas.Bumi.-.Oct.27.pptx",
-      "title": "00-Pedoman.Efisiensi.Biaya.Pengeboram.Sumur.Panas.Bumi.-.Oct.27",
+      "title": "00-Pedoman Efisiensi Biaya Pengeboram Sumur Panas Bumi - Oct 27",
       "discipline": "other",
       "document_type": "other",
       "revision": "unknown",
@@ -2202,7 +2202,7 @@
     {
       "id": "GEO-0172",
       "file": "files/GEO-0172__01-Onshore.Drilling.WellPad.Design-Rev4.pptx.pdf",
-      "title": "01-Onshore.Drilling.WellPad.Design-Rev4.pptx",
+      "title": "01-Onshore Drilling WellPad Design-Rev4",
       "discipline": "other",
       "document_type": "other",
       "revision": "unknown",
@@ -2215,7 +2215,7 @@
     {
       "id": "GEO-0173",
       "file": "files/GEO-0173__03-.Geothermal.Drilling.Operation.Rev.241026.pdf",
-      "title": "03-.Geothermal.Drilling.Operation.Rev.241026",
+      "title": "03- Geothermal Drilling Operation Rev 241026",
       "discipline": "other",
       "document_type": "other",
       "revision": "unknown",
@@ -2228,7 +2228,7 @@
     {
       "id": "GEO-0174",
       "file": "files/GEO-0174__3.1-BHA.study.Rev-13.Dec.06.-.BP.pptx",
-      "title": "3.1-BHA.study.Rev-13.Dec.06.-.BP",
+      "title": "3.1-BHA study Rev-13 Dec 06 - BP",
       "discipline": "other",
       "document_type": "other",
       "revision": "unknown",
@@ -2241,7 +2241,7 @@
     {
       "id": "GEO-0175",
       "file": "files/GEO-0175__BEYOND.THE.STEAM.-.AGDYA.YOGANDARI.pptx.pdf",
-      "title": "BEYOND.THE.STEAM.-.AGDYA.YOGANDARI.pptx",
+      "title": "BEYOND THE STEAM - AGDYA YOGANDARI",
       "discipline": "other",
       "document_type": "other",
       "revision": "unknown",
@@ -2254,7 +2254,7 @@
     {
       "id": "GEO-0176",
       "file": "files/GEO-0176__BP_at.JDS.30102026.pdf",
-      "title": "BP_at.JDS.30102026",
+      "title": "BP_at JDS 30102026",
       "discipline": "other",
       "document_type": "other",
       "revision": "unknown",
@@ -2267,7 +2267,7 @@
     {
       "id": "GEO-0177",
       "file": "files/GEO-0177__Drilling.Cost.Saving.Initiatives.pdf",
-      "title": "Drilling.Cost.Saving.Initiatives",
+      "title": "Drilling Cost Saving Initiatives",
       "discipline": "other",
       "document_type": "other",
       "revision": "unknown",
@@ -2280,7 +2280,7 @@
     {
       "id": "GEO-0178",
       "file": "files/GEO-0178__Modul-3.Phase-3.Execution.Monitoring.and.Phase-4.Closing.pdf",
-      "title": "Modul-3.Phase-3.Execution.Monitoring.and.Phase-4.Closing",
+      "title": "Modul-3 Phase-3 Execution Monitoring and Phase-4 Closing",
       "discipline": "other",
       "document_type": "other",
       "revision": "unknown",
@@ -2293,7 +2293,7 @@
     {
       "id": "GEO-0179",
       "file": "files/GEO-0179__Rig.HP.for.Drilling.NIL.pptx",
-      "title": "Rig.HP.for.Drilling.NIL",
+      "title": "Rig HP for Drilling NIL",
       "discipline": "other",
       "document_type": "other",
       "revision": "unknown",
@@ -2306,7 +2306,7 @@
     {
       "id": "GEO-0180",
       "file": "files/GEO-0180__T.Box.vs.Flow.T.pptx",
-      "title": "T.Box.vs.Flow.T",
+      "title": "T Box vs Flow T",
       "discipline": "other",
       "document_type": "other",
       "revision": "unknown",
@@ -2319,7 +2319,7 @@
     {
       "id": "GEO-0181",
       "file": "files/GEO-0181__Well.Intervention.JDS.16102026.pdf",
-      "title": "Well.Intervention.JDS.16102026",
+      "title": "Well Intervention JDS 16102026",
       "discipline": "other",
       "document_type": "other",
       "revision": "unknown",
@@ -2330,7 +2330,7 @@
       "source_channel": "github-inbox"
     }
   ],
-  "updated_at": "2026-10-30T10:39:58+00:00",
+  "updated_at": "2026-10-30T10:49:53+00:00",
   "removed": [
     {
       "id": "GEO-0047",
