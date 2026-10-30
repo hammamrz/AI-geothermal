@@ -7,6 +7,7 @@ Subcommand:
   ingest   proses folder inbox (default: <repo>/kb-inbox): file lepas, ZIP batch,
            metadata.csv, dan sidecar .meta.json
   remove   hapus entri dari KB (file + manifest); SHA-256-nya dicatat agar tidak ter-ingest ulang
+  apply-meta  terapkan metadata per ID dari CSV (mis. docs/kb-classification.csv) dalam satu revisi KB
   search   cari entri berdasarkan kata kunci pada metadata (routing ringan)
   tidy-titles  rapikan judul dari nama aset release (titik pengganti spasi, sisa ekstensi Office)
   list     tampilkan katalog + validasi
@@ -47,8 +48,19 @@ MAX_FILE_BYTES = 95 * 1024 * 1024
 META_SUFFIX = ".meta.json"
 INBOX_IGNORE = {"README.md", ".gitkeep", ".DS_Store", "Thumbs.db", "desktop.ini"}
 CSV_META = "metadata.csv"
-KNOWN_DISCIPLINES = {"subsurface", "geology", "geochemistry", "geophysics", "reservoir", "drilling", "well-design",
-                     "completion", "well-testing", "hse", "standard", "other"}
+# Empat disiplin KB. Nama lama/rinci tetap diterima dan dipetakan ke disiplin induknya;
+# nama aslinya disimpan sebagai topik agar tidak hilang.
+DISCIPLINES = ("geothermal-upstream", "geothermal-downstream", "drilling", "general-basic-theory")
+DISCIPLINE_ALIASES = {
+    **{k: "geothermal-upstream" for k in ("upstream", "subsurface", "geology", "geochemistry", "geophysics",
+                                          "reservoir", "well-testing", "production", "exploration")},
+    **{k: "geothermal-downstream" for k in ("downstream", "power-plant", "pltp", "utilization", "surface-facilities")},
+    **{k: "drilling" for k in ("well-design", "completion", "well-engineering")},
+    **{k: "general-basic-theory" for k in ("general", "basic-theory", "general-and-basic-theory", "hse", "standard",
+                                           "economics")},
+}
+SHORT_ALIASES = {"upstream", "downstream", "general", "basic-theory", "general-and-basic-theory"}
+KNOWN_DISCIPLINES = set(DISCIPLINES) | set(DISCIPLINE_ALIASES) | {"other"}
 META_FIELDS = ("title", "discipline", "document_type", "revision", "topics", "keywords",
                "useful_locators", "visual_content", "notes", "contributor", "source_channel",
                "submitted_at", "original_filename")
@@ -177,6 +189,11 @@ def clean_meta(meta: dict) -> dict:
     for k in ("discipline", "document_type"):
         if k in out:
             out[k] = str(out[k]).lower().replace(" ", "-")
+    alias = out.get("discipline")
+    if alias in DISCIPLINE_ALIASES:
+        out["discipline"] = DISCIPLINE_ALIASES[alias]
+        if alias not in SHORT_ALIASES:
+            out["topics"] = list(dict.fromkeys([alias, *out.get("topics", [])]))
     return out
 
 
@@ -463,6 +480,42 @@ def tidy_titles(data: dict) -> list[str]:
     return lines
 
 
+def apply_meta(data: dict, path: Path) -> list[str]:
+    """CSV dengan kolom `id` + kolom metadata (discipline, document_type, topics, keywords, ...).
+    Sel kosong tidak mengubah metadata; kolom `title` hanya dipakai bila diisi."""
+    text = path.read_text(encoding="utf-8-sig")
+    try:
+        dialect = csv.Sniffer().sniff(text.splitlines()[0] if text else ",", delimiters=",;\t")
+    except csv.Error:
+        dialect = csv.excel
+    by_id = {e["id"]: e for e in data["entries"]}
+    changed, unknown = [], []
+    for row in csv.DictReader(text.splitlines(), dialect=dialect):
+        row = {(k or "").strip().lower(): (v or "").strip() for k, v in row.items()}
+        kb_id = row.pop("id", "").upper()
+        if not kb_id:
+            continue
+        if kb_id not in by_id:
+            unknown.append(kb_id)
+            continue
+        meta = clean_meta(row)
+        for k in ("contributor", "source_channel", "submitted_at", "original_filename"):
+            meta.pop(k, None)
+        if meta.get("discipline") not in (None, *DISCIPLINES, "other"):
+            raise ValueError(f"{kb_id}: disiplin tidak dikenal: {meta['discipline']} (pilih: {', '.join(DISCIPLINES)})")
+        entry = by_id[kb_id]
+        if any(entry.get(k) != v for k, v in meta.items()):
+            entry.update(meta)
+            changed.append(kb_id)
+    if unknown:
+        raise ValueError(f"ID tidak ada di manifest: {', '.join(unknown)}")
+    if not changed:
+        return []
+    counts = {d: sum(e.get("discipline") == d for e in data["entries"]) for d in (*DISCIPLINES, "other")}
+    summary = ", ".join(f"{d} {n}" for d, n in counts.items() if n)
+    return [f"- Metadata (disiplin, tipe, keyword) diperbarui untuk {len(changed)} entri dari `{path.name}`. Sebaran disiplin: {summary}."]
+
+
 def show_report(data: dict) -> None:
     entries = data.get("entries", [])
     total = sum(e.get("size_bytes", 0) for e in entries)
@@ -504,6 +557,8 @@ def main() -> int:
     p.add_argument("--all", action="store_true", help="sertakan entri SUPERSEDED")
     p.add_argument("--limit", type=int, default=10)
     sub.add_parser("tidy-titles")
+    p = sub.add_parser("apply-meta")
+    p.add_argument("csv", type=Path, help="CSV metadata per ID (kolom `id` wajib)")
     sub.add_parser("list")
     sub.add_parser("check")
     args = ap.parse_args()
@@ -547,6 +602,11 @@ def main() -> int:
             lines = remove(data, args.ids, args.reason)
             commit_changes(data, lines)
             print("\n".join(lines))
+        elif args.command == "apply-meta":
+            lines = apply_meta(data, args.csv)
+            if lines:
+                commit_changes(data, lines)
+            print("\n".join(lines) or "Tidak ada metadata yang berubah.")
         elif args.command == "tidy-titles":
             lines = tidy_titles(data)
             if lines:

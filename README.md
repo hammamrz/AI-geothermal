@@ -62,7 +62,7 @@ Hanya admin yang menambah atau merevisi KB. File yang di-upload pengguna di chat
 
 **Cara tercepat: satu ZIP berisi banyak file.**
 
-1. Kumpulkan file dalam satu folder. Subfolder bernama disiplin (`drilling/`, `geology/`, …) otomatis menjadi disiplin. Opsional, sertakan `metadata.csv` berisi judul/tipe/revisi/keyword per file ([template](docs/kb-metadata-template.csv)).
+1. Kumpulkan file dalam satu folder. Subfolder bernama disiplin (`geothermal-upstream/`, `geothermal-downstream/`, `drilling/`, `general-basic-theory/`) otomatis menjadi disiplin. Opsional, sertakan `metadata.csv` berisi judul/tipe/revisi/keyword per file ([template](docs/kb-metadata-template.csv)).
 2. Kompres folder menjadi ZIP.
 3. Upload sesuai ukuran:
    - **≤ 25 MB**: upload ZIP ke [`kb-inbox/`](kb-inbox/) → **Commit directly to the main branch**.
@@ -72,6 +72,12 @@ Hanya admin yang menambah atau merevisi KB. File yang di-upload pengguna di chat
 File satuan tetap bisa di-upload langsung ke `kb-inbox/`, beserta sidecar `<nama-file>.meta.json` bila perlu. Detail format ada di [`kb-inbox/README.md`](kb-inbox/README.md). Untuk revisi dokumen lama, isi `supersedes` dengan ID lama (`GEO-xxxx`).
 
 Workflow tersebut menghitung SHA-256 (duplikat identik ditolak), memberi ID `GEO-xxxx`, memindahkan file ke `kb/files/`, lalu membangun ulang `KB_MANIFEST.json`, `KB_INDEX.md`, `CHANGELOG.md`, dan `sync-manifest.json`, serta menaikkan versi plugin. Entri lama yang direvisi tidak dihapus, hanya ditandai `SUPERSEDED`.
+
+**Mengoreksi disiplin, tipe, atau keyword entri lama**: edit baris ID-nya di [`docs/kb-classification.csv`](docs/kb-classification.csv) (bisa dibuka di Excel; pemisah `;`), lalu jalankan di clone repo dan commit hasilnya:
+
+```bash
+python plugins/aigeothermal-pln/skills/geothermal-knowledge/scripts/kb_manager.py apply-meta docs/kb-classification.csv
+```
 
 **Menghapus entri KB** (mis. berisi data pribadi atau dokumen yang tidak boleh publik), jalankan di clone repo lalu commit dan push:
 
@@ -104,7 +110,7 @@ standalone/aigeothermal-pln/        skill ZIP untuk akun Free
 plugins/aigeothermal-pln/           plugin (Pro/Max, Claude Code) + sumber 4 modul
   skills/geothermal-knowledge/
     references/KB/                  KB_INDEX.md, KB_MANIFEST.json (router KB)
-    scripts/kb_manager.py           ingest/add/update/remove/tidy-titles/search/check (admin & CI)
+    scripts/kb_manager.py           ingest/add/update/remove/tidy-titles/apply-meta/search/check (admin & CI)
     scripts/kb_fetch.py             unduh file KB per ID dari GitHub
   skills/geothermal-review/ …
   skills/geothermal-comment-sheet-report/ …
@@ -113,6 +119,7 @@ plugins/aigeothermal-pln/           plugin (Pro/Max, Claude Code) + sumber 4 mod
 kb/files/                           file KB mentah (GEO-xxxx__nama), dikelola workflow
 kb-inbox/                           pintu masuk file/ZIP KB baru (admin)
 docs/kb-metadata-template.csv       template metadata.csv untuk upload ZIP
+docs/kb-classification.csv          disiplin/tipe/keyword per ID KB (diterapkan dengan kb_manager.py apply-meta)
 sync-manifest.json                  daftar file modul + hash (dibuat otomatis)
 scripts/build_skill_zips.py         bangun AIGeothermal-PLN.zip (skill) dan AIGeothermal-PLN-plugin.zip (plugin)
 scripts/build_sync_manifest.py      bangun sync-manifest.json

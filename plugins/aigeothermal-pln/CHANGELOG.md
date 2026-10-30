@@ -1,5 +1,15 @@
 # Changelog
 
+## KB rev 11 — 2026-10-30
+
+- Metadata (disiplin, tipe, keyword) diperbarui untuk 179 entri dari `kb-classification.csv`. Sebaran disiplin: geothermal-upstream 20, geothermal-downstream 8, drilling 120, general-basic-theory 31.
+
+## 1.6.3 — 2026-10-30
+
+- Disiplin KB disederhanakan menjadi empat: `geothermal-upstream`, `geothermal-downstream`, `drilling`, dan `general-basic-theory`. Nama lama (`geology`, `reservoir`, `well-testing`, `hse`, dan seterusnya) tetap diterima saat ingest dan otomatis dipetakan ke disiplin induknya.
+- Seluruh 179 entri KB kini punya disiplin, tipe dokumen, dan keyword (sebelumnya semua `other` tanpa keyword), sehingga pencarian KB bisa memakai istilah yang tidak tertulis di judul. Klasifikasinya disimpan di `docs/kb-classification.csv`.
+- Subcommand baru `kb_manager.py apply-meta <csv>` untuk menerapkan atau mengoreksi metadata per ID dalam satu revisi KB.
+
 ## KB rev 10 — 2026-10-30
 
 - Rapikan judul GEO-0004: 04  Intro Kegiatan Eksp dan Utilisasi 2024 → 04 Intro Kegiatan Eksp dan Utilisasi 2024.
