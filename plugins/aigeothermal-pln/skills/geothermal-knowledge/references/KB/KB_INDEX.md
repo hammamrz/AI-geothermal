@@ -3,7 +3,7 @@
 Status: ACTIVE
 Index mode: LIGHT / ROUTING ONLY
 Knowledge base root: `kb/files/` di repo GitHub (diunduh per ID dengan `scripts/kb_fetch.py`)
-KB revision: 9 (updated 2026-10-30T10:39:58+00:00)
+KB revision: 10 (updated 2026-10-30T10:49:53+00:00)
 
 Metadata router only; original source files are the source of truth. Files are added and indexed without deep-reading their contents.
 Index ini dibangun ulang otomatis oleh `scripts/kb_manager.py`; jangan edit manual.
@@ -17,7 +17,7 @@ Aktif: 179 · Superseded: 0
 | GEO-0001 | ACTIVE | 01 Berbagai Jenis Sistem Panas Bumi dan Karakterisasinya | files/GEO-0001__01 Berbagai Jenis Sistem Panas Bumi dan Karakterisasinya.pdf | other | other | unknown |  |  | 0e0f707c9870 |
 | GEO-0002 | ACTIVE | 02 Sistem Geoterma karakteristik dan komposisi fluidal | files/GEO-0002__02 Sistem Geoterma karakteristik dan komposisi fluidal.pdf | other | other | unknown |  |  | 66589983f19c |
 | GEO-0003 | ACTIVE | 03 Pengantar Teknik Geotermal Nov 2024 | files/GEO-0003__03 Pengantar Teknik Geotermal Nov 2024.pdf | other | other | unknown |  |  | fe9017056054 |
-| GEO-0004 | ACTIVE | 04  Intro Kegiatan Eksp dan Utilisasi 2024 | files/GEO-0004__04  Intro Kegiatan Eksp dan Utilisasi 2024.pdf | other | other | unknown |  |  | 3b81187852a3 |
+| GEO-0004 | ACTIVE | 04 Intro Kegiatan Eksp dan Utilisasi 2024 | files/GEO-0004__04  Intro Kegiatan Eksp dan Utilisasi 2024.pdf | other | other | unknown |  |  | 3b81187852a3 |
 | GEO-0005 | ACTIVE | Ringkasan | files/GEO-0005__Ringkasan.docx | other | other | unknown |  |  | e7bdbfdf6c0a |
 | GEO-0006 | ACTIVE | 01 Geologi | files/GEO-0006__01 Geologi.pdf | other | other | unknown |  |  | 82a0734d4fe3 |
 | GEO-0007 | ACTIVE | 02 Geokimia | files/GEO-0007__02 Geokimia.pdf | other | other | unknown |  |  | 0391d5ba6c20 |
@@ -79,7 +79,7 @@ Aktif: 179 · Superseded: 0
 | GEO-0064 | ACTIVE | 16_10Jul_Wellhead & XMas Tree Selection - JDS.pptx | files/GEO-0064__16_10Jul_Wellhead _ XMas Tree Selection - JDS.pptx.pdf | other | other | unknown |  |  | f9518427c5e4 |
 | GEO-0065 | ACTIVE | 17_17Jul_Drill Bit for JDS | files/GEO-0065__17_17Jul_Drill Bit for JDS.pdf | other | other | unknown |  |  | a757459940df |
 | GEO-0066 | ACTIVE | 18_18Jul_JDS - Well Control Equipment and Technique - Handout | files/GEO-0066__18_18Jul_JDS - Well Control Equipment and Technique - Handout.pdf | other | other | unknown |  |  | 586caa111d29 |
-| GEO-0067 | ACTIVE | 19_24Jul_Drilling  BHA | files/GEO-0067__19_24Jul_Drilling  BHA.pdf | other | other | unknown |  |  | 77520a213426 |
+| GEO-0067 | ACTIVE | 19_24Jul_Drilling BHA | files/GEO-0067__19_24Jul_Drilling  BHA.pdf | other | other | unknown |  |  | 77520a213426 |
 | GEO-0068 | ACTIVE | 1_W1_1Mei_Well Construction Principle_JDS Batch 7 | files/GEO-0068__1_W1_1Mei_Well Construction Principle_JDS Batch 7.pdf | other | other | unknown |  |  | efc4962ada72 |
 | GEO-0069 | ACTIVE | 20_25Jul_Drilling Fluid_25Jul26 | files/GEO-0069__20_25Jul_Drilling Fluid_25Jul26.pdf | other | other | unknown |  |  | c47e929c8ecd |
 | GEO-0070 | ACTIVE | 21_8Aug26_JDS Level 1 UBD & MPD Introduction | files/GEO-0070__21_8Aug26_JDS Level 1 UBD _ MPD Introduction.pdf | other | other | unknown |  |  | ded30458b2ec |
@@ -105,14 +105,14 @@ Aktif: 179 · Superseded: 0
 | GEO-0091 | ACTIVE | 30_26Sep26_JDS_Drilling_Geomechanics | files/GEO-0091__30_26Sep26_JDS_Drilling_Geomechanics.pdf | other | other | unknown |  |  | 2f294878f463 |
 | GEO-0092 | ACTIVE | 3_W2_8Mei_Exercise to be shared | files/GEO-0092__3_W2_8Mei_Exercise to be shared.pdf | other | other | unknown |  |  | f57da8b37137 |
 | GEO-0093 | ACTIVE | 3_W2_8Mei_SE JDS Intoduction of Geothermal Subsurface 2026 | files/GEO-0093__3_W2_8Mei_SE JDS Intoduction of Geothermal Subsurface 2026.pdf | other | other | unknown |  |  | a5928dcf9ea7 |
-| GEO-0094 | ACTIVE | 3_W3_23Mei_Modul 1 Introduction  Phase-1 Project Initiation R1 | files/GEO-0094__3_W3_23Mei_Modul 1 Introduction  Phase-1 Project Initiation R1.pdf | other | other | unknown |  |  | 7cc80f28538d |
+| GEO-0094 | ACTIVE | 3_W3_23Mei_Modul 1 Introduction Phase-1 Project Initiation R1 | files/GEO-0094__3_W3_23Mei_Modul 1 Introduction  Phase-1 Project Initiation R1.pdf | other | other | unknown |  |  | 7cc80f28538d |
 | GEO-0095 | ACTIVE | 4_W2_9Mei_JDS Slide HSE of Drilling - 09 Mei 2026 | files/GEO-0095__4_W2_9Mei_JDS Slide HSE of Drilling - 09 Mei 2026.pdf | other | other | unknown |  |  | efcce6820c13 |
 | GEO-0096 | ACTIVE | 5_W2_9Mei_JDC 2026_PETROLEUM GEOLOGY | files/GEO-0096__5_W2_9Mei_JDC 2026_PETROLEUM GEOLOGY.pdf | other | other | unknown |  |  | fd49fbeb0a2c |
 | GEO-0097 | ACTIVE | 6_W3_22Mei_Bahan Ajar - Basic Financial Model rev.03 | files/GEO-0097__6_W3_22Mei_Bahan Ajar - Basic Financial Model rev.03.pdf | other | other | unknown |  |  | 1b6794b05b7f |
 | GEO-0098 | ACTIVE | 8_W4_3Juni_JDS Additional Class - RISK MANAGEMENT FOR DRILLING PROJECT 20260503 | files/GEO-0098__8_W4_3Juni_JDS Additional Class - RISK MANAGEMENT FOR DRILLING PROJECT 20260503.pdf | other | other | unknown |  |  | 1cd9b144678f |
 | GEO-0099 | ACTIVE | 8_W4_5Juni_Well Size & Casing Depth | files/GEO-0099__8_W4_5Juni_Well Size _ Casing Depth.pptx | other | other | unknown |  |  | 3e8c516efae9 |
 | GEO-0100 | ACTIVE | 9_W4_6Juni_Basic Directional Drilling - For JDS | files/GEO-0100__9_W4_6Juni_Basic Directional Drilling - For JDS.pdf | other | other | unknown |  |  | 916045930757 |
-| GEO-0101 | ACTIVE | 9_W4_6Juni_Introduction to Directional Drilling_ June6 2026  | files/GEO-0101__9_W4_6Juni_Introduction to Directional Drilling_ June6 2026 .pdf | other | other | unknown |  |  | e523000a6cf2 |
+| GEO-0101 | ACTIVE | 9_W4_6Juni_Introduction to Directional Drilling_ June6 2026 | files/GEO-0101__9_W4_6Juni_Introduction to Directional Drilling_ June6 2026 .pdf | other | other | unknown |  |  | e523000a6cf2 |
 | GEO-0102 | ACTIVE | 9_W4_6Juni_Sperry Mud Motor and Jar_JDS_June 2026 | files/GEO-0102__9_W4_6Juni_Sperry Mud Motor and Jar_JDS_June 2026.pdf | other | other | unknown |  |  | 895dc9fa41b0 |
 | GEO-0103 | ACTIVE | Alpha07_ExecutiveSummary_McKinsey | files/GEO-0103__Alpha07_ExecutiveSummary_McKinsey.docx | other | other | unknown |  |  | 3745e5f0d5b2 |
 | GEO-0104 | ACTIVE | CORE ENERGY SOLUTION_DPM 1 Final | files/GEO-0104__CORE ENERGY SOLUTION_DPM 1 Final.pptx | other | other | unknown |  |  | f9dc8381d879 |
@@ -179,20 +179,20 @@ Aktif: 179 · Superseded: 0
 | GEO-0165 | ACTIVE | 9. paket_belajar_directional_drilling | files/GEO-0165__9. paket_belajar_directional_drilling.html | other | other | unknown |  |  | 0ded4e69a3cd |
 | GEO-0166 | ACTIVE | list Materi | files/GEO-0166__list Materi.xlsx | other | other | unknown |  |  | 25c8645fe0a7 |
 | GEO-0167 | ACTIVE | PPT_Phase-2_Mitra_Bumi_Geothermal_DPM_6_JDS_Batch_7_2026_Final_compressed | files/GEO-0167__PPT_Phase-2_Mitra_Bumi_Geothermal_DPM_6_JDS_Batch_7_2026_Final_compressed.pdf | other | other | unknown |  |  | 015c63047c4d |
-| GEO-0168 | ACTIVE | 30_2Oct26NOV.JDS.Coring | files/GEO-0168__30_2Oct26NOV.JDS.Coring.pdf | other | other | unknown |  |  | b0382a59c07d |
-| GEO-0169 | ACTIVE | Geothermal.Wireline.Logging.Services.Kadek._.JDS | files/GEO-0169__Geothermal.Wireline.Logging.Services.Kadek._.JDS.pdf | other | other | unknown |  |  | be5f559dd289 |
-| GEO-0170 | ACTIVE | NESR.JDS.Geothermal.Well.Testing.3Oct26 | files/GEO-0170__NESR.JDS.Geothermal.Well.Testing.3Oct26.pdf | other | other | unknown |  |  | e34db76564f5 |
-| GEO-0171 | ACTIVE | 00-Pedoman.Efisiensi.Biaya.Pengeboram.Sumur.Panas.Bumi.-.Oct.27 | files/GEO-0171__00-Pedoman.Efisiensi.Biaya.Pengeboram.Sumur.Panas.Bumi.-.Oct.27.pptx | other | other | unknown |  |  | 1298d1913c76 |
-| GEO-0172 | ACTIVE | 01-Onshore.Drilling.WellPad.Design-Rev4.pptx | files/GEO-0172__01-Onshore.Drilling.WellPad.Design-Rev4.pptx.pdf | other | other | unknown |  |  | 4669dbc9cdb8 |
-| GEO-0173 | ACTIVE | 03-.Geothermal.Drilling.Operation.Rev.241026 | files/GEO-0173__03-.Geothermal.Drilling.Operation.Rev.241026.pdf | other | other | unknown |  |  | cf0fc695951c |
-| GEO-0174 | ACTIVE | 3.1-BHA.study.Rev-13.Dec.06.-.BP | files/GEO-0174__3.1-BHA.study.Rev-13.Dec.06.-.BP.pptx | other | other | unknown |  |  | 2526549426f3 |
-| GEO-0175 | ACTIVE | BEYOND.THE.STEAM.-.AGDYA.YOGANDARI.pptx | files/GEO-0175__BEYOND.THE.STEAM.-.AGDYA.YOGANDARI.pptx.pdf | other | other | unknown |  |  | 4f32adb5590f |
-| GEO-0176 | ACTIVE | BP_at.JDS.30102026 | files/GEO-0176__BP_at.JDS.30102026.pdf | other | other | unknown |  |  | 5171c80da52d |
-| GEO-0177 | ACTIVE | Drilling.Cost.Saving.Initiatives | files/GEO-0177__Drilling.Cost.Saving.Initiatives.pdf | other | other | unknown |  |  | df66228719ff |
-| GEO-0178 | ACTIVE | Modul-3.Phase-3.Execution.Monitoring.and.Phase-4.Closing | files/GEO-0178__Modul-3.Phase-3.Execution.Monitoring.and.Phase-4.Closing.pdf | other | other | unknown |  |  | 7cc4a55cb14a |
-| GEO-0179 | ACTIVE | Rig.HP.for.Drilling.NIL | files/GEO-0179__Rig.HP.for.Drilling.NIL.pptx | other | other | unknown |  |  | 39bb19f1e216 |
-| GEO-0180 | ACTIVE | T.Box.vs.Flow.T | files/GEO-0180__T.Box.vs.Flow.T.pptx | other | other | unknown |  |  | f2d70e6bd0db |
-| GEO-0181 | ACTIVE | Well.Intervention.JDS.16102026 | files/GEO-0181__Well.Intervention.JDS.16102026.pdf | other | other | unknown |  |  | 1ffb0fc8a314 |
+| GEO-0168 | ACTIVE | 30_2Oct26NOV JDS Coring | files/GEO-0168__30_2Oct26NOV.JDS.Coring.pdf | other | other | unknown |  |  | b0382a59c07d |
+| GEO-0169 | ACTIVE | Geothermal Wireline Logging Services Kadek _ JDS | files/GEO-0169__Geothermal.Wireline.Logging.Services.Kadek._.JDS.pdf | other | other | unknown |  |  | be5f559dd289 |
+| GEO-0170 | ACTIVE | NESR JDS Geothermal Well Testing 3Oct26 | files/GEO-0170__NESR.JDS.Geothermal.Well.Testing.3Oct26.pdf | other | other | unknown |  |  | e34db76564f5 |
+| GEO-0171 | ACTIVE | 00-Pedoman Efisiensi Biaya Pengeboram Sumur Panas Bumi - Oct 27 | files/GEO-0171__00-Pedoman.Efisiensi.Biaya.Pengeboram.Sumur.Panas.Bumi.-.Oct.27.pptx | other | other | unknown |  |  | 1298d1913c76 |
+| GEO-0172 | ACTIVE | 01-Onshore Drilling WellPad Design-Rev4 | files/GEO-0172__01-Onshore.Drilling.WellPad.Design-Rev4.pptx.pdf | other | other | unknown |  |  | 4669dbc9cdb8 |
+| GEO-0173 | ACTIVE | 03- Geothermal Drilling Operation Rev 241026 | files/GEO-0173__03-.Geothermal.Drilling.Operation.Rev.241026.pdf | other | other | unknown |  |  | cf0fc695951c |
+| GEO-0174 | ACTIVE | 3.1-BHA study Rev-13 Dec 06 - BP | files/GEO-0174__3.1-BHA.study.Rev-13.Dec.06.-.BP.pptx | other | other | unknown |  |  | 2526549426f3 |
+| GEO-0175 | ACTIVE | BEYOND THE STEAM - AGDYA YOGANDARI | files/GEO-0175__BEYOND.THE.STEAM.-.AGDYA.YOGANDARI.pptx.pdf | other | other | unknown |  |  | 4f32adb5590f |
+| GEO-0176 | ACTIVE | BP_at JDS 30102026 | files/GEO-0176__BP_at.JDS.30102026.pdf | other | other | unknown |  |  | 5171c80da52d |
+| GEO-0177 | ACTIVE | Drilling Cost Saving Initiatives | files/GEO-0177__Drilling.Cost.Saving.Initiatives.pdf | other | other | unknown |  |  | df66228719ff |
+| GEO-0178 | ACTIVE | Modul-3 Phase-3 Execution Monitoring and Phase-4 Closing | files/GEO-0178__Modul-3.Phase-3.Execution.Monitoring.and.Phase-4.Closing.pdf | other | other | unknown |  |  | 7cc4a55cb14a |
+| GEO-0179 | ACTIVE | Rig HP for Drilling NIL | files/GEO-0179__Rig.HP.for.Drilling.NIL.pptx | other | other | unknown |  |  | 39bb19f1e216 |
+| GEO-0180 | ACTIVE | T Box vs Flow T | files/GEO-0180__T.Box.vs.Flow.T.pptx | other | other | unknown |  |  | f2d70e6bd0db |
+| GEO-0181 | ACTIVE | Well Intervention JDS 16102026 | files/GEO-0181__Well.Intervention.JDS.16102026.pdf | other | other | unknown |  |  | 1ffb0fc8a314 |
 
 ## Retrieval defaults
 
