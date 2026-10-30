@@ -12,7 +12,7 @@ Setelah file masuk ke branch `main`, workflow **KB ingest & sync manifest** otom
 
 Upload per file lewat web GitHub lambat. Lebih cepat bila semua file dikemas dalam **satu ZIP**:
 
-1. Kumpulkan file KB dalam satu folder. Boleh dikelompokkan per disiplin: `drilling/`, `geology/`, `geophysics/`, `geochemistry/`, `reservoir/`, `well-testing/`, dan seterusnya. Nama subfolder yang cocok otomatis dipakai sebagai disiplin.
+1. Kumpulkan file KB dalam satu folder. Boleh dikelompokkan per disiplin: `geothermal-upstream/`, `geothermal-downstream/`, `drilling/`, `general-basic-theory/`. Nama subfolder yang cocok otomatis dipakai sebagai disiplin (nama pendek `upstream/`, `downstream/`, `general/` dan nama lama seperti `geology/` atau `reservoir/` juga dikenali).
 2. Opsional: tambahkan `metadata.csv` di akar folder. Contohnya ada di [`docs/kb-metadata-template.csv`](../docs/kb-metadata-template.csv), bisa diedit di Excel dan disimpan sebagai CSV. Kolom `file` berisi nama file atau path relatif di dalam ZIP.
 3. Kompres folder menjadi ZIP (Windows: klik kanan → *Send to → Compressed (zipped) folder*).
 4. Pilih jalur upload sesuai ukuran ZIP:
@@ -36,7 +36,7 @@ Untuk setiap file `NamaFile.pdf`, boleh tambahkan sidecar `NamaFile.pdf.meta.jso
 {
   "title": "Casing Design for Geothermal Wells",
   "discipline": "drilling",
-  "document_type": "training",
+  "document_type": "training-material",
   "revision": "Rev 1",
   "topics": ["casing", "cementing"],
   "keywords": ["thermal load", "collapse", "burst"],
@@ -49,8 +49,9 @@ Untuk setiap file `NamaFile.pdf`, boleh tambahkan sidecar `NamaFile.pdf.meta.jso
 
 - Tanpa sidecar, judul diambil dari nama file dan disiplin/tipe diisi `other`.
 - `supersedes` hanya diisi bila file adalah revisi dari entri ACTIVE yang sudah ada; entri lama tidak dihapus, hanya ditandai `SUPERSEDED`.
-- Disiplin yang disarankan: `subsurface`, `geology`, `geochemistry`, `geophysics`, `reservoir`, `drilling`, `well-design`, `completion`, `well-testing`, `hse`, `standard`, `other`.
-- Tipe yang disarankan: `training`, `guideline`, `standard`, `regulation`, `project-document`, `case-study`, `vendor`, `paper`, `other`.
+- Disiplin (pilih satu): `geothermal-upstream` (eksplorasi, geologi/geokimia/geofisika, reservoir, cadangan, produksi, well testing), `geothermal-downstream` (PLTP, SAGS/surface facilities, heat & mass balance, utilisasi), `drilling` (pemboran, desain dan konstruksi sumur, rig, casing/cementing, wellhead, DPM), `general-basic-theory` (dasar panas bumi, termodinamika/steam table, keekonomian dan studi kelayakan, aspek sosial). Nama lama (`geology`, `reservoir`, `well-testing`, `hse`, dan seterusnya) otomatis dipetakan ke disiplin induknya dan disimpan sebagai topik.
+- Tipe yang disarankan: `training-material`, `quiz`, `study-package`, `calculation-tool`, `project-document`, `technical-evaluation`, `guideline`, `standard`, `reference`, `report`, `infographic`, `other`.
+- Disiplin, tipe, dan keyword entri yang sudah ada dikelola di [`docs/kb-classification.csv`](../docs/kb-classification.csv). Untuk mengoreksinya, edit CSV itu lalu jalankan `python plugins/aigeothermal-pln/skills/geothermal-knowledge/scripts/kb_manager.py apply-meta docs/kb-classification.csv`.
 
 Batas: maksimum 25 MB per file via upload web GitHub (≈95 MB via git). Jangan pakai Git LFS.
 File yang gagal diproses tetap tinggal di sini dan workflow ditandai merah.

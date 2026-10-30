@@ -1,0 +1,180 @@
+id;title;discipline;document_type;keywords
+GEO-0001;01 Berbagai Jenis Sistem Panas Bumi dan Karakterisasinya;general-basic-theory;training-material;sistem panas bumi, geothermal system, hidrotermal, klasifikasi sistem, karakterisasi
+GEO-0002;02 Sistem Geoterma karakteristik dan komposisi fluidal;general-basic-theory;training-material;sistem geotermal, komposisi fluida, fluida panas bumi, karakteristik reservoir
+GEO-0003;03 Pengantar Teknik Geotermal Nov 2024;general-basic-theory;training-material;pengantar teknik geotermal, geothermal engineering, dasar panas bumi
+GEO-0004;04 Intro Kegiatan Eksp dan Utilisasi 2024;general-basic-theory;training-material;eksplorasi, utilisasi, kegiatan panas bumi, tahapan pengembangan
+GEO-0005;Ringkasan;general-basic-theory;training-material;ringkasan, sistem panas bumi, sistem hidrotermal, istilah dasar
+GEO-0006;01 Geologi;geothermal-upstream;training-material;geologi, geology, struktur, alterasi, vulkanik, model konseptual
+GEO-0007;02 Geokimia;geothermal-upstream;training-material;geokimia, geochemistry, geotermometer, manifestasi, fluida
+GEO-0008;01 Konsep, Strategi, Metode dan Target Eksplorasi Geofisika;geothermal-upstream;training-material;geofisika, eksplorasi, MT, gravity, target eksplorasi, strategi
+GEO-0009;02 Geophysical Data Evaluation November 2024;geothermal-upstream;training-material;geofisika, geophysical data, evaluasi data, MT, resistivity
+GEO-0010;03 APPLICATION OF GEOPHYSICAL DATA TO INFER THE COMPONENT OF HYDROTHERMAL SYSTEM;geothermal-upstream;training-material;geofisika, sistem hidrotermal, clay cap, resistivity, model konseptual
+GEO-0011;04 Dasar-Dasar Teknik Reservoir;geothermal-upstream;training-material;teknik reservoir, reservoir engineering, permeabilitas, porositas, tekanan
+GEO-0012;05 Aliran dalam wellbore;geothermal-upstream;training-material;aliran wellbore, two-phase flow, produksi sumur, wellbore simulation
+GEO-0013;06 Reservoir Uap dan Air;geothermal-upstream;training-material;reservoir uap, reservoir air, vapor dominated, liquid dominated
+GEO-0014;01 Studi terpadu dan well targeting;geothermal-upstream;training-material;studi terpadu, well targeting, model konseptual, penentuan target sumur
+GEO-0015;02 Steam Table & Reservoir;general-basic-theory;training-material;steam table, tabel uap, termodinamika, reservoir
+GEO-0016;03 IAPWS IF97-Rev;general-basic-theory;standard;IAPWS-IF97, steam table, sifat air dan uap, termodinamika
+GEO-0017;04 International Steam Tables, Springer (2008), 3540214194;general-basic-theory;reference;international steam tables, IAPWS-IF97, sifat termodinamika air dan uap
+GEO-0018;CO2 dan NaCl Rev;general-basic-theory;calculation-tool;CO2, NaCl, fluida reservoir, sifat fluida, NCG, salinitas
+GEO-0019;NaCl CO2 Rev;general-basic-theory;training-material;CO2, NaCl, fluida reservoir, sifat fluida, NCG, salinitas
+GEO-0020;Steamprog;general-basic-theory;calculation-tool;Steamprog, steam table, termodinamika air, makro Excel
+GEO-0021;XSteam_Excel_v2.6;general-basic-theory;calculation-tool;XSteam, steam table, IAPWS-IF97, Excel
+GEO-0022;psychrometry;general-basic-theory;calculation-tool;psikrometri, psychrometry, udara lembab, cooling tower
+GEO-0023;01 Cadangan Panas Bumi;geothermal-upstream;training-material;cadangan panas bumi, reserves, potensi, resource assessment, volumetrik
+GEO-0024;02 Pengantar Pemboran Geothermal;drilling;training-material;pengantar pemboran, drilling geothermal, dasar pemboran
+GEO-0025;Belajar Sendiri;general-basic-theory;training-material;latihan, termodinamika, Steamprog, tekanan saturasi, temperatur saturasi
+GEO-0026;03 Pengantar Teknik Produksi NMS Bagian-2 Des 2024;geothermal-upstream;training-material;teknik produksi, production engineering, deliverability, sumur produksi
+GEO-0027;04 Pengantar Teknik Produksi Bag-2 NMS Jan 2024;geothermal-upstream;training-material;teknik produksi, production engineering, deliverability, sumur produksi
+GEO-0028;05 Utilisasi Energi Geotermal NMS Des 2024;geothermal-downstream;training-material;utilisasi energi, pemanfaatan langsung, pembangkit listrik, PLTP
+GEO-0029;06 Mempersiapkan Dokumen Pre-FS and FS;general-basic-theory;training-material;pre-FS, feasibility study, FS, dokumen studi kelayakan
+GEO-0030;01 Review Dokumen Pre-FS;general-basic-theory;training-material;review pre-FS, feasibility study, studi kelayakan
+GEO-0031;Plan of Development;general-basic-theory;training-material;plan of development, POD, pengembangan lapangan, PLTP 2x5 MW, keekonomian
+GEO-0032;DriftFlux Model;geothermal-upstream;calculation-tool;drift flux, two-phase flow, wellbore, pressure drop, simulasi sumur
+GEO-0033;GEOECON FS IP UPDATE;general-basic-theory;calculation-tool;keekonomian, geothermal economics, FS, NPV, IRR, tarif
+GEO-0034;GEOECON FS IP;general-basic-theory;calculation-tool;keekonomian, geothermal economics, FS, NPV, IRR, tarif
+GEO-0035;Latihan Monte Carlo update;geothermal-upstream;calculation-tool;Monte Carlo, cadangan, probabilistik, heat stored, resource assessment
+GEO-0036;Latihan Monte Carlo;geothermal-upstream;calculation-tool;Monte Carlo, cadangan, probabilistik, heat stored, resource assessment
+GEO-0037;Perhitungan Cadangan Heat Stored;geothermal-upstream;calculation-tool;heat stored, cadangan, volumetrik, resource assessment
+GEO-0038;SIL HEAT & MASS EDWARD UPDATE;geothermal-downstream;calculation-tool;heat and mass balance, neraca massa energi, turbin, kondensor, separator, gas extraction
+GEO-0039;SIL HEAT & MASS EDWARD;geothermal-downstream;calculation-tool;heat and mass balance, neraca massa energi, turbin, kondensor, separator, gas extraction
+GEO-0040;Steamprog;general-basic-theory;calculation-tool;Steamprog, steam table, termodinamika air, makro Excel
+GEO-0041;XSteam_Excel_v2.6;general-basic-theory;calculation-tool;XSteam, steam table, IAPWS-IF97, Excel
+GEO-0042;20250828 MCG_Project Overview_R1 - shared;geothermal-downstream;project-document;Blawan Ijen, PLTP, binary, two-phase, Medco, project overview
+GEO-0043;Geothermal surface solutions March 2024 rev2;geothermal-downstream;reference;surface facilities, SAGS, turbin, pembangkit, Baker Hughes
+GEO-0044;Introduction to Geothermal Project Feasibility for Indonesia Power;general-basic-theory;training-material;project feasibility, studi kelayakan, pengembangan proyek, Indonesia Power
+GEO-0045;Level 1 - Geothermal - Introduction to Reservoir and Drilling_9226_20250228_114359_38582;general-basic-theory;training-material;pengantar reservoir, pengantar drilling, geothermal level 1
+GEO-0046;PLTP;geothermal-downstream;training-material;PLTP, prinsip kerja, fungsi PLTP, pembangkit listrik panas bumi
+GEO-0048;Site Visit PLTP Ijen - Combined Cycle Power Plant Study;geothermal-downstream;report;site visit, PLTP Ijen, combined cycle, binary, pembangkit
+GEO-0049;ucp5-grem-progress-factsheet;general-basic-theory;reference;GREM, risk mitigation, pendanaan eksplorasi, de-risking, PT SMI
+GEO-0050;MP 07-Pengoperasian PLTP IP'16;geothermal-downstream;training-material;pengoperasian PLTP, operasi pembangkit, sistem uap, alat bantu
+GEO-0051;04-Casing Running;drilling;training-material;casing running, casing, pemasangan casing
+GEO-0052;12_W5_19Jun_DSCM Section 1 Supply Chain & Drilling Support Mgt;drilling;training-material;supply chain, drilling support, DSCM, logistik
+GEO-0053;12_W5_19Jun_DSCM Section 2 Purchasing & Material Management;drilling;training-material;purchasing, material management, DSCM, pengadaan
+GEO-0054;12_W5_19Jun_DSCM Section 3 Contract Management;drilling;training-material;contract management, DSCM, kontrak pemboran
+GEO-0055;12_W5_19Jun_DSCM Section 4 Negotiation;drilling;training-material;negotiation, negosiasi, DSCM
+GEO-0056;13_W5_20Jun_JDS Drilling Rig Example;drilling;training-material;drilling rig, rig, contoh rig
+GEO-0057;13_W5_20Jun_JDS Drilling Rig Febrianta;drilling;training-material;drilling rig, rig, komponen rig
+GEO-0058;13_W5_20Jun_JDS drill pipe spec sheet;drilling;reference;drill pipe, spesifikasi, spec sheet
+GEO-0059;14_W6_3 Jul_Rig Sizing Print Out;drilling;calculation-tool;rig sizing, hook load, kapasitas rig
+GEO-0060;14_W6_3Jul_01-Rig Sizing for Drilling Geothermal - Rev8-JDS-B-7;drilling;training-material;rig sizing, kapasitas rig, geothermal drilling
+GEO-0061;15_4Jul_Cementing Program;drilling;training-material;cementing program, penyemenan, casing cement
+GEO-0062;15_4Jul_JDS Cementing Calculation (QUIZ) 1;drilling;quiz;cementing calculation, slurry, penyemenan, kuis
+GEO-0063;16_10Jul_API 6A 21st Purchasing Guidelines;drilling;standard;API 6A, wellhead, purchasing guidelines, standar
+GEO-0064;16_10Jul_Wellhead & XMas Tree Selection - JDS.pptx;drilling;training-material;wellhead, xmas tree, pemilihan wellhead, API 6A
+GEO-0065;17_17Jul_Drill Bit for JDS;drilling;training-material;drill bit, bit, PDC, roller cone
+GEO-0066;18_18Jul_JDS - Well Control Equipment and Technique - Handout;drilling;training-material;well control, BOP, kick, blowout prevention
+GEO-0067;19_24Jul_Drilling BHA;drilling;training-material;BHA, bottom hole assembly, drill collar, stabilizer
+GEO-0068;1_W1_1Mei_Well Construction Principle_JDS Batch 7;drilling;training-material;well construction, konstruksi sumur, casing, prinsip
+GEO-0069;20_25Jul_Drilling Fluid_25Jul26;drilling;training-material;drilling fluid, lumpur pemboran, mud, aerated
+GEO-0070;21_8Aug26_JDS Level 1 UBD & MPD Introduction;drilling;training-material;UBD, MPD, underbalanced drilling, managed pressure drilling
+GEO-0072;22_15Aug26_Aerated_Drilling_Fundamentals_FInal;drilling;training-material;aerated drilling, pemboran aerasi, loss circulation, udara
+GEO-0073;23_15Aug26_Fishing Tool and Services Training_JDS 2026;drilling;training-material;fishing, fishing tool, stuck pipe, well services
+GEO-0074;24_21Aug26_Cutting sample & lithology;drilling;training-material;cutting sample, litologi, mud logging
+GEO-0075;24_21Aug26_Drilling Monitoring;drilling;training-material;drilling monitoring, real-time monitoring, mud logging
+GEO-0076;24_21Aug26_Interprted Gas Data & QC;drilling;training-material;gas data, mud logging, QC, interpretasi gas
+GEO-0077;24_21Aug26_Introduction Mud Logging;drilling;training-material;mud logging, pengantar, wellsite geology
+GEO-0078;24_21Aug26_Mud Logging Equipment;drilling;training-material;mud logging equipment, sensor, mud logging
+GEO-0079;24_21Aug26_Mud Logging Report;drilling;training-material;mud logging report, laporan, mud logging
+GEO-0080;24_21Aug26_Wellsite_Interpretation_Real_Time_Monitoring;drilling;training-material;wellsite interpretation, real-time monitoring, mud logging
+GEO-0081;25_4Sep26_ Stuck Pipe Prevention - Neotek Inovasi Global;drilling;training-material;stuck pipe, pencegahan, drilling problems
+GEO-0082;26_11Sep26_Torque & Drag (JDS Sep 2026);drilling;training-material;torque and drag, torsi, directional drilling
+GEO-0083;27_12Sep26_Geothermal Exploration Project Drilling;drilling;training-material;exploration drilling, sumur eksplorasi, slim hole, geothermal
+GEO-0084;27_12Sep26_Slim – core hole Drilling;drilling;training-material;slim hole, core hole, coring, sumur eksplorasi
+GEO-0085;27_12sep26_small Footprint Coring Rig;drilling;training-material;coring rig, small footprint, core hole
+GEO-0086;28_18Sep26_JDS - NESR Technology CTU;drilling;training-material;coiled tubing, CTU, NESR, well intervention
+GEO-0087;29_25Sep26_Introduction to Well Completion_JDS_Ressa_Jodhitya_Batch_7_Rev1;drilling;training-material;well completion, komplesi sumur, liner
+GEO-0088;2_W1_Drilling For Non Drillers - JDS-02May26 final (1);drilling;training-material;drilling for non drillers, pengantar pemboran
+GEO-0089;2_W1_Drilling For Non Drillers - JDS-02May26 final (2);drilling;training-material;drilling for non drillers, pengantar pemboran
+GEO-0090;2_W1_Introduction Drilling Engineering- JDS-02May26;drilling;training-material;drilling engineering, pengantar, teknik pemboran
+GEO-0091;30_26Sep26_JDS_Drilling_Geomechanics;drilling;training-material;drilling geomechanics, geomekanika, wellbore stability
+GEO-0092;3_W2_8Mei_Exercise to be shared;general-basic-theory;training-material;latihan, keekonomian lapangan, well pad cost, drilling cost, well testing cost
+GEO-0093;3_W2_8Mei_SE JDS Intoduction of Geothermal Subsurface 2026;geothermal-upstream;training-material;geothermal subsurface, reservoir, model konseptual, pengantar
+GEO-0094;3_W3_23Mei_Modul 1 Introduction Phase-1 Project Initiation R1;drilling;training-material;DPM, drilling project management, project initiation, phase-1
+GEO-0095;4_W2_9Mei_JDS Slide HSE of Drilling - 09 Mei 2026;drilling;training-material;HSE, K3, keselamatan pemboran, drilling HSE
+GEO-0096;5_W2_9Mei_JDC 2026_PETROLEUM GEOLOGY;general-basic-theory;training-material;petroleum geology, geologi minyak bumi, petroleum system
+GEO-0097;6_W3_22Mei_Bahan Ajar - Basic Financial Model rev.03;general-basic-theory;training-material;financial model, model keuangan, keekonomian, NPV
+GEO-0098;8_W4_3Juni_JDS Additional Class - RISK MANAGEMENT FOR DRILLING PROJECT 20260503;drilling;training-material;risk management, manajemen risiko, drilling project
+GEO-0099;8_W4_5Juni_Well Size & Casing Depth;drilling;training-material;well size, casing depth, casing setting depth, desain sumur
+GEO-0100;9_W4_6Juni_Basic Directional Drilling - For JDS;drilling;training-material;directional drilling, pemboran berarah, trajectory
+GEO-0101;9_W4_6Juni_Introduction to Directional Drilling_ June6 2026;drilling;training-material;directional drilling, pemboran berarah, trajectory
+GEO-0102;9_W4_6Juni_Sperry Mud Motor and Jar_JDS_June 2026;drilling;training-material;mud motor, jar, Sperry, directional drilling
+GEO-0103;Alpha07_ExecutiveSummary_McKinsey;drilling;project-document;drilling proposal, executive summary, Alpha-07, DPM
+GEO-0104;CORE ENERGY SOLUTION_DPM 1 Final;drilling;project-document;DPM, Alpha-07, drilling campaign, phase-1, tugas kelompok
+GEO-0105;CORE ENERGY SOLUTION_DPM 1;drilling;project-document;DPM, Alpha-07, drilling campaign, phase-1, tugas kelompok
+GEO-0106;CORE ENERGY SOLUTION_DPM 1_revExcsum;drilling;project-document;DPM, Alpha-07, executive summary, tugas kelompok
+GEO-0107;CORE_ENERGY_SOLUTION_DPM_2_ Rev 2;drilling;project-document;DPM, Alpha-07, basis of design, trajectory, tugas kelompok
+GEO-0108;CORE_ENERGY_SOLUTION_DPM_ExecSummary;drilling;project-document;DPM, Alpha-07, executive summary, tugas kelompok
+GEO-0109;Casing ID vs Drift vs Bit Size 1;drilling;calculation-tool;casing ID, drift, bit size, ukuran casing
+GEO-0110;Casing ID vs Drift vs Bit Size;drilling;calculation-tool;casing ID, drift, bit size, ukuran casing
+GEO-0111;Casing Ilustration Template - 1;drilling;calculation-tool;casing illustration, skema casing, template
+GEO-0112;Casing Schematic-Rev 050421;drilling;calculation-tool;casing schematic, skema casing, desain sumur
+GEO-0113;Casing-Data-sheet 1;drilling;reference;casing data sheet, spesifikasi casing, grade
+GEO-0114;Draft BoD DPM Phase-2 Group 6_Rev 1;drilling;project-document;basis of design, BOD, Alpha-07, DPM phase-2
+GEO-0115;Essay UTS JDS Batch 7.docx (1);drilling;quiz;ujian tengah semester, essay, petroleum vs geothermal, drilling system
+GEO-0116;JDS-DPM_Outline Drilling proposal Alpha Field;drilling;project-document;drilling proposal, outline, Alpha Field, DPM
+GEO-0117;KTOL-JDS-26-01;drilling;calculation-tool;kick tolerance, KTOL, gas kick, formation strength, casing shoe
+GEO-0118;Quiz -10 Directional Drilling, Torque & Drag Essentials - Details - Kahoot!;drilling;quiz;kuis, directional drilling, torque and drag
+GEO-0119;Quiz -11 AFE Components and Construction - Details - Kahoot!;drilling;quiz;kuis, AFE, authorization for expenditure, biaya sumur
+GEO-0120;Quiz 1 - JDS Batch 7 First Class - Details - Kahoot!;drilling;quiz;kuis, JDS batch 7, pengantar
+GEO-0121;Quiz 12 - Casing Design, Depth Selection & Handling - Details - Kahoot!;drilling;quiz;kuis, casing design, setting depth, handling
+GEO-0122;Quiz 13 - Drilling PSCM, Material Management & Negotiation - Details - Kahoot!;drilling;quiz;kuis, PSCM, material management, negosiasi
+GEO-0123;Quiz 14 - Directional Drilling - Details - Kahoot!;drilling;quiz;kuis, directional drilling
+GEO-0124;Quiz 14 - Drilling Rig - Details - Kahoot!;drilling;quiz;kuis, drilling rig
+GEO-0125;Quiz 15 - Geothermal Rig Sizing - Details - Kahoot!;drilling;quiz;kuis, rig sizing, geothermal
+GEO-0126;Quiz 16 - Cementing Operation - Details - Kahoot!;drilling;quiz;kuis, cementing operation, penyemenan
+GEO-0127;Quiz 17 - Wellhead & Xmas Tree - Details - Kahoot!;drilling;quiz;kuis, wellhead, xmas tree
+GEO-0128;Quiz 18 - Bit - Details - Kahoot!;drilling;quiz;kuis, drill bit
+GEO-0129;Quiz 19 - Well Control Principle and Equipment - Details - Kahoot!;drilling;quiz;kuis, well control, BOP
+GEO-0130;Quiz 2 - Well Construction Principle - Details - Kahoot!;drilling;quiz;kuis, well construction
+GEO-0131;Quiz 20 - Drilling BHA - Details - Kahoot!;drilling;quiz;kuis, BHA, bottom hole assembly
+GEO-0132;Quiz 21 - Drilling Fluids - Details - Kahoot!;drilling;quiz;kuis, drilling fluids, lumpur
+GEO-0133;Quiz 21 - Drilling Fluids - Details - Kahoot!_compressed;drilling;quiz;kuis, drilling fluids, lumpur
+GEO-0134;Quiz 3 - Introduction to Drilling Engineering - Details - Kahoot!;drilling;quiz;kuis, drilling engineering
+GEO-0135;Quiz 4 - Introduction of Geothermal Subsurface - Details - Kahoot!;geothermal-upstream;quiz;kuis, geothermal subsurface, reservoir
+GEO-0136;Quiz 5 - Drilling HSE - Details - Kahoot!;drilling;quiz;kuis, drilling HSE, K3
+GEO-0137;Quiz 6 - Petroleum Subsurface for Drillers - Details - Kahoot!;general-basic-theory;quiz;kuis, petroleum subsurface, petroleum system
+GEO-0138;Quiz 7 - Project Economics - Details - Kahoot!;general-basic-theory;quiz;kuis, project economics, keekonomian
+GEO-0139;Quiz 8 - DPM Module-1 - Details - Kahoot!;drilling;quiz;kuis, DPM, drilling project management
+GEO-0140;Quiz 9 - Casing Setting Depth and Well Sizing - Details - Kahoot!;drilling;quiz;kuis, casing setting depth, well sizing
+GEO-0141;Modul 1 Introduction & Phase-1 Project Initiation;drilling;training-material;DPM, drilling project management, project initiation, phase-1
+GEO-0142;Modul-2 Phase-2 Project Planning_Rev1;drilling;training-material;DPM, project planning, phase-2
+GEO-0143;PPT_Phase-1_Mitra Bumi Geothermal_DPM 6 JDS Batch 7 2026_Final;drilling;project-document;DPM, Mitra Bumi Geothermal, phase-1, tugas kelompok
+GEO-0144;Panduan_Belajar_Quiz_Kahoot_Drilling;drilling;study-package;panduan belajar, kuis Kahoot, drilling
+GEO-0145;SHELL_Well-Engineers-Notebook-4th-edition-2003;drilling;reference;well engineers notebook, Shell, referensi teknik sumur
+GEO-0146;Slurry Cement Calculation;drilling;calculation-tool;slurry cement, penyemenan, volume semen
+GEO-0147;Tie Back vs Long String - by DE KS Orka 161119;drilling;technical-evaluation;tie back, long string, production casing, desain casing
+GEO-0148;Wellhead Design- JDS-26-01;drilling;calculation-tool;wellhead design, wellhead, API 6A
+GEO-0149;WhatsApp Image 2026-07-05 at 17.04.36;drilling;infographic;BHA, bottom hole assembly, MWD, LWD, infografis
+GEO-0150;belajar-drilling-bha;drilling;study-package;BHA, bottom hole assembly, paket belajar
+GEO-0151;1. well_construction_study;drilling;study-package;well construction, paket belajar
+GEO-0152;11. casing_design_belajar;drilling;study-package;casing design, paket belajar
+GEO-0153;13. drilling-rig-belajar;drilling;study-package;drilling rig, paket belajar
+GEO-0154;14. rig_sizing_belajar;drilling;study-package;rig sizing, paket belajar
+GEO-0155;15. basic-cementing-belajar;drilling;study-package;cementing, penyemenan, paket belajar
+GEO-0156;16. wellhead_learning_kit;drilling;study-package;wellhead, paket belajar
+GEO-0157;17. JDS_Drill_Bit_Study_Package;drilling;study-package;drill bit, paket belajar
+GEO-0158;18. JDS_Well_Control_Equipment_Study_Package;drilling;study-package;well control equipment, BOP, paket belajar
+GEO-0159;2. intro_drilling_study;drilling;study-package;drilling engineering, pengantar, paket belajar
+GEO-0160;20. Drilling_Fluids_Belajar_Interaktif;drilling;study-package;drilling fluids, lumpur, paket belajar
+GEO-0161;3. geothermal_subsurface_study;geothermal-upstream;study-package;geothermal subsurface, reservoir, paket belajar
+GEO-0162;4. petroleum_geology_belajar;general-basic-theory;study-package;petroleum geology, paket belajar
+GEO-0163;5. Drilling_HSE_Belajar_Interaktif;drilling;study-package;drilling HSE, K3, paket belajar
+GEO-0164;8. casing_design_learning_kit;drilling;study-package;casing design, paket belajar
+GEO-0165;9. paket_belajar_directional_drilling;drilling;study-package;directional drilling, paket belajar
+GEO-0166;list Materi;drilling;reference;daftar materi, JDS batch 7, jadwal kelas, indeks materi
+GEO-0167;PPT_Phase-2_Mitra_Bumi_Geothermal_DPM_6_JDS_Batch_7_2026_Final_compressed;drilling;project-document;DPM, Mitra Bumi Geothermal, phase-2, tugas kelompok
+GEO-0168;30_2Oct26NOV JDS Coring;drilling;training-material;coring, core, sampel batuan
+GEO-0169;Geothermal Wireline Logging Services Kadek _ JDS;drilling;training-material;wireline logging, logging, PTS, well logging
+GEO-0170;NESR JDS Geothermal Well Testing 3Oct26;geothermal-upstream;training-material;well testing, uji sumur, NESR, deliverability
+GEO-0171;00-Pedoman Efisiensi Biaya Pengeboram Sumur Panas Bumi - Oct 27;drilling;guideline;efisiensi biaya, drilling cost, biaya pemboran, kedalaman sumur, pedoman
+GEO-0172;01-Onshore Drilling WellPad Design-Rev4;drilling;training-material;wellpad design, well pad, onshore drilling, tata letak
+GEO-0173;03- Geothermal Drilling Operation Rev 241026;drilling;training-material;drilling operation, operasi pemboran, geothermal
+GEO-0174;3.1-BHA study Rev-13 Dec 06 - BP;drilling;technical-evaluation;BHA study, bottom hole assembly, BP
+GEO-0175;BEYOND THE STEAM - AGDYA YOGANDARI;general-basic-theory;training-material;sosial, komunikasi, keberlanjutan, penerimaan masyarakat, stakeholder
+GEO-0176;BP_at JDS 30102026;drilling;training-material;deepwater operation, offshore, BP, desain sumur laut dalam
+GEO-0177;Drilling Cost Saving Initiatives;drilling;training-material;drilling cost saving, efisiensi biaya, biaya pemboran
+GEO-0178;Modul-3 Phase-3 Execution Monitoring and Phase-4 Closing;drilling;training-material;DPM, execution, monitoring, closing, phase-3, phase-4
+GEO-0179;Rig HP for Drilling NIL;drilling;technical-evaluation;rig HP, horsepower, rig sizing, NIL
+GEO-0180;T Box vs Flow T;drilling;technical-evaluation;tee box, flow tee, wellhead, API 6A, API 6D
+GEO-0181;Well Intervention JDS 16102026;drilling;training-material;well intervention, workover, intervensi sumur

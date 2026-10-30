@@ -1,8 +1,8 @@
 {
   "schema": 1,
   "base_path": "plugins/aigeothermal-pln/skills",
-  "kb_revision": 10,
-  "kb_updated_at": "2026-10-30T10:49:53+00:00",
+  "kb_revision": 11,
+  "kb_updated_at": "2026-10-30T11:32:29+00:00",
   "files": [
     {
       "path": "geothermal-comment-sheet-report/SKILL.md",
@@ -26,8 +26,8 @@
     },
     {
       "path": "geothermal-knowledge/SKILL.md",
-      "sha256": "37c4069e9092408c77b7b61590d950a57107121876ae3ba93085c3a4469d8d2b",
-      "size": 9065
+      "sha256": "9297ef9adb1bf6359155715eca0a5cf180559847332540a7c544dbb7d4a3625e",
+      "size": 9501
     },
     {
       "path": "geothermal-knowledge/references/GAYA_BAHASA.md",
@@ -36,13 +36,13 @@
     },
     {
       "path": "geothermal-knowledge/references/KB/KB_INDEX.md",
-      "sha256": "e255a3b8336d0c566e074779077c3d068c4f84984021a5aaa70cfc5fe700b6b1",
-      "size": 31833
+      "sha256": "55acf74f17f551ba22e9d9ee2d91423cd3bcd9990008833e507f05ed9b876fe3",
+      "size": 43392
     },
     {
       "path": "geothermal-knowledge/references/KB/KB_MANIFEST.json",
-      "sha256": "5f8390be7db83dd3d07a135489f665e81f57372f8842d94007909fc66610aed3",
-      "size": 90994
+      "sha256": "03036436a4a95ce12d9ac7c25bcd7a4830649039f1ed38e731a3291aa83bc4a9",
+      "size": 114543
     },
     {
       "path": "geothermal-knowledge/references/kosakata-anti-ai.md",
@@ -56,8 +56,8 @@
     },
     {
       "path": "geothermal-knowledge/scripts/kb_manager.py",
-      "sha256": "a476524dc384dac79de1afd8429b094610d443cfc31a60471173c69e6ade3251",
-      "size": 27958
+      "sha256": "44fb21a3403022a7f1a667e1ebdea134eef8cc3ed23f3b5fb010985414a69ea7",
+      "size": 31274
     },
     {
       "path": "geothermal-knowledge/scripts/kb_render.py",

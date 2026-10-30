@@ -31,7 +31,7 @@ Sebelum menulis jawaban, tabel, laporan, atau slide, baca `references/GAYA_BAHAS
 ## Aturan retrieval hemat context
 
 1. Baca `references/KB/KB_INDEX.md` terlebih dahulu (atau `python scripts/kb_manager.py search <istilah>` untuk menyaring metadata tanpa membaca seluruh index bila KB sudah besar). Gunakan hanya entri `ACTIVE` sebagai evidence final.
-2. Cocokkan pertanyaan dengan `topic`, `keywords`, `document_type`, `discipline`, dan locator yang tersedia.
+2. Cocokkan pertanyaan dengan `topic`, `keywords`, `document_type`, `discipline`, dan locator yang tersedia. Disiplin KB: `geothermal-upstream` (eksplorasi, geologi/geokimia/geofisika, reservoir, cadangan, produksi, well testing), `geothermal-downstream` (PLTP, SAGS/surface facilities, heat & mass balance, utilisasi), `drilling` (pemboran, desain dan konstruksi sumur, rig, casing/cementing, wellhead, DPM), `general-basic-theory` (dasar panas bumi, termodinamika/steam table, keekonomian dan studi kelayakan, aspek sosial).
 3. Pilih maksimal 5 sumber kandidat pada pass pertama.
 4. Buka hanya file kandidat yang relevan. Jangan mengunduh semua file KB. Unduh hanya file kandidat itu dengan `scripts/kb_fetch.py <ID>`.
 5. Ambil maksimal 8 bagian/range relevan total pada pass pertama.
@@ -83,7 +83,7 @@ Aturan:
 
 ```bash
 python scripts/kb_manager.py ingest            # proses kb-inbox/ (dipakai workflow)
-python scripts/kb_manager.py add /path/source.pdf --title "..." --discipline subsurface --document-type training
+python scripts/kb_manager.py add /path/source.pdf --title "..." --discipline geothermal-upstream --document-type training-material
 python scripts/kb_manager.py update /path/revisi.pdf --id GEO-0001 --revision "Rev 2"
 python scripts/kb_manager.py search casing cement   # juga berguna saat retrieval
 python scripts/kb_manager.py tidy-titles        # rapikan judul dari nama aset release
