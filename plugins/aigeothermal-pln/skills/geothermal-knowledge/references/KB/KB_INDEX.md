@@ -3,14 +3,14 @@
 Status: ACTIVE
 Index mode: LIGHT / ROUTING ONLY
 Knowledge base root: `kb/files/` di repo GitHub (diunduh per ID dengan `scripts/kb_fetch.py`)
-KB revision: 8 (updated 2026-10-17T01:43:13+00:00)
+KB revision: 9 (updated 2026-10-30T10:39:58+00:00)
 
 Metadata router only; original source files are the source of truth. Files are added and indexed without deep-reading their contents.
 Index ini dibangun ulang otomatis oleh `scripts/kb_manager.py`; jangan edit manual.
 
 ## Source register
 
-Aktif: 168 · Superseded: 0
+Aktif: 179 · Superseded: 0
 
 | ID | Status | Judul | File | Disiplin | Tipe | Revisi | Topik / keyword | Locator | SHA-256 (prefix) |
 |---|---|---|---|---|---|---|---|---|---|
@@ -182,6 +182,17 @@ Aktif: 168 · Superseded: 0
 | GEO-0168 | ACTIVE | 30_2Oct26NOV.JDS.Coring | files/GEO-0168__30_2Oct26NOV.JDS.Coring.pdf | other | other | unknown |  |  | b0382a59c07d |
 | GEO-0169 | ACTIVE | Geothermal.Wireline.Logging.Services.Kadek._.JDS | files/GEO-0169__Geothermal.Wireline.Logging.Services.Kadek._.JDS.pdf | other | other | unknown |  |  | be5f559dd289 |
 | GEO-0170 | ACTIVE | NESR.JDS.Geothermal.Well.Testing.3Oct26 | files/GEO-0170__NESR.JDS.Geothermal.Well.Testing.3Oct26.pdf | other | other | unknown |  |  | e34db76564f5 |
+| GEO-0171 | ACTIVE | 00-Pedoman.Efisiensi.Biaya.Pengeboram.Sumur.Panas.Bumi.-.Oct.27 | files/GEO-0171__00-Pedoman.Efisiensi.Biaya.Pengeboram.Sumur.Panas.Bumi.-.Oct.27.pptx | other | other | unknown |  |  | 1298d1913c76 |
+| GEO-0172 | ACTIVE | 01-Onshore.Drilling.WellPad.Design-Rev4.pptx | files/GEO-0172__01-Onshore.Drilling.WellPad.Design-Rev4.pptx.pdf | other | other | unknown |  |  | 4669dbc9cdb8 |
+| GEO-0173 | ACTIVE | 03-.Geothermal.Drilling.Operation.Rev.241026 | files/GEO-0173__03-.Geothermal.Drilling.Operation.Rev.241026.pdf | other | other | unknown |  |  | cf0fc695951c |
+| GEO-0174 | ACTIVE | 3.1-BHA.study.Rev-13.Dec.06.-.BP | files/GEO-0174__3.1-BHA.study.Rev-13.Dec.06.-.BP.pptx | other | other | unknown |  |  | 2526549426f3 |
+| GEO-0175 | ACTIVE | BEYOND.THE.STEAM.-.AGDYA.YOGANDARI.pptx | files/GEO-0175__BEYOND.THE.STEAM.-.AGDYA.YOGANDARI.pptx.pdf | other | other | unknown |  |  | 4f32adb5590f |
+| GEO-0176 | ACTIVE | BP_at.JDS.30102026 | files/GEO-0176__BP_at.JDS.30102026.pdf | other | other | unknown |  |  | 5171c80da52d |
+| GEO-0177 | ACTIVE | Drilling.Cost.Saving.Initiatives | files/GEO-0177__Drilling.Cost.Saving.Initiatives.pdf | other | other | unknown |  |  | df66228719ff |
+| GEO-0178 | ACTIVE | Modul-3.Phase-3.Execution.Monitoring.and.Phase-4.Closing | files/GEO-0178__Modul-3.Phase-3.Execution.Monitoring.and.Phase-4.Closing.pdf | other | other | unknown |  |  | 7cc4a55cb14a |
+| GEO-0179 | ACTIVE | Rig.HP.for.Drilling.NIL | files/GEO-0179__Rig.HP.for.Drilling.NIL.pptx | other | other | unknown |  |  | 39bb19f1e216 |
+| GEO-0180 | ACTIVE | T.Box.vs.Flow.T | files/GEO-0180__T.Box.vs.Flow.T.pptx | other | other | unknown |  |  | f2d70e6bd0db |
+| GEO-0181 | ACTIVE | Well.Intervention.JDS.16102026 | files/GEO-0181__Well.Intervention.JDS.16102026.pdf | other | other | unknown |  |  | 1ffb0fc8a314 |
 
 ## Retrieval defaults
 

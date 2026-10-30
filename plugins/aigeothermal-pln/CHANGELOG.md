@@ -1,5 +1,19 @@
 # Changelog
 
+## KB rev 9 — 2026-10-30
+
+- Tambah GEO-0171 — 00-Pedoman.Efisiensi.Biaya.Pengeboram.Sumur.Panas.Bumi.-.Oct.27 (`files/GEO-0171__00-Pedoman.Efisiensi.Biaya.Pengeboram.Sumur.Panas.Bumi.-.Oct.27.pptx`, 36983497 bytes, SHA-256 `1298d1913c76…`).
+- Tambah GEO-0172 — 01-Onshore.Drilling.WellPad.Design-Rev4.pptx (`files/GEO-0172__01-Onshore.Drilling.WellPad.Design-Rev4.pptx.pdf`, 7062189 bytes, SHA-256 `4669dbc9cdb8…`).
+- Tambah GEO-0173 — 03-.Geothermal.Drilling.Operation.Rev.241026 (`files/GEO-0173__03-.Geothermal.Drilling.Operation.Rev.241026.pdf`, 19558632 bytes, SHA-256 `cf0fc695951c…`).
+- Tambah GEO-0174 — 3.1-BHA.study.Rev-13.Dec.06.-.BP (`files/GEO-0174__3.1-BHA.study.Rev-13.Dec.06.-.BP.pptx`, 1809163 bytes, SHA-256 `2526549426f3…`).
+- Tambah GEO-0175 — BEYOND.THE.STEAM.-.AGDYA.YOGANDARI.pptx (`files/GEO-0175__BEYOND.THE.STEAM.-.AGDYA.YOGANDARI.pptx.pdf`, 1898600 bytes, SHA-256 `4f32adb5590f…`).
+- Tambah GEO-0176 — BP_at.JDS.30102026 (`files/GEO-0176__BP_at.JDS.30102026.pdf`, 5005134 bytes, SHA-256 `5171c80da52d…`).
+- Tambah GEO-0177 — Drilling.Cost.Saving.Initiatives (`files/GEO-0177__Drilling.Cost.Saving.Initiatives.pdf`, 19590496 bytes, SHA-256 `df66228719ff…`).
+- Tambah GEO-0178 — Modul-3.Phase-3.Execution.Monitoring.and.Phase-4.Closing (`files/GEO-0178__Modul-3.Phase-3.Execution.Monitoring.and.Phase-4.Closing.pdf`, 1095015 bytes, SHA-256 `7cc4a55cb14a…`).
+- Tambah GEO-0179 — Rig.HP.for.Drilling.NIL (`files/GEO-0179__Rig.HP.for.Drilling.NIL.pptx`, 5581168 bytes, SHA-256 `39bb19f1e216…`).
+- Tambah GEO-0180 — T.Box.vs.Flow.T (`files/GEO-0180__T.Box.vs.Flow.T.pptx`, 36342510 bytes, SHA-256 `f2d70e6bd0db…`).
+- Tambah GEO-0181 — Well.Intervention.JDS.16102026 (`files/GEO-0181__Well.Intervention.JDS.16102026.pdf`, 4840863 bytes, SHA-256 `1ffb0fc8a314…`).
+
 ## KB rev 8 — 2026-10-17
 
 - Hapus GEO-0047 dari KB (berisi data pribadi atau dokumen internal pihak lain).
