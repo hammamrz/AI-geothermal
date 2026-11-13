@@ -3,14 +3,14 @@
 Status: ACTIVE
 Index mode: LIGHT / ROUTING ONLY
 Knowledge base root: `kb/files/` di repo GitHub (diunduh per ID dengan `scripts/kb_fetch.py`)
-KB revision: 11 (updated 2026-10-30T11:32:29+00:00)
+KB revision: 12 (updated 2026-11-13T08:06:46+00:00)
 
 Metadata router only; original source files are the source of truth. Files are added and indexed without deep-reading their contents.
 Index ini dibangun ulang otomatis oleh `scripts/kb_manager.py`; jangan edit manual.
 
 ## Source register
 
-Aktif: 179 · Superseded: 0
+Aktif: 182 · Superseded: 0
 
 | ID | Status | Judul | File | Disiplin | Tipe | Revisi | Topik / keyword | Locator | SHA-256 (prefix) |
 |---|---|---|---|---|---|---|---|---|---|
@@ -193,6 +193,9 @@ Aktif: 179 · Superseded: 0
 | GEO-0179 | ACTIVE | Rig HP for Drilling NIL | files/GEO-0179__Rig.HP.for.Drilling.NIL.pptx | drilling | technical-evaluation | unknown | rig HP, horsepower, rig sizing, NIL |  | 39bb19f1e216 |
 | GEO-0180 | ACTIVE | T Box vs Flow T | files/GEO-0180__T.Box.vs.Flow.T.pptx | drilling | technical-evaluation | unknown | tee box, flow tee, wellhead, API 6A, API 6D |  | f2d70e6bd0db |
 | GEO-0181 | ACTIVE | Well Intervention JDS 16102026 | files/GEO-0181__Well.Intervention.JDS.16102026.pdf | drilling | training-material | unknown | well intervention, workover, intervensi sumur |  | 1ffb0fc8a314 |
+| GEO-0182 | ACTIVE | Bahan Ajar - Basic Financial Model rev 02 | files/GEO-0182__Bahan.Ajar.-.Basic.Financial.Model.rev.02.pdf | other | other | unknown |  |  | 6c6609bd3801 |
+| GEO-0183 | ACTIVE | NESR JDS Geothermal Well Testing 3Oct26 | files/GEO-0183__NESR.JDS.Geothermal.Well.Testing.3Oct26.pdf | other | other | unknown |  |  | efe0d65e7d33 |
+| GEO-0184 | ACTIVE | Well Size Casing Depth | files/GEO-0184__Well.Size.Casing.Depth.pptx | other | other | unknown |  |  | 5b8255246cb1 |
 
 ## Retrieval defaults
 

@@ -1,5 +1,11 @@
 # Changelog
 
+## KB rev 12 — 2026-11-13
+
+- Tambah GEO-0182 — Bahan Ajar - Basic Financial Model rev 02 (`files/GEO-0182__Bahan.Ajar.-.Basic.Financial.Model.rev.02.pdf`, 5314709 bytes, SHA-256 `6c6609bd3801…`).
+- Tambah GEO-0183 — NESR JDS Geothermal Well Testing 3Oct26 (`files/GEO-0183__NESR.JDS.Geothermal.Well.Testing.3Oct26.pdf`, 2556673 bytes, SHA-256 `efe0d65e7d33…`).
+- Tambah GEO-0184 — Well Size Casing Depth (`files/GEO-0184__Well.Size.Casing.Depth.pptx`, 1565549 bytes, SHA-256 `5b8255246cb1…`).
+
 ## KB rev 11 — 2026-10-30
 
 - Metadata (disiplin, tipe, keyword) diperbarui untuk 179 entri dari `kb-classification.csv`. Sebaran disiplin: geothermal-upstream 20, geothermal-downstream 8, drilling 120, general-basic-theory 31.

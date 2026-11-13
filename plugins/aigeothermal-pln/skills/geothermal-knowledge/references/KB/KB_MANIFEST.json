@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "kb_revision": 11,
+  "kb_revision": 12,
   "entries": [
     {
       "id": "GEO-0001",
@@ -3348,9 +3348,48 @@
         "workover",
         "intervensi sumur"
       ]
+    },
+    {
+      "id": "GEO-0182",
+      "file": "files/GEO-0182__Bahan.Ajar.-.Basic.Financial.Model.rev.02.pdf",
+      "title": "Bahan Ajar - Basic Financial Model rev 02",
+      "discipline": "other",
+      "document_type": "other",
+      "revision": "unknown",
+      "status": "ACTIVE",
+      "size_bytes": 5314709,
+      "sha256": "6c6609bd3801a32bb4b878341f26e81a9e598a7d209b2cb8c7898028e30e1afd",
+      "added_at": "2026-11-13T08:06:46+00:00",
+      "source_channel": "github-inbox"
+    },
+    {
+      "id": "GEO-0183",
+      "file": "files/GEO-0183__NESR.JDS.Geothermal.Well.Testing.3Oct26.pdf",
+      "title": "NESR JDS Geothermal Well Testing 3Oct26",
+      "discipline": "other",
+      "document_type": "other",
+      "revision": "unknown",
+      "status": "ACTIVE",
+      "size_bytes": 2556673,
+      "sha256": "efe0d65e7d337982bdcf96177aaa23f2ca47014c1004fd4364b428496e44ed13",
+      "added_at": "2026-11-13T08:06:46+00:00",
+      "source_channel": "github-inbox"
+    },
+    {
+      "id": "GEO-0184",
+      "file": "files/GEO-0184__Well.Size.Casing.Depth.pptx",
+      "title": "Well Size Casing Depth",
+      "discipline": "other",
+      "document_type": "other",
+      "revision": "unknown",
+      "status": "ACTIVE",
+      "size_bytes": 1565549,
+      "sha256": "5b8255246cb131123477d3d739f99cbf59ce5fdd7551885fde03211ad5f5d69b",
+      "added_at": "2026-11-13T08:06:46+00:00",
+      "source_channel": "github-inbox"
     }
   ],
-  "updated_at": "2026-10-30T11:32:29+00:00",
+  "updated_at": "2026-11-13T08:06:46+00:00",
   "removed": [
     {
       "id": "GEO-0047",
